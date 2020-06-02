@@ -52,13 +52,13 @@ class User implements UserInterface
     private $created_at;
 
     /**
-     * @ORM\OneToMany(targetEntity=Adresse::class, mappedBy="user_id")
+     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user_id")
      */
-    private $adresses;
+    private $addresses;
 
     public function __construct()
     {
-        $this->adresses = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -152,30 +152,30 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|Adresse[]
+     * @return Collection|Address[]
      */
-    public function getAdresses(): Collection
+    public function getAddresses(): Collection
     {
-        return $this->adresses;
+        return $this->addresses;
     }
 
-    public function addAdress(Adresse $adress): self
+    public function addAdress(Address $address): self
     {
-        if (!$this->adresses->contains($adress)) {
-            $this->adresses[] = $adress;
-            $adress->setUserId($this);
+        if (!$this->addresses->contains($address)) {
+            $this->addresses[] = $address;
+            $address->setUserId($this);
         }
 
         return $this;
     }
 
-    public function removeAdress(Adresse $adress): self
+    public function removeAdress(Address $address): self
     {
-        if ($this->adresses->contains($adress)) {
-            $this->adresses->removeElement($adress);
+        if ($this->addresses->contains($address)) {
+            $this->addresses->removeElement($address);
             // set the owning side to null (unless already changed)
-            if ($adress->getUserId() === $this) {
-                $adress->setUserId(null);
+            if ($address->getUserId() === $this) {
+                $address->setUserId(null);
             }
         }
 
