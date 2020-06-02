@@ -35,23 +35,24 @@ export const register = ({ username, email, password }) => dispatch => {
     // headers 
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
         }
     }
-
     //request info
     const body = JSON.stringify({ username, email, password })
 
-    axios.post('http://127.0.0.1:8000/api/users', body, config)
+    axios.options('http://localhost:8000/register', body, config)
         .then(res => dispatch({
             type: REGISTER_SUCCESS,
             payload: res.data
         }))
         .catch(err => {
-            dispatch(returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL'))
-            dispatch({
-                type: REGISTER_FAIL
-            })
+            console.log(err)
+            // dispatch(returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL'))
+            // dispatch({
+            //     type: REGISTER_FAIL
+            // })
         })
 }
 
@@ -86,22 +87,27 @@ export const login = ({ email, password }) => dispatch => {
     // headers 
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
         }
     }
 
     //request info
     const body = JSON.stringify({ email, password })
 
-    axios.post('http://127.0.0.1:8000/api/auth', body, config)
-        .then(res => dispatch({
-            type: LOGIN_SUCCESS,
-            payload: res.data
-        }))
-        .catch(err => {
-            dispatch(returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL'))
+    axios.options('http://localhost:8000/login', body, config)
+        .then(res => {
+            console.log(res)
             dispatch({
-                type: LOGIN_FAIL
+                type: LOGIN_SUCCESS,
+                payload: res.data
             })
+        })
+        .catch(err => {
+            console.log(err)
+            // dispatch(returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL'))
+            // dispatch({
+            //     type: LOGIN_FAIL
+            // })
         })
 }

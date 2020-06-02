@@ -26,12 +26,12 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=false)
+     * @ORM\Column(type="string", length=180, unique=false, nullable=true)
      */
     private $firstname;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=false)
+     * @ORM\Column(type="string", length=180, unique=false, nullable=true)
      */
     private $lastname;
 
@@ -56,15 +56,9 @@ class User implements UserInterface
      */
     private $addresses;
 
-    /**
-     * @ORM\OneToMany(targetEntity=CardCredentials::class, mappedBy="user")
-     */
-    private $cardCredentials;
-
     public function __construct()
     {
-        $this->adresses = new ArrayCollection();
-        $this->cardCredentials = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,37 +176,6 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($address->getUserId() === $this) {
                 $address->setUserId(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|CardCredentials[]
-     */
-    public function getCardCredentials(): Collection
-    {
-        return $this->cardCredentials;
-    }
-
-    public function addCardCredential(CardCredentials $cardCredential): self
-    {
-        if (!$this->cardCredentials->contains($cardCredential)) {
-            $this->cardCredentials[] = $cardCredential;
-            $cardCredential->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCardCredential(CardCredentials $cardCredential): self
-    {
-        if ($this->cardCredentials->contains($cardCredential)) {
-            $this->cardCredentials->removeElement($cardCredential);
-            // set the owning side to null (unless already changed)
-            if ($cardCredential->getUser() === $this) {
-                $cardCredential->setUser(null);
             }
         }
 
