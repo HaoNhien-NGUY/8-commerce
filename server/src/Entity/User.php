@@ -56,9 +56,15 @@ class User implements UserInterface
      */
     private $adresses;
 
+    /**
+     * @ORM\OneToMany(targetEntity=CardCredentials::class, mappedBy="user")
+     */
+    private $cardCredentials;
+
     public function __construct()
     {
         $this->adresses = new ArrayCollection();
+        $this->cardCredentials = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -176,6 +182,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($adress->getUserId() === $this) {
                 $adress->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CardCredentials[]
+     */
+    public function getCardCredentials(): Collection
+    {
+        return $this->cardCredentials;
+    }
+
+    public function addCardCredential(CardCredentials $cardCredential): self
+    {
+        if (!$this->cardCredentials->contains($cardCredential)) {
+            $this->cardCredentials[] = $cardCredential;
+            $cardCredential->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCardCredential(CardCredentials $cardCredential): self
+    {
+        if ($this->cardCredentials->contains($cardCredential)) {
+            $this->cardCredentials->removeElement($cardCredential);
+            // set the owning side to null (unless already changed)
+            if ($cardCredential->getUser() === $this) {
+                $cardCredential->setUser(null);
             }
         }
 
