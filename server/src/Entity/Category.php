@@ -23,9 +23,11 @@ class Category
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity=Product::class, mappedBy="category", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Product::class, mappedBy="Category", cascade={"persist", "remove"})
      */
     private $product;
+
+
 
     public function getId(): ?int
     {
@@ -60,4 +62,8 @@ class Category
 
         return $this;
     }
+
+
+
+
 }

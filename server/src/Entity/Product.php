@@ -19,11 +19,12 @@ class Product
      */
     private $id;
 
-    
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToOne(targetEntity=Category::class, inversedBy="product", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $category;
+    private $Category;
+
     
     /**
      * @ORM\Column(type="string", length=255)
@@ -64,6 +65,8 @@ class Product
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $sex;
+
+
 
     public function __construct()
     {
@@ -136,17 +139,7 @@ class Product
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
 
-    public function setCategory(Category $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
 
     public function getSex(): ?string
     {
@@ -223,6 +216,18 @@ class Product
                 $subproduct->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->Category;
+    }
+
+    public function setCategory(Category $Category): self
+    {
+        $this->Category = $Category;
 
         return $this;
     }
