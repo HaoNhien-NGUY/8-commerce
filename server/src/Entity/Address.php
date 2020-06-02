@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\AdresseRepository;
+use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AdresseRepository::class)
+ * @ORM\Entity(repositoryClass=AddressRepository::class)
  */
-class Adresse
+class Address
 {
     /**
      * @ORM\Id()
@@ -20,25 +20,25 @@ class Adresse
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $pays;
+    private $country;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $ville;
+    private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $code_postal;
+    private $postcode;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $adresse;
+    private $address;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="adresses")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="Address")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -53,50 +53,50 @@ class Adresse
         return $this->id;
     }
 
-    public function getPays(): ?string
+    public function getCountry(): ?string
     {
-        return $this->pays;
+        return $this->country;
     }
 
-    public function setPays(string $pays): self
+    public function setCountry(string $country): self
     {
-        $this->pays = $pays;
+        $this->country = $country;
 
         return $this;
     }
 
-    public function getVille(): ?string
+    public function getCity(): ?string
     {
-        return $this->ville;
+        return $this->city;
     }
 
-    public function setVille(string $ville): self
+    public function setCity(string $city): self
     {
-        $this->ville = $ville;
+        $this->city = $city;
 
         return $this;
     }
 
-    public function getCodePostal(): ?string
+    public function getPostcode(): ?string
     {
-        return $this->code_postal;
+        return $this->postcode;
     }
 
-    public function setCodePostal(string $code_postal): self
+    public function setPostcode(string $postcode): self
     {
-        $this->code_postal = $code_postal;
+        $this->postcode = $postcode;
 
         return $this;
     }
 
-    public function getAdresse(): ?string
+    public function getAddress(): ?string
     {
-        return $this->adresse;
+        return $this->address;
     }
 
-    public function setAdresse(string $adresse): self
+    public function setAddress(string $address): self
     {
-        $this->adresse = $adresse;
+        $this->address = $address;
 
         return $this;
     }
