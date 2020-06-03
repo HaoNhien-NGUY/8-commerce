@@ -196,6 +196,7 @@ class UserController extends AbstractController
                 $user = new User();
                 $user->setEmail($data['email']);
                 $user->setCreatedAt(new DateTime());
+                $user->setRoles(['user']);
                 // $encoded = $passwordEncoder->encodePassword($user, $data['password']);
                 $user->setPassword(password_hash($data['password'], PASSWORD_ARGON2I));
                 $entityManager = $this->getDoctrine()->getManager();
@@ -203,11 +204,11 @@ class UserController extends AbstractController
                 $entityManager->flush();
 
                 $token = $this->createToken($user);
-                $userInRes = (object) ['id' => $user->getId(), 'email' => $user->getEmail()];
+                $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
                 return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
             }
 
-            return new JsonResponse(['msg' => "Incorrect email or password"], 400);
+            // return new JsonResponse(['msg' => "Incorrect email or password"], 400);
         }
     }
 
@@ -261,7 +262,7 @@ class UserController extends AbstractController
                     // return $response;
 
                     $token = $this->createToken($user);
-                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail()];
+                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
                     return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
                 } else {
                     return new JsonResponse(['msg' => "Incorrect email or password"], 400);
@@ -287,7 +288,7 @@ class UserController extends AbstractController
                     return new JsonResponse(['msg' => 'Bad token'], 400);
                 } else {
                     $user = $userRepository->findBy(['id' => $dataInToken['user_id']])[0];
-                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail()];
+                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
                     return new JsonResponse(['id' => $user->getId(), 'email' => $user->getEmail()], 200);
                 }
             }

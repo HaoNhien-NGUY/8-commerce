@@ -50,6 +50,9 @@ class IndexNavbar extends Component {
                     <NavItem>
                         <span className="navbar-text text-dark">{user ? user.username : null}</span>
                     </NavItem>
+                    <NavItem>
+                        <Logout />
+                    </NavItem>
                 </Router>
             </Fragment>
         )
