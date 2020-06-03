@@ -65,9 +65,15 @@ class Subproduct
      */
     private $images;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Commande::class, mappedBy="Subproduct")
+     */
+    private $commandes;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -196,6 +202,37 @@ class Subproduct
             // set the owning side to null (unless already changed)
             if ($image->getSubproduct() === $this) {
                 $image->setSubproduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Commande[]
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): self
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes[] = $commande;
+            $commande->setSubproduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): self
+    {
+        if ($this->commandes->contains($commande)) {
+            $this->commandes->removeElement($commande);
+            // set the owning side to null (unless already changed)
+            if ($commande->getSubproduct() === $this) {
+                $commande->setSubproduct(null);
             }
         }
 

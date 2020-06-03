@@ -9,7 +9,17 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Entity\Product;
+use App\Repository\AdressRepository;
 use App\Repository\UserRepository;
+use App\Repository\CategoryRepository;
+use App\Entity\Category;
+use App\Entity\Subproduct;
+use App\Entity\Commande;
+use App\Entity\Address;
+use App\Repository\AddressRepository;
+use App\Repository\ProductRepository;
+use App\Repository\SubproductRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,6 +43,133 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/addUser", name="addUser")
+     */
+    public function addUser()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $user = new User();
+        $user->setFirstName('El barkaoui');
+        $user->setLastName('Nordine');
+        $user->setEmail('nordine@gmail.com');
+        $user->setPassword(123);
+        $user->setCreatedAt(new \DateTime('now'));
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return new Response('Category correctly added');
+    }
+
+
+    /**
+     * @Route("/addCategory", name="category")
+     */
+    public function addCategory()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $category = new Category();
+        $category->setName('Pull');
+        $entityManager->persist($category);
+        $entityManager->flush();
+
+        return new Response('Category correctly added');
+    }
+
+    /**
+     * @Route("/addProduct", name="product")
+     */
+    public function addProduct(CategoryRepository $category)
+    {
+        $newCat = $category->findOneBy(['name' => 'Pull']);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $product = new Product();
+        $product->setCategory($newCat);
+        $product->setTitle('Pull lacost');
+        $product->setDescription('Un pull de bg de fou malade');
+        $product->setPrice(19.99);
+        $product->setCreatedAt(new \DateTime('now'));
+        $product->setClicks(1);
+        $product->setSex('H');
+
+        $entityManager->persist($product);
+        $entityManager->flush();
+
+        return new Response('Product correctly added');
+    }
+
+    /**
+     * @Route("/addSubProduct", name="subProduct")
+     */
+    public function addSubProduct(ProductRepository $product)
+    {
+        $newProduct = $product->findOneBy(['id' => 1]);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $subProduct = new Subproduct();
+        $subProduct->setProduct($newProduct);
+        $subProduct->setPrice(100);
+        $subProduct->setColor('red');
+        $subProduct->setSize('M');
+        $subProduct->setWeight(2);
+        $subProduct->setCreatedAt(new \DateTime('now'));
+        $subProduct->setStock(2);
+
+        $entityManager->persist($subProduct);
+        $entityManager->flush();
+
+        return new Response('Sub Product correctly added');
+    }
+
+    /**
+     * @Route("/addAddress", name="Adress")
+     */
+    public function addAdress(UserRepository $userRepo)
+    {
+        $user = $userRepo->findOneBy(['id' => 1]);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $adress = new Address();
+        $adress->setUser($user);
+        $adress->setCountry('France');
+        $adress->setCity('Courbevoie');
+        $adress->setPostcode(92400);
+        $adress->setAddress('29 rue carle hebert');
+        $adress->setType('livraison');
+
+
+        $entityManager->persist($adress);
+        $entityManager->flush();
+        
+        return new Response('Adress correctly added');
+    }
+    /**
+     * @Route("/addCommande", name="Commande")
+     */
+    public function addCommande(SubproductRepository $subprod,AddressRepository $adressrepo)
+    {
+        $newSubProduct = $subprod->findOneBy(['id' => 1]);
+        $address = $adressrepo->findOneBy(['id' => 1]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $commande = new Commande();
+        $commande->setSubproduct($newSubProduct);
+        $commande->setAddress($address);
+        $commande->setStatus('En cours');
+        $commande->setTrackingNumber(69 );
+        $commande->setPackaging(true);
+        $commande->setCreatedAt(new \DateTime('now'));
+
+        $entityManager->persist($commande);
+        $entityManager->flush();
+
+        return new Response('Commande correctly added');
+
+    }
     /**
      * @Route("/register", name="register")
      */
