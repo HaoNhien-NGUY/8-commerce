@@ -11,6 +11,7 @@ import UserList from './components/user/UserList'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Product from './components/products/product.details'
 import Home from './components/home/home'
+import Item from './components/admin/items/item'
 
 
 class App extends React.Component {
