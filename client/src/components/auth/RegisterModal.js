@@ -10,7 +10,6 @@ import { clearErrors } from '../../actions/errorActions'
 class RegisterModal extends Component {
     state = {
         modal: false,
-        username: '',
         email: '',
         password: '',
         msg: null
@@ -83,14 +82,6 @@ class RegisterModal extends Component {
                         {this.state.msg ? <Alert> {this.state.msg}</Alert> : null}
                         <Form onSubmit={this.onSubmit}>
                             <FormGroup>
-                                <Label for="username">Username</Label>
-                                <Input
-                                    type="text"
-                                    name="username"
-                                    id="username"
-                                    placeholder="Type username"
-                                    onChange={this.onChange}
-                                />
                                 <Label for="email">Email</Label>
                                 <Input
                                     type="email"

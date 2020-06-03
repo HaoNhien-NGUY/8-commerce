@@ -22,7 +22,12 @@ class App extends React.Component {
     render() {
         return (
             // <Product />
-            <Home />
+            <>
+                <Provider store={store}>
+                    <IndexNavbar />
+                    <Home />
+                </Provider>
+            </>
             // <Router>
             //     <Provider store={store}>
             //         <IndexNavbar />
