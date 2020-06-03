@@ -10,6 +10,8 @@ import SearchPost from './components/posts/SearchPost'
 import UserList from './components/user/UserList'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Product from './components/products/product.details'
+import Home from './components/home/home'
+
 
 class App extends React.Component {
 
@@ -19,7 +21,8 @@ class App extends React.Component {
 
     render() {
         return (
-            <Product />
+            // <Product />
+            <Home />
             // <Router>
             //     <Provider store={store}>
             //         <IndexNavbar />
