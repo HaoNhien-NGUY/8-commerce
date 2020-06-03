@@ -143,13 +143,13 @@ class UserController extends AbstractController
 
         $entityManager->persist($adress);
         $entityManager->flush();
-        
+
         return new Response('Adress correctly added');
     }
     /**
      * @Route("/addCommande", name="Commande")
      */
-    public function addCommande(SubproductRepository $subprod,AddressRepository $adressrepo)
+    public function addCommande(SubproductRepository $subprod, AddressRepository $adressrepo)
     {
         $newSubProduct = $subprod->findOneBy(['id' => 1]);
         $address = $adressrepo->findOneBy(['id' => 1]);
@@ -160,7 +160,7 @@ class UserController extends AbstractController
         $commande->setSubproduct($newSubProduct);
         $commande->setAddress($address);
         $commande->setStatus('En cours');
-        $commande->setTrackingNumber(69 );
+        $commande->setTrackingNumber(69);
         $commande->setPackaging(true);
         $commande->setCreatedAt(new \DateTime('now'));
 
@@ -168,7 +168,6 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return new Response('Commande correctly added');
-
     }
     /**
      * @Route("/register", name="register")
@@ -207,9 +206,9 @@ class UserController extends AbstractController
                 $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
                 return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
             }
-
-            // return new JsonResponse(['msg' => "Incorrect email or password"], 400);
+            return new JsonResponse(['msg' => "Incorrect email or password"], 400);
         }
+        return new JsonResponse(['msg' => "Incorrect email or password"], 400);
     }
 
     /**
@@ -269,6 +268,7 @@ class UserController extends AbstractController
                 }
             }
         }
+        return new JsonResponse(['msg' => "Incorrect email or password"], 400);
     }
 
     /**
