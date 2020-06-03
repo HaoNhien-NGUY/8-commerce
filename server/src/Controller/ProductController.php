@@ -28,7 +28,7 @@ class ProductController extends AbstractController
 
         // return $this->json($productRepository->findAll(), 200, [], ['groups' => 'products']);
 
-        $json = $serializer->serialize($productRepository->findAll(), 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['Category', 'subproducts']]);
+        $json = $serializer->serialize($productRepository->findAll(), 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['category', 'subproducts']]);
         // $json = $serializer->serialize($productRepository->findAll(), 'json', ['groups' => 'products']);
 
         return new JsonResponse($json, 200, [], true);
@@ -43,11 +43,11 @@ class ProductController extends AbstractController
         $req = json_decode($jsonContent);
 
         try {
-            // $product = $serializer->deserialize($jsonContent, Product::class, 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['Category', 'subproducts']]);
-            $product = new Product();
-            $product->setTitle($req->title);
-            $product->setDescription($req->description);
-            $product->setPrice($req->price);
+            $product = $serializer->deserialize($jsonContent, Product::class, 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['Category', 'subproducts']]);
+            // $product = new Product();
+            // $product->setTitle($req->title);
+            // $product->setDescription($req->description);
+            // $product->setPrice($req->price);
             $category = $this->getDoctrine()
                 ->getRepository(Category::class)
                 ->find($req->category);
@@ -58,11 +58,12 @@ class ProductController extends AbstractController
             $error = $validator->validate($product);
             if (count($error) > 0) return $this->json($error, 400);
 
-
             $em->persist($product);
             $em->flush();
 
-            return $this->json($product, 201);
+            // return $this->json($product, 201);
+            return $this->json(['message' => 'product created'], 201);
+
         } catch (NotEncodableValueException $e) {
             return $this->json($e->getMessage(), 400);
         }

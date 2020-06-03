@@ -21,13 +21,13 @@ class App extends React.Component {
 
     render() {
         return (
-            // <Product />
-            <>
-                <Provider store={store}>
-                    <IndexNavbar />
-                    <Home />
-                </Provider>
-            </>
+            <Product />
+            // <>
+            //     <Provider store={store}>
+            //         <IndexNavbar />
+            //         <Home />
+            //     </Provider>
+            // </>
             // <Router>
             //     <Provider store={store}>
             //         <IndexNavbar />

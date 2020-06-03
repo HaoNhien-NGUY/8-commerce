@@ -28,17 +28,18 @@ function ProductDescription() {
     function showImage(pathImg) {
         const imageProps = {
             smallImage: {
-                alt: 'Phasellus laoreet',
+                alt: '',
                 isFluidWidth: true,
                 src: pathImg
             },
             largeImage: {
                 src: pathImg,
-                width: 2000,
-                height: 1800
+                width: 2200,
+                height: 2200
             },
             enlargedImageContainerStyle: { background: '#fff', zIndex: 9 },
-            className: 'sizeImage imgScroll'
+            className: 'imgScroll',
+            imageClassName: 'styleImage'
         };
 
         return imageProps;
@@ -57,13 +58,13 @@ function ProductDescription() {
     
     return (
         <div>
-            <div className='row'>
+            <div className=''>
                 <div className='divProduct'>
                     <div className='col-md-7 divImages'>
                             <ul className='ulImgProduct'>
                                 {miniImageProduct}
                             </ul>
-                        <div className='scroll'>
+                        <div className=''>
                             {imageProduct}
                         </div>
                     </div>
@@ -104,6 +105,9 @@ function ProductDescription() {
             </div>
 
             <div>
+                <h1>deded</h1>
+                <h1>deded</h1>
+                <h1>deded</h1>
                 <h1>deded</h1>
                 <h1>deded</h1>
                 <h1>deded</h1>

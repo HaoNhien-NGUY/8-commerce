@@ -94,7 +94,7 @@ class IndexNavbar extends Component {
         const productsInCart  = 0
         return (
             <div>
-                <Navbar color="light" light expand="lg">
+                <Navbar color="light" light expand="lg" id="navbar">
                     <NavbarBrand href="/" id="brandName">8-commerce</NavbarBrand>
                     <Nav className="mr-auto" navbar>
                         <NavItem>
