@@ -82,4 +82,6 @@ class ProductController extends AbstractController
             'message' => 'product removed'
         ], 200);
     }
+
+    // public function 
 }
