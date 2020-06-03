@@ -69,7 +69,7 @@ class Product
     private $clicks;
 
     /**
-     * @ORM\OneToMany(targetEntity=Subproduct::class, mappedBy="product", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity=Subproduct::class, mappedBy="product")
      * @Groups("products")
      */
     private $subproducts;
