@@ -7,7 +7,6 @@ use App\Entity\Product;
 use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Entity\Category as EntityCategory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,12 +23,7 @@ class ProductController extends AbstractController
      */
     public function index(ProductRepository $productRepository, SerializerInterface $serializer)
     {
-        // dd($productRepository->findAll());
-
-        // return $this->json($productRepository->findAll(), 200, [], ['groups' => 'products']);
-
-        $json = $serializer->serialize($productRepository->findAll(), 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['category', 'subproducts']]);
-        // $json = $serializer->serialize($productRepository->findAll(), 'json', ['groups' => 'products']);
+        $json = $serializer->serialize($productRepository->findAll(), 'json', ['groups' => 'products']);
 
         return new JsonResponse($json, 200, [], true);
     }
@@ -43,11 +37,7 @@ class ProductController extends AbstractController
         $req = json_decode($jsonContent);
 
         try {
-            $product = $serializer->deserialize($jsonContent, Product::class, 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['Category', 'subproducts']]);
-            // $product = new Product();
-            // $product->setTitle($req->title);
-            // $product->setDescription($req->description);
-            // $product->setPrice($req->price);
+            $product = $serializer->deserialize($jsonContent, Product::class, 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['category', 'subproducts']]);
             $category = $this->getDoctrine()
                 ->getRepository(Category::class)
                 ->find($req->category);
@@ -61,8 +51,7 @@ class ProductController extends AbstractController
             $em->persist($product);
             $em->flush();
 
-            // return $this->json($product, 201);
-            return $this->json(['message' => 'product created'], 201);
+            return $this->json(['product' => $product], 201, [], ['groups' => 'products']);
 
         } catch (NotEncodableValueException $e) {
             return $this->json($e->getMessage(), 400);
@@ -72,13 +61,15 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product/{id}", name="product_details", methods="GET", requirements={"id":"\d+"})
      */
-    public function productDetails(Product $product, SerializerInterface $serializer)
-    {
-        $json = $serializer->serialize($product, 'json', ['groups' => 'products']);
-
-        return $this->json($product, 200, []);
-
-        // return new JsonResponse($json, 200, [], true);
+    public function productDetails(Request $request, ProductRepository $productRepository)
+    {  
+        // dd($request->attributes->get('id'));
+        $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        if($product){
+            return $this->json($product, 200, [], ['groups' => 'products']);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
     }
 
     /**

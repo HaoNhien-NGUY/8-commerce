@@ -61,6 +61,7 @@ class Product
 
     /**
      * @ORM\OneToMany(targetEntity=Subproduct::class, mappedBy="product")
+     * @Groups("products")
      */
     private $subproducts;
 
@@ -73,6 +74,7 @@ class Product
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="Product")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("products")
      */
     private $category;
 
