@@ -13,7 +13,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 class App extends React.Component {
 
     componentDidMount() {
-        // store.dispatch(loadUser())
+        store.dispatch(loadUser())
     }
 
     render() {

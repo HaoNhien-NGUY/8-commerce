@@ -23,7 +23,6 @@ use ReallySimpleJWT\Token;
 
 class UserController extends AbstractController
 {
-    
     /**
      * @Route("/user", name="user")
      */
@@ -39,7 +38,8 @@ class UserController extends AbstractController
      */
     public function register(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
     {
-        var_dump($request);
+        // return new JsonResponse([...$request], 400);
+
         // gets the json data
         if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
             $data = json_decode($request->getContent(), true);
@@ -64,7 +64,10 @@ class UserController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
-                return new JsonResponse(['msg' => 'User successfully registered'], 200);
+
+                $token = $this->createToken($user);
+                $userInRes = (object) ['id' => $user->getId(), 'email' => $user->getEmail()];
+                return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
             }
         }
     }
@@ -91,11 +94,9 @@ class UserController extends AbstractController
                 $user = $userRepository->findBy(['email' => $data['email']])[0];
                 if (password_verify($data['password'], $user->getPassword())) {
 
-                    $response = new Response();
-
+                    // $response = new Response();
                     // $response->headers->set('Content-Type', 'application/json');
                     // $response->headers->set('Access-Control-Allow-Origin', '*');
-
                     // $key = "example_key";
                     // $payload = array(
                     //     "iss" => "http://example.org",
@@ -116,21 +117,52 @@ class UserController extends AbstractController
                     //     ->withSecure(true)
                     // );
                     // return $response;
-                    $userId = $user->getId();
-                    $secret = $_ENV["APP_SECRET"];
-                    $expiration = time() + 3600;
-                    $issuer = 'localhost';
-
-                    $token = Token::create($userId, $secret, $expiration, $issuer);
-                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail()];
                     // // $response->headers->setCookie(Cookie::create('token', json_encode($user)));
-                    $response->setContent(json_encode(['user' => json_encode($userInRes), 'token' => $token]));
-                    return $response;
-                    // return new JsonResponse(['user' => json_encode($userInRes), 'token' => $token], 200);
+                    // $response->setContent(json_encode(['user' => json_encode($userInRes), 'token' => $token]));
+                    // return $response;
+
+                    $token = $this->createToken($user);
+                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail()];
+                    return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
                 } else {
                     return new JsonResponse(['msg' => "Incorrect email or password"], 400);
                 }
             }
         }
+    }
+
+    /**
+     * @Route("/checktoken", name="checktoken")
+     */
+    public function checkToken(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        if ($request->headers->get('x-auth-token')) {
+
+            $data = $request->headers->get('x-auth-token');
+            $request->request->replace(is_array($data) ? $data : array());
+
+            if (Token::validate($data, $_ENV["APP_SECRET"])) {
+
+                $dataInToken = Token::getPayload($data, $_ENV["APP_SECRET"]);
+                if (!$userRepository->findBy(['id' => $dataInToken['user_id']])) {
+                    return new JsonResponse(['msg' => 'Bad token'], 400);
+                } else {
+                    $user = $userRepository->findBy(['id' => $dataInToken['user_id']])[0];
+                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail()];
+                    return new JsonResponse(['id' => $user->getId(), 'email' => $user->getEmail()], 200);
+                }
+            }
+            return new JsonResponse(['msg' => "the Bad token"], 400);
+        }
+    }
+
+    private function createToken($user)
+    {
+        $userId = $user->getId();
+        $secret = $_ENV["APP_SECRET"];
+        $expiration = time() + 3600 * 24;
+        $issuer = '8-commerce';
+
+        return Token::create($userId, $secret, $expiration, $issuer);
     }
 }
