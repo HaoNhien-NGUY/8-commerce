@@ -37,7 +37,7 @@ class IndexNavbar extends Component {
             <Fragment>
                 <Router>
                     <NavItem>
-                        <span className="navbar-text">{user ? `Welcome ${user.username}` : null}</span>
+                        <span className="navbar-text">{user ? `Welcome ${user.email}` : null}</span>
                     </NavItem>
                     <NavItem>
                         <NavLink
