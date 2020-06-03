@@ -26,12 +26,12 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=false, nullable=true)
+     * @ORM\Column(type="string", length=180, unique=false)
      */
     private $firstname;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=false, nullable=true)
+     * @ORM\Column(type="string", length=180, unique=false)
      */
     private $lastname;
 
@@ -56,9 +56,15 @@ class User implements UserInterface
      */
     private $addresses;
 
+    /**
+     * @ORM\OneToMany(targetEntity=CardCredentials::class, mappedBy="user")
+     */
+    private $cardCredentials;
+
     public function __construct()
     {
-        $this->addresses = new ArrayCollection();
+        $this->adresses = new ArrayCollection();
+        $this->cardCredentials = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -83,10 +89,36 @@ class User implements UserInterface
      *
      * @see UserInterface
      */
+
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string) $this->username;
     }
+
+    public function getFirstName(): string
+    {
+        return (string) $this->firstname;
+    }
+
+    public function setFirstName(string $firstname): self
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastName(): string
+    {
+        return (string) $this->lastname;
+    }
+
+    public function setLastName(string $lastname): self
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
 
     /**
      * @see UserInterface
@@ -163,7 +195,7 @@ class User implements UserInterface
     {
         if (!$this->addresses->contains($address)) {
             $this->addresses[] = $address;
-            $address->setUserId($this);
+            $address->setUser($this);
         }
 
         return $this;
@@ -174,8 +206,39 @@ class User implements UserInterface
         if ($this->addresses->contains($address)) {
             $this->addresses->removeElement($address);
             // set the owning side to null (unless already changed)
-            if ($address->getUserId() === $this) {
-                $address->setUserId(null);
+            if ($address->getUser() === $this) {
+                $address->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CardCredentials[]
+     */
+    public function getCardCredentials(): Collection
+    {
+        return $this->cardCredentials;
+    }
+
+    public function addCardCredential(CardCredentials $cardCredential): self
+    {
+        if (!$this->cardCredentials->contains($cardCredential)) {
+            $this->cardCredentials[] = $cardCredential;
+            $cardCredential->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCardCredential(CardCredentials $cardCredential): self
+    {
+        if ($this->cardCredentials->contains($cardCredential)) {
+            $this->cardCredentials->removeElement($cardCredential);
+            // set the owning side to null (unless already changed)
+            if ($cardCredential->getUser() === $this) {
+                $cardCredential->setUser(null);
             }
         }
 
