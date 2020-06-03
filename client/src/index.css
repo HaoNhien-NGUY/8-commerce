@@ -109,8 +109,19 @@ code {
 }
 
 .selectChoice {
-<<<<<<< HEAD
-    color: rgb(173, 173, 173);
+  color: rgb(173, 173, 173);
+}
+
+.sizeImage {
+  display: inline-flex;
+}
+/* 
+.sizeImage:hover {
+  display: contents;
+} */
+
+.row {
+  margin: 0 !important;
 }
 
 
@@ -190,19 +201,4 @@ code {
 
 .Pagination a:hover {
   text-decoration: none;
-=======
-  color: rgb(173, 173, 173);
-}
-
-.sizeImage {
-  display: inline-flex;
-}
-/* 
-.sizeImage:hover {
-  display: contents;
-} */
-
-.row {
-  margin: 0 !important;
->>>>>>> products
 }
