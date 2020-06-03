@@ -88,7 +88,7 @@ class UserController extends AbstractController
 
         $product = new Product();
         $product->setCategory($newCat);
-        $product->setTitle('Pull Nike');
+        $product->setTitle('Pull lacost');
         $product->setDescription('Un pull de bg de fou malade');
         $product->setPrice(19.99);
         $product->setCreatedAt(new \DateTime('now'));
@@ -143,13 +143,13 @@ class UserController extends AbstractController
 
         $entityManager->persist($adress);
         $entityManager->flush();
-        
+
         return new Response('Adress correctly added');
     }
     /**
      * @Route("/addCommande", name="Commande")
      */
-    public function addCommande(SubproductRepository $subprod,AddressRepository $adressrepo)
+    public function addCommande(SubproductRepository $subprod, AddressRepository $adressrepo)
     {
         $newSubProduct = $subprod->findOneBy(['id' => 1]);
         $address = $adressrepo->findOneBy(['id' => 1]);
@@ -160,7 +160,7 @@ class UserController extends AbstractController
         $commande->setSubproduct($newSubProduct);
         $commande->setAddress($address);
         $commande->setStatus('En cours');
-        $commande->setTrackingNumber(69 );
+        $commande->setTrackingNumber(69);
         $commande->setPackaging(true);
         $commande->setCreatedAt(new \DateTime('now'));
 
@@ -168,7 +168,6 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return new Response('Commande correctly added');
-
     }
     /**
      * @Route("/register", name="register")
@@ -196,6 +195,7 @@ class UserController extends AbstractController
                 $user = new User();
                 $user->setEmail($data['email']);
                 $user->setCreatedAt(new DateTime());
+                $user->setRoles(['user']);
                 // $encoded = $passwordEncoder->encodePassword($user, $data['password']);
                 $user->setPassword(password_hash($data['password'], PASSWORD_ARGON2I));
                 $entityManager = $this->getDoctrine()->getManager();
@@ -203,7 +203,7 @@ class UserController extends AbstractController
                 $entityManager->flush();
 
                 $token = $this->createToken($user);
-                $userInRes = (object) ['id' => $user->getId(), 'email' => $user->getEmail()];
+                $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
                 return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
             }
 
@@ -263,13 +263,14 @@ class UserController extends AbstractController
                     // return $response;
 
                     $token = $this->createToken($user);
-                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail()];
+                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
                     return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
                 } else {
                     return new JsonResponse(['msg' => "Incorrect email or password"], 400);
                 }
             }
         }
+        return new JsonResponse(['msg' => "Incorrect email or password"], 400);
     }
 
     /**
@@ -289,7 +290,7 @@ class UserController extends AbstractController
                     return new JsonResponse(['msg' => 'Bad token'], 400);
                 } else {
                     $user = $userRepository->findBy(['id' => $dataInToken['user_id']])[0];
-                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail()];
+                    $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
                     return new JsonResponse(['id' => $user->getId(), 'email' => $user->getEmail()], 200);
                 }
             }
