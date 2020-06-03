@@ -88,7 +88,7 @@ class UserController extends AbstractController
 
         $product = new Product();
         $product->setCategory($newCat);
-        $product->setTitle('Pull lacost');
+        $product->setTitle('Pull Nike');
         $product->setDescription('Un pull de bg de fou malade');
         $product->setPrice(19.99);
         $product->setCreatedAt(new \DateTime('now'));
@@ -209,6 +209,8 @@ class UserController extends AbstractController
 
             return new JsonResponse(['msg' => "Incorrect email or password"], 400);
         }
+
+        return new JsonResponse(['msg' => "Incorrect email or password"], 400);
     }
 
     /**

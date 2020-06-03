@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,9 +25,16 @@ class Category
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity=Product::class, mappedBy="Category", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="category")
      */
-    private $product;
+    private $Product;
+
+    public function __construct()
+    {
+        $this->Product = new ArrayCollection();
+    }
+
+
 
 
 
@@ -46,22 +55,38 @@ class Category
         return $this;
     }
 
-    public function getProduct(): ?Product
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProduct(): Collection
     {
-        return $this->product;
+        return $this->Product;
     }
 
-    public function setProduct(Product $product): self
+    public function addProduct(Product $product): self
     {
-        $this->product = $product;
-
-        // set the owning side of the relation if necessary
-        if ($product->getCategory() !== $this) {
+        if (!$this->Product->contains($product)) {
+            $this->Product[] = $product;
             $product->setCategory($this);
         }
 
         return $this;
     }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->Product->contains($product)) {
+            $this->Product->removeElement($product);
+            // set the owning side to null (unless already changed)
+            if ($product->getCategory() === $this) {
+                $product->setCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 
 
 
