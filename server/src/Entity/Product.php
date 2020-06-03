@@ -20,7 +20,6 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("products")
      */
     private $id;
 
@@ -62,7 +61,6 @@ class Product
 
     /**
      * @ORM\OneToMany(targetEntity=Subproduct::class, mappedBy="product")
-     * @Groups("products")
      */
     private $subproducts;
 
@@ -88,7 +86,7 @@ class Product
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('Category', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('category', new Assert\NotBlank());
         $metadata->addPropertyConstraint('description', new Assert\NotBlank());
         $metadata->addPropertyConstraint('price', new Assert\NotBlank());
     }
