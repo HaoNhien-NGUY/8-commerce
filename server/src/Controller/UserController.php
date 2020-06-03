@@ -69,6 +69,8 @@ class UserController extends AbstractController
                 $userInRes = (object) ['id' => $user->getId(), 'email' => $user->getEmail()];
                 return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
             }
+
+            return new JsonResponse(['msg' => "Incorrect email or password"], 400);
         }
     }
 
