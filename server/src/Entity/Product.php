@@ -25,14 +25,6 @@ class Product
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Category::class, inversedBy="product", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups("products")
-     */
-    private $Category;
-
-    
-    /**
      * @ORM\Column(type="string", length=255)
      * @Groups("products")
      */
