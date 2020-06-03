@@ -47,7 +47,6 @@ export const register = ({ username, email, password }) => dispatch => {
             payload: res.data
         }))
         .catch(err => {
-            console.log(err)
             dispatch(returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL'))
             dispatch({
                 type: REGISTER_FAIL
@@ -92,11 +91,9 @@ export const login = ({ email, password }) => dispatch => {
 
     //request info
     const body = JSON.stringify({ email, password })
-    console.log(body)
 
     axios.post('http://localhost:8000/login', body, config)
         .then(res => {
-            console.log(res)
             dispatch({
                 type: LOGIN_SUCCESS,
                 payload: res.data
