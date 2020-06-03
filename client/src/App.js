@@ -8,38 +8,44 @@ import UserPosts from './components/posts/UserPosts'
 import PostDetail from './components/posts/PostDetail'
 import SearchPost from './components/posts/SearchPost'
 import UserList from './components/user/UserList'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
 import Product from './components/products/product.details'
 import Home from './components/home/home'
-import Item from './components/admin/items/item'
 
+
+// import Admin from './components/Admin/Admin'
+// import NotFound from './components/NotFound/NotFound'
 
 class App extends React.Component {
 
-    componentDidMount() {
-        store.dispatch(loadUser())
+    async componentDidMount() {
+        if(localStorage.getItem('token')) await store.dispatch(loadUser());
+
     }
 
     render() {
+        console.log(store.getState().auth);
         return (
-            // <Product />
-            <>
-                <Provider store={store}>
-                    <IndexNavbar />
-                    <Home />
-                </Provider>
-            <Router>
-                <Provider store={store}>
-                    <IndexNavbar />
-                    <Container>
-                        <Route path="/:id/:postid" exact component={PostDetail} />
-                        <Route path="/search/user/posts/" exact component={SearchPost} />
-                        <Route path="/:id" exact component={UserPosts} />
-                        <Route path="/" exact component={UserList} />
-                    </Container>
-                </Provider>
-            </Router>
-            </>
+            //<Product />
+            
+            <Provider store={store}>
+                <Router>
+                <IndexNavbar />
+                    <Switch>
+                        <Route exact path="/" component={Home} />
+                        <Route exact path="/product/:id" component={Home} />
+
+                        {/* <Route exact path="/admin" component={Admin} /> */}
+                        {/* <Route path='*' exact={true} component={NotFound} /> */}
+                    </Switch>
+                </Router>
+            </Provider>
+        
         )
     }
 }
