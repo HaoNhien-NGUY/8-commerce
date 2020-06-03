@@ -26,20 +26,20 @@ class App extends React.Component {
             <>
                 <Provider store={store}>
                     <IndexNavbar />
-                    <Item />
+                    <Home />
                 </Provider>
+            <Router>
+                <Provider store={store}>
+                    <IndexNavbar />
+                    <Container>
+                        <Route path="/:id/:postid" exact component={PostDetail} />
+                        <Route path="/search/user/posts/" exact component={SearchPost} />
+                        <Route path="/:id" exact component={UserPosts} />
+                        <Route path="/" exact component={UserList} />
+                    </Container>
+                </Provider>
+            </Router>
             </>
-            // <Router>
-            //     <Provider store={store}>
-            //         <IndexNavbar />
-            //         <Container>
-            //             <Route path="/:id/:postid" exact component={PostDetail} />
-            //             <Route path="/search/user/posts/" exact component={SearchPost} />
-            //             <Route path="/:id" exact component={UserPosts} />
-            //             <Route path="/" exact component={UserList} />
-            //         </Container>
-            //     </Provider>
-            // </Router>
         )
     }
 }
