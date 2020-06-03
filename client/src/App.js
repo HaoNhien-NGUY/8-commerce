@@ -21,24 +21,24 @@ class App extends React.Component {
 
     render() {
         return (
-            <Product />
-            // <>
-            //     <Provider store={store}>
-            //         <IndexNavbar />
-            //         <Home />
-            //     </Provider>
-            // </>
-            // <Router>
-            //     <Provider store={store}>
-            //         <IndexNavbar />
-            //         <Container>
-            //             <Route path="/:id/:postid" exact component={PostDetail} />
-            //             <Route path="/search/user/posts/" exact component={SearchPost} />
-            //             <Route path="/:id" exact component={UserPosts} />
-            //             <Route path="/" exact component={UserList} />
-            //         </Container>
-            //     </Provider>
-            // </Router>
+            // <Product />
+            <>
+                <Provider store={store}>
+                    <IndexNavbar />
+                    <Home />
+                </Provider>
+            <Router>
+                <Provider store={store}>
+                    <IndexNavbar />
+                    <Container>
+                        <Route path="/:id/:postid" exact component={PostDetail} />
+                        <Route path="/search/user/posts/" exact component={SearchPost} />
+                        <Route path="/:id" exact component={UserPosts} />
+                        <Route path="/" exact component={UserList} />
+                    </Container>
+                </Provider>
+            </Router>
+            </>
         )
     }
 }
