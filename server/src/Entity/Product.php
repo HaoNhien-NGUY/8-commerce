@@ -20,14 +20,12 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("products")
      */
     private $id;
 
     /**
      * @ORM\OneToOne(targetEntity=Category::class, inversedBy="product", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("products")
      */
     private $Category;
 
@@ -70,7 +68,6 @@ class Product
 
     /**
      * @ORM\OneToMany(targetEntity=Subproduct::class, mappedBy="product")
-     * @Groups("products")
      */
     private $subproducts;
 
