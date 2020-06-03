@@ -57,8 +57,8 @@ code {
 }
 
 .divDetails {
-    margin: 6% 8% 8% 8%;
-    max-width: 350px;
+  margin: 20% 0% 10% 20%;
+  max-width: 350px;
 }
 
 .divDetails:hover .more {
@@ -109,6 +109,7 @@ code {
 }
 
 .selectChoice {
+<<<<<<< HEAD
     color: rgb(173, 173, 173);
 }
 
@@ -189,4 +190,19 @@ code {
 
 .Pagination a:hover {
   text-decoration: none;
+=======
+  color: rgb(173, 173, 173);
+}
+
+.sizeImage {
+  display: inline-flex;
+}
+/* 
+.sizeImage:hover {
+  display: contents;
+} */
+
+.row {
+  margin: 0 !important;
+>>>>>>> products
 }
