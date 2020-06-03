@@ -6,16 +6,11 @@
 #productsCart p {
   color: black;
   display: inline;
-  font-size: 20px;
   padding: 50px 0 0 5px;
 }
 
 #productsCart:link {
   color: black;
-}
-
-#brandName {
-  font-size: 40px;
 }
 
 #profileLogo img {
@@ -38,4 +33,10 @@
 
 #brandName {
   color: black;
+}
+
+#navbar {
+  position: fixed;
+  z-index: 9999;
+  width: 100%;
 }
