@@ -51,6 +51,7 @@ class ProductController extends AbstractController
                 ->find($req->category);
             $product->setCategory($category);
             $product->setCreatedAt(new DateTime());
+            $product->setStatus($req->status);
 
             $error = $validator->validate($product);
             if (count($error) > 0) return $this->json($error, 400);

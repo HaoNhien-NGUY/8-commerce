@@ -17,7 +17,7 @@ class SubCategory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $id;
 
@@ -30,12 +30,13 @@ class SubCategory
 
     /**
      * @ORM\OneToMany(targetEntity=Product::class, mappedBy="subCategory")
+     * * @Groups("category")
      */
     private $Product;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $name;
 
