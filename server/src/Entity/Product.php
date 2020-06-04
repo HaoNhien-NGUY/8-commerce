@@ -78,6 +78,11 @@ class Product
      */
     private $category;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $status;
+
 
 
     public function __construct()
@@ -222,6 +227,18 @@ class Product
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
