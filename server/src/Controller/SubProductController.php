@@ -99,7 +99,7 @@ class SubProductController extends AbstractController
             ], 400);
         }
         $value = new \DateTime('now');
-        $filename = $value->format('Y-m-dH:i:s') . '.' . $ext;
+        $filename = str_replace(':','-',$value->format('Y-m-dH:i:s')). '.' . $ext;
         $file = $uploadedFile->move('../../client/images/' . $id, $filename);
 
         $image = new Image();
