@@ -82,6 +82,7 @@ class ProductController extends AbstractController
     public function productRemove(Product $product, EntityManagerInterface $em)
     {
         $em->remove($product);
+        $em->flush();
         return $this->json([
             'message' => 'product removed'
         ], 200);

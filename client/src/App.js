@@ -16,13 +16,14 @@ import {
   } from "react-router-dom";
 import Product from './components/products/product.details'
 import Home from './components/home/home'
-// import Admin from './components/Admin/Admin'
-// import NotFound from './components/NotFound/NotFound'
+import Admin from './components/Admin/Admin'
+import NotFound from './components/NotFound/NotFound'
 
 class App extends React.Component {
 
     async componentDidMount() {
         if(localStorage.getItem('token')) await store.dispatch(loadUser());
+
     }
 
     render() {
