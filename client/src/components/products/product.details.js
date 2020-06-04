@@ -1,50 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import $ from 'jquery';
 import axios from 'axios';
-
+import { useRouteMatch } from "react-router-dom";
 import ReactImageMagnify from 'react-image-magnify';
+
 function ProductDescription() {
+    
    
     const [product, setProduct] = useState([]);
-    let search = window.location.pathname;
-    let str = new URLSearchParams(search);
-    str = str.toString();
-    str = str.replace("%2Fproduct%2F", "");
-    let test =  str.replace("=", "");
+    let id = useRouteMatch("/product/:id").params.id;
 
     useEffect(() => {  
-    axios.get('http://127.0.0.1:8000/api/product/'+ test).then(resp => {
+    axios.get('http://127.0.0.1:8000/api/product/'+ id).then(resp => {
         setProduct(resp.data);
         });
         return () => {
         }
     }, []);
-
-    // const testProps = 'Everything you need for your day and night. The Apollo Backpack seamlessly transitions between day night giving you the functionality and space you need for your work and the style you curate. You’ll want the Apollo Backpack if your schedule is packed with a lot of different activities. It’s perfect for the office and back, but also for your morning gym session, your hydration needs as well as your night out in town. All in a good day’s work.';
    
     const [completeDes, setCompleteDes] = useState('.. More ⇒');
     const imageProduct = [];
     const miniImageProduct = [];
+    const loadingScreen = [];
+
     const details = {
         title: product.title,
         price: product.price,
-        description: product.description
+        description: product.description,
         // description_1: testProps.substr(0, 192),
         // description_2: testProps.substr(192)
     };
 
-    const propsImage = {
-        img1: 'https://cdn.shopify.com/s/files/1/0017/9686/6113/products/2-Maroon-1-Backpack-haerfest-harvest-work-bag-laptop-travel-1-Side_900x.jpg?v=1576703571',
-        img2: 'https://cdn.shopify.com/s/files/1/0017/9686/6113/products/2-Maroon-1-Backpack-haerfest-harvest-work-bag-laptop-travel-2-Front_900x.jpg?v=1576703583',
-        img3: 'https://cdn.shopify.com/s/files/1/0017/9686/6113/products/2-Maroon-1-Backpack-haerfest-harvest-work-bag-laptop-travel-3-Back_900x.jpg?v=1576703571'
+    let propsImage = {}
+    if (product.length == 0)
+    {
+      loadingScreen.push(<div className="loading-screen"></div>);  
+    }
+    else {
+       let count= 0;
+        for (let i = 0; i < product.subproducts.length; i++)
+        {
+            for (let j = 0; j < product.subproducts[i].images.length; j++)
+            {
+                propsImage["img-"+count] = product.subproducts[i].images[j].image;
+                count++;
+            }
+        }
     }
 
-    console.log(product)
-
-
+    
     for (let [key, value] of Object.entries(propsImage)) {
-        imageProduct.push(<ReactImageMagnify { ...showImage(value) }/>);
-        miniImageProduct.push(<li><img className='imgIcone' src={value}/></li>);
+        const ref = React.createRef();
+ 
+        const handleClick = () =>
+          ref.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+
+        imageProduct.push(<span ref={ref}><ReactImageMagnify { ...showImage(value) }/></span>);
+        miniImageProduct.push(<li onClick={handleClick}><img className='imgIcone' src={value}/></li>);
+        console.log(key)
     }
 
     function showImage(pathImg) {
@@ -69,7 +85,6 @@ function ProductDescription() {
 
     function Complete() {
         $('.complete').slideToggle('fast');
-
         if (completeDes == ".. More ⇒") {
             setCompleteDes('Less ⇐');
         }
@@ -79,7 +94,8 @@ function ProductDescription() {
     }
 
     return (
-        <div>
+        <div id="maincontainer" className="container-fluid">
+            {loadingScreen}
             <div className=''>
                 <div className='divProduct'>
                     <div className='col-md-7 divImages'>
@@ -90,7 +106,7 @@ function ProductDescription() {
                             {imageProduct}
                         </div>
                     </div>
-                    <div className='col-md-5'>
+                    <div className='col-md-5 bg-white'>
                         <div className='divDetails'>
                             <span>Path/to/category/article</span>
                             <h1>{details.title}</h1>
@@ -124,17 +140,7 @@ function ProductDescription() {
             </div>
 
             <div>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
-                <h1>deded</h1>
+               <br/> <br/> <br/> <br/> <br/> <br/> <br/>   <br/> <br/> <br/> <br/> <br/> <br/> <br/>   <br/> <br/> <br/> <br/> <br/> <br/> <br/>
             </div>
         </div>
     )
