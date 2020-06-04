@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SubCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,12 +17,14 @@ class SubCategory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("products")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="subCategories")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("products")
      */
     private $Category;
 
@@ -32,6 +35,7 @@ class SubCategory
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("products")
      */
     private $name;
 

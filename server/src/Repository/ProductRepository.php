@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use PDO;
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -36,11 +37,23 @@ class ProductRepository extends ServiceEntityRepository
             ->getConnection();
         $sql = '
         SELECT * FROM product
-        WHERE title REGEXP :search OR description REGEXP :search LIMIT :limit OFFSET :offset
+        WHERE title REGEXP ? OR description REGEXP ? LIMIT ? OFFSET ?
         ';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array('search' => $searchString, 'limit' => $limit, 'offset' => $offset));
+        $stmt->bindParam(1, $searchString, PDO::PARAM_STR);
+        $stmt->bindParam(2, $searchString, PDO::PARAM_STR);
+        $stmt->bindParam(3, $limit, PDO::PARAM_INT);
+        $stmt->bindParam(4, $offset, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function countResults()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     // /**
