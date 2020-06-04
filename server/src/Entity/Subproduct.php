@@ -6,6 +6,8 @@ use App\Repository\SubproductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,7 +19,7 @@ class Subproduct
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $id;
 
@@ -29,54 +31,55 @@ class Subproduct
 
     /**
      * @ORM\Column(type="float")
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="float", length=255)
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $weight;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $promo;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $stock;
 
     /**
      * @ORM\OneToMany(targetEntity=Image::class, mappedBy="subproduct")
-     * @Groups("products")
+     * @Groups({"products", "subproduct"})
      */
     private $images;
 
     /**
      * @ORM\OneToMany(targetEntity=Commande::class, mappedBy="Subproduct")
+     * @Groups({"subproduct"})
      */
     private $commandes;
 
@@ -84,6 +87,14 @@ class Subproduct
     {
         $this->images = new ArrayCollection();
         $this->commandes = new ArrayCollection();
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('price', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('color', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('size', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('weight', new Assert\NotBlank());
     }
 
     public function getId(): ?int

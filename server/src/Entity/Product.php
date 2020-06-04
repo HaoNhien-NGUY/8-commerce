@@ -60,7 +60,7 @@ class Product
     private $clicks;
 
     /**
-     * @ORM\OneToMany(targetEntity=Subproduct::class, mappedBy="product")
+     * @ORM\OneToMany(targetEntity=Subproduct::class, mappedBy="product", orphanRemoval=true, cascade={"remove"}, cascade={"persist"})
      * @Groups("products")
      */
     private $subproducts;
