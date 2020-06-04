@@ -27,7 +27,7 @@ function Home() {
     </Parallax>    
 
     <div className="row justify-content-around">
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
@@ -42,7 +42,7 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
@@ -57,7 +57,7 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
@@ -72,7 +72,7 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
@@ -87,7 +87,7 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
@@ -102,7 +102,7 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
@@ -117,7 +117,7 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
@@ -132,7 +132,7 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
@@ -147,7 +147,7 @@ function Home() {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div className="col-md-4">
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">Un vetement de taré popopo</span>
