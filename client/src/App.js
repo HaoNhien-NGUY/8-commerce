@@ -36,8 +36,9 @@ class App extends React.Component {
                 <IndexNavbar />
                     <Switch>
                         <Route exact path="/" component={Home} />
-                        <Route exact path="/admin" component={Admin} />
-                        <Route path='*' exact={true} component={NotFound} />
+                        <Route exact path="/product/:id" component={Product} />
+                        {/* <Route exact path="/admin" component={Admin} /> */}
+                        {/* <Route path='*' exact={true} component={NotFound} /> */}
                     </Switch>
                 </Router>
             </Provider>

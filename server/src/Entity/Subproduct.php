@@ -17,6 +17,7 @@ class Subproduct
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("products")
      */
     private $id;
 
@@ -28,41 +29,49 @@ class Subproduct
 
     /**
      * @ORM\Column(type="float")
+     * @Groups("products")
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("products")
      */
     private $color;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("products")
      */
     private $size;
 
     /**
      * @ORM\Column(type="float", length=255)
+     * @Groups("products")
      */
     private $weight;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("products")
      */
     private $promo;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("products")
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("products")
      */
     private $stock;
 
     /**
      * @ORM\OneToMany(targetEntity=Image::class, mappedBy="subproduct")
+     * @Groups("products")
      */
     private $images;
 
