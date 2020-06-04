@@ -28,7 +28,6 @@ class App extends React.Component {
 
     async componentDidMount() {
         if(localStorage.getItem('token')) await store.dispatch(loadUser());
-
     }
 
     render() {

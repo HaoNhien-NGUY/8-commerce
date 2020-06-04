@@ -12,7 +12,7 @@ const AdminInterface = () => {
     useEffect(() => {
         axios.get("http://localhost:8000/api/product")
         .then(res => {
-                setProducts(res.data);    
+                setProducts(res.data.data);    
         })
         .catch(error => {
           console.log(error.response)
@@ -26,7 +26,7 @@ const AdminInterface = () => {
         .then(res => {
             axios.get("http://localhost:8000/api/product")
                 .then(res => {
-                setProducts(res.data);
+                setProducts(res.data.data);
                  })
                 .catch(error => {
                     console.log(error.response)
