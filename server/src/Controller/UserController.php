@@ -9,9 +9,11 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Entity\SubCategory;
 use App\Entity\Product;
 use App\Repository\AdressRepository;
 use App\Repository\UserRepository;
+use App\Repository\SubCategoryRepository;
 use App\Repository\CategoryRepository;
 use App\Entity\Category;
 use App\Entity\Subproduct;
@@ -71,7 +73,7 @@ class UserController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $category = new Category();
-        $category->setName('Pull');
+        $category->setName('Accessoire');
         $entityManager->persist($category);
         $entityManager->flush();
 
@@ -79,21 +81,39 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/addSubCategory", name="Subcategory")
+     */
+    public function addSubCategory(CategoryRepository $catrepo)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $cat =  $catrepo->findOneBy(['id' => 2]);
+        $category = new SubCategory();
+        $category->setName('Sac a dos');
+        $category->setCategory($cat);
+        $entityManager->persist($category);
+        $entityManager->flush();
+
+        return new Response('SubCategory correctly added');
+    }
+
+     /**
      * @Route("/addProduct", name="product")
      */
-    public function addProduct(CategoryRepository $category)
+    public function addProduct(SubCategoryRepository $subrepo)
     {
-        $newCat = $category->findOneBy(['name' => 'Pull']);
+        $newCat = $subrepo->findOneBy(['name' => 'Sac a main']);
         $entityManager = $this->getDoctrine()->getManager();
 
         $product = new Product();
-        $product->setCategory($newCat);
-        $product->setTitle('Pull lacost');
-        $product->setDescription('Un pull de bg de fou malade');
-        $product->setPrice(19.99);
+        $product->setSubCategory($newCat);
+        $product->setTitle('Sac a main GIT');
+        $product->setDescription('Sac a main GIT tu connais');
+        $product->setPrice(300);
         $product->setCreatedAt(new \DateTime('now'));
         $product->setClicks(1);
-        $product->setSex('H');
+        $product->setSex('F');
+        $product->setStatus(true);
 
         $entityManager->persist($product);
         $entityManager->flush();
@@ -106,17 +126,17 @@ class UserController extends AbstractController
      */
     public function addSubProduct(ProductRepository $product)
     {
-        $newProduct = $product->findOneBy(['id' => 1]);
+        $newProduct = $product->findOneBy(['id' => 6]);
         $entityManager = $this->getDoctrine()->getManager();
 
         $subProduct = new Subproduct();
         $subProduct->setProduct($newProduct);
-        $subProduct->setPrice(100);
-        $subProduct->setColor('red');
-        $subProduct->setSize('M');
-        $subProduct->setWeight(2);
+        $subProduct->setPrice(10);
+        $subProduct->setColor('brown');
+        $subProduct->setSize('F');
+        $subProduct->setWeight(4);
         $subProduct->setCreatedAt(new \DateTime('now'));
-        $subProduct->setStock(2);
+        $subProduct->setStock(3);
 
         $entityManager->persist($subProduct);
         $entityManager->flush();
