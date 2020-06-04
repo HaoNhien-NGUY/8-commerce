@@ -143,9 +143,9 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/api/product/search/{search}", name="search_result", methods="GET")
+     * @Route("/api/product/search/{search}", name="product_search", methods="GET")
      */
-    public function searchBar(Request $request, ProductRepository $productRepository)
+    public function productSearch(Request $request, ProductRepository $productRepository)
     {
         $result = $productRepository->findSearchResult($request->attributes->get('search'), $request->query->get('limit'), $request->query->get('offset'));
         return $this->json($result);
