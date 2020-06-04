@@ -163,13 +163,13 @@ class UserController extends AbstractController
 
         $entityManager->persist($adress);
         $entityManager->flush();
-        
+
         return new Response('Adress correctly added');
     }
     /**
      * @Route("/addCommande", name="Commande")
      */
-    public function addCommande(SubproductRepository $subprod,AddressRepository $adressrepo)
+    public function addCommande(SubproductRepository $subprod, AddressRepository $adressrepo)
     {
         $newSubProduct = $subprod->findOneBy(['id' => 1]);
         $address = $adressrepo->findOneBy(['id' => 1]);
@@ -180,7 +180,7 @@ class UserController extends AbstractController
         $commande->setSubproduct($newSubProduct);
         $commande->setAddress($address);
         $commande->setStatus('En cours');
-        $commande->setTrackingNumber(69 );
+        $commande->setTrackingNumber(69);
         $commande->setPackaging(true);
         $commande->setCreatedAt(new \DateTime('now'));
 
@@ -188,7 +188,6 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return new Response('Commande correctly added');
-
     }
     /**
      * @Route("/register", name="register")
@@ -304,10 +303,10 @@ class UserController extends AbstractController
             if (Token::validate($data, $_ENV["APP_SECRET"])) {
 
                 $dataInToken = Token::getPayload($data, $_ENV["APP_SECRET"]);
-                if (!$userRepository->findBy(['id' => $dataInToken['user_id']])) {
+                if (!$userRepository->findBy(['id' => $dataInToken['user_id']['user']])) {
                     return new JsonResponse(['msg' => 'Bad token'], 400);
                 } else {
-                    $user = $userRepository->findBy(['id' => $dataInToken['user_id']])[0];
+                    $user = $userRepository->findBy(['id' => $dataInToken['user_id']['user']])[0];
                     return new JsonResponse(['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]], 200);
                 }
             }
@@ -317,7 +316,7 @@ class UserController extends AbstractController
 
     private function createToken($user)
     {
-        $userId = $user->getId();
+        $userId = ['user' => $user->getId(), 'role' => $user->getRoles()[0]];
         $secret = $_ENV["APP_SECRET"];
         $expiration = time() + 3600 * 24;
         $issuer = '8-commerce';
