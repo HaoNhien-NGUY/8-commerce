@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\SubCategory;
 use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SubproductRepository;
@@ -25,11 +26,12 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product", name="product_index", methods="GET")
      */
-    public function index(Request $request, ProductRepository $productRepository, SerializerInterface $serializer)
+    public function index(Request $request, ProductRepository $productRepository)
     {
-        $json = $serializer->serialize($productRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset')), 'json', ['groups' => 'products']);
+        $count = $productRepository->countResults();
+        $products = $productRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
 
-        return new JsonResponse($json, 200, [], true);
+        return $this->json(['nbResults' => $count, 'data' => $products], 200, [], ['groups' => 'products']);
     }
 
     /**
@@ -92,9 +94,9 @@ class ProductController extends AbstractController
             $req = json_decode($jsonContent);
             $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
             if ($product) {
-                if (isset($req->category)) {
-                    $category = $this->getDoctrine()->getRepository(Category::class)->find($req->category);
-                    $product->setCategory($category);
+                if (isset($req->subcategory)) {
+                    $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->category);
+                    $product->setSubCategory($subcategory);
                 }
                 if (isset($req->promo) && $req->promo === 0) {
                     $promoNb = $req->promo === 0 ? null : $req->promo;
