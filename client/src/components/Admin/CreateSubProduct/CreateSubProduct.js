@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import $ from 'jquery';
 import { Parallax,Background } from "react-parallax";
-import './CreateProduct.css';
 import axios from 'axios';
 
-function CreateProduct() {
+function CreateSubProduct() {
     const [btnSex, setBtnSex] = useState('');
     const [formControl, setFormControl] = useState({});
     const [isReady, setIsReady] = useState(false);
-    const [statusState, setStatusState] = useState(true);
 
     function handleChange(event) {
         if (parseInt(event.target.value) || event.target.value == 0) {
@@ -18,11 +16,12 @@ function CreateProduct() {
             setFormControl({ ...formControl, [event.target.name]: event.target.value });
         }
     }
-    
+
     function formSubmit(e) {
         e.preventDefault();
-        setFormControl({ ...formControl, ['sex']: btnSex , ['status']: statusState});
-        
+
+        setFormControl({ ...formControl, ['sex']: btnSex });
+
         setIsReady(true);
     }
     
@@ -46,7 +45,7 @@ function CreateProduct() {
     return (
         <div className='container'>
             <h1 className="text-center">Create your Product !</h1>
-            <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to dashboard </button>
+            <button onClick={() => window.location.href='/admin'} className='float-right btn-warning'> Back to dashboard </button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="title">Title</label>
@@ -68,19 +67,14 @@ function CreateProduct() {
                     <label htmlFor="price">Promo</label>
                     <input className="inputeStyle form-control" type="number" name="promo" min="0" max="100" placeholder="0 - 100" onChange={handleChange}/>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="status">Active</label>
-                    <input type="checkbox" className="ml-2" id="status" onChange={() => setStatusState(!statusState)} checked={statusState}/>
-                </div>
                 <div className="row divBtnSex">
                     <input type="button" className={`btn btn-ligt mr-5 ${btnSex == "F" ? "css-man" : ''}`} id="Women" value="Women" onClick={() => setBtnSex("F")}/>
                     <input type="button" className={`btn btn-ligt ${btnSex == "H" ? "css-man" : ''}`} id="Men" value="Men" onClick={() => setBtnSex("H")}/>
                 </div>
                 <button type="submit" className="btn btn-dark" onClick={formSubmit}>Submit</button>
-
             </form>
         </div>
     )
 }
 
-export default CreateProduct;
+export default CreateSubProduct;

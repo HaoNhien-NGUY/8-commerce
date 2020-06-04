@@ -20,6 +20,8 @@ import Admin from './components/Admin/Admin'
 import NotFound from './components/NotFound/NotFound'
 import AccessCreateProduct from './components/Admin/CreateProduct/AccessCreateProduct'
 import AccessUpdateProduct from './components/Admin/UpdateProduct/AccessUpdateProduct'
+import AccessCreateSubProduct from './components/Admin/CreateSubProduct/AccessCreateSubProduct'
+
 class App extends React.Component {
 
     async componentDidMount() {
@@ -41,6 +43,7 @@ class App extends React.Component {
                         <Route exact path="/admin" component={Admin} />
                         <Route exact path="/admin/create" component={AccessCreateProduct} />
                         <Route exact path="/admin/update/:id" component={AccessUpdateProduct} />
+                        <Route exact path="/admin/update/:product/:id" component={AccessCreateSubProduct} />
                         <Route path='*' exact={true} component={NotFound} />
                     </Switch>
                 </Router>
