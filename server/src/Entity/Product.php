@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Product
 {
     /**
-     * @Groups("products")
+     * @Groups({"products","category"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -25,37 +25,37 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="float",nullable=true)
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $promo;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $clicks;
 
@@ -67,12 +67,13 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $sex;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"products","category"})
      */
     private $status;
 

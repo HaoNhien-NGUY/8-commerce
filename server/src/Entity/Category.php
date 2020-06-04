@@ -17,18 +17,19 @@ class Category
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("products")
+     * @Groups({"products","category"})
      */
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity=SubCategory::class, mappedBy="Category")
+     * @Groups({"products","category"})
      */
     private $subCategories;
 
