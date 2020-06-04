@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import $ from 'jquery';
 import { Parallax,Background } from "react-parallax";
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function CreateSubProduct() {
     const [btnSex, setBtnSex] = useState('');
@@ -35,7 +37,7 @@ function CreateSubProduct() {
             const body = JSON.stringify({ ...formControl })
             console.log(body);
             axios.post("http://127.0.0.1:8000/api/product", body, config ).then( e => {
-                alert('Product correctly added!')
+                toast.success('Product correctly updated!', { position: "top-center"})
             }).catch( err => {
                 console.log(err)
             });
@@ -44,6 +46,7 @@ function CreateSubProduct() {
 
     return (
         <div className='container'>
+            <ToastContainer />
             <h1 className="text-center">Create your Product !</h1>
             <button onClick={() => window.location.href='/admin'} className='float-right btn-warning'> Back to dashboard </button>
             <form id="formItem">

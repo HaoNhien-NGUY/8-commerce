@@ -4,6 +4,8 @@ import {BrowserRouter as Router,
   } from "react-router-dom";
 import axios from 'axios';
 import './AdminInterface.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdminInterface = () => {
 
@@ -12,7 +14,7 @@ const AdminInterface = () => {
     useEffect(() => {
         axios.get("http://localhost:8000/api/product")
         .then(res => {
-                setProducts(res.data);    
+                setProducts(res.data.data);    
         })
         .catch(error => {
           console.log(error.response)
@@ -26,12 +28,12 @@ const AdminInterface = () => {
         .then(res => {
             axios.get("http://localhost:8000/api/product")
                 .then(res => {
-                setProducts(res.data);
+                setProducts(res.data.data);
                  })
                 .catch(error => {
                     console.log(error.response)
                  });
-            alert(res.data.message); 
+            toast.success(res.data.message, {position: "top-center"}); 
         })
         .catch(error => {
           console.log(error.response)
@@ -44,6 +46,7 @@ const AdminInterface = () => {
 
     return(
         <div className="container">
+            <ToastContainer />
             <h1 className="mb-5">
               <img src="https://img.icons8.com/windows/32/000000/speedometer.png"/> ADMIN - Dashboard
             </h1>
