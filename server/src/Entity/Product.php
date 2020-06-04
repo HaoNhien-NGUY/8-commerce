@@ -72,7 +72,7 @@ class Product
     private $sex;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"products","category"})
      */
     private $status;

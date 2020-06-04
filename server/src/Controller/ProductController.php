@@ -46,10 +46,10 @@ class ProductController extends AbstractController
                 AbstractNormalizer::IGNORED_ATTRIBUTES => ['category', 'subproducts'],
                 ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
             ]);
-            $category = $this->getDoctrine()
-                ->getRepository(Category::class)
-                ->find($req->category);
-            $product->setCategory($category);
+            $subCategory = $this->getDoctrine()
+                ->getRepository(SubCategory::class)
+                ->find($req->subcategory);
+            $product->setSubCategory($subCategory);
             $product->setCreatedAt(new DateTime());
             $product->setStatus($req->status);
 
