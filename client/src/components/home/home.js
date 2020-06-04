@@ -26,7 +26,7 @@ function Home() {
     <div className="container-fluid h-100 p-0 m-0">
        <Parallax bgImage={image1} strength={500}>
        <div className="HomeJumbotron">
-        <div>Bringing our community of visionaries in motion.
+        <div>We can do anything,
         <br/>Together.</div>
       </div>
     </Parallax>    
