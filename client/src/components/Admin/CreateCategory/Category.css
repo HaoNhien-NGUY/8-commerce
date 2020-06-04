@@ -18,3 +18,12 @@
 .btn-warning {
     width: 25%;
 }
+
+.errorInput {
+    border: solid 1px red !important;
+}
+
+.errorInput:focus {
+    outline: none !important;
+    box-shadow: 0 0 0px 1px rgb(0, 0, 0) !important;
+}

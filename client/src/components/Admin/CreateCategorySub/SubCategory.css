@@ -18,3 +18,13 @@
 .btn-warning {
     width: 25%;
 }
+
+.erroSelect {
+    border: 1px solid red !important;
+}
+
+select:focus {
+    outline: none !important;
+    box-shadow: 0 0 0px 1px rgb(0, 0, 0) !important;
+    border: none !important;
+}
