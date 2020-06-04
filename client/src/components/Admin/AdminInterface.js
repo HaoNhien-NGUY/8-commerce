@@ -10,7 +10,6 @@ const AdminInterface = () => {
     const [products, setProducts] = useState([]);
     
     useEffect(() => {
-        console.log('useEffect enter');
         axios.get("http://localhost:8000/api/product")
         .then(res => {
                 setProducts(res.data);    
@@ -38,7 +37,7 @@ const AdminInterface = () => {
           console.log(error.response)
         });
     }
-    
+
     const redirectCreate = () => {
         window.location.href='/admin/create';
     }
@@ -71,7 +70,7 @@ const AdminInterface = () => {
                         <td><p className="m-2">{product.title}</p></td>
                         <td><p className="m-2">{product.price} €</p></td>
                         <td><p className="m-2">{product.sex}</p></td>
-                        <td> <button className="btn btn-outline-info m-2">Modify</button></td>
+                        <td> <button onClick={() => window.location.href='admin/update/'+product.id}className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteProduct(product.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
                     )}
