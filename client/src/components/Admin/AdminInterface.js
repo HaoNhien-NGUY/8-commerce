@@ -49,6 +49,12 @@ const AdminInterface = () => {
             </h1>
             <div className="row justify-content-end mb-2">
               <h3 className="mr-auto ml-2">All Products</h3>
+
+                <div className="divBtnCategory">
+                    <button onClick={() => window.location.href='/admin/createCategory'} className="btn btn-dark mr-3">+ New Category</button>
+                    <button onClick={() => window.location.href='/admin/createSubCategory'} className="btn btn-dark">+ New SubCategory</button>
+                </div>
+
               <button onClick={redirectCreate} className="btn btn-dark">
                 + New Product
               </button>

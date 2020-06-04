@@ -18,6 +18,8 @@ import Product from './components/products/product.details'
 import Home from './components/home/home'
 import Admin from './components/Admin/Admin'
 import NotFound from './components/NotFound/NotFound'
+import AccessCreateCategory from './components/Admin/CreateCategory/AccessCreateCategory'
+import AccessCreateSubCategory from './components/Admin/CreateCategorySub/AccessCreateSubCategory'
 import AccessCreateProduct from './components/Admin/CreateProduct/AccessCreateProduct'
 import AccessUpdateProduct from './components/Admin/UpdateProduct/AccessUpdateProduct'
 import AccessCreateSubProduct from './components/Admin/CreateSubProduct/AccessCreateSubProduct'
@@ -42,6 +44,8 @@ class App extends React.Component {
                         <Route exact path="/product/:id" component={Product} />
                         <Route exact path="/admin" component={Admin} />
                         <Route exact path="/admin/create" component={AccessCreateProduct} />
+                        <Route exact path="/admin/createCategory" component={AccessCreateCategory} />
+                        <Route exact path="/admin/createSubCategory" component={AccessCreateSubCategory} />
                         <Route exact path="/admin/update/:id" component={AccessUpdateProduct} />
                         <Route exact path="/admin/update/:product/:id" component={AccessCreateSubProduct} />
                         <Route path='*' exact={true} component={NotFound} />
