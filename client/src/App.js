@@ -26,7 +26,7 @@ class App extends React.Component {
             <>
                 <Provider store={store}>
                     <IndexNavbar />
-                    <Home />
+                    <Item />
                 </Provider>
             <Router>
                 <Provider store={store}>

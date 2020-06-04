@@ -30,4 +30,23 @@
 .btn-dark:hover {
     background-color: white !important;
     color: black !important;
-  }
+}
+
+.btn-ligt {
+    border: solid 1px black !important;
+    width: 40%;
+    padding: 15px !important;
+}
+
+.btn-ligt:focus {
+    box-shadow: 0 0 0px 2px rgb(0, 0, 0, .5) !important;
+}
+
+.divBtnSex {
+    justify-content: center;
+}
+
+.css-man {
+    background-color: black !important;
+    color: white !important;
+}
