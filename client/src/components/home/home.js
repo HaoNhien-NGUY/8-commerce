@@ -19,7 +19,6 @@ function Home() {
         setProducts(resp.data);
         });
         return () => {
-        // cancel your api calls here so that there won't be any data leaks
         }
       }, []);
     return (
