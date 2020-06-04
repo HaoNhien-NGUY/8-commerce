@@ -36,7 +36,7 @@ function CreateProduct() {
             const body = JSON.stringify({ ...formControl })
             console.log(body);
             axios.post("http://127.0.0.1:8000/api/product", body, config ).then( e => {
-                console.log(e);
+                alert('Product correctly added!')
             }).catch( err => {
                 console.log(err)
             });
@@ -45,7 +45,7 @@ function CreateProduct() {
 
     return (
         <div className='container'>
-            <h1 className="text-center">Create your Item !</h1>
+            <h1 className="text-center">Create your Product !</h1>
             <button onClick={() => window.location.href='/admin'} className='float-right btn-warning'> Back to dashboard </button>
             <form id="formItem">
                 <div className="form-group">
@@ -57,7 +57,7 @@ function CreateProduct() {
                     <textarea className="inputeStyle" name="description" id="description" form="formItem" placeholder="Your item description .." onChange={handleChange}/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="category">category</label>
+                    <label htmlFor="category">Category</label>
                     <input className="inputeStyle form-control" type="text" name="category" placeholder="category" onChange={handleChange}/>
                 </div>
                 <div className="form-group">

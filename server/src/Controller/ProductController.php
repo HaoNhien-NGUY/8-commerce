@@ -84,9 +84,17 @@ class ProductController extends AbstractController
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
-            if(isset($req->category)) $category = $this->getDoctrine()->getRepository(Category::class)->find($req->category);
-                
-            $product->setCategory($category);
+            if(isset($req->category))
+            {
+                $category = $this->getDoctrine()->getRepository(Category::class)->find($req->category);
+                $product->setCategory($category);
+            }
+            if(isset($req->promo) && $req->promo === 0) $product->setPromo(null);
+            else $product->setPromo($req->promo);
+            $product->setTitle($req->title);  
+            $product->setDescription($req->description);  
+            $product->setPrice($req->price);  
+            $product->setSex($req->sex);  
 
             $error = $validator->validate($product);
             if (count($error) > 0) return $this->json($error, 400);

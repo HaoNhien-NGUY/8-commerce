@@ -53,7 +53,7 @@ function Home() {
 
           return (
 
-            <div className="col-md-4">
+            <div className="col-md-4" key={e.id}>
             <div className='ProductHome'>
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">{e.title}</span>
