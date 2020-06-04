@@ -18,6 +18,8 @@ const UpdateProduct = () => {
     const [promo, setPromo] = useState(0);
     const [category, setCategory] = useState(1);
     const [sex, setSex] = useState('');
+    const [status, setStatus] = useState(false);
+
 
     function formSubmit(e) {
         e.preventDefault();
@@ -36,6 +38,7 @@ const UpdateProduct = () => {
                 else setPromo(res.data.promo);
                 setCategory(res.data.category)
                 setSex(res.data.sex)
+                setStatus(res.data.status)
         })
         .catch(error => {
           console.log(error.response)
@@ -54,7 +57,8 @@ const UpdateProduct = () => {
                 "category": category.id,
                 "price": parseInt(price),
                 "promo": parseInt(promo),
-                "sex": sex
+                "sex": sex,
+                "status": status
             }
             console.log(body);
             axios.put("http://localhost:8000/api/product/"+idProduct, body, config ).then( e => {
@@ -68,7 +72,7 @@ const UpdateProduct = () => {
     return (
         <div className='container'>
             <h1 className="text-center">Update your Product !</h1>
-            <button onClick={() => window.location.href='/admin'} className='float-right btn-warning'> Back to dashboard </button>
+            <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to dashboard </button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="title">Title</label>
@@ -89,6 +93,10 @@ const UpdateProduct = () => {
                 <div className="form-group">
                     <label htmlFor="price">Promo</label>
                     <input className="inputeStyle form-control" type="number" name="promo" min="0" max="100" placeholder="0 - 100" value={promo} onChange={(e) => setPromo(e.target.value)}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="status">Active</label>
+                    <input type="checkbox" className="ml-2" id="status" onChange={() => setStatus(!status)} checked={status}/>
                 </div>
                 <div className="row divBtnSex">
                     <input type="button" className={`btn btn-ligt mr-5 ${ sex == "F" ? "css-man" : ''}`} id="Women" value="Women" onClick={() => setBtnSex("F") + setSex("F")}/>
