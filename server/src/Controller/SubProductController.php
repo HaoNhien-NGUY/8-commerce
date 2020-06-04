@@ -6,6 +6,7 @@ use App\Entity\Subproduct;
 use App\Repository\ProductRepository;
 use App\Repository\SubproductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Image;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,10 +38,10 @@ class SubProductController extends AbstractController
         try {
             $jsonContent = $request->getContent();
             $data = json_decode($jsonContent);
-            if(!isset($data->product_id)) return $this->json(['message' => 'product id missing.'], 400);
+            if (!isset($data->product_id)) return $this->json(['message' => 'product id missing.'], 400);
 
             $product = $productRepository->findOneBy(['id' => $data->product_id]);
-            
+
             $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
             $subproduct->setCreatedAt(new \DateTime());
             $subproduct->setProduct($product);
@@ -51,7 +52,10 @@ class SubProductController extends AbstractController
             $em->persist($subproduct);
             $em->flush();
 
-            return $this->json(['subProduct' => $subproduct], 201, [], ['groups' => 'products']);
+            return $this->json([
+                'message' => 'created',
+                'subProduct' => $subproduct
+            ], 201, [], ['groups' => 'products']);
         } catch (NotEncodableValueException $e) {
             return $this->json($e->getMessage(), 400);
         }
@@ -75,5 +79,37 @@ class SubProductController extends AbstractController
         } else {
             return $this->json(['message' => 'not found'], 404, []);
         }
+    }
+
+    /**
+     * @Route("/api/subproduct/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
+     */
+    public function subProductAddImage(Request $request, SubproductRepository $subrepo)
+    {
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $id = $request->attributes->get('id');
+        $uploadedFile = $request->files->get('image');
+        $ext = $uploadedFile->getClientOriginalExtension();
+
+        if (!in_array($ext, ['jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG'])) {
+            return $this->json([
+                'message' => 'Wrong extension'
+            ], 400);
+        }
+        $value = new \DateTime('now');
+        $filename = $value->format('Y-m-dH:i:s') . '.' . $ext;
+        $file = $uploadedFile->move('../../client/images/' . $id, $filename);
+
+        $image = new Image();
+        $image->setImage($filename);
+        $image->setSubproduct($subrepo->findOneBy(['id' => $id]));
+        $entityManager->persist($image);
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Picture correctly added'
+        ], 200);
     }
 }

@@ -19,6 +19,30 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    public function findStockSum($product)
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.subproducts', 'sp')
+            ->select('SUM(sp.stock) as totalStock')
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $product->getId())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findSearchResult($searchString, $limit, $offset)
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = '
+        SELECT * FROM product
+        WHERE title REGEXP :search OR description REGEXP :search LIMIT :limit OFFSET :offset
+        ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array('search' => $searchString, 'limit' => $limit, 'offset' => $offset));
+        return $stmt->fetchAll();
+    }
+
     // /**
     //  * @return Product[] Returns an array of Product objects
     //  */
