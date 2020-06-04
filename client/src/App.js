@@ -18,6 +18,7 @@ import Product from './components/products/product.details'
 import Home from './components/home/home'
 import Admin from './components/Admin/Admin'
 import NotFound from './components/NotFound/NotFound'
+import AccessCreateProduct from './components/Admin/CreateProduct/AccessCreateProduct'
 
 class App extends React.Component {
 
@@ -38,6 +39,7 @@ class App extends React.Component {
                         <Route exact path="/" component={Home} />
                         <Route exact path="/product/:id" component={Product} />
                         <Route exact path="/admin" component={Admin} />
+                        <Route exact path="/admin/create" component={AccessCreateProduct} />
                         <Route path='*' exact={true} component={NotFound} />
                     </Switch>
                 </Router>

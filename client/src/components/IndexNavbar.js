@@ -30,15 +30,13 @@ class IndexNavbar extends Component {
     state = {
         isOpen: false,
         search: '',
-        isAdmin: false,
     }
-
+    
     static propTypes = {
         auth: PropTypes.object.isRequired
     }
-
+   
     render() {
-
         const { user, isAuthenticated, isLoading } = this.props.auth
 
         let id = window.location.href.split('/')
@@ -68,29 +66,6 @@ class IndexNavbar extends Component {
             </Fragment>
         )
 
-        const Example = (props) => {
-            const [dropdownOpen, setDropdownOpen] = useState(false);
-          
-            const toggle = () => setDropdownOpen(prevState => !prevState);
-          
-            return (
-              <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                <DropdownToggle id="profileLogo" caret>
-                    Dropdown
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem header>Header</DropdownItem>
-                  <DropdownItem>Some Action</DropdownItem>
-                  <DropdownItem disabled>Action (disabled)</DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>Foo Action</DropdownItem>
-                  <DropdownItem>Bar Action</DropdownItem>
-                  <DropdownItem>Quo Action</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            );
-        }
-
         const productsInCart  = 0
         return (
             <div>
@@ -116,8 +91,8 @@ class IndexNavbar extends Component {
                     <NavLink href="#" id="profileLogo">
                         <img src={profileLogo} />
                     </NavLink>
-                    { this.state.isAdmin ?  
-                    <NavLink href="#" id="adminLogo">
+                    { user !== null && user.role === 'admin' ?  
+                    <NavLink href="/admin" id="adminLogo">
                         <img src={adminLogo}/>
                     </NavLink> 
                     : null }

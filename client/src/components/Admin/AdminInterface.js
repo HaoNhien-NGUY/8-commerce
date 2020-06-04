@@ -39,6 +39,10 @@ const AdminInterface = () => {
         });
     }
     
+    const redirectCreate = () => {
+        window.location.href='/admin/create';
+    }
+
     return(
         <div className="container">
             <h1 className="mb-5">
@@ -46,7 +50,7 @@ const AdminInterface = () => {
             </h1>
             <div className="row justify-content-end mb-2">
               <h3 className="mr-auto ml-2">All Products</h3>
-              <button className="btn btn-dark">
+              <button onClick={redirectCreate} className="btn btn-dark">
                 + New Product
               </button>
             </div>
