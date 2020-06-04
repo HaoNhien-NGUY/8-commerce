@@ -58,7 +58,7 @@ function Home() {
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">{e.title}</span>
                     <p>{e.price} €</p>
-                    <a href="http://google.fr"> 
+                    <a href= {"/product/"+e.id}> 
                         <div className="ProductHomeImgContainer">
                             <img className="ProductHomeImg" src={imageProduit1}></img>
                             <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img>
