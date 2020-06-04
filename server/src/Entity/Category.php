@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,29 +16,23 @@ class Category
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("products")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("products")
      */
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="category")
+     * @ORM\OneToMany(targetEntity=SubCategory::class, mappedBy="Category")
      */
-    private $Product;
+    private $subCategories;
 
     public function __construct()
     {
-        $this->Product = new ArrayCollection();
+        $this->subCategories = new ArrayCollection();
     }
-
-
-
-
 
     public function getId(): ?int
     {
@@ -59,39 +52,33 @@ class Category
     }
 
     /**
-     * @return Collection|Product[]
+     * @return Collection|SubCategory[]
      */
-    public function getProduct(): Collection
+    public function getSubCategories(): Collection
     {
-        return $this->Product;
+        return $this->subCategories;
     }
 
-    public function addProduct(Product $product): self
+    public function addSubCategory(SubCategory $subCategory): self
     {
-        if (!$this->Product->contains($product)) {
-            $this->Product[] = $product;
-            $product->setCategory($this);
+        if (!$this->subCategories->contains($subCategory)) {
+            $this->subCategories[] = $subCategory;
+            $subCategory->setCategory($this);
         }
 
         return $this;
     }
 
-    public function removeProduct(Product $product): self
+    public function removeSubCategory(SubCategory $subCategory): self
     {
-        if ($this->Product->contains($product)) {
-            $this->Product->removeElement($product);
+        if ($this->subCategories->contains($subCategory)) {
+            $this->subCategories->removeElement($subCategory);
             // set the owning side to null (unless already changed)
-            if ($product->getCategory() === $this) {
-                $product->setCategory(null);
+            if ($subCategory->getCategory() === $this) {
+                $subCategory->setCategory(null);
             }
         }
 
         return $this;
     }
-
-
-
-
-
-
 }

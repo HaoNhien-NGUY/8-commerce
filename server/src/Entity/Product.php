@@ -72,16 +72,15 @@ class Product
     private $sex;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="Product")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups("products")
-     */
-    private $category;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $status;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=SubCategory::class, inversedBy="Product")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $subCategory;
 
 
 
@@ -93,7 +92,6 @@ class Product
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('category', new Assert\NotBlank());
         $metadata->addPropertyConstraint('description', new Assert\NotBlank());
         $metadata->addPropertyConstraint('price', new Assert\NotBlank());
     }
@@ -219,18 +217,6 @@ class Product
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
     public function getStatus(): ?bool
     {
         return $this->status;
@@ -239,6 +225,18 @@ class Product
     public function setStatus(bool $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getSubCategory(): ?SubCategory
+    {
+        return $this->subCategory;
+    }
+
+    public function setSubCategory(?SubCategory $subCategory): self
+    {
+        $this->subCategory = $subCategory;
 
         return $this;
     }
