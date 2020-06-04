@@ -16,7 +16,8 @@ function Home() {
     useEffect(() => {
        
     axios.get('http://127.0.0.1:8000/api/product').then(resp => {
-        setProducts(resp.data);
+        console.log(resp.data.nbResults)
+        setProducts(resp.data.data);
         });
         return () => {
         }
