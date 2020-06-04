@@ -8,17 +8,17 @@ import {
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom';
 import PropTypes from "prop-types";
-import './Admin.css';
-import AdminInterface from './AdminInterface';
+import './AccessCreateProduct.css';
+import CreateProduct from './CreateProduct';
 
-const Admin = ({auth}) => {
+const AccessCreateProduct = ({auth}) => {
    
   if(!auth.authenticated)
   {
     if(auth.user !== null && auth.user.role === 'admin')
     {
         return(
-            <AdminInterface />
+            <CreateProduct />
         )
     }
     else
@@ -33,7 +33,7 @@ const Admin = ({auth}) => {
 
 }
 
-Admin.propTypes = {
+AccessCreateProduct.propTypes = {
     auth: PropTypes.object.isRequired
   };
 
@@ -41,4 +41,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
 })
 
-export default connect(mapStateToProps)(Admin)
+export default connect(mapStateToProps)(AccessCreateProduct)
