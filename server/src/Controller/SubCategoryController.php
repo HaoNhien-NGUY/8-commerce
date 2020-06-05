@@ -77,7 +77,7 @@ class SubCategoryController extends AbstractController
     /**
      * @Route("/api/subcategory/{id}", name="subcategory_details", methods="GET", requirements={"id":"\d+"})
      */
-    public function productDetails(Request $request, SubCategoryRepository $subCatRepository, EntityManagerInterface $em)
+    public function subCategoryDetails(Request $request, SubCategoryRepository $subCatRepository)
     {
         $subCategory = $subCatRepository->findOneBy(['id' => $request->attributes->get('id')]);
         if ($subCategory) {

@@ -81,7 +81,7 @@ class CategoryController extends AbstractController
     /**
      * @Route("/api/category/{id}", name="category_details", methods="GET", requirements={"id":"\d+"})
      */
-    public function productDetails(Request $request, CategoryRepository $CatRepository, EntityManagerInterface $em)
+    public function categoryDetails(Request $request, CategoryRepository $CatRepository)
     {
         $Category = $CatRepository->findOneBy(['id' => $request->attributes->get('id')]);
         if ($Category) {
