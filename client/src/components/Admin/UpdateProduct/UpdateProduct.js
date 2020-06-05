@@ -43,7 +43,7 @@ const UpdateProduct = () => {
                 setStatus(res.data.status)
         })
         .catch(error => {
-          console.log(error.response)
+            toast.error('Error !', {position: 'top-center'});
         });
     }, [])
     useEffect( () => {
@@ -67,7 +67,7 @@ const UpdateProduct = () => {
                 toast.success('Product correctly updated!', { position: "top-center"})
                 setIsReady(false);
             }).catch( err => {
-                console.log(err)
+                toast.error('Error !', {position: 'top-center'});
             });
         }
     }, [isReady]);

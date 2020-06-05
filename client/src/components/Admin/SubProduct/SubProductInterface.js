@@ -22,7 +22,7 @@ const SubProductInterface = () => {
                 setSubProducts(res.data.subproducts);    
         })
         .catch(error => {
-          console.log(error.response)
+          toast.error('Error !', {position: 'top-center'});
         });
     }, [])
     console.log(subProducts);
@@ -36,12 +36,12 @@ const SubProductInterface = () => {
                 setSubProducts(res.data.subproducts);
                  })
                 .catch(error => {
-                    console.log(error.response)
+                    toast.error('Error !', {position: 'top-center'});
                  });
             toast.success(res.data.message, {position: "top-center"}); 
         })
         .catch(error => {
-          console.log(error.response)
+          toast.error('Error !', {position: 'top-center'});
         });
     }
 

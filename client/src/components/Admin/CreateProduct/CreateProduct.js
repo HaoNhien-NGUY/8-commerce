@@ -65,10 +65,7 @@ function CreateProduct() {
             invalids.promo = "Please enter a number";
         }
 
-        if (btnSex) {
-            console.log(btnSex)
-        } else {
-            console.log("pas de sez");
+        if (!btnSex) {
             invalids.sex = "Select sex";
         }
 
@@ -91,9 +88,9 @@ function CreateProduct() {
             const body = JSON.stringify({ ...formControl })
             console.log(body);
             axios.post("http://127.0.0.1:8000/api/product", body, config ).then( e => {
-                toast.success('Product correctly added!', { position: "top-center"})
+                toast.success('Product correctly added!', { position: "top-center"});
             }).catch( err => {
-                console.log(err)
+                toast.error('Error !', {position: 'top-center'});
             });
         }
     }, [isReady]);

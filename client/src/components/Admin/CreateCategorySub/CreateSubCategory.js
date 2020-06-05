@@ -69,9 +69,9 @@ function CreateSubCategory() {
             
             axios.post("http://127.0.0.1:8000/api/subcategory/create/" + categorySelected + "/" + formControl.subCategory, body, config)
                 .then( res => {
-                    alert('SubCategory correctly added!');
+                    toast.success('SubCategory correctly added!', {position: 'top-center'});
                 }).catch( err => {
-                    console.log(err);
+                    toast.error('SubCategory already exist!', {position: 'top-center'});
                 });
         }
     }, [isReady]);
@@ -79,7 +79,7 @@ function CreateSubCategory() {
     return (
         <div className='container'>
         <ToastContainer />
-            <h1 className="text-center">Create category !</h1>
+            <h1 className="text-center">Create SubCategory !</h1>
             <div className="btnLink">
                 <button onClick={() => window.location.href = '/admin'} className='btn btn-warning margin-right'> Back to dashboard </button>
                 <button onClick={() => window.location.href = '/admin/createCategory'} className='btn btn-warning'> Create Category </button>

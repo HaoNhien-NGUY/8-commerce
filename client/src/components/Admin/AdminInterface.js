@@ -39,7 +39,7 @@ const AdminInterface = () => {
                 setPostData(newPostData)
             })
             .catch(error => {
-                console.log(error.response)
+                toast.error('Error !', {position: 'top-center'});
             })
     }
 
@@ -57,12 +57,12 @@ const AdminInterface = () => {
                         setProducts(res.data.data);
                     })
                     .catch(error => {
-                        console.log(error.response)
+                        toast.error('Error !', {position: 'top-center'});
                     });
                 toast.success(res.data.message, { position: "top-center" });
             })
             .catch(error => {
-                console.log(error.response)
+                toast.error('Error !', {position: 'top-center'});
             });
     }
 
