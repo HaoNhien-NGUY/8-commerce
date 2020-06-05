@@ -3,13 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Category;
-use App\Entity\Product;
 use App\Entity\SubCategory;
 use App\Repository\ImageRepository;
 use Symfony\Component\HttpFoundation\Response;
-use App\Repository\ProductRepository;
-use App\Repository\SubproductRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\SubcategoryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -30,21 +28,18 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 class CategoryController extends AbstractController
 {
-//text
-// text + id
 
-    //retourner toute les category
 
     /**
      * @Route("/api/category", name="category_index", methods="GET")
      */
-    public function index(Request $request, CategoryRepository $categoryRepository,SerializerInterface $serializer,NormalizerInterface $normalizer)
+    public function index(CategoryRepository $categoryRepository)
     {
         $category = $categoryRepository->findAll();
         return $this->json($category, 200, [],['groups' => 'category']);
     }
 
-    //create a category
+
     /**
      * @Route("/api/category/create/{category}", name="create_category", methods="POST")
      */
@@ -61,6 +56,65 @@ class CategoryController extends AbstractController
             $em->persist($category);
             $em->flush();
             return $this->json(['message' => 'category successfully created'], 200, []);
+        }
+    }
+
+    /**
+     * @Route("/api/category/{id}", name="remove_category", methods="DELETE")
+     */
+    public function categoryRemove(Request $request, EntityManagerInterface $em,CategoryRepository $categoryRepository)
+    {
+        $id = $request->attributes->get('id');
+        $category = $categoryRepository->findOneBy(['id' => $id ]);
+        if ($category) {
+            $em->remove($category);
+            $em->flush();
+
+            return $this->json(['message' => 'Category successfully removed'], 200, []);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
+     * @Route("/api/category/{id}", name="category_details", methods="GET", requirements={"id":"\d+"})
+     */
+    public function categoryDetails(Request $request, CategoryRepository $CatRepository)
+    {
+        $Category = $CatRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        if ($Category) {
+            return $this->json($Category, 200, [], ['groups' => 'category']);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+      /**
+     * @Route("/api/category/{id}", name="category_update", methods="PUT")
+     */
+    public function categoryUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, CategoryRepository $categoryRepository)
+    {
+        try {
+            $jsonContent = $request->getContent();
+            $req = json_decode($jsonContent);
+            $category = $categoryRepository->findOneBy(['id' => $request->attributes->get('id')]);
+            if ($category) {
+                if (isset($req->name)) {
+                    $category->setName($req->name);
+                }
+
+                $error = $validator->validate($category);
+                if (count($error) > 0) return $this->json($error, 400);
+
+                $em->persist($category);
+                $em->flush();
+
+                return $this->json($category, 200, [], ['groups' => 'category']);
+            } else {
+                return $this->json(['message' => 'category not found'], 404, []);
+            }
+        } catch (NotEncodableValueException $e) {
+            return $this->json($e->getMessage(), 400);
         }
     }
 

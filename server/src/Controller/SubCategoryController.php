@@ -55,4 +55,70 @@ class SubCategoryController extends AbstractController
             return $this->json(['message' => 'sub_Category successfully created'], 200, []);
         }
     }
+
+    /**
+     * @Route("/api/subcategory/{id}", name="remove_subcategory", methods="DELETE")
+     */
+    public function subCategoryRemove(Request $request, EntityManagerInterface $em,SubCategoryRepository $subcategoryRepository)
+    {
+        $id = $request->attributes->get('id');
+        $subcategory = $subcategoryRepository->findOneBy(['id' => $id ]);
+
+        if ($subcategory) {
+            $em->remove($subcategory);
+            $em->flush();
+
+            return $this->json(['message' => 'Sub Category successfully removed'], 200, []);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
+     * @Route("/api/subcategory/{id}", name="subcategory_details", methods="GET", requirements={"id":"\d+"})
+     */
+    public function subCategoryDetails(Request $request, SubCategoryRepository $subCatRepository)
+    {
+        $subCategory = $subCatRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        if ($subCategory) {
+            return $this->json($subCategory, 200, [], ['groups' => 'category']);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
+     * @Route("/api/subcategory/{id}", name="subcategory_update", methods="PUT")
+     */
+    public function subcategoryUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, CategoryRepository $categoryRepository,SubCategoryRepository $subCategoryRepository)
+    {
+        try {
+            $jsonContent = $request->getContent();
+            $req = json_decode($jsonContent);
+            $subCategory = $subCategoryRepository->findOneBy(['id' => $request->attributes->get('id')]);
+            
+            if ($subCategory) {
+                if (isset($req->name)) {
+                    $subCategory->setName($req->name);
+                }
+                if(isset($req->category)){
+                    $category = $categoryRepository->findOneBy(['id' => $req->category]);
+                    $subCategory->setCategory($category);
+                }
+
+                $error = $validator->validate($subCategory);
+                if (count($error) > 0) return $this->json($error, 400);
+
+                $em->persist($subCategory);
+                $em->flush();
+
+                return $this->json($subCategory, 200, [], ['groups' => 'category']);
+            } else {
+                return $this->json(['message' => 'category not found'], 404, []);
+            }
+        } catch (NotEncodableValueException $e) {
+            return $this->json($e->getMessage(), 400);
+        }
+    }
+
 }

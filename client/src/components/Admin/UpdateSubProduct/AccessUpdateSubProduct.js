@@ -8,17 +8,16 @@ import {
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom';
 import PropTypes from "prop-types";
-import './AccessUpdateProduct.css';
-import { Spinner } from 'react-bootstrap'
-import UpdateProduct from './UpdateProduct';
+import UpdateSubProduct from './UpdateSubProduct';
 
-const AccessUpdateProduct = ({auth}) => {
+const AccessUpdateSubProduct = ({auth}) => {
   
-  if (!auth.authenticated && !auth.isLoading) {
+  if(!auth.authenticated)
+  {
     if(auth.user !== null && auth.user.role === 'admin')
     {
         return(
-            <UpdateProduct />
+            <UpdateSubProduct />
         )
     }
     else
@@ -28,18 +27,12 @@ const AccessUpdateProduct = ({auth}) => {
   }
   else
   {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <div>
-          <Spinner style={{ top: '33%', margin: '0', position: 'absolute' }} className="" animation="grow" />
-        </div>
-      </div>
-    )
+      return(<div>Loading...</div>)
   }
 
 }
 
-AccessUpdateProduct.propTypes = {
+AccessUpdateSubProduct.propTypes = {
     auth: PropTypes.object.isRequired
   };
 
@@ -47,4 +40,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
 })
 
-export default connect(mapStateToProps)(AccessUpdateProduct)
+export default connect(mapStateToProps)(AccessUpdateSubProduct)

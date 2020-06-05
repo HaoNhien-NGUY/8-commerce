@@ -4,6 +4,8 @@ import { Parallax,Background } from "react-parallax";
 import './UpdateProduct.css';
 import axios from 'axios';
 import { useRouteMatch } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UpdateProduct = () => {
     let idProduct = useRouteMatch("/admin/update/:id").params.id;
@@ -16,7 +18,7 @@ const UpdateProduct = () => {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState(1);
     const [promo, setPromo] = useState(0);
-    const [category, setCategory] = useState(1);
+    const [subCategory, setSubCategory] = useState(1);
     const [sex, setSex] = useState('');
     const [status, setStatus] = useState(false);
 
@@ -29,14 +31,14 @@ const UpdateProduct = () => {
     useEffect(() => {
         axios.get("http://localhost:8000/api/product/"+idProduct)
         .then(res => {
-            console.log(res.data);
+                console.log(res.data);
                 setProduct(res.data);   
                 setTitle(res.data.title);
                 setDescription(res.data.description);
                 setPrice(res.data.price);
                 if (res.data.promo === null) setPromo(0);
                 else setPromo(res.data.promo);
-                setCategory(res.data.category)
+                setSubCategory(res.data.subCategory)
                 setSex(res.data.sex)
                 setStatus(res.data.status)
         })
@@ -54,7 +56,7 @@ const UpdateProduct = () => {
             const body = {
                 "title": title,
                 "description": description,
-                "category": category.id,
+                "category": subCategory.id,
                 "price": parseInt(price),
                 "promo": parseInt(promo),
                 "sex": sex,
@@ -62,7 +64,7 @@ const UpdateProduct = () => {
             }
             console.log(body);
             axios.put("http://localhost:8000/api/product/"+idProduct, body, config ).then( e => {
-                alert('Product correctly updated!')
+                toast.success('Product correctly updated!', { position: "top-center"})
                 setIsReady(false);
             }).catch( err => {
                 console.log(err)
@@ -71,8 +73,10 @@ const UpdateProduct = () => {
     }, [isReady]);
     return (
         <div className='container'>
+            <ToastContainer />
             <h1 className="text-center">Update your Product !</h1>
             <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to dashboard </button>
+            <button onClick={() => window.location.href='/admin/subproduct/'+idProduct} className="btn btn-outline-dark m-2 float-right">View subproduct</button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="title">Title</label>
@@ -84,7 +88,7 @@ const UpdateProduct = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="category">Category</label>
-                    <input className="inputeStyle form-control" type="text" name="category" placeholder="category" value={category.id} onChange={(e) => setCategory(e.target.value)}/>
+                    <input className="inputeStyle form-control" type="text" name="category" placeholder="category" value={subCategory.id} onChange={(e) => setSubCategory(e.target.value)}/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="price">Price</label>

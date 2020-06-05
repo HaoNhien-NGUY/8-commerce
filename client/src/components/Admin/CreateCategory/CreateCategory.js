@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Parallax, Background } from "react-parallax";
 import axios from 'axios';
 import './Category.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function CreateCategory() {
     const [formControl, setFormControl] = useState({});
@@ -45,7 +47,7 @@ function CreateCategory() {
             const body = JSON.stringify({ ...formControl });
 
             axios.post("http://127.0.0.1:8000/api/category/create/" + formControl.category, body, config ).then( res => {
-                alert('Category correctly added!');
+                toast.success('Category correctly added!', {position: "top-center"});
             }).catch( err => {
                 console.log(err)
             });
@@ -54,7 +56,8 @@ function CreateCategory() {
 
     return (
         <div className='container'>
-            <h1 className="text-center">Create Category !</h1>
+            <ToastContainer />
+            <h1 className="text-center">Create category !</h1>
             <div className="btnLink">
                 <button onClick={() => window.location.href='/admin'} className='btn btn-warning margin-right'> Back to dashboard </button>
                 <button onClick={() => window.location.href='/admin/createSubCategory'} className='btn btn-warning'> Create SubCategory </button>
