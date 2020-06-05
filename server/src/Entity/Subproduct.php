@@ -67,7 +67,6 @@ class Subproduct
 
     /**
      * @ORM\OneToMany(targetEntity=Commande::class, mappedBy="Subproduct")
-     * @Groups({"subproduct"})
      */
     private $commandes;
 
