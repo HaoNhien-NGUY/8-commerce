@@ -7,11 +7,9 @@ use App\Entity\Product;
 use App\Entity\SubCategory;
 use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
-use App\Repository\SubproductRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
@@ -107,6 +105,7 @@ class ProductController extends AbstractController
                 if (isset($req->description)) $product->setDescription($req->description);
                 if (isset($req->price)) $product->setPrice($req->price);
                 if (isset($req->sex)) $product->setSex($req->sex);
+                if (isset($req->status)) $product->setStatus($req->status);
 
                 $error = $validator->validate($product);
                 if (count($error) > 0) return $this->json($error, 400);
