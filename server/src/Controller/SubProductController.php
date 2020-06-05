@@ -62,7 +62,7 @@ class SubProductController extends AbstractController
             return $this->json([
                 'message' => 'created',
                 'subProduct' => $subproduct
-            ], 201, [], ['groups' => 'products']);
+            ], 201, [], ['groups' => 'subproduct']);
         } catch (NotEncodableValueException $e) {
             return $this->json($e->getMessage(), 400);
         }
