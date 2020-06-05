@@ -31,7 +31,7 @@ const UpdateProduct = () => {
     useEffect(() => {
         axios.get("http://localhost:8000/api/product/"+idProduct)
         .then(res => {
-            console.log(res.data);
+                console.log(res.data);
                 setProduct(res.data);   
                 setTitle(res.data.title);
                 setDescription(res.data.description);

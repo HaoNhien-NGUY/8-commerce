@@ -47,7 +47,7 @@ class App extends React.Component {
                         <Route exact path="/admin" component={Admin} />
                         <Route exact path="/admin/subproduct/:id" component={SubProductInterface} />
                         <Route exact path="/admin/subproduct/:id/create" component={AccessCreateSubProduct} />
-                        <Route exact path="/admin/subproduct/:id/update" component={AccessUpdateSubProduct} />
+                        <Route exact path="/admin/subproduct/:id/:subproduct/update" component={AccessUpdateSubProduct} />
                         <Route exact path="/admin/create" component={AccessCreateProduct} />
                         <Route exact path="/admin/createCategory" component={AccessCreateCategory} />
                         <Route exact path="/admin/createSubCategory" component={AccessCreateSubCategory} />

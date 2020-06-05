@@ -48,7 +48,6 @@ const SubProductInterface = () => {
     const redirectCreate = () => {
         window.location.href='/admin/subproduct/'+id+'/create';
     }
-    console.log(titleProduct)
 
     return(
         <div className="container">
@@ -76,7 +75,8 @@ const SubProductInterface = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {subProducts.map((subproduct) => 
+                    
+                    {subProducts.length > 0 ? subProducts.map((subproduct) => 
                     <tr key={subproduct.id}>
                         {console.log(subproduct)}
                         <td><p className="m-2 align-items-center">{subproduct.id}</p></td>
@@ -84,10 +84,10 @@ const SubProductInterface = () => {
                         <td><p className="m-2">{subproduct.color}</p></td>
                         <td><p className="m-2">{subproduct.size}</p></td>
                         <td><p className="m-2">{subproduct.weight}</p></td>
-                        <td> <button onClick={() => window.location.href='/admin/subproduct/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
+                        <td> <button onClick={() => window.location.href='/admin/subproduct/'+id+'/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
-                    )}
+                    ) : null}
                 </tbody>
             </table>
             </div>

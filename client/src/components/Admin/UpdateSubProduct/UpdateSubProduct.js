@@ -20,17 +20,15 @@ function UpdateSubProduct() {
         e.preventDefault()
         setIsReady(true);
     }
-    let id = useRouteMatch("/admin/subproduct/:id/update").params.id;
-    console.log(id)
+    let id = useRouteMatch("/admin/subproduct/:id/:subproduct/update").params.id;
+    let idSubproduct = useRouteMatch("/admin/subproduct/:id/:subproduct/update").params.subproduct;
 
     useEffect(() => {
         axios.get("http://localhost:8000/api/product/"+id)
         .then(res => {
-            console.log(res.data.subproducts)
-            res.data.subproducts.map((subproduct) => {
-                if(subproduct.id === parseInt(id))
+            $.each(res.data.subproducts, (index, subproduct) => {
+                if(subproduct.id === parseInt(idSubproduct))
                 {
-                    console.log('INNNNNNNNNN')
                     setPrice(subproduct.price);
                     setColor(subproduct.color);
                     setSize(subproduct.size);
@@ -38,7 +36,9 @@ function UpdateSubProduct() {
                     subproduct.promo === null ? setPromo(0) :setPromo(subproduct.promo);
                     setStock(subproduct.price);
                 }
-            })
+            });
+            console.log(Object.keys(res.data.subproducts).map(i => res.data.subproducts[i]))
+
             setTitleProduct(res.data.title)
         })
         .catch(error => {
@@ -65,7 +65,7 @@ function UpdateSubProduct() {
                 "stock": parseInt(stock)
             }
             console.log(body);
-            axios.put("http://127.0.0.1:8000/api/subproduct", body, config ).then( e => {
+            axios.put("http://127.0.0.1:8000/api/subproduct/"+idSubproduct, body, config ).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"})
             }).catch( err => {
                 console.log(err)
@@ -76,9 +76,9 @@ function UpdateSubProduct() {
     return (
         <div className='container'>
             <ToastContainer />
-            <h1 className="text-center">Update the Subproduct {'id ('+id+')'} for <b>{titleProduct}</b> !</h1>
-            <button onClick={() => window.location.href='/admin'} className='float-right btn-warning'> Back to dashboard </button>
-            <button onClick={() => window.location.href='/admin/subproduct/'+id} className='float-right btn-info'> Back to the Subproduct </button>
+            <h1 className="text-center">Update the Subproduct {'id ('+idSubproduct+')'} for <b>{titleProduct}</b> !</h1>
+            <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning m-2'> Back to dashboard </button>
+            <button onClick={() => window.location.href='/admin/subproduct/'+id} className='float-right btn btn-info m-2'> Back to the Subproduct </button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="price">Price</label>
