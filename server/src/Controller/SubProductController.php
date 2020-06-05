@@ -113,31 +113,4 @@ class SubProductController extends AbstractController
         }
     }
 
-    // /**
-    //  * @Route("/api/subproduct/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
-    //  */
-    // public function subProductAddImage(Request $request, SubproductRepository $subrepo)
-    // {
-
-    //     $entityManager = $this->getDoctrine()->getManager();
-    //     //color
-    //     $id = $request->attributes->get('id');
-    //     $uploadedFile = $request->files->get('image');
-    //     $ext = $uploadedFile->getClientOriginalExtension();
-
-    //     if (!in_array($ext, ['jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG'])) {
-    //         return $this->json([
-    //             'message' => 'Wrong extension'
-    //         ], 400);
-    //     }
-    //     //product id / color / img 
-    //     $value = new \DateTime('now');
-    //     $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
-    //     $file = $uploadedFile->move('../../client/images/'.$id, $filename);
-
-
-    //     return $this->json([
-    //         'message' => 'Picture correctly added'
-    //     ], 200);
-    // }
 }
