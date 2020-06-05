@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Color;
 use App\Entity\Subproduct;
 use App\Repository\ProductRepository;
 use App\Repository\SubproductRepository;
@@ -43,6 +44,12 @@ class SubProductController extends AbstractController
             $product = $productRepository->findOneBy(['id' => $data->product_id]);
 
             $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
+            if (!isset($data->color_id)) return $this->json(['message' => 'color id missing.'], 400);
+            
+            $color = $this->getDoctrine()->getRepository(Color::class)->find($data->color_id);
+            if (!$color) return $this->json(['message' => 'color not found.'], 404);
+
+            $subproduct->setColor($color);
             $subproduct->setCreatedAt(new \DateTime());
             $subproduct->setProduct($product);
 
@@ -112,5 +119,4 @@ class SubProductController extends AbstractController
             return $this->json(['message' => 'not found'], 404, []);
         }
     }
-
 }
