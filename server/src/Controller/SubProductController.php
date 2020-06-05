@@ -41,6 +41,7 @@ class SubProductController extends AbstractController
             if (!isset($data->product_id)) return $this->json(['message' => 'product id missing.'], 400);
 
             $product = $productRepository->findOneBy(['id' => $data->product_id]);
+            if (!$product) return $this->json(['message' => 'product not found.'], 404);
 
             $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
             $subproduct->setCreatedAt(new \DateTime());
