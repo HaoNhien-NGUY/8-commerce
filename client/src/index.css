@@ -11,6 +11,7 @@ body,
 #root>div {
     height: 100%;
     min-width: 580px;
+    overflow-x: hidden;
 }
 
 code {
@@ -25,73 +26,6 @@ code {
 
 
 /* ------------------ Detail Produtc ------------------- */
-
-@media screen and (max-width: 769px) {
-    .containerDiv {
-        display: absolute;
-        left: 0
-    }
-}
-
-.col-md-6 {
-    padding: 0 !important;
-}
-
-.divProduct {
-    display: flex;
-}
-
-.divImages {
-    background-color: rgb(240, 240, 240);
-}
-
-.ulImgProduct {
-    list-style: none;
-    padding-left: 0;
-    top: 40%;
-    width: 120px;
-    position: sticky;
-    margin-top: -350px;
-}
-
-.imgIcone {
-    width: 100%;
-}
-
-.scroll {
-    height: 890px;
-    overflow: scroll;
-}
-
-::-webkit-scrollbar {
-    display: none;
-    /* Chrome Safari */
-}
-
-.imgScroll {
-    margin-left: 15%;
-    width: 800px !important;
-    cursor: zoom-in !important;
-}
-
-.divDetails {
-    margin: 20% 0% 10% 20%;
-    max-width: 350px;
-    position: sticky;
-    top: 200px;
-}
-
-.divDetails:hover .more {
-    visibility: visible;
-}
-
-.prix {
-    padding: 25px 0 0 0;
-}
-
-.description {
-    padding: 30px 0 0 0;
-}
 
 .btn-cart {
     width: 100%;
@@ -110,6 +44,62 @@ code {
     color: black;
 }
 
+.ulImgProduct {
+    width: 8vw;
+    position: sticky;
+    float: left;
+    z-index: 20;
+    top: 20vh;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+}
+
+.productImgBg {
+    background-color: #f0f0f0;
+}
+
+.ulImgProduct img {
+    width: 100%;
+    background-color: #f0f0f0;
+}
+
+.ImageContainer {
+    margin: 0 0 0 9vw;
+}
+
+.divDetails {
+    top: 20vh;
+    margin: 0 auto;
+    width: 60%;
+    position: sticky;
+}
+
+.divDetails:hover .more {
+    visibility: visible;
+}
+
+.prix {
+height: 2vw;    
+}
+
+.description {
+    margin: 0.5vh;
+}
+.imgScroll {width: 45vw!important;}
+
+.imgScroll div:nth-child(3) {
+    margin: 0vh 0 0 5.4vw!important;
+    width: 38vw!important;
+    height: 94vh!important;
+}
+
+.imgScroll div:nth-child(2)>div {
+    display: none!important;
+}
+
 .complete {
     display: none;
 }
@@ -123,29 +113,36 @@ code {
 #selectSize,
 #selectColor {
     width: 50%;
-    padding: 18px;
-    margin-bottom: 20px;
+    padding: 1vw;
+    margin-bottom: 1vw;
     background-color: transparent;
 }
 
 .selectChoice {
-    color: rgb(173, 173, 173);
+    color: #adadad;
 }
 
-.row {
-    margin: 0 !important;
+@media (max-width: 768px) {
+    .divDetails {
+        margin: 6vh auto
+    }
+    .imgScroll div:nth-child(2) {
+        display: none;
+    }
+    .imgScroll div:nth-child(3) {
+        display: none
+    }
+
+.imgScroll {width: 90vw!important;}
+
 }
 
-.styleImage {
-    width: 800px !important;
-    height: 800px !important;
-}
-
+.sndrow { background-color: #f0f0f0;}
 
 /*---------- homepage ----------*/
 
 .HomeJumbotron {
-    height: 95vh;
+    height: 75vh;
 }
 
 .HomeJumbotron div {
