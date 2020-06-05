@@ -28,6 +28,16 @@ class ColorController extends AbstractController
 
 
     /**
+     * @Route("/api/color/", name="color_index", methods="GET")
+     */
+    public function colorIndex(ColorRepository $colorRepository)
+    {
+        $colors = $colorRepository->findAll();
+
+        return $this->json($colors, 200, [],['groups' => 'color']);
+    }
+
+    /**
      * @Route("/api/color/{color}", name="color_create", methods="POST")
      */
     public function colorCreate(Request $request,EntityManagerInterface $em)
