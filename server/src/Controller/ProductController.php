@@ -163,7 +163,7 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route("/api/product/search", name="product_search", methods="POST")
+     * @Route("/api/product/filter", name="product_filter", methods="POST")
      */
     public function filterProducts(Request $request, ProductRepository $productRepository)
     {
@@ -174,6 +174,6 @@ class ProductController extends AbstractController
 
         $result = $productRepository->filterProducts($data, $request->query->get('limit'), $request->query->get('offset'));
 
-        return $this->json($result);
+        return $this->json($result, 200);
     }
 }
