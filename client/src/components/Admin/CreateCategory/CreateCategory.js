@@ -35,7 +35,7 @@ function CreateProduct() {
             const body = JSON.stringify({ ...formControl });
 
             axios.post("http://127.0.0.1:8000/api/category/create/" + formControl.category, body, config ).then( res => {
-                alert('Category correctly added!');
+                toast.success('Category correctly added!', {position: "top-center"});
             }).catch( err => {
                 console.log(err)
             });

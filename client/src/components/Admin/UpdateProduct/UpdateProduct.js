@@ -76,6 +76,7 @@ const UpdateProduct = () => {
             <ToastContainer />
             <h1 className="text-center">Update your Product !</h1>
             <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to dashboard </button>
+            <button onClick={() => window.location.href='/admin/subproduct/'+idProduct} className="btn btn-outline-dark m-2 float-right">View subproduct</button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="title">Title</label>
