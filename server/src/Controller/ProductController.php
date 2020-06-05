@@ -150,4 +150,30 @@ class ProductController extends AbstractController
         $result = $productRepository->findSearchResult($request->attributes->get('search'), $request->query->get('limit'), $request->query->get('offset'));
         return $this->json($result);
     }
+
+
+    // {
+    //     price:{start:0, end:100}, //object
+    //     sex:'m',  //string
+    //     size:["m", "xl", "xs"], //array
+    //     color:['blacklivesmatter', 'pinksimp', 'ukranianblue', 'rainbowldgt'], //array
+    //     subcategory:'subcategory_id', //int
+    //     order_by:'popularity|price|name', //string
+    //   }
+
+
+    /**
+     * @Route("/api/product/search", name="product_search", methods="POST")
+     */
+    public function filterProducts(Request $request, ProductRepository $productRepository)
+    {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+        }
+
+        $result = $productRepository->filterProducts($data, $request->query->get('limit'), $request->query->get('offset'));
+
+        return $this->json($result);
+    }
 }
