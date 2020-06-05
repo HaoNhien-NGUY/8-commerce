@@ -6,6 +6,8 @@ use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\SubCategory;
 use App\Repository\ImageRepository;
+use App\Repository\ColorRepository;
+use App\Repository\SubproductRepository;
 use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -151,29 +153,44 @@ class ProductController extends AbstractController
         return $this->json($result);
     }
 
-
-    // {
-    //     price:{start:0, end:100}, //object
-    //     sex:'m',  //string
-    //     size:["m", "xl", "xs"], //array
-    //     color:['blacklivesmatter', 'pinksimp', 'ukranianblue', 'rainbowldgt'], //array
-    //     subcategory:'subcategory_id', //int
-    //     order_by:'popularity|price|name', //string
-    //   }
-
-
     /**
-     * @Route("/api/product/filter", name="product_filter", methods="POST")
+     * @Route("/api/product/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
      */
-    public function filterProducts(Request $request, ProductRepository $productRepository)
+    public function AddImage(Request $request, SubproductRepository $subrepo,ColorRepository $colorRepo)
     {
-        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
-            $data = json_decode($request->getContent(), true);
-            $request->request->replace(is_array($data) ? $data : array());
+
+        $entityManager = $this->getDoctrine()->getManager();
+        
+        $productId = $request->attributes->get('id');
+        $uploadedFile = $request->files->get('image');
+        $colorId = $request->request->get('color');
+
+        $ext = $uploadedFile->getClientOriginalExtension();
+
+        if (!in_array($ext, ['jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG'])) {
+            return $this->json([
+                'message' => 'Wrong extension'
+            ], 400);
         }
+        //product id / color / img 
+        $value = new \DateTime('now');
+        if(isset($colorId) && isset($uploadedFile) && isset($productId)){
+            $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
+            if($colorId == 'default'){
+                $file = $uploadedFile->move('../../client/images/'+$productId+'/default', $filename);
+            }else{
+                $file = $uploadedFile->move('../../client/images/'.$productId.'/'.$colorId, $filename);
+            }
+            
+            return $this->json([
+                'message' => 'Picture correctly added'
+            ], 200);
 
-        $result = $productRepository->filterProducts($data, $request->query->get('limit'), $request->query->get('offset'));
-
-        return $this->json($result, 200);
+        }
+        else{
+            return $this->json([
+                'message' => 'Not found'
+            ], 404);
+        }
     }
 }

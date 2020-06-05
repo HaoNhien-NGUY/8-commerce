@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use App\Entity\Product;
+use App\Entity\Color;
 use App\Repository\AdressRepository;
 use App\Repository\UserRepository;
 use App\Repository\CategoryRepository;
@@ -18,6 +19,7 @@ use App\Entity\Subproduct;
 use App\Entity\Commande;
 use App\Entity\Address;
 use App\Repository\AddressRepository;
+use App\Repository\ColorRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SubproductRepository;
 use DateTime;
@@ -79,11 +81,45 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/addSubCategory", name="Subcategory")
+     */
+    public function addSubCategory(CategoryRepository $catrepo)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $cat =  $catrepo->findOneBy(['id' => 1]);
+        $category = new SubCategory();
+        $category->setName('Sac a dos');
+        $category->setCategory($cat);
+        $entityManager->persist($category);
+        $entityManager->flush();
+
+        return new Response('SubCategory correctly added');
+    }
+
+      /**
+     * @Route("/addColor", name="color" )
+     */
+    public function addColor()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $product = new Color();
+        $product->setName('Blue');
+
+        $entityManager->persist($product);
+        $entityManager->flush();
+
+        return new Response('Color correctly added');
+    }
+
+
+     /**
      * @Route("/addProduct", name="product")
      */
     public function addProduct(CategoryRepository $category)
     {
-        $newCat = $category->findOneBy(['name' => 'Pull']);
+        $newCat = $subrepo->findOneBy(['id' => 1]);
         $entityManager = $this->getDoctrine()->getManager();
 
         $product = new Product();
@@ -101,20 +137,24 @@ class UserController extends AbstractController
         return new Response('Product correctly added');
     }
 
+   
     /**
      * @Route("/addSubProduct", name="subProduct")
      */
-    public function addSubProduct(ProductRepository $product)
+    public function addSubProduct(ProductRepository $product, ColorRepository $colorRepo)
     {
-        $newProduct = $product->findOneBy(['id' => 1]);
+        $newProduct = $product->findOneBy(['id' => 2]);
+    
         $entityManager = $this->getDoctrine()->getManager();
-
+        $color = new Color();
+        $color = $colorRepo->findOneBy(['id' => 1]);
         $subProduct = new Subproduct();
         $subProduct->setProduct($newProduct);
-        $subProduct->setPrice(100);
-        $subProduct->setColor('red');
-        $subProduct->setSize('M');
-        $subProduct->setWeight(2);
+        $subProduct->setPrice(10);
+        $subProduct->setColor($color);
+        $subProduct->setSize('F');
+        $subProduct->setWeight(4);
+
         $subProduct->setCreatedAt(new \DateTime('now'));
         $subProduct->setStock(2);
 
