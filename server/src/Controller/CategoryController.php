@@ -3,13 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Category;
-use App\Entity\Product;
 use App\Entity\SubCategory;
 use App\Repository\ImageRepository;
 use Symfony\Component\HttpFoundation\Response;
-use App\Repository\ProductRepository;
-use App\Repository\SubproductRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\SubcategoryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -88,6 +86,35 @@ class CategoryController extends AbstractController
             return $this->json($Category, 200, [], ['groups' => 'category']);
         } else {
             return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+      /**
+     * @Route("/api/category/{id}", name="category_update", methods="PUT")
+     */
+    public function categoryUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, CategoryRepository $categoryRepository)
+    {
+        try {
+            $jsonContent = $request->getContent();
+            $req = json_decode($jsonContent);
+            $category = $categoryRepository->findOneBy(['id' => $request->attributes->get('id')]);
+            if ($category) {
+                if (isset($req->name)) {
+                    $category->setName($req->name);
+                }
+
+                $error = $validator->validate($category);
+                if (count($error) > 0) return $this->json($error, 400);
+
+                $em->persist($category);
+                $em->flush();
+
+                return $this->json($category, 200, [], ['groups' => 'category']);
+            } else {
+                return $this->json(['message' => 'category not found'], 404, []);
+            }
+        } catch (NotEncodableValueException $e) {
+            return $this->json($e->getMessage(), 400);
         }
     }
 
