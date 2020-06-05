@@ -41,7 +41,6 @@ class SubProductController extends AbstractController
             if (!isset($data->product_id)) return $this->json(['message' => 'product id missing.'], 400);
 
             $product = $productRepository->findOneBy(['id' => $data->product_id]);
-            if (!$product) return $this->json(['message' => 'product not found.'], 404);
 
             $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
             $subproduct->setCreatedAt(new \DateTime());
@@ -63,7 +62,7 @@ class SubProductController extends AbstractController
     }
 
     /**
-     * @Route("/api/subproduct/{id}", name="subproduct_update", methods="PUT", requirements={"id":"\d+"})
+     * @Route("/api/subproduct/{id}", name="subproduct_update", methods="PUT")
      */
     public function subProductUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SubproductRepository $subproductRepository)
     {
@@ -95,7 +94,7 @@ class SubProductController extends AbstractController
     }
 
     /**
-     * @Route("/api/subproduct/{id}", name="subproduct_remove", methods="DELETE", requirements={"id":"\d+"})
+     * @Route("/api/subproduct/{id}", name="subproduct_remove", methods="DELETE")
      */
     public function subProductRemove(Request $request, SubproductRepository $subproductRepository, EntityManagerInterface $em)
     {
@@ -114,35 +113,31 @@ class SubProductController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/api/subproduct/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
-     */
-    public function subProductAddImage(Request $request, SubproductRepository $subrepo)
-    {
+    // /**
+    //  * @Route("/api/subproduct/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
+    //  */
+    // public function subProductAddImage(Request $request, SubproductRepository $subrepo)
+    // {
 
-        $entityManager = $this->getDoctrine()->getManager();
+    //     $entityManager = $this->getDoctrine()->getManager();
+    //     //color
+    //     $id = $request->attributes->get('id');
+    //     $uploadedFile = $request->files->get('image');
+    //     $ext = $uploadedFile->getClientOriginalExtension();
 
-        $id = $request->attributes->get('id');
-        $uploadedFile = $request->files->get('image');
-        $ext = $uploadedFile->getClientOriginalExtension();
+    //     if (!in_array($ext, ['jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG'])) {
+    //         return $this->json([
+    //             'message' => 'Wrong extension'
+    //         ], 400);
+    //     }
+    //     //product id / color / img 
+    //     $value = new \DateTime('now');
+    //     $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
+    //     $file = $uploadedFile->move('../../client/images/'.$id, $filename);
 
-        if (!in_array($ext, ['jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG'])) {
-            return $this->json([
-                'message' => 'Wrong extension'
-            ], 400);
-        }
-        $value = new \DateTime('now');
-        $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
-        $file = $uploadedFile->move('../../client/images/' . $id, $filename);
 
-        $image = new Image();
-        $image->setImage($filename);
-        $image->setSubproduct($subrepo->findOneBy(['id' => $id]));
-        $entityManager->persist($image);
-        $entityManager->flush();
-
-        return $this->json([
-            'message' => 'Picture correctly added'
-        ], 200);
-    }
+    //     return $this->json([
+    //         'message' => 'Picture correctly added'
+    //     ], 200);
+    // }
 }
