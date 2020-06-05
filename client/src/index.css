@@ -10,7 +10,6 @@ html,
 body,
 #root>div {
     height: 100%;
-    min-width: 580px;
 }
 
 code {
@@ -25,13 +24,6 @@ code {
 
 
 /* ------------------ Detail Produtc ------------------- */
-
-@media screen and (max-width: 769px) {
-    .containerDiv {
-        display: absolute;
-        left: 0
-    }
-}
 
 .col-md-6 {
     padding: 0 !important;

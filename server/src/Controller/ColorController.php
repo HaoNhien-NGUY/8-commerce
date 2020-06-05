@@ -44,7 +44,7 @@ class ColorController extends AbstractController
     }
 
     /**
-     * @Route("/api/color/{id}", name="color_delete", methods="DELETE")
+     * @Route("/api/color/{id}", name="color_create", methods="DELETE")
      */
     public function colorRemove(Request $request,EntityManagerInterface $em,ColorRepository $colorRepository)
     {

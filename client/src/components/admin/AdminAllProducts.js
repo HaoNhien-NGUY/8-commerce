@@ -4,8 +4,6 @@ import {BrowserRouter as Router,
 } from "react-router-dom";
 import "./AdminAllProducts.css";
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default class AdminAllProducts extends Component {
   constructor(props) {
@@ -23,7 +21,7 @@ export default class AdminAllProducts extends Component {
       this.setState({ products });    
     })
     .catch(error => {
-      toast.error('Error !', {position: 'top-center'});
+      console.log(error.response)
     });
     
   }
@@ -60,7 +58,6 @@ export default class AdminAllProducts extends Component {
       return (
         <>
           <div className="container">
-          <ToastContainer />
             <h1 className="mb-5">
               <img src="https://img.icons8.com/windows/32/000000/speedometer.png"/> ADMIN - Dashboard
             </h1>

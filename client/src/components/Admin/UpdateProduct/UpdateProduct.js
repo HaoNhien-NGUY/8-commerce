@@ -31,7 +31,7 @@ const UpdateProduct = () => {
     useEffect(() => {
         axios.get("http://localhost:8000/api/product/"+idProduct)
         .then(res => {
-                console.log(res.data);
+            console.log(res.data);
                 setProduct(res.data);   
                 setTitle(res.data.title);
                 setDescription(res.data.description);
@@ -43,7 +43,7 @@ const UpdateProduct = () => {
                 setStatus(res.data.status)
         })
         .catch(error => {
-            toast.error('Error !', {position: 'top-center'});
+          console.log(error.response)
         });
     }, [])
     useEffect( () => {
@@ -67,7 +67,7 @@ const UpdateProduct = () => {
                 toast.success('Product correctly updated!', { position: "top-center"})
                 setIsReady(false);
             }).catch( err => {
-                toast.error('Error !', {position: 'top-center'});
+                console.log(err)
             });
         }
     }, [isReady]);
@@ -76,7 +76,6 @@ const UpdateProduct = () => {
             <ToastContainer />
             <h1 className="text-center">Update your Product !</h1>
             <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to dashboard </button>
-            <button onClick={() => window.location.href='/admin/subproduct/'+idProduct} className="btn btn-outline-dark m-2 float-right">View subproduct</button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="title">Title</label>

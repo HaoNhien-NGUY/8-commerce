@@ -1,5 +1,19 @@
 import React, { Component, Fragment, useState } from 'react'
-
+import {
+    Collapse,
+    Navbar,
+    NavbarToggler,
+    NavbarBrand,
+    Nav,
+    NavItem,
+    NavLink,
+    Dropdown,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+    NavbarText
+} from 'reactstrap'
 import RegisterModal from './auth/RegisterModal'
 import LoginModal from './auth/LoginModal'
 import Logout from './auth/Logout'
@@ -11,7 +25,7 @@ import './IndexNavbar.css'
 import profileLogo from '../img/profile.png'
 import searchLogo from '../img/search.png'
 import adminLogo from '../img/gear.png'
-import { Navbar, Nav, NavItem, Form, Button, FormControl, NavDropdown, Glyphicon } from "react-bootstrap";
+
 class IndexNavbar extends Component {
     state = {
         isOpen: false,
@@ -32,9 +46,7 @@ class IndexNavbar extends Component {
             <Fragment>
                 <Router>
                     <NavItem>
-                    <Nav.Link href="#" id="profileLogo">
-                        <img src={profileLogo} />
-                    </Nav.Link>
+                        <span className="navbar-text text-dark">{user ? user.username : null}</span>
                     </NavItem>
                     <NavItem>
                         <Logout />
@@ -54,44 +66,42 @@ class IndexNavbar extends Component {
             </Fragment>
         )
 
-        const productsInCart  = 124
+        const productsInCart  = 0
         return (
-   <div id="navbarholder">       
+            <div>
                 <Navbar color="light" light expand="lg" id="navbar">
-                    <Navbar.Brand href="/" id="brandName">8-commerce</Navbar.Brand>
-                  <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
+                    <NavbarBrand href="/" id="brandName">8-commerce</NavbarBrand>
+                    <Nav className="mr-auto" navbar>
                         <NavItem>
-                            <Nav.Link href="#">Homme</Nav.Link>
+                            <NavLink href="#">Homme</NavLink>
                         </NavItem>
                         <NavItem>
-                            <Nav.Link href="#">Femme</Nav.Link>
+                            <NavLink href="#">Femme</NavLink>
                         </NavItem>
                         <NavItem>
-                            <Nav.Link href="#">Accessoires</Nav.Link>
+                            <NavLink href="#">Accessoires</NavLink>
                         </NavItem>
-                    </Navbar.Collapse>
-                </Navbar>
-                <Navbar id="underline">
-                    <Form inline className="searchcontainer">
-                    <FormControl type="text" placeholder="Search"/>
-                    <Button variant="" id="searchLogo"><img src={searchLogo}/></Button>
-                    </Form>  
+                    </Nav>
+                    <NavLink href="#" id="searchLogo">
+                        <img src={searchLogo}/>
+                    </NavLink>
                     <Nav>
                         {!isLoading ? isAuthenticated ? authLinks : guestLinks : null}
                     </Nav>
+                    <NavLink href="#" id="profileLogo">
+                        <img src={profileLogo} />
+                    </NavLink>
                     { user !== null && user.role === 'admin' ?  
-                    <Nav.Link href="/admin" id="adminLogo">
+                    <NavLink href="/admin" id="adminLogo">
                         <img src={adminLogo}/>
-                    </Nav.Link> 
+                    </NavLink> 
                     : null }
-                    <Nav.Link href="#" className="p-0" id="productsCart">
-                    <div className="float-left">{productsInCart}</div><img  className="float-left align-bottom" src="https://img.icons8.com/windows/32/000000/shopping-bag.png"/>
-                    
-                    </Nav.Link>
-                    
+                    <NavLink href="#" className="mr-3" id="productsCart">
+                        <img src="https://img.icons8.com/windows/32/000000/shopping-bag.png"/>
+                        <p className="align-bottom">{productsInCart}</p>
+                    </NavLink>
                 </Navbar>
-                </div>
+            </div>
         )
     }
 }

@@ -50,8 +50,3 @@
     background-color: black !important;
     color: white !important;
 }
-
-.is-invalid {
-    border: solid 1px red !important;
-    border-radius: 3px;
-}

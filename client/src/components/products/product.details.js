@@ -59,6 +59,11 @@ function ProductDescription() {
         description_2: testProps.substr(192)
     };
 
+    const CheckSize = (e) => {
+        e.preventDefault()
+        let test = product.subproducts.find(fruit => fruit.size === e.target.value)
+    }
+
     for (let [key, value] of Object.entries(propsImage)) {
         const ref = React.createRef();
         const handleClick = () =>
@@ -163,6 +168,7 @@ function ProductDescription() {
                                 </select>
                                 : null
                             }
+
                             <button className='btn-cart'>Add to cart</button>
                         </div>
                     </div>

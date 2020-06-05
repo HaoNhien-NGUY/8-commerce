@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import $ from 'jquery';
 import { Parallax, Background } from "react-parallax";
 import axios from 'axios';
 import './SubCategory.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function CreateSubCategory() {
-    const [formControl, setFormControl] = useState({});
+function CreateProduct() {
+    const [formControl, setFormControl] = useState(null);
     const [allCategory, setAllCategory] = useState([]);
-    const [isReady, setIsReady] = useState(false);
-    const [isInvalid, setIsInvalid] = useState(false);
-    const [categorySelected, setCategorySelected] = useState('');
     const optionCategory = [];
 
     useEffect( () => {
@@ -24,62 +22,51 @@ function CreateSubCategory() {
     });
 
     function handleChange(event) {
-        let res = event.target.value.trim();
-        let str = res.toLowerCase();
-        let subCategory = str.charAt(0).toUpperCase() + str.slice(1);
-        setFormControl({ [event.target.name]: subCategory.replace(/[\s]{2,}/g, " ") });
-    }
-    
-    function handleSelect(event) {
-        setCategorySelected(event.target.value);
+        if (!event.target.value.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/) && event.target.value != "") {
+            let str = event.target.value.toLowerCase();
+            let category = str.charAt(0).toUpperCase() + str.slice(1);
+            setFormControl({ [event.target.name]: category });
+        }
+        else {
+            setFormControl(null);
+        }
     }
 
     function formSubmit(e) {
         e.preventDefault();
-        let invalids = {};
+        let category = $("#selectCategory").val();
 
-        if (formControl.subCategory) {
-            if (formControl.subCategory.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/) ) {
-                invalids.subCategory = "Charactere invalid";
+        if (!category == "") {
+            $("#selectCategory").removeClass("erroSelect");
+
+            if (formControl !== null) {
+                const config = {
+                    headers: {
+                        "Content-type": "application/json"
+                    }
+                }
+                const body = JSON.stringify({ ...formControl });
+    
+                axios.post("http://127.0.0.1:8000/api/subcategory/create/" + category + "/" + formControl.subCategory, body, config)
+                    .then( res => {
+                        alert('SubCategory correctly added!');
+                    }).catch( err => {
+                        console.log(err)
+                    });
             }
-        } else {
-            invalids.subCategory = "Please enter a subCategory";
+            else {
+                alert("Your name contains invalid characters");
+            }
         }
-
-        if (!categorySelected) {
-            invalids.category = "Select category";
-        }
-
-        if (Object.keys(invalids).length === 0) {
-            setIsInvalid(invalids);
-            setIsReady(true)
-        } else {
-            setIsInvalid(invalids);
+        else {
+            toast.error("Your name contains invalid characters", {position: "top-center"});
         }
     }
-
-    useEffect( () => {
-        if (isReady) {
-            const config = {
-                headers: {
-                    "Content-type": "application/json"
-                }
-            }
-            const body = JSON.stringify({ ...formControl });
-            
-            axios.post("http://127.0.0.1:8000/api/subcategory/create/" + categorySelected + "/" + formControl.subCategory, body, config)
-                .then( res => {
-                    toast.success('SubCategory correctly added!', {position: 'top-center'});
-                }).catch( err => {
-                    toast.error('SubCategory already exist!', {position: 'top-center'});
-                });
-        }
-    }, [isReady]);
 
     return (
         <div className='container'>
         <ToastContainer />
-            <h1 className="text-center">Create SubCategory !</h1>
+            <h1 className="text-center">Create category !</h1>
             <div className="btnLink">
                 <button onClick={() => window.location.href = '/admin'} className='btn btn-warning margin-right'> Back to dashboard </button>
                 <button onClick={() => window.location.href = '/admin/createCategory'} className='btn btn-warning'> Create Category </button>
@@ -87,18 +74,16 @@ function CreateSubCategory() {
             <form id="formCategory">
                 <div className="form-group">
                     <label htmlFor="subCategory">SubCategory name</label>
-                    <input className={"form-control " + (isInvalid.subCategory ? 'is-invalid' : 'inputeStyle')} type="text" name="subCategory" placeholder="subCategory" onChange={handleChange} />
-                    <div className="invalid-feedback">{ isInvalid.subCategory }</div>
+                    <input className="inputeStyle form-control" type="text" name="subCategory" placeholder="subCategory" onChange={handleChange} />
                 </div>
-                <select className={"form-control form-control-lg " + (isInvalid.category ? 'is-invalid' : 'inputeStyle')} id="selectCategory" onChange={handleSelect}>
+                <select className="form-control form-control-lg" id="selectCategory">
                     <option value="">--- CHOICE CATEGORY ---</option>
                     {optionCategory}
                 </select>
-                <div className="invalid-feedback">{ isInvalid.category }</div>
                 <button type="submit" className="btn btn-dark" onClick={formSubmit}>Create</button>
             </form>
         </div>
     )
 }
 
-export default CreateSubCategory;
+export default CreateProduct;

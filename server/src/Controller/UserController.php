@@ -9,10 +9,12 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Entity\SubCategory;
 use App\Entity\Product;
 use App\Entity\Color;
 use App\Repository\AdressRepository;
 use App\Repository\UserRepository;
+use App\Repository\SubCategoryRepository;
 use App\Repository\CategoryRepository;
 use App\Entity\Category;
 use App\Entity\Subproduct;
@@ -31,6 +33,7 @@ use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Cookie;
 use ReallySimpleJWT\Token;
 
+//Salut Victor
 // require '../../vendor/autoload.php';
 
 class UserController extends AbstractController
@@ -73,7 +76,7 @@ class UserController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $category = new Category();
-        $category->setName('Pull');
+        $category->setName('Accessoire');
         $entityManager->persist($category);
         $entityManager->flush();
 
@@ -117,19 +120,20 @@ class UserController extends AbstractController
      /**
      * @Route("/addProduct", name="product")
      */
-    public function addProduct(CategoryRepository $category)
+    public function addProduct(SubCategoryRepository $subrepo)
     {
         $newCat = $subrepo->findOneBy(['id' => 1]);
         $entityManager = $this->getDoctrine()->getManager();
 
         $product = new Product();
-        $product->setCategory($newCat);
-        $product->setTitle('Pull lacost');
-        $product->setDescription('Un pull de bg de fou malade');
-        $product->setPrice(19.99);
+        $product->setSubCategory($newCat);
+        $product->setTitle('Sac a main GIT');
+        $product->setDescription('Sac a main GIT tu connais');
+        $product->setPrice(300);
         $product->setCreatedAt(new \DateTime('now'));
         $product->setClicks(1);
-        $product->setSex('H');
+        $product->setSex('F');
+        $product->setStatus(true);
 
         $entityManager->persist($product);
         $entityManager->flush();
@@ -156,7 +160,7 @@ class UserController extends AbstractController
         $subProduct->setWeight(4);
 
         $subProduct->setCreatedAt(new \DateTime('now'));
-        $subProduct->setStock(2);
+        $subProduct->setStock(3);
 
         $entityManager->persist($subProduct);
         $entityManager->flush();
@@ -183,13 +187,13 @@ class UserController extends AbstractController
 
         $entityManager->persist($adress);
         $entityManager->flush();
-        
+
         return new Response('Adress correctly added');
     }
     /**
      * @Route("/addCommande", name="Commande")
      */
-    public function addCommande(SubproductRepository $subprod,AddressRepository $adressrepo)
+    public function addCommande(SubproductRepository $subprod, AddressRepository $adressrepo)
     {
         $newSubProduct = $subprod->findOneBy(['id' => 1]);
         $address = $adressrepo->findOneBy(['id' => 1]);
@@ -200,7 +204,7 @@ class UserController extends AbstractController
         $commande->setSubproduct($newSubProduct);
         $commande->setAddress($address);
         $commande->setStatus('En cours');
-        $commande->setTrackingNumber(69 );
+        $commande->setTrackingNumber(69);
         $commande->setPackaging(true);
         $commande->setCreatedAt(new \DateTime('now'));
 
@@ -208,7 +212,6 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return new Response('Commande correctly added');
-
     }
     /**
      * @Route("/register", name="register")
@@ -324,10 +327,10 @@ class UserController extends AbstractController
             if (Token::validate($data, $_ENV["APP_SECRET"])) {
 
                 $dataInToken = Token::getPayload($data, $_ENV["APP_SECRET"]);
-                if (!$userRepository->findBy(['id' => $dataInToken['user_id']])) {
+                if (!$userRepository->findBy(['id' => $dataInToken['user_id']['user']])) {
                     return new JsonResponse(['msg' => 'Bad token'], 400);
                 } else {
-                    $user = $userRepository->findBy(['id' => $dataInToken['user_id']])[0];
+                    $user = $userRepository->findBy(['id' => $dataInToken['user_id']['user']])[0];
                     return new JsonResponse(['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]], 200);
                 }
             }
@@ -337,7 +340,7 @@ class UserController extends AbstractController
 
     private function createToken($user)
     {
-        $userId = $user->getId();
+        $userId = ['user' => $user->getId(), 'role' => $user->getRoles()[0]];
         $secret = $_ENV["APP_SECRET"];
         $expiration = time() + 3600 * 24;
         $issuer = '8-commerce';
