@@ -1,30 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import $ from 'jquery';
-import { Parallax,Background } from "react-parallax";
+import { Parallax, Background } from "react-parallax";
 import axios from 'axios';
 import './Category.css';
 
-function CreateProduct() {
-    const [formControl, setFormControl] = useState(null);
+function CreateCategory() {
+    const [formControl, setFormControl] = useState({});
+    const [isReady, setIsReady] = useState(false);
+    const [isInvalid, setIsInvalid] = useState(false);
 
     function handleChange(event) {
-        if (!event.target.value.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/) && event.target.value != "") {
-            let str = event.target.value.toLowerCase();
+            let res = event.target.value.trim();
+            let str = res.toLowerCase();
             let category = str.charAt(0).toUpperCase() + str.slice(1);
-            setFormControl({[event.target.name]: category});
-        }
-        else {
-            setFormControl(null);
-        }
+            setFormControl({[event.target.name]: category.replace(/[\s]{2,}/g, " ") });
     }
 
     function formSubmit(e) {
         e.preventDefault();
+        let invalids = {};
 
-        if (formControl !== null) {
-            $("#category").removeClass("errorInput");
-            $("#category").addClass("inputeStyle");
-            
+        if (formControl.category) {
+            if (formControl.category.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/) ) {
+                invalids.category = "Charactere invalid";
+            }
+        } else {
+            invalids.category = "Please enter a category";
+        }
+
+        if (Object.keys(invalids).length === 0) {
+            setIsInvalid(invalids);
+            setIsReady(true)
+        } else {
+            setIsInvalid(invalids);
+        }
+    }
+
+    useEffect( () => {
+        if (isReady) {
             const config = {
                 headers: {
                     "Content-type": "application/json"
@@ -38,12 +50,7 @@ function CreateProduct() {
                 console.log(err)
             });
         }
-        else {
-            $("#category").removeClass("inputeStyle");
-            $("#category").addClass("errorInput");
-            alert("Your name contains invalid characters");
-        }
-    }
+    }, [isReady]);
 
     return (
         <div className='container'>
@@ -55,7 +62,8 @@ function CreateProduct() {
             <form id="formCategory">
                 <div className="form-group">
                     <label htmlFor="category">Category name</label>
-                    <input id="category" className="inputeStyle form-control errorInput" type="text" name="category" placeholder="Category" onChange={handleChange}/>
+                    <input id="category" className={"form-control " + (isInvalid.category ? 'is-invalid' : 'inputeStyle')} type="text" name="category" placeholder="Category" onChange={handleChange}/>
+                    <div className="invalid-feedback">{ isInvalid.category }</div>
                 </div>
                 <button type="submit" className="btn btn-dark" onClick={formSubmit}>Create</button>
             </form>
@@ -63,4 +71,4 @@ function CreateProduct() {
     )
 }
 
-export default CreateProduct;
+export default CreateCategory;
