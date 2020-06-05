@@ -23,6 +23,9 @@ import AccessCreateSubCategory from './components/Admin/CreateCategorySub/Access
 import AccessCreateProduct from './components/Admin/CreateProduct/AccessCreateProduct'
 import AccessUpdateProduct from './components/Admin/UpdateProduct/AccessUpdateProduct'
 import AccessCreateSubProduct from './components/Admin/CreateSubProduct/AccessCreateSubProduct'
+import SubProductInterface from './components/Admin/SubProduct/SubProductInterface'
+import AccessUpdateSubProduct from './components/Admin/UpdateSubProduct/AccessUpdateSubProduct'
+
 
 class App extends React.Component {
 
@@ -42,11 +45,13 @@ class App extends React.Component {
                         <Route exact path="/" component={Home} />
                         <Route exact path="/product/:id" component={Product} />
                         <Route exact path="/admin" component={Admin} />
+                        <Route exact path="/admin/subproduct/:id" component={SubProductInterface} />
+                        <Route exact path="/admin/subproduct/:id/create" component={AccessCreateSubProduct} />
+                        <Route exact path="/admin/subproduct/:id/update" component={AccessUpdateSubProduct} />
                         <Route exact path="/admin/create" component={AccessCreateProduct} />
                         <Route exact path="/admin/createCategory" component={AccessCreateCategory} />
                         <Route exact path="/admin/createSubCategory" component={AccessCreateSubCategory} />
                         <Route exact path="/admin/update/:id" component={AccessUpdateProduct} />
-                        <Route exact path="/admin/update/:product/:id" component={AccessCreateSubProduct} />
                         <Route path='*' exact={true} component={NotFound} />
                     </Switch>
                 </Router>

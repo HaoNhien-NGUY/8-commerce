@@ -70,15 +70,18 @@ const AdminInterface = () => {
                         <th><p className="m-2"> Title </p></th>
                         <th><p className="m-2"> Price </p></th>
                         <th><p className="m-2"> Sex </p></th>
+                        <th><p className="m-2"> Subproduct </p></th>
                     </tr>
                 </thead>
                 <tbody>
                     {products.map((product) => 
                     <tr key={product.id}>
+                        {console.log(product)}
                         <td><p className="m-2 align-items-center">{product.id}</p></td>
                         <td><p className="m-2">{product.title}</p></td>
                         <td><p className="m-2">{product.price} €</p></td>
                         <td><p className="m-2">{product.sex}</p></td>
+                        <td> <button onClick={() => window.location.href='admin/subproduct/'+product.id}className="btn btn-outline-dark m-2">View subproduct</button></td>
                         <td> <button onClick={() => window.location.href='admin/update/'+product.id}className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteProduct(product.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>

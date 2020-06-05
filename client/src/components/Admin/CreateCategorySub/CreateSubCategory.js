@@ -49,13 +49,13 @@ function CreateProduct() {
     
                 axios.post("http://127.0.0.1:8000/api/subcategory/create/" + category + "/" + formControl.subCategory, body, config)
                     .then( res => {
-                        alert('SubCategory correctly added!');
+                        toast.success('SubCategory correctly added!', {position: "top-center"});
                     }).catch( err => {
                         console.log(err)
                     });
             }
             else {
-                alert("Your name contains invalid characters");
+                toast.error("Your name contains invalid characters", {position: "top-center"});
             }
         }
         else {
