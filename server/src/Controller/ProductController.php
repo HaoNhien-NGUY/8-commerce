@@ -43,15 +43,15 @@ class ProductController extends AbstractController
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['category', 'subproducts'],
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts'],
                 ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
             ]);
+            if (!isset($req->subcategory)) return $this->json(['message' => 'subcategory missing'], 400, []);
             $subCategory = $this->getDoctrine()
                 ->getRepository(SubCategory::class)
                 ->find($req->subcategory);
             $product->setSubCategory($subCategory);
             $product->setCreatedAt(new DateTime());
-            $product->setStatus($req->status);
 
             $error = $validator->validate($product);
             if (count($error) > 0) return $this->json($error, 400);
@@ -86,7 +86,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/api/product/{id}", name="product_update", methods="PUT")
+     * @Route("/api/product/{id}", name="product_update", methods="PUT", requirements={"id":"\d+"})
      */
     public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ProductRepository $productRepository)
     {
@@ -115,7 +115,7 @@ class ProductController extends AbstractController
                 $em->persist($product);
                 $em->flush();
 
-                return $this->json(['product' => $product], 200, [], ['groups' => 'products']);
+                return $this->json(['product' => $product], 200, [], ['groups' => 'products', AbstractNormalizer::IGNORED_ATTRIBUTES => ['subproducts']]);
             } else {
                 return $this->json(['message' => 'product not found'], 404, []);
             }
@@ -125,7 +125,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/api/product/{id}", name="product_remove", methods="DELETE")
+     * @Route("/api/product/{id}", name="product_remove", methods="DELETE", requirements={"id":"\d+"})
      */
     public function productRemove(Request $request, ProductRepository $productRepository, EntityManagerInterface $em)
     {
