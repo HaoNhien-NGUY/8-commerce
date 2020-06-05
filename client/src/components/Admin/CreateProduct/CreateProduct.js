@@ -120,6 +120,7 @@ function CreateProduct() {
                     <label htmlFor="category">Category</label>
                     <input className={"form-control " + (isInvalid.category ? 'is-invalid' : 'inputeStyle')} type="number" name="category" id="category" placeholder="category n°" onChange={handleChange}/>
                     <div className="invalid-feedback">{ isInvalid.category }</div>
+                    <a className='text-info' style={{ cursor:'pointer' }} onClick={() => window.open('/admin/createCategory')}> Create a new category ? </a>
                 </div>
                 <div className="form-group">
                     <label htmlFor="price">Promo</label>
