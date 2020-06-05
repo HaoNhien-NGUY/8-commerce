@@ -39,12 +39,6 @@ class Subproduct
      * @ORM\Column(type="string", length=255)
      * @Groups({"products", "subproduct"})
      */
-    private $color;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"products", "subproduct"})
-     */
     private $size;
 
     /**
@@ -72,27 +66,25 @@ class Subproduct
     private $stock;
 
     /**
-     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="subproduct")
-     * @Groups({"products", "subproduct"})
-     */
-    private $images;
-
-    /**
      * @ORM\OneToMany(targetEntity=Commande::class, mappedBy="Subproduct")
      * @Groups({"subproduct"})
      */
     private $commandes;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Color::class, inversedBy="subproduct")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $color;
+
     public function __construct()
     {
-        $this->images = new ArrayCollection();
         $this->commandes = new ArrayCollection();
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('price', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('color', new Assert\NotBlank());
         $metadata->addPropertyConstraint('size', new Assert\NotBlank());
         $metadata->addPropertyConstraint('weight', new Assert\NotBlank());
     }
@@ -126,17 +118,6 @@ class Subproduct
         return $this;
     }
 
-    public function getColor(): ?string
-    {
-        return $this->color;
-    }
-
-    public function setColor(string $color): self
-    {
-        $this->color = $color;
-
-        return $this;
-    }
 
     public function getSize(): ?string
     {
@@ -199,37 +180,6 @@ class Subproduct
     }
 
     /**
-     * @return Collection|Image[]
-     */
-    public function getImages(): Collection
-    {
-        return $this->images;
-    }
-
-    public function addImage(Image $image): self
-    {
-        if (!$this->images->contains($image)) {
-            $this->images[] = $image;
-            $image->setSubproduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeImage(Image $image): self
-    {
-        if ($this->images->contains($image)) {
-            $this->images->removeElement($image);
-            // set the owning side to null (unless already changed)
-            if ($image->getSubproduct() === $this) {
-                $image->setSubproduct(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Commande[]
      */
     public function getCommandes(): Collection
@@ -256,6 +206,18 @@ class Subproduct
                 $commande->setSubproduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getColor(): ?Color
+    {
+        return $this->color;
+    }
+
+    public function setColor(?Color $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }

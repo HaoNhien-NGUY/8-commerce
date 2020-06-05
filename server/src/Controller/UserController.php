@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use App\Entity\SubCategory;
 use App\Entity\Product;
+use App\Entity\Color;
 use App\Repository\AdressRepository;
 use App\Repository\UserRepository;
 use App\Repository\SubCategoryRepository;
@@ -20,6 +21,7 @@ use App\Entity\Subproduct;
 use App\Entity\Commande;
 use App\Entity\Address;
 use App\Repository\AddressRepository;
+use App\Repository\ColorRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SubproductRepository;
 use DateTime;
@@ -31,6 +33,7 @@ use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Cookie;
 use ReallySimpleJWT\Token;
 
+//Salut Victor
 // require '../../vendor/autoload.php';
 
 class UserController extends AbstractController
@@ -87,7 +90,7 @@ class UserController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $cat =  $catrepo->findOneBy(['id' => 2]);
+        $cat =  $catrepo->findOneBy(['id' => 1]);
         $category = new SubCategory();
         $category->setName('Sac a dos');
         $category->setCategory($cat);
@@ -97,12 +100,29 @@ class UserController extends AbstractController
         return new Response('SubCategory correctly added');
     }
 
+      /**
+     * @Route("/addColor", name="color" )
+     */
+    public function addColor()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $product = new Color();
+        $product->setName('Blue');
+
+        $entityManager->persist($product);
+        $entityManager->flush();
+
+        return new Response('Color correctly added');
+    }
+
+
      /**
      * @Route("/addProduct", name="product")
      */
     public function addProduct(SubCategoryRepository $subrepo)
     {
-        $newCat = $subrepo->findOneBy(['name' => 'Sac a main']);
+        $newCat = $subrepo->findOneBy(['id' => 1]);
         $entityManager = $this->getDoctrine()->getManager();
 
         $product = new Product();
@@ -121,20 +141,24 @@ class UserController extends AbstractController
         return new Response('Product correctly added');
     }
 
+   
     /**
      * @Route("/addSubProduct", name="subProduct")
      */
-    public function addSubProduct(ProductRepository $product)
+    public function addSubProduct(ProductRepository $product, ColorRepository $colorRepo)
     {
-        $newProduct = $product->findOneBy(['id' => 6]);
+        $newProduct = $product->findOneBy(['id' => 2]);
+    
         $entityManager = $this->getDoctrine()->getManager();
-
+        $color = new Color();
+        $color = $colorRepo->findOneBy(['id' => 1]);
         $subProduct = new Subproduct();
         $subProduct->setProduct($newProduct);
         $subProduct->setPrice(10);
-        $subProduct->setColor('brown');
+        $subProduct->setColor($color);
         $subProduct->setSize('F');
         $subProduct->setWeight(4);
+
         $subProduct->setCreatedAt(new \DateTime('now'));
         $subProduct->setStock(3);
 
