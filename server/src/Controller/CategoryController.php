@@ -35,8 +35,11 @@ class CategoryController extends AbstractController
      */
     public function index(Request $request, CategoryRepository $categoryRepository)
     {
-        $category = $categoryRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
-        return $this->json($category, 200, [],['groups' => 'category']);
+
+        $count = $categoryRepository->countTotalResults();
+        $categories = $categoryRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
+
+        return $this->json(['nbResults' => $count, 'data' => $categories], 200, [], ['groups' => 'category']);
     }
 
 

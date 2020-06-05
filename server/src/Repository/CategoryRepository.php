@@ -20,6 +20,14 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function countTotalResults()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function findSearchResult($searchString, $offset, $limit)
     {
         $conn = $this->getEntityManager()
