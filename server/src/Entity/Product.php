@@ -96,6 +96,8 @@ class Product
         $metadata->addPropertyConstraint('title', new Assert\NotBlank());
         $metadata->addPropertyConstraint('description', new Assert\NotBlank());
         $metadata->addPropertyConstraint('price', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('status', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('sex', new Assert\NotBlank());
     }
 
     public function getId(): ?int

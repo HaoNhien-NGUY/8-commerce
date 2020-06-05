@@ -62,7 +62,7 @@ class SubProductController extends AbstractController
     }
 
     /**
-     * @Route("/api/subproduct/{id}", name="subproduct_update", methods="PUT")
+     * @Route("/api/subproduct/{id}", name="subproduct_update", methods="PUT", requirements={"id":"\d+"})
      */
     public function subProductUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SubproductRepository $subproductRepository)
     {
@@ -94,7 +94,7 @@ class SubProductController extends AbstractController
     }
 
     /**
-     * @Route("/api/subproduct/{id}", name="subproduct_remove", methods="DELETE")
+     * @Route("/api/subproduct/{id}", name="subproduct_remove", methods="DELETE", requirements={"id":"\d+"})
      */
     public function subProductRemove(Request $request, SubproductRepository $subproductRepository, EntityManagerInterface $em)
     {
