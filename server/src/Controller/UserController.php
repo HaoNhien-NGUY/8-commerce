@@ -33,6 +33,7 @@ use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Cookie;
 use ReallySimpleJWT\Token;
 
+//Salut Victor
 // require '../../vendor/autoload.php';
 
 class UserController extends AbstractController
