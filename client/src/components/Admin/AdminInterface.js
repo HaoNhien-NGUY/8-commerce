@@ -103,7 +103,8 @@ const AdminInterface = () => {
                         {postData}
                     </tbody>
                 </table>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div>
                         <ReactPaginate
                             previousLabel={"prev"}
@@ -119,10 +120,7 @@ const AdminInterface = () => {
                             activeClassName={"active"} />
                     </div>
                 </div>
-            </div>
         </div>
-
     )
 }
-
 export default AdminInterface;
