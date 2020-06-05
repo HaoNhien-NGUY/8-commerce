@@ -42,7 +42,7 @@ function UpdateSubProduct() {
             setTitleProduct(res.data.title)
         })
         .catch(error => {
-          console.log(error.response)
+            toast.error('Error !', {position: 'top-center'});
         });
     }, [])
 
@@ -68,7 +68,7 @@ function UpdateSubProduct() {
             axios.put("http://127.0.0.1:8000/api/subproduct/"+idSubproduct, body, config ).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"})
             }).catch( err => {
-                console.log(err)
+                toast.error('Error !', {position: 'top-center'});
             });
         }
     }, [isReady]);

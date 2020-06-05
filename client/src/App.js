@@ -1,31 +1,30 @@
 import React from 'react';
-import { Provider } from 'react-redux'
-import store from './store'
-import { loadUser } from './actions/authActions'
-import { Container } from 'reactstrap'
-import IndexNavbar from './components/IndexNavbar'
-import UserPosts from './components/posts/UserPosts'
-import PostDetail from './components/posts/PostDetail'
-import SearchPost from './components/posts/SearchPost'
-import UserList from './components/user/UserList'
+import { Provider } from 'react-redux';
+import store from './store';
+import { loadUser } from './actions/authActions';
+import { Container } from 'reactstrap';
+import IndexNavbar from './components/IndexNavbar';
+import UserPosts from './components/posts/UserPosts';
+import PostDetail from './components/posts/PostDetail';
+import SearchPost from './components/posts/SearchPost';
+import UserList from './components/user/UserList';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link
   } from "react-router-dom";
-import Product from './components/products/product.details'
-import Home from './components/home/home'
-import Admin from './components/Admin/Admin'
-import NotFound from './components/NotFound/NotFound'
-import AccessCreateCategory from './components/Admin/CreateCategory/AccessCreateCategory'
-import AccessCreateSubCategory from './components/Admin/CreateCategorySub/AccessCreateSubCategory'
-import AccessCreateProduct from './components/Admin/CreateProduct/AccessCreateProduct'
-import AccessUpdateProduct from './components/Admin/UpdateProduct/AccessUpdateProduct'
-import AccessCreateSubProduct from './components/Admin/CreateSubProduct/AccessCreateSubProduct'
-import SubProductInterface from './components/Admin/SubProduct/SubProductInterface'
-import AccessUpdateSubProduct from './components/Admin/UpdateSubProduct/AccessUpdateSubProduct'
-
+import Product from './components/products/product.details';
+import Home from './components/home/home';
+import Admin from './components/Admin/Admin';
+import NotFound from './components/NotFound/NotFound';
+import AccessCreateCategory from './components/Admin/CreateCategory/AccessCreateCategory';
+import AccessCreateSubCategory from './components/Admin/CreateCategorySub/AccessCreateSubCategory';
+import AccessCreateProduct from './components/Admin/CreateProduct/AccessCreateProduct';
+import AccessUpdateProduct from './components/Admin/UpdateProduct/AccessUpdateProduct';
+import AccessCreateSubProduct from './components/Admin/CreateSubProduct/AccessCreateSubProduct';
+import SubProductInterface from './components/Admin/SubProduct/SubProductInterface';
+import AccessUpdateSubProduct from './components/Admin/UpdateSubProduct/AccessUpdateSubProduct';
 
 class App extends React.Component {
 

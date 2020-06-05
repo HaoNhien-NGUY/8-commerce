@@ -28,7 +28,7 @@ function CreateSubProduct() {
                 setTitleProduct(res.data.title)
         })
         .catch(error => {
-          console.log(error.response)
+            toast.error('Error !', {position: 'top-center'});
         });
     }, [])
 
@@ -54,7 +54,7 @@ function CreateSubProduct() {
             axios.post("http://127.0.0.1:8000/api/subproduct", body, config ).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"})
             }).catch( err => {
-                console.log(err)
+                toast.error('Error !', {position: 'top-center'});
             });
         }
     }, [isReady]);
