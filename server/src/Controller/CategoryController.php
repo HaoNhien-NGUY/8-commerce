@@ -33,9 +33,9 @@ class CategoryController extends AbstractController
     /**
      * @Route("/api/category", name="category_index", methods="GET")
      */
-    public function index(CategoryRepository $categoryRepository)
+    public function index(Request $request, CategoryRepository $categoryRepository)
     {
-        $category = $categoryRepository->findAll();
+        $category = $categoryRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
         return $this->json($category, 200, [],['groups' => 'category']);
     }
 
