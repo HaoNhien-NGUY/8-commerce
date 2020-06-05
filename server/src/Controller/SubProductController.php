@@ -62,6 +62,38 @@ class SubProductController extends AbstractController
     }
 
     /**
+     * @Route("/api/subproduct/{id}", name="subproduct_update", methods="PUT")
+     */
+    public function subProductUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SubproductRepository $subproductRepository)
+    {
+        try {
+            $subProduct = $subproductRepository->findOneBy(['id' => $request->attributes->get('id')]);
+            if ($subProduct) {
+                $jsonContent = $request->getContent();
+                $req = json_decode($jsonContent);
+                if (isset($req->color)) $subProduct->setColor($req->color);
+                if (isset($req->size)) $subProduct->setSize($req->size);
+                if (isset($req->price)) $subProduct->setPrice($req->price);
+                if (isset($req->weight)) $subProduct->setWeight($req->weight);
+                if (isset($req->promo)) $subProduct->setPromo($req->promo);
+                if (isset($req->stock)) $subProduct->setStock($req->stock);
+
+                $error = $validator->validate($subProduct);
+                if (count($error) > 0) return $this->json($error, 400);
+
+                $em->persist($subProduct);
+                $em->flush();
+
+                return $this->json(['subProduct' => $subProduct], 200, [], ['groups' => 'products']);
+            } else {
+                return $this->json(['message' => 'product not found'], 404, []);
+            }
+        } catch (NotEncodableValueException $e) {
+            return $this->json($e->getMessage(), 400);
+        }
+    }
+
+    /**
      * @Route("/api/subproduct/{id}", name="subproduct_remove", methods="DELETE")
      */
     public function subProductRemove(Request $request, SubproductRepository $subproductRepository, EntityManagerInterface $em)
@@ -99,7 +131,7 @@ class SubProductController extends AbstractController
             ], 400);
         }
         $value = new \DateTime('now');
-        $filename = str_replace(':','-',$value->format('Y-m-dH:i:s')). '.' . $ext;
+        $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
         $file = $uploadedFile->move('../../client/images/' . $id, $filename);
 
         $image = new Image();
