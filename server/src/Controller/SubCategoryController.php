@@ -55,4 +55,36 @@ class SubCategoryController extends AbstractController
             return $this->json(['message' => 'sub_Category successfully created'], 200, []);
         }
     }
+
+    /**
+     * @Route("/api/subcategory/{id}", name="remove_subcategory", methods="DELETE")
+     */
+    public function subCategoryRemove(Request $request, EntityManagerInterface $em,SubCategoryRepository $subcategoryRepository)
+    {
+        $id = $request->attributes->get('id');
+        $subcategory = $subcategoryRepository->findOneBy(['id' => $id ]);
+
+        if ($subcategory) {
+            $em->remove($subcategory);
+            $em->flush();
+
+            return $this->json(['message' => 'Sub Category successfully removed'], 200, []);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
+     * @Route("/api/subcategory/{id}", name="subcategory_details", methods="GET", requirements={"id":"\d+"})
+     */
+    public function productDetails(Request $request, SubCategoryRepository $subCatRepository, EntityManagerInterface $em)
+    {
+        $subCategory = $subCatRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        if ($subCategory) {
+            return $this->json($subCategory, 200, [], ['groups' => 'category']);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
 }
