@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom';
 import PropTypes from "prop-types";
 import { Spinner } from 'react-bootstrap'
 import CreateSubProduct from './CreateSubProduct';

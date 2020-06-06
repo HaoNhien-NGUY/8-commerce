@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-  } from "react-router-dom";
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom';
 import PropTypes from "prop-types";
 import { Spinner } from 'react-bootstrap'
 import CreateCategory from './CreateCategory';
@@ -14,19 +7,16 @@ import CreateCategory from './CreateCategory';
 const AccessCreateCategory = ({auth}) => {
   
   if (!auth.authenticated && !auth.isLoading) {
-    if(auth.user !== null && auth.user.role === 'admin')
-    {
-        return(
-            <CreateCategory />
-        )
+    if (auth.user !== null && auth.user.role === 'admin') {
+      return (
+        <CreateCategory />
+      )
     }
-    else
-    {
-       return(<div id='error403'> <h2> Error page 403 access forbiden </h2></div>)
+    else {
+      return (<div id='error403'> <h2> Error page 403 access forbiden </h2></div>)
     }
   }
-  else
-  {
+  else {
     return (
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <div>

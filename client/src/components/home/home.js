@@ -19,15 +19,18 @@ function Home() {
             //Display Lowest Price Image
             let arr = []
             let products_temp = resp.data.data
-
-            $.each(products_temp, (index, product) => {
-                product.subproducts.map(item => arr.push(item.price))
-            });
-            for (let i = 0; i < products_temp.length; i++) {
-                products_temp[i]['lowest_price'] = arr[i];
+            console.log(products_temp.subproducts);
+            if(products_temp.subproducts && products_temp.subproducts.length > 0)
+            {   
+                $.each(products_temp, (index, product) => {
+                    product.subproducts.map(item => arr.push(item.price))
+                });
+                for (let i = 0; i < products_temp.length; i++) {
+                    products_temp[i]['lowest_price'] = arr[i];
+                }
+                setProducts(products_temp)
             }
-
-            setProducts(products_temp)
+            
         });
         return () => {
         }
@@ -82,22 +85,11 @@ function Home() {
                         </div>
                     )
                 })}
-
-
             </div>
-
             <div className="row justify-content-center">
                 {/* <div className="col-2 text-center Pagination"><a href="">1</a> <a href="">2</a> <a href="">3</a> <a href="">→</a></div> */}
             </div>
-
-
-
-
-
-
         </div>
-
-
     )
 }
 
