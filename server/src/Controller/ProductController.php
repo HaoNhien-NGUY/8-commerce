@@ -177,7 +177,7 @@ class ProductController extends AbstractController
         if(isset($colorId) && isset($uploadedFile) && isset($productId)){
             $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
             if($colorId == 'default'){
-                $file = $uploadedFile->move('../../client/images/'+$productId+'/default', $filename);
+                $file = $uploadedFile->move('../../client/images/'.$productId.'/default', $filename);
             }else{
                 $file = $uploadedFile->move('../../client/images/'.$productId.'/'.$colorId, $filename);
             }

@@ -10,14 +10,24 @@ const image1 = "https://i.imgur.com/wtIes8O.jpg";
 function Home() {
 
     const [products, setProducts] = useState([]);
+    
     var imageProduit1 = ''; 
     var imageProduit2 = ''
 
     useEffect(() => {
-       
+
+    //listReactFiles('').then(files => console.log(files))
     axios.get('http://127.0.0.1:8000/api/product').then(resp => {
         console.log(resp.data.nbResults)
+        console.log(resp.data.data);
         setProducts(resp.data.data);
+        // $.each(resp.data.data, (index, product) => {
+        //     console.log('products ', product);
+        //     console.log('index ', index);
+        //    // products.map((product) => console.log('product ', product))
+        // });
+        //setProducts(resp.data.data);
+       
         });
         return () => {
         }
@@ -36,25 +46,28 @@ function Home() {
         
         {products.map((e) => {
 
-            console.log(e.subproducts[0])
-            if(e.subproducts[0] && e.subproducts[0].images[0])
-            {
-                imageProduit1 = e.subproducts[0].images[0].image; 
-            if( e.subproducts[0].images[1].image) {
-                 imageProduit2 = e.subproducts[0].images[1].image;
-            }
-            else {
-                imageProduit2 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-back-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg"
-            }
-           }
-            else {
+            console.log()
+
+        
+        //     if(e.subproducts[0] && e.subproducts[0])
+        //     {
+        //         imageProduit1 = e.subproducts[0].images[0].image; 
+        //         if( e.subproducts[0]) {
+        //             imageProduit2 = e.subproducts[0];
+        //         }
+        //         else {
+        //             imageProduit2 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-back-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg"
+        //         }
+        //    }
+        //     else {
                 imageProduit1 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-front-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg"; 
-                imageProduit2 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-back-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg"
-            }
+                imageProduit2 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-back-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
+        //     }
 
           return (
             <div className="col-md-4" key={e.id}>
             <div className='ProductHome'>
+                {/* <img src={'../../../../images/1/default/2020-06-0603-16-51.jpg'} />  */}
                 <div className='p-4 m-5 bg-gray'>
                     <span className="HomeArticleTItle">{e.title}</span>
                     <p>{e.price} €</p>

@@ -29,6 +29,7 @@ function UpdateSubProduct() {
             $.each(res.data.subproducts, (index, subproduct) => {
                 if(subproduct.id === parseInt(idSubproduct))
                 {
+                    console.log(subproduct);
                     setPrice(subproduct.price);
                     setColor(subproduct.color);
                     setSize(subproduct.size);
@@ -45,7 +46,7 @@ function UpdateSubProduct() {
             toast.error('Error !', {position: 'top-center'});
         });
     }, [])
-
+   
     useEffect(() => {
         if (isReady) {
         
@@ -58,7 +59,7 @@ function UpdateSubProduct() {
             const body = {
                 "product_id": id,
                 "price": parseInt(price),
-                "color": color.trim().toLowerCase().charAt(0),
+                "color_id": color.trim().toLowerCase().charAt(0),
                 "size": size,
                 "weight": parseInt(weight),
                 "promo": parseInt(promo),
