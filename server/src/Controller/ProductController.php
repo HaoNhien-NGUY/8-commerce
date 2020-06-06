@@ -95,7 +95,7 @@ class ProductController extends AbstractController
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
-            $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
+            $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);;
             if ($product) {
                 if (isset($req->subcategory)) {
                     $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->category);
