@@ -4,6 +4,7 @@ import axios from 'axios';
 import './SubCategory.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import store from '../../../store';
 
 function CreateSubCategory() {
     const [formControl, setFormControl] = useState({});
@@ -13,8 +14,21 @@ function CreateSubCategory() {
     const [categorySelected, setCategorySelected] = useState('');
     const optionCategory = [];
 
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
+
+    useEffect(() => {
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
+
     useEffect( () => {
-        axios.get("http://127.0.0.1:8000/api/category").then( e => {
+        axios.get("http://127.0.0.1:8000/api/category", config).then( e => {
             setAllCategory(e.data.data);
         });
     }, []);
@@ -60,13 +74,8 @@ function CreateSubCategory() {
 
     useEffect( () => {
         if (isReady) {
-            const config = {
-                headers: {
-                    "Content-type": "application/json"
-                }
-            }
+            setIsReady(false);
             const body = JSON.stringify({ ...formControl });
-            
             axios.post("http://127.0.0.1:8000/api/subcategory/create/" + categorySelected + "/" + formControl.subCategory, body, config)
                 .then( res => {
                     toast.success('SubCategory correctly added!', {position: 'top-center'});

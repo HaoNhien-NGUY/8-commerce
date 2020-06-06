@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouteMatch } from "react-router-dom";
 import './UpdateSubProduct.css'
+import store from '../../../store';
 
 function UpdateSubProduct() {
     const [isReady, setIsReady] = useState(false);
@@ -23,8 +24,20 @@ function UpdateSubProduct() {
     let id = useRouteMatch("/admin/subproduct/:id/:subproduct/update").params.id;
     let idSubproduct = useRouteMatch("/admin/subproduct/:id/:subproduct/update").params.subproduct;
 
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
     useEffect(() => {
-        axios.get("http://localhost:8000/api/product/"+id)
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
+
+    useEffect(() => {
+        axios.get("http://localhost:8000/api/product/"+id, config)
         .then(res => {
             $.each(res.data.subproducts, (index, subproduct) => {
                 if(subproduct.id === parseInt(idSubproduct))
@@ -49,12 +62,6 @@ function UpdateSubProduct() {
    
     useEffect(() => {
         if (isReady) {
-        
-            const config = {
-                headers: {
-                    "Content-type": "application/json"
-                }
-            }
             setIsReady(false)
             const body = {
                 "product_id": id,
@@ -66,7 +73,7 @@ function UpdateSubProduct() {
                 "stock": parseInt(stock)
             }
             console.log(body);
-            axios.put("http://127.0.0.1:8000/api/subproduct/"+idSubproduct, body, config ).then( e => {
+            axios.put("http://127.0.0.1:8000/api/subproduct/"+idSubproduct, body, config).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"})
             }).catch( err => {
                 toast.error('Error !', {position: 'top-center'});

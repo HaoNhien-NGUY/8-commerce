@@ -7,15 +7,28 @@ import './SubProductInterface.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouteMatch } from "react-router-dom";
+import store from '../../../store';
 
 const SubProductInterface = () => {
 
     const [subProducts, setSubProducts] = useState([]);
     const [titleProduct, setTitleProduct] = useState('');
     let id = useRouteMatch("/admin/subproduct/:id").params.id;
-    console.log(id)
+
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
     useEffect(() => {
-        axios.get("http://localhost:8000/api/product/"+id)
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
+    
+    useEffect(() => {
+        axios.get("http://localhost:8000/api/product/"+id, config)
         .then(res => {
                 setTitleProduct(res.data.title)
                 console.log(res.data.subproducts)
@@ -29,9 +42,9 @@ const SubProductInterface = () => {
 
     const deleteProduct = (idSub) => {
         console.log(idSub);
-        axios.delete("http://localhost:8000/api/subproduct/"+idSub)
+        axios.delete("http://localhost:8000/api/subproduct/"+idSub, config)
         .then(res => {
-            axios.get("http://localhost:8000/api/product/"+id)
+            axios.get("http://localhost:8000/api/product/"+id, config)
                 .then(res => {
                 setSubProducts(res.data.subproducts);
                  })

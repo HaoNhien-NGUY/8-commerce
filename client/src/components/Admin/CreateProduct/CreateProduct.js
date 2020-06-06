@@ -4,6 +4,7 @@ import './CreateProduct.css';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import store from '../../../store';
 
 function CreateProduct() {
     const [btnSex, setBtnSex] = useState('');
@@ -11,6 +12,18 @@ function CreateProduct() {
     const [isReady, setIsReady] = useState(false);
     const [statusState, setStatusState] = useState(true);
     const [isInvalid, setIsInvalid] = useState(false);
+
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
+    useEffect(() => {
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
 
     function handleChange(event) {
         let res = event.target.value.trim();
@@ -79,15 +92,10 @@ function CreateProduct() {
 
     useEffect( () => {
         if (isReady) {
-            const config = {
-                headers: {
-                    "Content-type": "application/json"
-                }
-            }
             setIsReady(false);
             const body = JSON.stringify({ ...formControl })
             console.log(body);
-            axios.post("http://127.0.0.1:8000/api/product", body, config ).then( e => {
+            axios.post("http://127.0.0.1:8000/api/product", body, config).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"});
             }).catch( err => {
                 toast.error('Error !', {position: 'top-center'});

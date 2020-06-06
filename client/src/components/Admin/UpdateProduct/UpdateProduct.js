@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useRouteMatch } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import store from '../../../store';
 
 const UpdateProduct = () => {
     let idProduct = useRouteMatch("/admin/update/:id").params.id;
@@ -21,7 +22,18 @@ const UpdateProduct = () => {
     const [subCategory, setSubCategory] = useState(1);
     const [sex, setSex] = useState('');
     const [status, setStatus] = useState(false);
-
+    
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
+    useEffect(() => {
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
 
     function formSubmit(e) {
         e.preventDefault();
@@ -29,7 +41,7 @@ const UpdateProduct = () => {
         setIsReady(true);
     }
     useEffect(() => {
-        axios.get("http://localhost:8000/api/product/"+idProduct)
+        axios.get("http://localhost:8000/api/product/"+idProduct, config)
         .then(res => {
                 console.log(res.data);
                 setProduct(res.data);   
@@ -48,11 +60,7 @@ const UpdateProduct = () => {
     }, [])
     useEffect( () => {
         if (isReady) {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
+            setIsReady(false);
             const body = {
                 "title": title,
                 "description": description,
@@ -65,7 +73,6 @@ const UpdateProduct = () => {
             console.log(body);
             axios.put("http://localhost:8000/api/product/"+idProduct, body, config ).then( e => {
                 toast.success('Product correctly updated!', { position: "top-center"})
-                setIsReady(false);
             }).catch( err => {
                 toast.error('Error !', {position: 'top-center'});
             });
