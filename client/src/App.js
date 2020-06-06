@@ -19,6 +19,7 @@ import Home from './components/home/home';
 import Admin from './components/Admin/Admin';
 import NotFound from './components/NotFound/NotFound';
 import AccessCreateCategory from './components/Admin/CreateCategory/AccessCreateCategory';
+import AccessCreateColor from './components/Admin/CreateColor/AccessCreateColor';
 import AccessCreateSubCategory from './components/Admin/CreateCategorySub/AccessCreateSubCategory';
 import AccessCreateProduct from './components/Admin/CreateProduct/AccessCreateProduct';
 import AccessUpdateProduct from './components/Admin/UpdateProduct/AccessUpdateProduct';
@@ -51,6 +52,7 @@ class App extends React.Component {
                         <Route exact path="/admin/subproduct/:id/create" component={AccessCreateSubProduct} />
                         <Route exact path="/admin/subproduct/:id/:subproduct/update" component={AccessUpdateSubProduct} />
                         <Route exact path="/admin/create/product" component={AccessCreateProduct} />
+                        <Route exact path="/admin/create/color" component={AccessCreateColor} />
                         <Route exact path="/admin/create/category" component={AccessCreateCategory} />
                         <Route exact path="/admin/create/subcategory" component={AccessCreateSubCategory} />
                         <Route exact path="/admin/create/image/:idproduct" component={CreateImage} />
