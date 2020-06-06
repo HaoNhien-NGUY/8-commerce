@@ -174,7 +174,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
      */
-    public function AddImage(Request $request, SubproductRepository $subrepo, ColorRepository $colorRepo)
+    public function addImage(Request $request, SubproductRepository $subrepo, ColorRepository $colorRepo)
     {
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -207,6 +207,29 @@ class ProductController extends AbstractController
             return $this->json([
                 'message' => 'Not found'
             ], 404);
+        }
+    }
+
+    /**
+     * @Route("/api/product/{id}/image", name="get_images", methods="GET",requirements={"id":"\d+"})
+     */
+    public function getImage(Request $request)
+    {
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+
+        $productId = $request->attributes->get('id');
+        $colorId = $req->color;
+        $path = '../../client/images/'. $productId . '/'. $colorId;
+
+        if (isset($colorId) && isset($productId) && is_dir($path)) {
+            $images = array_diff(scandir($path),array('.', '..'));
+            return $this->json($images, 200);
+        }
+        else{
+            return $this->json([
+                'message' => 'Not found'
+            ], 400);
         }
     }
 }
