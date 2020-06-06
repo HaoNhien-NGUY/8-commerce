@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -63,7 +64,7 @@ class ProductController extends AbstractController
 
             return $this->json(['product' => $product], 201, [], ['groups' => 'products']);
         } catch (NotEncodableValueException $e) {
-            return $this->json($e->getMessage(), 400);
+            return $this->json(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -90,18 +91,26 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product/{id}", name="product_update", methods="PUT", requirements={"id":"\d+"})
      */
-    public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ProductRepository $productRepository)
+    public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, ProductRepository $productRepository)
     {
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);;
             if ($product) {
+                try {
+                    $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
+                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo'],
+                        AbstractNormalizer::OBJECT_TO_POPULATE => $product
+                    ]);
+                } catch (NotNormalizableValueException $e) {
+                    return $this->json(['message' => $e->getMessage()], 400, []);
+                }
                 if (isset($req->subcategory)) {
                     $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->category);
                     $product->setSubCategory($subcategory);
                 }
-                if (isset($req->promo) && $req->promo === 0) {
+                if (isset($req->promo)) {
                     $promoNb = $req->promo === 0 ? null : $req->promo;
                     $product->setPromo($promoNb);
                 }
@@ -121,7 +130,7 @@ class ProductController extends AbstractController
                 return $this->json(['message' => 'product not found'], 404, []);
             }
         } catch (NotEncodableValueException $e) {
-            return $this->json($e->getMessage(), 400);
+            return $this->json(['message' => $e->getMessage()], 400);
         }
     }
 
