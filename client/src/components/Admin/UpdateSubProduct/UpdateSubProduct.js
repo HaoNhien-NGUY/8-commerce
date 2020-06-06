@@ -44,7 +44,8 @@ function UpdateSubProduct() {
                 {
                     console.log(subproduct);
                     setPrice(subproduct.price);
-                    setColor(subproduct.color);
+                    console.log(subproduct.color)
+                    setColor(subproduct.color.id);
                     setSize(subproduct.size);
                     setWeight(subproduct.weight);
                     subproduct.promo === null ? setPromo(0) :setPromo(subproduct.promo);
@@ -66,7 +67,7 @@ function UpdateSubProduct() {
             const body = {
                 "product_id": id,
                 "price": parseInt(price),
-                "color_id": color.trim().toLowerCase().charAt(0),
+                "color_id": color,
                 "size": size,
                 "weight": parseInt(weight),
                 "promo": parseInt(promo),
