@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\SubCategory;
+use App\Kernel;
 use App\Repository\ImageRepository;
 use App\Repository\ColorRepository;
 use App\Repository\SubproductRepository;
@@ -154,13 +156,29 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @Route("/api/product/filter", name="product_filter", methods="POST")
+     */
+    public function filterProducts(Request $request, ProductRepository $productRepository)
+    {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $data = json_decode($request->getContent(), true);
+            $request->request->replace(is_array($data) ? $data : array());
+        }
+
+        $result = $productRepository->filterProducts($data, $request->query->get('limit'), $request->query->get('offset'));
+
+        return $this->json($result, 200);
+    }
+
+
+    /**
      * @Route("/api/product/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
      */
-    public function AddImage(Request $request, SubproductRepository $subrepo,ColorRepository $colorRepo)
+    public function AddImage(Request $request, SubproductRepository $subrepo, ColorRepository $colorRepo)
     {
 
         $entityManager = $this->getDoctrine()->getManager();
-        
+
         $productId = $request->attributes->get('id');
         $uploadedFile = $request->files->get('image');
         $colorId = $request->request->get('color');
@@ -174,20 +192,18 @@ class ProductController extends AbstractController
         }
         //product id / color / img 
         $value = new \DateTime('now');
-        if(isset($colorId) && isset($uploadedFile) && isset($productId)){
+        if (isset($colorId) && isset($uploadedFile) && isset($productId)) {
             $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
-            if($colorId == 'default'){
-                $file = $uploadedFile->move('../../client/images/'.$productId.'/default', $filename);
-            }else{
-                $file = $uploadedFile->move('../../client/images/'.$productId.'/'.$colorId, $filename);
+            if ($colorId == 'default') {
+                $file = $uploadedFile->move('../../client/images/' . $productId . '/default', $filename);
+            } else {
+                $file = $uploadedFile->move('../../client/images/' . $productId . '/' . $colorId, $filename);
             }
-            
+
             return $this->json([
                 'message' => 'Picture correctly added'
             ], 200);
-
-        }
-        else{
+        } else {
             return $this->json([
                 'message' => 'Not found'
             ], 404);
