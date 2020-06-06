@@ -40,12 +40,15 @@ class ColorController extends AbstractController
     /**
      * @Route("/api/color/{color}", name="color_create", methods="POST")
      */
-    public function colorCreate(Request $request,EntityManagerInterface $em)
+    public function colorCreate(Request $request,EntityManagerInterface $em, ValidatorInterface $validator)
     {
         $newColor = $request->attributes->get('color');
 
         $color = new Color();
         $color->setName($newColor);
+
+        $error = $validator->validate($color);
+        if (count($error) > 0) return $this->json($error, 400);
 
         $em->persist($color);
         $em->flush();
