@@ -63,7 +63,7 @@ function ProductDescription() {
 
     const details = {
         title: product.title,
-        price: 'Starts at ' + 12345, //remplacer avec une fonction ici
+        price: 'Soon', //remplacer avec une fonction ici
         description_1: testProps.substr(0, 192),
         description_2: testProps.substr(192)
     };
