@@ -45,7 +45,7 @@ class SubProductController extends AbstractController
 
             $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
             if (!isset($data->color_id)) return $this->json(['message' => 'color id missing.'], 400);
-            
+
             $color = $this->getDoctrine()->getRepository(Color::class)->find($data->color_id);
             if (!$color) return $this->json(['message' => 'color not found.'], 404);
 
