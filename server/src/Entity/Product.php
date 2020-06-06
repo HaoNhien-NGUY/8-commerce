@@ -95,18 +95,13 @@ class Product
     {
         $metadata->addPropertyConstraint('title', new Assert\NotBlank());
         $metadata->addPropertyConstraint('description', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('description', new Assert\Type([
-            'type' => ['string'],
-        ]));
+        $metadata->addPropertyConstraint('description', new Assert\Type(['type' => ['string']]));
         $metadata->addPropertyConstraint('price', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('price', new Assert\Type([
-            'type' => ['integer', 'double', 'numeric'],
-        ]));
-        $metadata->addPropertyConstraint('status', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('status', new Assert\Type([
-            'type' => ['bool'],
-        ]));
+        $metadata->addPropertyConstraint('price', new Assert\Type(['type' => ['integer', 'double', 'numeric']]));
+        $metadata->addPropertyConstraint('status', new Assert\Type(['type' => ['bool']]));
         $metadata->addPropertyConstraint('sex', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('sex', new Assert\Type(['type' => ['alpha']]));
+        $metadata->addPropertyConstraint('promo', new Assert\Type(['type' => ['integer']]));
     }
 
     public function getId(): ?int
