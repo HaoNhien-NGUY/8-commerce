@@ -225,22 +225,6 @@ class ProductController extends AbstractController
             
         } else {
 
-    /**
-     * @Route("/api/product/{id}/image", name="get_images", methods="GET",requirements={"id":"\d+"})
-     */
-    public function getImage(Request $request)
-    {
-        $jsonContent = $request->getContent();
-        $req = json_decode($jsonContent);
-
-        $productId = $request->attributes->get('id');
-        $colorId = $req->color;
-        $path = '../../client/images/' . $productId . '/' . $colorId;
-
-        if (isset($colorId) && isset($productId) && is_dir($path)) {
-            $images = array_diff(scandir($path), array('.', '..'));
-            return $this->json($images, 200);
-        } else {
             return $this->json([
                 'message' => 'Not found'
             ], 404);
