@@ -55,10 +55,10 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-    
+
     public function filterProducts($data, $limit, $offset)
     {
-        $query = "SELECT * FROM product LEFT JOIN subproduct ON product.id = subproduct.product_id LEFT JOIN color ON subproduct.color_id = color.id WHERE ";
+        $query = "SELECT product.id FROM product LEFT JOIN subproduct ON product.id = subproduct.product_id LEFT JOIN color ON subproduct.color_id = color.id WHERE ";
         $arrayExecute = [];
         if ($data['price']) {
             $query .= ' (subproduct.price > ? AND subproduct.price < ?) AND ';
@@ -89,6 +89,9 @@ class ProductRepository extends ServiceEntityRepository
         if ($data['subcategory']) {
             $query .= ' product.sub_category_id = ? ';
             array_push($arrayExecute, $data['subcategory']);
+        }
+        if (substr($query, -6) == "WHERE ") {
+            $query = substr($query, 0, -6);
         }
         if ($data['order_by']) {
             switch ($data['order_by']) {
@@ -121,6 +124,14 @@ class ProductRepository extends ServiceEntityRepository
                 $stmt->bindParam($i, $arrayExecute[$i - 1]);
             }
         }
+        $stmt->execute();
+        $products = $stmt->fetchAll();
+        $productIds = [];
+        foreach ($products as $key => $value) {
+            array_push($productIds, $value['id']);
+        }
+        $newQuery = "SELECT * FROM product WHERE id IN(" . implode(',', $productIds) . ")";
+        $stmt = $conn->prepare($newQuery);
         $stmt->execute();
         return $stmt->fetchAll();
     }
