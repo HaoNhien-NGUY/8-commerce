@@ -10,9 +10,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Image;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -43,9 +45,13 @@ class SubProductController extends AbstractController
 
             $product = $productRepository->findOneBy(['id' => $data->product_id]);
 
-            $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
-            if (!isset($data->color_id)) return $this->json(['message' => 'color id missing.'], 400);
+            try {
+                $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json');
+            } catch (NotNormalizableValueException $e) {
+                return $this->json(['message' => $e->getMessage()], 400);
+            }
 
+            if (!isset($data->color_id)) return $this->json(['message' => 'color id missing.'], 400);
             $color = $this->getDoctrine()->getRepository(Color::class)->find($data->color_id);
             if (!$color) return $this->json(['message' => 'color not found.'], 404);
 
@@ -64,26 +70,28 @@ class SubProductController extends AbstractController
                 'subProduct' => $subproduct
             ], 201, [], ['groups' => 'subproduct']);
         } catch (NotEncodableValueException $e) {
-            return $this->json($e->getMessage(), 400);
+            return $this->json(['message' => $e->getMessage()], 400);
         }
     }
 
     /**
      * @Route("/api/subproduct/{id}", name="subproduct_update", methods="PUT")
      */
-    public function subProductUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SubproductRepository $subproductRepository)
+    public function subProductUpdate(Request $request, EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator, SubproductRepository $subproductRepository)
     {
         try {
             $subProduct = $subproductRepository->findOneBy(['id' => $request->attributes->get('id')]);
             if ($subProduct) {
                 $jsonContent = $request->getContent();
-                $req = json_decode($jsonContent);
-                if (isset($req->color)) $subProduct->setColor($req->color);
-                if (isset($req->size)) $subProduct->setSize($req->size);
-                if (isset($req->price)) $subProduct->setPrice($req->price);
-                if (isset($req->weight)) $subProduct->setWeight($req->weight);
-                if (isset($req->promo)) $subProduct->setPromo($req->promo);
-                if (isset($req->stock)) $subProduct->setStock($req->stock);
+
+                try {
+                    //AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo']
+                    $subProduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [
+                        AbstractNormalizer::OBJECT_TO_POPULATE => $subProduct
+                    ]);
+                } catch (NotNormalizableValueException $e) {
+                    return $this->json(['message' => $e->getMessage()], 400, []);
+                }
 
                 $error = $validator->validate($subProduct);
                 if (count($error) > 0) return $this->json($error, 400);
@@ -96,7 +104,7 @@ class SubProductController extends AbstractController
                 return $this->json(['message' => 'product not found'], 404, []);
             }
         } catch (NotEncodableValueException $e) {
-            return $this->json($e->getMessage(), 400);
+            return $this->json(['message' => $e->getMessage()], 400);
         }
     }
 
