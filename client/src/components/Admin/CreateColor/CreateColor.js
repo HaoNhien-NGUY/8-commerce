@@ -4,11 +4,23 @@ import axios from 'axios';
 import './CreateColor.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import store from '../../../store';
 
 function CreateColor() {
     const [formControl, setFormControl] = useState({});
     const [isReady, setIsReady] = useState(false);
     const [isInvalid, setIsInvalid] = useState(false);
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
+    useEffect(() => {
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
 
     function handleChange(event) {
             let res = event.target.value.trim();
@@ -40,14 +52,8 @@ function CreateColor() {
     useEffect( () => {
         if (isReady) {
             setIsReady(false);
-            const config = {
-                headers: {
-                    "Content-type": "application/json"
-                }
-            }
             const body = JSON.stringify({ ...formControl });
-
-            axios.post("http://127.0.0.1:8000/api/color/" + formControl.color, body, config ).then( res => {
+            axios.post("http://127.0.0.1:8000/api/color/" + formControl.color, body, config).then( res => {
                 toast.success('Color correctly added!', {position: "top-center"});
             }).catch( err => {
                 toast.error('Color already exist!', {position: 'top-center'});

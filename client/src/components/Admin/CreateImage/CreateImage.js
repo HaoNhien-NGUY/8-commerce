@@ -3,12 +3,26 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouteMatch } from "react-router-dom";
 import axios from 'axios';
+import store from '../../../store';
 
 const CreateImage = () => {
     const [picture, setPicture] = useState([]);
 
     let idproduct = useRouteMatch("/admin/create/image/:idproduct").params.idproduct;
-    console.log(idproduct);
+
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        }
+    }
+
+    useEffect(() => {
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
+
     const onFileChange = (e) => {
         let files = e.target.files || e.dataTransfer.files;
         setPicture(files);
@@ -28,12 +42,6 @@ const CreateImage = () => {
         const bodyFormData = new FormData();
         bodyFormData.append('image',picture[0]);
         bodyFormData.append('color', 'default');
-       
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data',
-            }
-        }
         axios
         .post('http://localhost:8000/api/product/'+idproduct+'/image', bodyFormData, config)
         .then(response => {

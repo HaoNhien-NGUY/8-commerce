@@ -6,6 +6,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouteMatch } from "react-router-dom";
 import './CreateSubProduct.css';
+import store from '../../../store';
+
 function CreateSubProduct() {
     const [isReady, setIsReady] = useState(false);
     const [price, setPrice] = useState(1);
@@ -20,10 +22,22 @@ function CreateSubProduct() {
         setIsReady(true);
     }
     let id = useRouteMatch("/admin/subproduct/:id/create").params.id;
-    console.log(id)
+
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
+    
+    useEffect(() => {
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/product/"+id)
+        axios.get("http://localhost:8000/api/product/"+id, config)
         .then(res => {
                 setTitleProduct(res.data.title)
         })
@@ -34,12 +48,6 @@ function CreateSubProduct() {
 
     useEffect(() => {
         if (isReady) {
-        
-            const config = {
-                headers: {
-                    "Content-type": "application/json"
-                }
-            }
             setIsReady(false)
             const body = {
                 "product_id": id,
@@ -51,7 +59,7 @@ function CreateSubProduct() {
                 "stock": parseInt(stock)
             }
             console.log(body);
-            axios.post("http://127.0.0.1:8000/api/subproduct", body, config ).then( e => {
+            axios.post("http://127.0.0.1:8000/api/subproduct", body, config).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"})
             }).catch( err => {
                 toast.error(err.data, {position: 'top-center'});

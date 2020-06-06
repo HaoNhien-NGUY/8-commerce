@@ -4,11 +4,24 @@ import axios from 'axios';
 import './Category.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import store from '../../../store';
 
 function CreateCategory() {
     const [formControl, setFormControl] = useState({});
     const [isReady, setIsReady] = useState(false);
     const [isInvalid, setIsInvalid] = useState(false);
+
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
+    useEffect(() => {
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
 
     function handleChange(event) {
             let res = event.target.value.trim();
@@ -40,14 +53,8 @@ function CreateCategory() {
     useEffect( () => {
         if (isReady) {
             setIsReady(false);
-            const config = {
-                headers: {
-                    "Content-type": "application/json"
-                }
-            }
             const body = JSON.stringify({ ...formControl });
-
-            axios.post("http://127.0.0.1:8000/api/category/create/" + formControl.category, body, config ).then( res => {
+            axios.post("http://127.0.0.1:8000/api/category/create/" + formControl.category, body, config).then( res => {
                 toast.success('Category correctly added!', {position: "top-center"});
             }).catch( err => {
                 toast.error('Category already exist!', {position: 'top-center'});

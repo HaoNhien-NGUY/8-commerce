@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReactPaginate from 'react-paginate';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import store from '../../store';
 
 const AdminInterface = () => {
 
@@ -28,15 +29,23 @@ const AdminInterface = () => {
     const [colorSelected, setColorSelected] = useState('');
     const optionColors = [];
 
-    useEffect( () => {
-        axios.get("http://127.0.0.1:8000/api/color").then( e => {
+    const token = store.getState().auth.token
+    const config = {
+        headers: {
+                "Content-type": "application/json"
+        }
+    }
+    useEffect(() => {
+        if (token) {
+            config.headers['x-auth-token'] = token
+        }
+    }, [token]);
+
+    useEffect(() => {
+        axios.get("http://127.0.0.1:8000/api/color", config).then( e => {
             setAllColors(e.data);
         });
     }, []);
-    
-    allColors.map( color => {
-        optionColors.push(<option key={color.id} value={color.id}>{color.name}</option>)
-    });
 
     useEffect(() => {
         receivedData()
@@ -45,10 +54,13 @@ const AdminInterface = () => {
     useEffect(() => {
         receivedDataCategories()
     }, [offsetCategories, categories])
-
+    
+    allColors.map( color => {
+        optionColors.push(<option key={color.id} value={color.id}>{color.name}</option>)
+    });
 
     const receivedData = () => {
-        axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`)
+        axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`, config)
             .then(async res => {
                 await setPageCount(Math.ceil(res.data.nbResults / limit))
                 const newPostData = res.data.data.map((product) =>
@@ -77,9 +89,9 @@ const AdminInterface = () => {
     };
 
     const deleteProduct = (id) => {
-        axios.delete("http://localhost:8000/api/product/" + id)
+        axios.delete("http://localhost:8000/api/product/" + id, config)
             .then(res => {
-                axios.get("http://localhost:8000/api/product")
+                axios.get("http://localhost:8000/api/product", config)
                     .then(res => {
                         setProducts(res.data.data);
                     })
@@ -94,7 +106,7 @@ const AdminInterface = () => {
     }
 
     const receivedDataCategories = () => {
-        axios.get(`http://127.0.0.1:8000/api/category?offset=${offsetCategories}&limit=${limitCategories}`)
+        axios.get(`http://127.0.0.1:8000/api/category?offset=${offsetCategories}&limit=${limitCategories}`, config)
             .then(async res => {
                 console.log(res.data);
                 await setPageCountCategories(Math.ceil(res.data.nbResults / limitCategories))
@@ -117,13 +129,13 @@ const AdminInterface = () => {
     const handlePageClickCategories = (e) => {
         const selectedPage = e.selected;
         const newOffset = selectedPage * limitCategories;
-        setOffsetCategories(newOffset)
+        setOffsetCategories(newOffset);
     };
 
     const deleteCategory = (id) => {
-        axios.delete("http://localhost:8000/api/category/" + id)
+        axios.delete("http://localhost:8000/api/category/" + id, config)
             .then(res => {
-                axios.get("http://localhost:8000/api/category")
+                axios.get("http://localhost:8000/api/category", config)
                     .then(res => {
                         setCategories(res.data.data);
                     })
@@ -240,7 +252,7 @@ const AdminInterface = () => {
 
     const handleColorClick = () => {
         if (colorSelected) {
-            axios.delete("http://localhost:8000/api/color/" + colorSelected).then( res => {
+            axios.delete("http://localhost:8000/api/color/" + colorSelected, config).then( res => {
                     toast.success(res.data.message, { position: "top-center" });
                 }).catch( err => {
                     toast.error('Error !', {position: 'top-center'});
