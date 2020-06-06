@@ -1,147 +1,59 @@
 <?php
 
-namespace App\Controller;
+namespace App\Repository;
 
-use App\Entity\Category;
 use App\Entity\Product;
-use App\Entity\SubCategory;
-use App\Repository\ImageRepository;
-use App\Repository\ColorRepository;
-use App\Repository\SubproductRepository;
-use App\Repository\ProductRepository;
-use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use PDO;
 
-class ProductController extends AbstractController
+/**
+ * @method Product|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Product|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Product[]    findAll()
+ * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class ProductRepository extends ServiceEntityRepository
 {
-    /**
-     * @Route("/api/product", name="product_index", methods="GET")
-     */
-    public function index(Request $request, ProductRepository $productRepository)
+    public function __construct(ManagerRegistry $registry)
     {
-        $count = $productRepository->countResults();
-        $products = $productRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
-
-        return $this->json(['nbResults' => $count, 'data' => $products], 200, [], ['groups' => 'products']);
+        parent::__construct($registry, Product::class);
     }
 
-    /**
-     * @Route("/api/product", name="product_create", methods="POST")
-     */
-    public function productCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
+    public function findStockSum($product)
     {
-        try {
-            $jsonContent = $request->getContent();
-            $req = json_decode($jsonContent);
-            $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts'],
-                ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
-            ]);
-            if (!isset($req->subcategory)) return $this->json(['message' => 'subcategory missing'], 400, []);
-            $subCategory = $this->getDoctrine()
-                ->getRepository(SubCategory::class)
-                ->find($req->subcategory);
-            $product->setSubCategory($subCategory);
-            $product->setCreatedAt(new DateTime());
-
-            $error = $validator->validate($product);
-            if (count($error) > 0) return $this->json($error, 400);
-
-            $em->persist($product);
-            $em->flush();
-
-            return $this->json(['product' => $product], 201, [], ['groups' => 'products']);
-        } catch (NotEncodableValueException $e) {
-            return $this->json($e->getMessage(), 400);
-        }
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.subproducts', 'sp')
+            ->select('SUM(sp.stock) as totalStock')
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $product->getId())
+            ->getQuery()
+            ->getResult();
     }
 
-    /**
-     * @Route("/api/product/{id}", name="product_details", methods="GET", requirements={"id":"\d+"})
-     */
-    public function productDetails(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer, EntityManagerInterface $em)
+    public function findSearchResult($searchString, $limit, $offset)
     {
-        $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
-        if ($product) {
-            $productResp = $normalizer->normalize($product, null, ['groups' => 'products']);
-            $sum = $productRepository->findStockSum($product);
-            $productResp = array_merge($productResp, $sum[0]);
-
-            $product->setClicks($product->getClicks() + 1);
-            $em->persist($product);
-            $em->flush();
-            return $this->json($productResp, 200, [], ['groups' => 'products']);
-        } else {
-            return $this->json(['message' => 'not found'], 404, []);
-        }
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = '
+        SELECT * FROM product
+        WHERE title REGEXP ? OR description REGEXP ? LIMIT ? OFFSET ?
+        ';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(1, $searchString, PDO::PARAM_STR);
+        $stmt->bindParam(2, $searchString, PDO::PARAM_STR);
+        $stmt->bindParam(3, $limit, PDO::PARAM_INT);
+        $stmt->bindParam(4, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 
-    /**
-     * @Route("/api/product/{id}", name="product_update", methods="PUT", requirements={"id":"\d+"})
-     */
-    public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ProductRepository $productRepository)
+    public function countResults()
     {
-        try {
-            $jsonContent = $request->getContent();
-            $req = json_decode($jsonContent);
-            $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
-            if ($product) {
-                if (isset($req->subcategory)) {
-                    $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->category);
-                    $product->setSubCategory($subcategory);
-                }
-                if (isset($req->promo) && $req->promo === 0) {
-                    $promoNb = $req->promo === 0 ? null : $req->promo;
-                    $product->setPromo($promoNb);
-                }
-                if (isset($req->title)) $product->setTitle($req->title);
-                if (isset($req->description)) $product->setDescription($req->description);
-                if (isset($req->price)) $product->setPrice($req->price);
-                if (isset($req->sex)) $product->setSex($req->sex);
-                if (isset($req->status)) $product->setStatus($req->status);
-
-                $error = $validator->validate($product);
-                if (count($error) > 0) return $this->json($error, 400);
-
-                $em->persist($product);
-                $em->flush();
-
-                return $this->json(['product' => $product], 200, [], ['groups' => 'products', AbstractNormalizer::IGNORED_ATTRIBUTES => ['subproducts']]);
-            } else {
-                return $this->json(['message' => 'product not found'], 404, []);
-            }
-        } catch (NotEncodableValueException $e) {
-            return $this->json($e->getMessage(), 400);
-        }
-    }
-
-    /**
-     * @Route("/api/product/{id}", name="product_remove", methods="DELETE", requirements={"id":"\d+"})
-     */
-    public function productRemove(Request $request, ProductRepository $productRepository, EntityManagerInterface $em)
-    {
-        $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
-
-        if ($product) {
-            $em->remove($product);
-            $em->flush();
-
-            return $this->json([
-                'message' => 'product removed',
-                'product' => $product
-            ], 200, [], ['groups' => 'products']);
-        } else {
-            return $this->json(['message' => 'not found'], 404, []);
-        }
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
     
     public function filterProducts($data, $limit, $offset)
@@ -214,53 +126,32 @@ class ProductController extends AbstractController
     }
 
 
-    /**
-     * @Route("/api/product/search/{search}", name="product_search", methods="GET")
-     */
-    public function productSearch(Request $request, ProductRepository $productRepository)
+    // /**
+    //  * @return Product[] Returns an array of Product objects
+    //  */
+    /*
+    public function findByExampleField($value)
     {
-        $result = $productRepository->findSearchResult($request->attributes->get('search'), $request->query->get('limit'), $request->query->get('offset'));
-        return $this->json($result);
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('p.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
     }
+    */
 
-    /**
-     * @Route("/api/product/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
-     */
-    public function AddImage(Request $request, SubproductRepository $subrepo,ColorRepository $colorRepo)
+    /*
+    public function findOneBySomeField($value): ?Product
     {
-
-        $entityManager = $this->getDoctrine()->getManager();
-        
-        $productId = $request->attributes->get('id');
-        $uploadedFile = $request->files->get('image');
-        $colorId = $request->request->get('color');
-
-        $ext = $uploadedFile->getClientOriginalExtension();
-
-        if (!in_array($ext, ['jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG'])) {
-            return $this->json([
-                'message' => 'Wrong extension'
-            ], 400);
-        }
-        //product id / color / img 
-        $value = new \DateTime('now');
-        if(isset($colorId) && isset($uploadedFile) && isset($productId)){
-            $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
-            if($colorId == 'default'){
-                $file = $uploadedFile->move('../../client/images/'.$productId.'/default', $filename);
-            }else{
-                $file = $uploadedFile->move('../../client/images/'.$productId.'/'.$colorId, $filename);
-            }
-            
-            return $this->json([
-                'message' => 'Picture correctly added'
-            ], 200);
-
-        }
-        else{
-            return $this->json([
-                'message' => 'Not found'
-            ], 404);
-        }
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
     }
+    */
 }
