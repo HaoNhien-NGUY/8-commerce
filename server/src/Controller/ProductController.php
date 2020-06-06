@@ -176,16 +176,34 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route("/api/product/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
+     * @Route("/api/image/{productid}/{colorid}/{imagename}", name="get_image", methods="GET" , requirements={"productid":"\d+","colorid":"\d+"})
      */
-    public function addImage(Request $request, SubproductRepository $subrepo, ColorRepository $colorRepo)
+    public function getImage(Request $request)
     {
+        $productId = $request->attributes->get('productid');
+        $colorId = $request->attributes->get('colorid');
+        $imageName = $request->attributes->get('imagename');
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $name = "./images/$productId/$colorId/$imageName";
+        $fp = fopen($name, 'rb');
+
+        header("Content-Type: image/jpg");
+        header("Content-Length: " . filesize($name));
+
+        fpassthru($fp);
+    }
+
+
+   /**
+     * @Route("/api/image/{id}", name="product_add_image", methods="POST",requirements={"id":"\d+"})
+     */
+    public function addImage(Request $request)
+    {
 
         $productId = $request->attributes->get('id');
         $uploadedFile = $request->files->get('image');
         $colorId = $request->request->get('color');
+        $name = "./images/$productId/$colorId/";
 
         $ext = $uploadedFile->getClientOriginalExtension();
 
@@ -194,25 +212,18 @@ class ProductController extends AbstractController
                 'message' => 'Wrong extension'
             ], 400);
         }
-        //product id / color / img 
-        $value = new \DateTime('now');
+    
         if (isset($colorId) && isset($uploadedFile) && isset($productId)) {
-            $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
-            if ($colorId == 'default') {
-                $file = $uploadedFile->move('../../client/images/' . $productId . '/default', $filename);
-            } else {
-                $file = $uploadedFile->move('../../client/images/' . $productId . '/' . $colorId, $filename);
-            }
+        
+            $filename = is_dir($name) && count(array_diff(scandir($name),array('.', '..'))) > 0 ?  (count(array_diff(scandir($name),array('.', '..')))+1).'.'.$ext : "1".'.'.$ext ;
+
+            $file = $uploadedFile->move($name, $filename);
 
             return $this->json([
                 'message' => 'Picture correctly added'
             ], 200);
+            
         } else {
-            return $this->json([
-                'message' => 'Not found'
-            ], 404);
-        }
-    }
 
     /**
      * @Route("/api/product/{id}/image", name="get_images", methods="GET",requirements={"id":"\d+"})
@@ -232,7 +243,7 @@ class ProductController extends AbstractController
         } else {
             return $this->json([
                 'message' => 'Not found'
-            ], 400);
+            ], 404);
         }
     }
 }

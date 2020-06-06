@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import store from '../../../store';
 
 const UpdateProduct = () => {
-    let idProduct = useRouteMatch("/admin/update/:id").params.id;
+    let idProduct = useRouteMatch("/admin/update/product/:id").params.id;
     console.log(idProduct)
     const [btnSex, setBtnSex] = useState('');
     const [formControl, setFormControl] = useState({});
