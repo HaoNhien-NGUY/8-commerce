@@ -13,7 +13,6 @@ import 'react-tabs/style/react-tabs.css';
 import store from '../../store';
 
 const AdminInterface = () => {
-
     const [products, setProducts] = useState([]);
     const [limit, setLimit] = useState(2);
     const [offset, setOffset] = useState(0);
@@ -61,6 +60,7 @@ const AdminInterface = () => {
     const receivedData = () => {
         axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`, config)
             .then(async res => {
+                console.log('i:', offset, ' limit:', limit)
                 await setPageCount(Math.ceil(res.data.nbResults / limit))
                 const newPostData = res.data.data.map((product) =>
                     <tr key={product.id}>
@@ -130,7 +130,7 @@ const AdminInterface = () => {
         const newOffset = selectedPage * limitCategories;
         setOffsetCategories(newOffset);
     };
-
+    
     const deleteCategory = (id) => {
         axios.delete("http://localhost:8000/api/category/" + id, config)
             .then(res => {
