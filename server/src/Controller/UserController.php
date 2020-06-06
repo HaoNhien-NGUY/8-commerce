@@ -2,34 +2,15 @@
 
 namespace App\Controller;
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
-use App\Entity\SubCategory;
-use App\Entity\Product;
-use App\Entity\Color;
-use App\Repository\AdressRepository;
 use App\Repository\UserRepository;
-use App\Repository\SubCategoryRepository;
-use App\Repository\CategoryRepository;
-use App\Entity\Category;
-use App\Entity\Subproduct;
-use App\Entity\Commande;
-use App\Entity\Address;
-use App\Repository\AddressRepository;
-use App\Repository\ColorRepository;
-use App\Repository\ProductRepository;
-use App\Repository\SubproductRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Cookie;
 use ReallySimpleJWT\Token;
 
@@ -48,171 +29,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/addUser", name="addUser")
-     */
-    public function addUser()
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $user = new User();
-        $user->setFirstName('El barkaoui');
-        $user->setLastName('Nordine');
-        $user->setEmail('nordine@gmail.com');
-        $user->setPassword(123);
-        $user->setCreatedAt(new \DateTime('now'));
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        return new Response('Category correctly added');
-    }
-
-
-    /**
-     * @Route("/addCategory", name="category")
-     */
-    public function addCategory()
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $category = new Category();
-        $category->setName('Accessoire');
-        $entityManager->persist($category);
-        $entityManager->flush();
-
-        return new Response('Category correctly added');
-    }
-
-    /**
-     * @Route("/addSubCategory", name="Subcategory")
-     */
-    public function addSubCategory(CategoryRepository $catrepo)
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $cat =  $catrepo->findOneBy(['id' => 1]);
-        $category = new SubCategory();
-        $category->setName('Sac a dos');
-        $category->setCategory($cat);
-        $entityManager->persist($category);
-        $entityManager->flush();
-
-        return new Response('SubCategory correctly added');
-    }
-
-      /**
-     * @Route("/addColor", name="color" )
-     */
-    public function addColor()
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $product = new Color();
-        $product->setName('Blue');
-
-        $entityManager->persist($product);
-        $entityManager->flush();
-
-        return new Response('Color correctly added');
-    }
-
-
-     /**
-     * @Route("/addProduct", name="product")
-     */
-    public function addProduct(SubCategoryRepository $subrepo)
-    {
-        $newCat = $subrepo->findOneBy(['id' => 1]);
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $product = new Product();
-        $product->setSubCategory($newCat);
-        $product->setTitle('Sac a main GIT');
-        $product->setDescription('Sac a main GIT tu connais');
-        $product->setPrice(300);
-        $product->setCreatedAt(new \DateTime('now'));
-        $product->setClicks(1);
-        $product->setSex('F');
-        $product->setStatus(true);
-
-        $entityManager->persist($product);
-        $entityManager->flush();
-
-        return new Response('Product correctly added');
-    }
-
-   
-    /**
-     * @Route("/addSubProduct", name="subProduct")
-     */
-    public function addSubProduct(ProductRepository $product, ColorRepository $colorRepo)
-    {
-        $newProduct = $product->findOneBy(['id' => 2]);
-    
-        $entityManager = $this->getDoctrine()->getManager();
-        $color = new Color();
-        $color = $colorRepo->findOneBy(['id' => 1]);
-        $subProduct = new Subproduct();
-        $subProduct->setProduct($newProduct);
-        $subProduct->setPrice(10);
-        $subProduct->setColor($color);
-        $subProduct->setSize('F');
-        $subProduct->setWeight(4);
-
-        $subProduct->setCreatedAt(new \DateTime('now'));
-        $subProduct->setStock(3);
-
-        $entityManager->persist($subProduct);
-        $entityManager->flush();
-
-        return new Response('Sub Product correctly added');
-    }
-
-    /**
-     * @Route("/addAddress", name="Adress")
-     */
-    public function addAdress(UserRepository $userRepo)
-    {
-        $user = $userRepo->findOneBy(['id' => 1]);
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $adress = new Address();
-        $adress->setUser($user);
-        $adress->setCountry('France');
-        $adress->setCity('Courbevoie');
-        $adress->setPostcode(92400);
-        $adress->setAddress('29 rue carle hebert');
-        $adress->setType('livraison');
-
-
-        $entityManager->persist($adress);
-        $entityManager->flush();
-
-        return new Response('Adress correctly added');
-    }
-    /**
-     * @Route("/addCommande", name="Commande")
-     */
-    public function addCommande(SubproductRepository $subprod, AddressRepository $adressrepo)
-    {
-        $newSubProduct = $subprod->findOneBy(['id' => 1]);
-        $address = $adressrepo->findOneBy(['id' => 1]);
-
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $commande = new Commande();
-        $commande->setSubproduct($newSubProduct);
-        $commande->setAddress($address);
-        $commande->setStatus('En cours');
-        $commande->setTrackingNumber(69);
-        $commande->setPackaging(true);
-        $commande->setCreatedAt(new \DateTime('now'));
-
-        $entityManager->persist($commande);
-        $entityManager->flush();
-
-        return new Response('Commande correctly added');
-    }
     /**
      * @Route("/register", name="register")
      */
@@ -276,34 +92,6 @@ class UserController extends AbstractController
             } else {
                 $user = $userRepository->findBy(['email' => $data['email']])[0];
                 if (password_verify($data['password'], $user->getPassword())) {
-
-                    // $response = new Response();
-                    // $response->headers->set('Content-Type', 'application/json');
-                    // $response->headers->set('Access-Control-Allow-Origin', '*');
-                    // $key = "example_key";
-                    // $payload = array(
-                    //     "iss" => "http://example.org",
-                    //     "aud" => "http://example.com",
-                    //     "iat" => 1356999524,
-                    //     "nbf" => 1357000000
-                    // );
-                    // // $jwt = JWT::encode($payload, $key);
-                    // // $decoded = JWT::decode($jwt, $key, array('HS256'));
-                    // // $cookie = Cookie::create('token')
-                    // //     ->withValue(json_encode($user))
-                    // //     ->withExpires(new DateTime('tomorrow'))
-                    // //     ->withSecure(true);
-                    // $response->headers->setCookie(
-                    //     Cookie::create('token')
-                    //     ->withValue("bar")
-                    //     // ->withExpires(new DateTime('tomorrow'))
-                    //     ->withSecure(true)
-                    // );
-                    // return $response;
-                    // // $response->headers->setCookie(Cookie::create('token', json_encode($user)));
-                    // $response->setContent(json_encode(['user' => json_encode($userInRes), 'token' => $token]));
-                    // return $response;
-
                     $token = $this->createToken($user);
                     $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
                     return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
