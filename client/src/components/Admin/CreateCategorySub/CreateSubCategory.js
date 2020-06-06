@@ -15,7 +15,7 @@ function CreateSubCategory() {
 
     useEffect( () => {
         axios.get("http://127.0.0.1:8000/api/category").then( e => {
-            setAllCategory(e.data);
+            setAllCategory(e.data.data);
         });
     }, []);
     
@@ -82,7 +82,7 @@ function CreateSubCategory() {
             <h1 className="text-center">Create SubCategory !</h1>
             <div className="btnLink">
                 <button onClick={() => window.location.href = '/admin'} className='btn btn-warning margin-right'> Back to dashboard </button>
-                <button onClick={() => window.location.href = '/admin/createCategory'} className='btn btn-warning'> Create Category </button>
+                <button onClick={() => window.location.href = '/admin/create/category'} className='btn btn-warning'> Create Category </button>
             </div>
             <form id="formCategory">
                 <div className="form-group">

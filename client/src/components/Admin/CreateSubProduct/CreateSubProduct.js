@@ -44,7 +44,7 @@ function CreateSubProduct() {
             const body = {
                 "product_id": id,
                 "price": parseInt(price),
-                "color": color,
+                "color_id": color,
                 "size": size,
                 "weight": parseInt(weight),
                 "promo": parseInt(promo),
@@ -54,7 +54,7 @@ function CreateSubProduct() {
             axios.post("http://127.0.0.1:8000/api/subproduct", body, config ).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"})
             }).catch( err => {
-                toast.error('Error !', {position: 'top-center'});
+                toast.error(err.data, {position: 'top-center'});
             });
         }
     }, [isReady]);
@@ -86,7 +86,7 @@ function CreateSubProduct() {
                     <input className="inputeStyle form-control" type="number" name="promo" min="0" max="100" placeholder="0 - 100" onChange={(e) => setPromo(e.target.value)}/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="stock">stock</label>
+                    <label htmlFor="stock">Stock</label>
                     <input className="inputeStyle form-control" type="number" name="stock" placeholder="ex: 500" onChange={(e) => setStock(e.target.value)}/>
                 </div>
                 <button type="submit" className="btn btn-dark" onClick={(e) => lauch(e)}>Submit</button>
