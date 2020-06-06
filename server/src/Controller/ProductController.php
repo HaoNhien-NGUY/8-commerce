@@ -114,6 +114,10 @@ class ProductController extends AbstractController
                     $promoNb = $req->promo === 0 ? null : $req->promo;
                     $product->setPromo($promoNb);
                 }
+                if (isset($req->title)) $product->setTitle($req->title);
+                if (isset($req->description)) $product->setDescription($req->description);
+                if (isset($req->sex)) $product->setSex($req->sex);
+                if (isset($req->status)) $product->setStatus($req->status);
 
                 $error = $validator->validate($product);
                 if (count($error) > 0) return $this->json($error, 400);

@@ -36,12 +36,6 @@ class Product
     private $description;
 
     /**
-     * @ORM\Column(type="float",nullable=true)
-     * @Groups({"products","category"})
-     */
-    private $price;
-
-    /**
      * @ORM\Column(type="integer", nullable=true)
      * @Groups({"products","category"})
      */
@@ -96,8 +90,7 @@ class Product
         $metadata->addPropertyConstraint('title', new Assert\NotBlank());
         $metadata->addPropertyConstraint('description', new Assert\NotBlank());
         $metadata->addPropertyConstraint('description', new Assert\Type(['type' => ['string']]));
-        $metadata->addPropertyConstraint('price', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('price', new Assert\Type(['type' => ['integer', 'double', 'numeric']]));
+        $metadata->addPropertyConstraint('status', new Assert\NotBlank());
         $metadata->addPropertyConstraint('status', new Assert\Type(['type' => ['bool']]));
         $metadata->addPropertyConstraint('sex', new Assert\NotBlank());
         $metadata->addPropertyConstraint('sex', new Assert\Type(['type' => ['alpha']]));
@@ -130,18 +123,6 @@ class Product
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getPrice(): ?int
-    {
-        return $this->price;
-    }
-
-    public function setPrice(int $price): self
-    {
-        $this->price = $price;
 
         return $this;
     }
