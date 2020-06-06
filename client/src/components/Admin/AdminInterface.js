@@ -19,7 +19,6 @@ const AdminInterface = () => {
     const [offset, setOffset] = useState(0);
     const [pageCount, setPageCount] = useState();
     const [postData, setPostData] = useState();
-
     const [categories, setCategories] = useState([]);
     const [limitCategories, setLimitCategories] = useState(2);
     const [offsetCategories, setOffsetCategories] = useState(0);
@@ -69,10 +68,10 @@ const AdminInterface = () => {
                         <td><p className="m-2">{product.title}</p></td>
                         <td><p className="m-2">{product.price} €</p></td>
                         <td><p className="m-2">{product.sex}</p></td>
-                        <td><button onClick={() => window.location.href='admin/create/image/'+product.id}className="btn btn-outline-success m-2">Add</button> </td>
-                        <td> <button onClick={() => window.location.href='admin/subproduct/'+product.id}className="btn btn-outline-dark m-2">View subproduct</button></td>
-                        <td> <button onClick={() => window.location.href = 'admin/update/product/' + product.id} className="btn btn-outline-info m-2">Modify</button></td>
-                        <td> <button onClick={() => deleteProduct(product.id)} className="btn btn-outline-danger m-2">Delete</button></td>
+                        <td><button onClick={() => window.location.href='admin/create/image/'+product.id}className="btn  add btn-outline-success">Add</button> </td>
+                        <td> <button onClick={() => window.location.href='admin/subproduct/'+product.id}className="btn btn-outline-dark "><span className="viewsub">View</span></button></td>
+                        <td><button onClick={() => window.location.href = 'admin/update/product/' + product.id} className="btn modify btn-outline-info m-2">Modify</button></td>
+                        <td><button onClick={() => deleteProduct(product.id)} className="btn delete btn-outline-danger mr-2">Delete</button></td>
                     </tr>
                 )
                 setPostData(newPostData)
@@ -114,7 +113,7 @@ const AdminInterface = () => {
                     <tr key={category.id}>
                         <td><p className="m-2 align-items-center">{category.id}</p></td>
                         <td><p className="m-2">{category.name}</p></td>
-                        <td> <button onClick={() => window.location.href='/admin/subcategory/'+category.id}className="btn btn-outline-dark m-2">View subcategories</button></td>
+                        <td> <button onClick={() => window.location.href='/admin/subcategory/'+category.id}className="btn btn-outline-dark m-2">View</button></td>
                         <td> <button onClick={() => window.location.href = 'admin/update/category/' + category.id} className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
@@ -174,7 +173,7 @@ const AdminInterface = () => {
                         <th><p className="m-2"> Price </p></th>
                         <th><p className="m-2"> Sex </p></th>
                         <th><p className="m-2"> Image </p></th>
-                        <th><p className="m-2"> Subproduct </p></th>
+                        <th colSpan="3"><p className="m-2"> Subproduct </p></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -286,16 +285,16 @@ const AdminInterface = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container adminTable">
             <ToastContainer />
             <h1 className="mb-5">
-                <img src="https://img.icons8.com/windows/32/000000/speedometer.png" /> ADMIN - Dashboard
+            <i class="material-icons md-36">speed</i> ADMIN - Dashboard
             </h1>
             <Tabs forceRenderTabPanel={true}>
-                <TabList>
-                    <Tab><h3 className="mr-auto ml-2">All Products</h3></Tab>
-                    <Tab><h3 className="mr-auto ml-2">All Categories</h3></Tab>
-                    <Tab><h3 className="mr-auto ml-2">All Colors</h3></Tab>
+                <TabList className="tabsHolder">
+                    <Tab><h3 className="tabtitles mr-auto ml-2">All Products</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-auto ml-2">All Categories</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-auto ml-2">All Colors</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
