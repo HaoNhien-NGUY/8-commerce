@@ -30,7 +30,6 @@ class SubCategory
 
     /**
      * @ORM\OneToMany(targetEntity=Product::class, mappedBy="subCategory")
-     * * @Groups("category")
      */
     private $Product;
 
