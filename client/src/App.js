@@ -26,8 +26,10 @@ import AccessUpdateProduct from './components/Admin/UpdateProduct/AccessUpdatePr
 import AccessCreateSubProduct from './components/Admin/CreateSubProduct/AccessCreateSubProduct';
 import SubProductInterface from './components/Admin/SubProduct/SubProductInterface';
 import AccessUpdateSubProduct from './components/Admin/UpdateSubProduct/AccessUpdateSubProduct';
-import SubCategoryInterface from './components/Admin/SubCategoryInterface/SubCategoryInterface';
+import SubCategoryInterface from './components/Admin/SubCategory/SubCategoryInterface';
 import CreateImage from './components/Admin/CreateImage/CreateImage';
+import AccessUpdateCategory from './components/Admin/UpdateCategory/AccessUpdateCategory';
+import AccessUpdateSubCategory from './components/Admin/UpdateSubCategory/AccessUpdateSubCategoy';
 
 class App extends React.Component {
 
@@ -48,6 +50,7 @@ class App extends React.Component {
                         <Route exact path="/product/:id" component={Product} />
                         <Route exact path="/admin" component={Admin} />
                         <Route exact path="/admin/subcategory/:id" component={SubCategoryInterface} />
+                        <Route exact path="/admin/subcategory/:id/:subcategory/update" component={AccessUpdateSubCategory} />
                         <Route exact path="/admin/subproduct/:id" component={SubProductInterface} />
                         <Route exact path="/admin/subproduct/:id/create" component={AccessCreateSubProduct} />
                         <Route exact path="/admin/subproduct/:id/:subproduct/update" component={AccessUpdateSubProduct} />
@@ -56,7 +59,8 @@ class App extends React.Component {
                         <Route exact path="/admin/create/category" component={AccessCreateCategory} />
                         <Route exact path="/admin/create/subcategory" component={AccessCreateSubCategory} />
                         <Route exact path="/admin/create/image/:idproduct" component={CreateImage} />
-                        <Route exact path="/admin/update/:id" component={AccessUpdateProduct} />
+                        <Route exact path="/admin/update/product/:id" component={AccessUpdateProduct} />
+                        <Route exact path="/admin/update/category/:id" component={AccessUpdateCategory} />
                         <Route path='*' exact={true} component={NotFound} />
                     </Switch>
                 </Router>
