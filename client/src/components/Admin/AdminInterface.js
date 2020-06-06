@@ -24,6 +24,19 @@ const AdminInterface = () => {
     const [offsetCategories, setOffsetCategories] = useState(0);
     const [pageCountCategories, setPageCountCategories] = useState();
     const [postDataCategories, setPostDataCategories] = useState();
+    const [allColors, setAllColors] = useState([]);
+    const [colorSelected, setColorSelected] = useState('');
+    const optionColors = [];
+
+    useEffect( () => {
+        axios.get("http://127.0.0.1:8000/api/color").then( e => {
+            setAllColors(e.data);
+        });
+    }, []);
+    
+    allColors.map( color => {
+        optionColors.push(<option key={color.id} value={color.id}>{color.name}</option>)
+    });
 
     useEffect(() => {
         receivedData()
@@ -128,7 +141,7 @@ const AdminInterface = () => {
         if(data === 'product') window.location.href = '/admin/create/product';
         if(data === 'category') window.location.href = '/admin/create/category';
         if(data === 'subcategory') window.location.href = '/admin/create/subcategory';
-       
+        if(data === 'color') window.location.href = '/admin/create/color';
     }
 
     const AllProducts = () => {
@@ -220,6 +233,46 @@ const AdminInterface = () => {
                 </>
             )
     }
+
+    const handleSelectColor = (e) => {
+        setColorSelected(e.target.value);
+    }
+
+    const handleColorClick = () => {
+        if (colorSelected) {
+            axios.delete("http://localhost:8000/api/color/" + colorSelected).then( res => {
+                    toast.success(res.data.message, { position: "top-center" });
+                }).catch( err => {
+                    toast.error('Error !', {position: 'top-center'});
+                })
+        } else {
+            toast.error('Error ! No color selected', {position: 'top-center'});
+        }
+    }
+
+    const AllColors = () => {
+        return (
+            <>
+                <div className="row justify-content-end mb-2">
+                    <button onClick={() => redirectCreate('color')} className="btn btn-dark">
+                        + New Color
+                    </button>
+                </div>
+                <ul className="list-group list-group-flush">
+                    <li className="list-group-item">
+                        <div className="d-flex">
+                            <select className="form-control form-control-lg" onChange={handleSelectColor}>
+                                <option value="">--- SELECT COLOR ---</option>
+                                {optionColors}
+                            </select>
+                            <button className="btn btn-outline-danger ml-4 deleteColor" onClick={handleColorClick}>Delete</button>
+                        </div>
+                    </li>
+                </ul>
+            </>
+        )
+    }
+
     return (
         <div className="container">
             <ToastContainer />
@@ -230,12 +283,16 @@ const AdminInterface = () => {
                 <TabList>
                     <Tab><h3 className="mr-auto ml-2">All Products</h3></Tab>
                     <Tab><h3 className="mr-auto ml-2">All Categories</h3></Tab>
+                    <Tab><h3 className="mr-auto ml-2">All Colors</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
                 </TabPanel>
                 <TabPanel>
                     {AllCategories()}
+                </TabPanel>
+                <TabPanel>
+                    {AllColors()}
                 </TabPanel>
             </Tabs>
         </div>
