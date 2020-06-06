@@ -14,7 +14,7 @@ nelmio_cors:
             origin_regex: true
             allow_origin: ['*']
             allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
-            allow_headers: ['Content-Type', 'Authorization', 'origin', 'accept', 'bearer']
+            allow_headers: ['Content-Type', 'Authorization', 'Origin', 'accept', 'bearer', 'x-auth-token', 'X-Auth-Token']
             max_age: 3600
         # '^~':
         #     origin_regex: true
