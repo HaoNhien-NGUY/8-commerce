@@ -73,11 +73,31 @@ class ProductController extends AbstractController
      */
     public function productDetails(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer, EntityManagerInterface $em)
     {
-        $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        $productId = $request->attributes->get('id');
+        $product = $productRepository->findOneBy(['id' => $productId]);
         if ($product) {
             $productResp = $normalizer->normalize($product, null, ['groups' => 'products']);
             $sum = $productRepository->findStockSum($product);
             $productResp = array_merge($productResp, $sum[0]);
+
+            $imgArray = [];
+            $colorIdArr = scandir("./images/$productId");
+            $colorIdArr = array_filter($colorIdArr, function ($v) {
+                return is_numeric($v);
+            });
+
+            foreach ($colorIdArr as $v) {
+                $path = "/image/$productId/$v";
+                $ColorImgLinks["color_id"] = $v;
+                $imgLinks = array_diff(scandir("./images/$productId/$v"), [".", ".."]);
+                $imgLinks = array_map(function ($v) use ($path) {
+                    return "$path/$v";
+                }, $imgLinks);
+
+                $ColorImgLinks["links"] = $imgLinks;
+                array_push($imgArray, $ColorImgLinks);
+            }
+            $productResp = array_merge($productResp, ["images" => $imgArray]);
 
             $product->setClicks($product->getClicks() + 1);
             $em->persist($product);
@@ -194,7 +214,7 @@ class ProductController extends AbstractController
     }
 
 
-   /**
+    /**
      * @Route("/api/image/{id}", name="product_add_image", methods="POST",requirements={"id":"\d+"})
      */
     public function addImage(Request $request)
@@ -212,17 +232,16 @@ class ProductController extends AbstractController
                 'message' => 'Wrong extension'
             ], 400);
         }
-    
+
         if (isset($colorId) && isset($uploadedFile) && isset($productId)) {
-        
-            $filename = is_dir($name) && count(array_diff(scandir($name),array('.', '..'))) > 0 ?  (count(array_diff(scandir($name),array('.', '..')))+1).'.'.$ext : "1".'.'.$ext ;
+
+            $filename = is_dir($name) && count(array_diff(scandir($name), array('.', '..'))) > 0 ?  (count(array_diff(scandir($name), array('.', '..'))) + 1) . '.' . $ext : "1" . '.' . $ext;
 
             $file = $uploadedFile->move($name, $filename);
 
             return $this->json([
                 'message' => 'Picture correctly added'
             ], 200);
-            
         } else {
 
             return $this->json([
