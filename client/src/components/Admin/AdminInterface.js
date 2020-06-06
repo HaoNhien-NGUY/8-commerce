@@ -71,7 +71,7 @@ const AdminInterface = () => {
                         <td><p className="m-2">{product.sex}</p></td>
                         <td><button onClick={() => window.location.href='admin/create/image/'+product.id}className="btn btn-outline-success m-2">Add</button> </td>
                         <td> <button onClick={() => window.location.href='admin/subproduct/'+product.id}className="btn btn-outline-dark m-2">View subproduct</button></td>
-                        <td> <button onClick={() => window.location.href = 'admin/update/' + product.id} className="btn btn-outline-info m-2">Modify</button></td>
+                        <td> <button onClick={() => window.location.href = 'admin/update/product/' + product.id} className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteProduct(product.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
                 )
@@ -114,8 +114,8 @@ const AdminInterface = () => {
                     <tr key={category.id}>
                         <td><p className="m-2 align-items-center">{category.id}</p></td>
                         <td><p className="m-2">{category.name}</p></td>
-                        <td> <button onClick={() => window.location.href='/admin/create/subcategory/'+category.id}className="btn btn-outline-dark m-2">View subcategories</button></td>
-                        <td> <button onClick={() => window.location.href = 'admin/update/' + category.id} className="btn btn-outline-info m-2">Modify</button></td>
+                        <td> <button onClick={() => window.location.href='/admin/subcategory/'+category.id}className="btn btn-outline-dark m-2">View subcategories</button></td>
+                        <td> <button onClick={() => window.location.href = 'admin/update/category/' + category.id} className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
                 )

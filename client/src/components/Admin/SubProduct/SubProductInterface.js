@@ -31,7 +31,7 @@ const SubProductInterface = () => {
         axios.get("http://localhost:8000/api/product/"+id, config)
         .then(res => {
                 setTitleProduct(res.data.title)
-                console.log(res.data.subproducts)
+                console.log(res.data)
                 setSubProducts(res.data.subproducts);    
         })
         .catch(error => {
