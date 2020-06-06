@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-  } from "react-router-dom";
-import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from "prop-types";
 import './AccessUpdateProduct.css';
 import { Spinner } from 'react-bootstrap'
@@ -15,19 +8,16 @@ import UpdateProduct from './UpdateProduct';
 const AccessUpdateProduct = ({auth}) => {
   
   if (!auth.authenticated && !auth.isLoading) {
-    if(auth.user !== null && auth.user.role === 'admin')
-    {
-        return(
-            <UpdateProduct />
-        )
+    if (auth.user !== null && auth.user.role === 'admin') {
+      return (
+        <UpdateProduct />
+      )
     }
-    else
-    {
-       return(<div id='error403'> <h2> Error page 403 access forbiden </h2></div>)
+    else {
+      return (<div id='error403'> <h2> Error page 403 access forbiden </h2></div>)
     }
   }
-  else
-  {
+  else {
     return (
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <div>

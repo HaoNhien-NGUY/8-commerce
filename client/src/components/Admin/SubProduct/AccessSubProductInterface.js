@@ -1,16 +1,14 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux'
 import PropTypes from "prop-types";
-import './AccessCreateProduct.css';
 import { Spinner } from 'react-bootstrap'
-import CreateProduct from './CreateProduct';
+import SubProductInterface from './SubProductInterface';
 
-const AccessCreateProduct = ({ auth }) => {
-
+const AccessSubProductInterface = ({ auth }) => {
   if (!auth.authenticated && !auth.isLoading) {
     if (auth.user !== null && auth.user.role === 'admin') {
       return (
-        <CreateProduct />
+        <SubProductInterface />
       )
     }
     else {
@@ -29,7 +27,7 @@ const AccessCreateProduct = ({ auth }) => {
 
 }
 
-AccessCreateProduct.propTypes = {
+AccessSubProductInterface.propTypes = {
   auth: PropTypes.object.isRequired
 };
 
@@ -37,4 +35,4 @@ const mapStateToProps = state => ({
   auth: state.auth,
 })
 
-export default connect(mapStateToProps)(AccessCreateProduct)
+export default connect(mapStateToProps)(AccessSubProductInterface)

@@ -92,7 +92,7 @@ const SubCategoryInterface = () => {
                     <tr key={category.id}>
                         {console.log(category)}
                         <td><p className="m-2 align-items-center">{category.id}</p></td>
-                        <td><p className="m-2">{category.name} €</p></td>
+                        <td><p className="m-2">{category.name} </p></td>
                         <td> <button onClick={() => window.location.href='/admin/subcategory/'+id+'/'+category.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>

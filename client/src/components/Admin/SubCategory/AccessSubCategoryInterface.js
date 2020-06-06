@@ -1,23 +1,14 @@
 import React, { useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom';
 import PropTypes from "prop-types";
-import './Admin.css';
 import { Spinner } from 'react-bootstrap'
-import AdminInterface from './AdminInterface';
+import SubCategoryInterface from './SubCategoryInterface';
 
-const Admin = ({ auth }) => {
-
+const AccessSubCategoryInterface = ({ auth }) => {
   if (!auth.authenticated && !auth.isLoading) {
     if (auth.user !== null && auth.user.role === 'admin') {
       return (
-        <AdminInterface />
+        <SubCategoryInterface />
       )
     }
     else {
@@ -36,7 +27,7 @@ const Admin = ({ auth }) => {
 
 }
 
-Admin.propTypes = {
+AccessSubCategoryInterface.propTypes = {
   auth: PropTypes.object.isRequired
 };
 
@@ -44,4 +35,4 @@ const mapStateToProps = state => ({
   auth: state.auth,
 })
 
-export default connect(mapStateToProps)(Admin)
+export default connect(mapStateToProps)(AccessSubCategoryInterface)

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {BrowserRouter as Router, 
     Link
   } from "react-router-dom";
+import $ from 'jquery';
 import axios from 'axios';
 import './SubProductInterface.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -31,14 +32,13 @@ const SubProductInterface = () => {
         axios.get("http://localhost:8000/api/product/"+id, config)
         .then(res => {
                 setTitleProduct(res.data.title)
-                console.log(res.data)
                 setSubProducts(res.data.subproducts);    
         })
         .catch(error => {
           toast.error('Error !', {position: 'top-center'});
         });
     }, [])
-    console.log(subProducts);
+
 
     const deleteProduct = (idSub) => {
         console.log(idSub);
@@ -61,7 +61,13 @@ const SubProductInterface = () => {
     const redirectCreate = () => {
         window.location.href='/admin/subproduct/'+id+'/create';
     }
+    // $.each(products_temp, (index, product) => {
+    //     product.subproducts.map(item => arr.push(item.price))
+    // });
 
+    console.log($.each(subProducts, (index, product) => {
+        console.log(product)
+    }));
     return(
         <div className="container">
             <ToastContainer />
@@ -88,10 +94,21 @@ const SubProductInterface = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    
-                    {subProducts.length > 0 ? subProducts.map((subproduct) => 
+                {console.log(subProducts.map((e) => console.log('caac' ,e)))}
+                {subProducts.map((subproduct) =>  
                     <tr key={subproduct.id}>
-                        {console.log(subproduct)}
+                        <td><p className="m-2 align-items-center">{subproduct.id}</p></td>
+                        <td><p className="m-2">{subproduct.price} €</p></td>
+                        <td><p className="m-2">{subproduct.color.name}</p></td>
+                        <td><p className="m-2">{subproduct.size}</p></td>
+                        <td><p className="m-2">{subproduct.weight}</p></td>
+                        <td> <button onClick={() => window.location.href='/admin/subproduct/'+id+'/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
+                        <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
+                    </tr>
+                    )}
+                    {/* {subProducts.length > 0 ? subProducts.map((subproduct) => 
+                    <tr key={subproduct.id}>
+                        {console.log(subproduct.map((e) => e.price))}
                         <td><p className="m-2 align-items-center">{subproduct.id}</p></td>
                         <td><p className="m-2">{subproduct.price} €</p></td>
                         <td><p className="m-2">{subproduct.color}</p></td>
@@ -100,7 +117,7 @@ const SubProductInterface = () => {
                         <td> <button onClick={() => window.location.href='/admin/subproduct/'+id+'/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
-                    ) : null}
+                    ) : null} */}
                 </tbody>
             </table>
             </div>

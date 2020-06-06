@@ -19,15 +19,18 @@ function Home() {
             //Display Lowest Price Image
             let arr = []
             let products_temp = resp.data.data
-
-            $.each(products_temp, (index, product) => {
-                product.subproducts.map(item => arr.push(item.price))
-            });
-            for (let i = 0; i < products_temp.length; i++) {
-                products_temp[i]['lowest_price'] = arr[i];
+            console.log(products_temp.subproducts);
+            if(products_temp.subproducts && products_temp.subproducts.length > 0)
+            {   
+                $.each(products_temp, (index, product) => {
+                    product.subproducts.map(item => arr.push(item.price))
+                });
+                for (let i = 0; i < products_temp.length; i++) {
+                    products_temp[i]['lowest_price'] = arr[i];
+                }
+                setProducts(products_temp)
             }
-
-            setProducts(products_temp)
+            
         });
         return () => {
         }
