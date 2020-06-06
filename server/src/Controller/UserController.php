@@ -110,7 +110,7 @@ class UserController extends AbstractController
         if ($request->headers->get('x-auth-token')) {
 
             $data = $request->headers->get('x-auth-token');
-            $request->request->replace(is_array($data) ? $data : array());
+            // $request->request->replace(is_array($data) ? $data : array());
 
             if (Token::validate($data, $_ENV["APP_SECRET"])) {
 
