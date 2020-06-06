@@ -20,13 +20,13 @@ class Color
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"subproduct", "color"})
+     * @Groups({"subproduct", "color","products"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"subproduct", "color"})
+     * @Groups({"subproduct", "color","products"})
      */
     private $name;
 

@@ -73,7 +73,7 @@ class Subproduct
     /**
      * @ORM\ManyToOne(targetEntity=Color::class, inversedBy="subproduct")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"subproduct"})
+     * @Groups({"subproduct","products"})
      */
     private $color;
 
