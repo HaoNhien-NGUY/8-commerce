@@ -90,26 +90,32 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product/{id}", name="product_update", methods="PUT", requirements={"id":"\d+"})
      */
-    public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ProductRepository $productRepository)
+    public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, ProductRepository $productRepository)
     {
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);;
             if ($product) {
+                $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
+                    AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo'],
+                    ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                    AbstractNormalizer::OBJECT_TO_POPULATE => $product
+                ]);
+                // dd($product);
                 if (isset($req->subcategory)) {
                     $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->category);
                     $product->setSubCategory($subcategory);
                 }
-                if (isset($req->promo) && $req->promo === 0) {
+                if (isset($req->promo)) {
                     $promoNb = $req->promo === 0 ? null : $req->promo;
                     $product->setPromo($promoNb);
                 }
-                if (isset($req->title)) $product->setTitle($req->title);
-                if (isset($req->description)) $product->setDescription($req->description);
-                if (isset($req->price)) $product->setPrice($req->price);
-                if (isset($req->sex)) $product->setSex($req->sex);
-                if (isset($req->status)) $product->setStatus($req->status);
+                // if (isset($req->title)) $product->setTitle($req->title);
+                // if (isset($req->description)) $product->setDescription($req->description);
+                // if (isset($req->price)) $product->setPrice($req->price);
+                // if (isset($req->sex)) $product->setSex($req->sex);
+                // if (isset($req->status)) $product->setStatus($req->status);
 
                 $error = $validator->validate($product);
                 if (count($error) > 0) return $this->json($error, 400);
