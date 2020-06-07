@@ -54,20 +54,29 @@ class ColorController extends AbstractController
     /**
      * @Route("/api/color/{color}", name="color_create", methods="POST")
      */
-    public function colorCreate(Request $request,EntityManagerInterface $em, ValidatorInterface $validator)
+    public function colorCreate(Request $request,EntityManagerInterface $em, ValidatorInterface $validator, ColorRepository $colorRepository)
     {
-        $newColor = $request->attributes->get('color');
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+        $oldColor = $colorRepository->findOneBy(['name' => $request->attributes->get("color") ]);
 
-        $color = new Color();
-        $color->setName($newColor);
+        if ($oldColor) {
+            return $this->json(['message' => 'Color already exist'], 400, []);
+        } else {
 
-        $error = $validator->validate($color);
-        if (count($error) > 0) return $this->json($error, 400);
-
-        $em->persist($color);
-        $em->flush();
-
-        return $this->json(['message' => 'Color correctly added'], 200, []);
+            $newColor = $request->attributes->get('color');
+            
+            $color = new Color();
+            $color->setName($newColor);
+            
+            $error = $validator->validate($color);
+            if (count($error) > 0) return $this->json($error, 400);
+            
+            $em->persist($color);
+            $em->flush();
+            
+            return $this->json(['message' => 'Color correctly added'], 200, []);
+        }
     }
 
     /**
