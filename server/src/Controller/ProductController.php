@@ -158,16 +158,27 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product/filter", name="product_filter", methods="POST")
      */
-    public function filterProducts(Request $request, ProductRepository $productRepository)
+    public function filterProducts(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer)
     {
         if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
             $data = json_decode($request->getContent(), true);
             $request->request->replace(is_array($data) ? $data : array());
         }
 
-        $result = $productRepository->filterProducts($data, $request->query->get('limit'), $request->query->get('offset'));
+        $products = $productRepository->filterProducts($data, $request->query->get('limit'), $request->query->get('offset'));
+        $products = $normalizer->normalize($products, null, ['groups' => 'products']);
+        $products = array_map(function($v){
+            $path = "./images/".$v['id']."/default";
+            if (!is_dir($path)) return $v;
 
-        return $this->json($result, 200);
+            $imgArray = (array_diff(scandir($path), [".", ".."]));
+            $imgArray = array_map(function ($img) use ($v){
+                return "/api/image/". $v['id'] ."/default/$img";
+            }, $imgArray);
+            return array_merge($v, ["images" => array_values($imgArray)]);
+        }, $products);
+
+        return $this->json($products, 200);
     }
 
 
