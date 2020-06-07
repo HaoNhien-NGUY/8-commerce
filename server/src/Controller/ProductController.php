@@ -50,6 +50,27 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @Route("/api/product/home", name="product_indexHome", methods="GET")
+     */
+    public function indexHome(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer)
+    {
+        $count = $productRepository->countResults();
+        $products = $productRepository->findBy([], array('clicks' => 'DESC'), $request->query->get('limit'), $request->query->get('offset'));
+        $products = $normalizer->normalize($products, null, ['groups' => 'products']);
+        $products = array_map(function($v){
+            $path = "./images/".$v['id']."/default";
+            if (!is_dir($path)) return $v;
+
+            $imgArray = (array_diff(scandir($path), [".", ".."]));
+            $imgArray = array_map(function ($img) use ($v){
+                return "/api/image/". $v['id'] ."/default/$img";
+            }, $imgArray);
+            return array_merge($v, ["images" => array_values($imgArray)]);
+        }, $products);
+        
+        return $this->json(['nbResults' => $count, 'data' => $products], 200, [], ['groups' => 'products']);
+    }
+    /**
      * @Route("/api/product", name="product_create", methods="POST")
      */
     public function productCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
@@ -87,7 +108,8 @@ class ProductController extends AbstractController
     {
         $productId = $request->attributes->get('id');
         $product = $productRepository->findOneBy(['id' => $productId]);
-        if ($product) {
+        if ($product && !empty($product->getSubproducts()->getValues())) {
+
             $productResp = $normalizer->normalize($product, null, ['groups' => 'products']);
             $sum = $productRepository->findStockSum($product);
             $productResp = array_merge($productResp, $sum[0]);
@@ -115,7 +137,13 @@ class ProductController extends AbstractController
             $em->persist($product);
             $em->flush();
             return $this->json($productResp, 200, [], ['groups' => 'products']);
-        } else {
+        } else if (empty($product->getSubproducts()->getValues())) {
+            $productResp = $normalizer->normalize($product, null, ['groups' => 'products']);
+            $sum = $productRepository->findStockSum($product);
+            $productResp = array_merge($productResp, $sum[0]);
+            return $this->json($productResp, 200, [], ['groups' => 'products']);
+        }
+        else {
             return $this->json(['message' => 'not found'], 404, []);
         }
     }
@@ -150,10 +178,11 @@ class ProductController extends AbstractController
                 if (isset($req->description)) $product->setDescription($req->description);
                 if (isset($req->sex)) $product->setSex($req->sex);
                 if (isset($req->status)) $product->setStatus($req->status);
-
+              
                 $error = $validator->validate($product);
-                if (count($error) > 0) return $this->json($error, 400);
-
+              
+                //if (count($error) > 0) return $this->json($error, 400);
+                //dd($product);
                 $em->persist($product);
                 $em->flush();
 
