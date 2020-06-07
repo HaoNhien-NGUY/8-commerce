@@ -28,6 +28,7 @@ import SubProductInterface from './components/Admin/SubProduct/SubProductInterfa
 import AccessUpdateSubProduct from './components/Admin/UpdateSubProduct/AccessUpdateSubProduct';
 import SubCategoryInterface from './components/Admin/SubCategoryInterface/SubCategoryInterface';
 import CreateImage from './components/Admin/CreateImage/CreateImage';
+import SearchSidebar from './components/Search/Sidebar'
 
 class App extends React.Component {
 
@@ -46,6 +47,7 @@ class App extends React.Component {
                     <Switch>
                         <Route exact path="/" component={Home} />
                         <Route exact path="/product/:id" component={Product} />
+                        <Route exact path="/search" component={SearchSidebar} />
                         <Route exact path="/admin" component={Admin} />
                         <Route exact path="/admin/subcategory/:id" component={SubCategoryInterface} />
                         <Route exact path="/admin/subproduct/:id" component={SubProductInterface} />
