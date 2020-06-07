@@ -36,10 +36,10 @@ const AdminInterface = () => {
     const [show2, setShowColor] = useState(false);
     const [colorCreate, setColor] = useState("");
     const [msgErrorColor, setErrorColor] = useState(null);
+    const optionColors = [];
     const [showImage, setShowImage] = useState(false);
     const [picture, setPicture] = useState([]);
     const [imageId, setImageId] = useState(null);
-    const optionColors = [];
 
     const token = store.getState().auth.token
     const config = {
@@ -79,14 +79,12 @@ const AdminInterface = () => {
                 const newPostData = res.data.data.map((product) =>
                     <tr key={product.id}>
                         <td><p className="m-2 align-items-center">{product.id}</p></td>
-                        <td><p className="m-2">{product.title}</p></td>
-                        <td><p className="m-2">{product.price} €</p></td>
+                        <td><p className="m-2">{product.title.length > 15 ? product.title.substr(0, 15) + '...' : product.title}</p></td>
+                        <td><p className="m-2">{product.status ? 'Active' : 'Inactive'}</p></td>
+                        <td><p className="m-2">{product.subCategory.name.length > 15 ? product.subCategory.name.substr(0, 15) + "..." : product.subCategory.name}</p></td>
                         <td><p className="m-2">{product.sex}</p></td>
-                        {/* <td><button onClick={() => window.location.href = 'admin/create/image/' + product.id} className="btn add btn-outline-success">Add</button> </td> */}
-                        <td>
-                            <button onClick={e => e.preventDefault() + handleShowImage(product.id)} className="btn add btn-outline-success">Add</button>
-                        </td>
-                        <td> <button onClick={() => window.location.href = 'admin/subproduct/' + product.id} className="btn btn-outline-dark "><span className="viewsub">View</span></button></td>
+                        <td><button onClick={e => e.preventDefault() + handleShowImage(product.id)} className="btn add btn-outline-success">Add</button></td>
+                        <td><button onClick={() => window.location.href = 'admin/subproduct/' + product.id} className="btn btn-outline-dark "><span className="viewsub">View</span></button></td>
                         <td><button onClick={() => window.location.href = 'admin/update/product/' + product.id} className="btn modify btn-outline-info m-2">Modify</button></td>
                         <td><button onClick={() => deleteProduct(product.id)} className="btn delete btn-outline-danger mr-2">Delete</button></td>
                     </tr>
@@ -124,7 +122,6 @@ const AdminInterface = () => {
     const receivedDataCategories = () => {
         axios.get(`http://127.0.0.1:8000/api/category?offset=${offsetCategories}&limit=${limitCategories}`, config)
             .then(async res => {
-                console.log(res.data);
                 await setPageCountCategories(Math.ceil(res.data.nbResults / limitCategories))
                 const newPostDataCategories = res.data.data.map((category) =>
                     <tr key={category.id}>
@@ -184,30 +181,23 @@ const AdminInterface = () => {
         setShowImage(true);
         setImageId(id);
     }
-
     const onChangeImage = (event) => {
         let files = event.target.files;
         setPicture(files);
     }
-
     function onSubmitImage(e) {
         e.preventDefault();
-
         if (picture.length === 0) {
             return toast.error("You need to pick a photo", { position: "top-center" });
         }
-
         let fileExtension = picture[0].name.split('.').pop();
         let exts = ['jpg', 'jpeg', 'png'];
-
         if (!exts.includes(fileExtension)) {
             return toast.error("Your picture need to have the \'jpg\', \'jpeg\',\'png\' extension", { position: "top-center" });
         }
-
         const bodyFormData = new FormData();
         bodyFormData.append('image', picture[0]);
         bodyFormData.append('color', 'default');
-
         axios.post('http://localhost:8000/api/image/' + imageId, bodyFormData, config)
             .then(response => {
                 setPicture([]);
@@ -233,7 +223,8 @@ const AdminInterface = () => {
                             <tr>
                                 <th><p className="m-2 align-items-center"> ID </p></th>
                                 <th><p className="m-2"> Title </p></th>
-                                <th><p className="m-2"> Price </p></th>
+                                <th><p className="m-2"> Status </p></th>
+                                <th><p className="m-2"> SubCategory </p></th>
                                 <th><p className="m-2"> Sex </p></th>
                                 <th><p className="m-2"> Image </p></th>
                                 <th colSpan="3"><p className="m-2"> Subproduct </p></th>
@@ -257,9 +248,8 @@ const AdminInterface = () => {
                             onPageChange={handlePageClick}
                             containerClassName={"pagination"}
                             subContainerClassName={"pages pagination"}
-                            activeClassName={"active"}
-                        />
-{/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
+                            activeClassName={"active"} />
+                        {/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
                         <Modal show={showImage} onHide={handleImage}>
                             <Modal.Header closeButton>
                                 Download Image !
@@ -485,11 +475,12 @@ const AdminInterface = () => {
                                     />
                                     <Button color="dark" className="mt-4" block>
                                         Update
-                                    </Button>
+                                </Button>
                                 </FormGroup>
                             </Form>
                         </Modal.Body>
                     </Modal>
+
                 </div>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">
