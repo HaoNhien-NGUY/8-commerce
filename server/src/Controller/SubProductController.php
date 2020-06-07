@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Color;
 use App\Entity\Subproduct;
 use App\Repository\ProductRepository;
+use App\Repository\ColorRepository;
 use App\Repository\SubproductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Image;
@@ -79,21 +80,27 @@ class SubProductController extends AbstractController
         }
     }
 
-    /**
+  /**
      * @Route("/api/subproduct/{id}", name="subproduct_update", methods="PUT")
      */
-    public function subProductUpdate(Request $request, EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator, SubproductRepository $subproductRepository)
+    public function subProductUpdate(Request $request, EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator, SubproductRepository $subproductRepository, ColorRepository $colorRepository)
     {
         try {
             $subProduct = $subproductRepository->findOneBy(['id' => $request->attributes->get('id')]);
             if ($subProduct) {
                 $jsonContent = $request->getContent();
-
+                $data = json_decode($jsonContent);
                 try {
                     //AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo']
                     $subProduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [
                         AbstractNormalizer::OBJECT_TO_POPULATE => $subProduct
                     ]);
+                    if(isset($data->color_id))
+                    {
+                        $color = $colorRepository->findOneBy(['id' => $data->color_id]);
+                        $subProduct->setColor($color);
+                    }
+
                 } catch (NotNormalizableValueException $e) {
                     return $this->json(['message' => $e->getMessage()], 400, []);
                 }
