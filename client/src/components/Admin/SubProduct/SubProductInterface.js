@@ -10,8 +10,18 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReactPaginate from 'react-paginate';
 import { useRouteMatch } from "react-router-dom";
 import store from '../../../store';
+import {
+    Button, Form, FormGroup, Label, Input, Alert
+} from 'reactstrap'
+import Modal from 'react-bootstrap/Modal';
 
 const SubProductInterface = () => {
+    const [show, setShow] = useState(false);
+    const [picture, setPicture] = useState([]);
+    const [idProduct, setIdProduct] = useState(null);
+    const [idSubProduct, setIdSubProduct] = useState(null);
+    const [colorId, setColorId] = useState('default');
+    const [colors, setColors] = useState([]);
 
     const [limit, setLimit] = useState(2);
     const [offset, setOffset] = useState(0);
@@ -98,6 +108,56 @@ const SubProductInterface = () => {
     // $.each(products_temp, (index, product) => {
     //     product.subproducts.map(item => arr.push(item.price))
     // });
+
+    useEffect(() => {
+        axios.get("http://127.0.0.1:8000/api/color", config).then( allColors => {
+            let optionColors = [];
+            allColors.data.map(colorMap => {
+                optionColors.push(<option key={colorMap.id} value={colorMap.id}>{colorMap.name}</option>)
+            });
+            setColors(optionColors);
+        });
+    }, [])
+    
+    const handleClose = () => setShow(false);
+    const handleShow = (id , subProductId) => {
+        setShow(true);
+        setIdProduct(id);
+        setIdSubProduct(subProductId);
+    }
+    const onChange = (event) => {
+        let files = event.target.files;
+        setPicture(files);
+    }
+
+    function onSubmit(e) {
+        e.preventDefault();
+
+        if (picture.length === 0) {
+            return toast.error("You need to pick a photo", { position: "top-center" });
+        }
+
+        let fileExtension = picture[0].name.split('.').pop();
+        let exts = ['jpg', 'jpeg', 'png'];
+
+        if (!exts.includes(fileExtension)) {
+            return toast.error("Your picture need to have the \'jpg\', \'jpeg\',\'png\' extension", { position: "top-center" });
+        }
+        
+        const bodyFormData = new FormData();
+        bodyFormData.append('image', picture[0]);
+        bodyFormData.append('color', colorId);
+
+        axios.post('http://localhost:8000/api/image/' + idProduct, bodyFormData, config)
+            .then(response => {
+                setPicture([]);
+                setShow(false)
+                toast.success("Image correctly added !", { position: "top-center" });
+            }).catch((error) => {
+                toast.error("Error !", { position: "top-center" });
+            })
+    }
+
     return(
         <div className="container">
             <ToastContainer />
@@ -134,7 +194,10 @@ const SubProductInterface = () => {
                         <td><p className="m-2">{subproduct.color.name}</p></td>
                         <td><p className="m-2">{subproduct.size}</p></td>
                         <td><p className="m-2">{subproduct.weight}</p></td>
-                        <td> <button onClick={() => window.location.href='/admin/create/image/'+id+'/'+subproduct.id}className="btn btn-outline-dark m-2">View</button></td>
+                        {/* <td> <button onClick={() => window.location.href='/admin/create/image/'+id+'/'+subproduct.id}className="btn btn-outline-success m-2">Add</button></td> */}
+                        <td>
+                            <button onClick={e => e.preventDefault() + handleShow(id, subproduct.id)}className="btn btn-outline-success m-2">Add</button>
+                        </td>
                         <td> <button onClick={() => window.location.href='/admin/subproduct/'+id+'/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
@@ -151,6 +214,33 @@ const SubProductInterface = () => {
                         <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
                     ) : null} */}
+
+                    <Modal show={show} onHide={handleClose}>
+                        <Modal.Header closeButton>
+                            Download Image !
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={onSubmit}>
+                                <FormGroup>
+                                    <select name="color" className="form-control form-control-lg" onChange={(e) => setColorId(e.target.value)}>
+                                        <option value="default">Default (product)</option>
+                                        {colors}
+                                    </select><br/>
+                                    <Label for="image">Image</Label>
+                                    <Input
+                                        type="file"
+                                        name="image"
+                                        id="image"
+                                        onChange={onChange}
+                                    />
+                                    <Button color="dark" className="mt-4" block>
+                                        Submit
+                                    </Button>
+                                </FormGroup>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
+
                 </tbody>
             </table>
             </div>
