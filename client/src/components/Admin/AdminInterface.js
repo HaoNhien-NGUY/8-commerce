@@ -32,6 +32,9 @@ const AdminInterface = () => {
     const [newColor, setNewColor] = useState("");
     const [oldColor, setOldColor] = useState("");
     const [msgError, setMsgError] = useState(null);
+    const [show2, setShowColor] = useState(false);
+    const [colorCreate, setColor] = useState("");
+    const [msgErrorColor, setErrorColor] = useState(null);
     const optionColors = [];
 
     const token = store.getState().auth.token
@@ -166,9 +169,6 @@ const AdminInterface = () => {
             case 'subcategory':
                 window.location.href = '/admin/create/subcategory';
                 break;
-            case 'color':
-                window.location.href = '/admin/create/color';
-                break;
         }
     }
 
@@ -217,7 +217,7 @@ const AdminInterface = () => {
             </>
         )
     }
-    
+
     const AllCategories = () => {
         return (
             <>
@@ -225,10 +225,10 @@ const AdminInterface = () => {
 
                     <button onClick={() => redirectCreate('category')} className="btn btn-dark">
                         + New Category
-            </button>
+                    </button>
                     <button onClick={() => redirectCreate('subcategory')} className="btn btn-secondary">
                         + New SubCategory
-            </button>
+                    </button>
                 </div>
                 <div className="row border p-2">
                     <table>
@@ -294,6 +294,7 @@ const AdminInterface = () => {
 
         if (oldColor && newColor) {
             setMsgError(null);
+
             if (newColor.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
                 setMsgError("Invalid charactere");
             } else {
@@ -318,13 +319,78 @@ const AdminInterface = () => {
         }
     }
 
+    const handleCloseColor = () => setShowColor(false);
+    const handleShowColor = () => setShowColor(true);
+    const onChangeColor = (event) => {
+        let res = event.target.value.trim();
+        let str = res.toLowerCase();
+        let color = str.charAt(0).toUpperCase() + str.slice(1);
+        setColor(color.replace(/[\s]{2,}/g, " "));
+    }
+
+    function onSubmit2(e) {
+        e.preventDefault()
+
+        if (colorCreate) {
+            setErrorColor(null);
+
+            if (colorCreate.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
+                setErrorColor("Invalid charactere");
+            } else {
+                const body = {
+                    "name": colorCreate
+                }
+
+                axios.post("http://127.0.0.1:8000/api/color/" + colorCreate, body, config).then(res => {
+                    toast.success('Color correctly added!', { position: "top-center" });
+                    axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
+                        setAllColors(e.data);
+                    });
+                }).catch(err => {
+                    toast.error('Color already exist!', { position: 'top-center' });
+                });
+
+                setShowColor(false);
+            }
+        }
+        else {
+            setErrorColor("selected the 2 colors");
+        }
+    }
+
     const AllColors = () => {
         return (
             <>
                 <div className="row justify-content-end mb-2">
-                    <button onClick={() => redirectCreate('color')} className="btn btn-dark btn-color mr-4">
+                    <button onClick={handleShowColor} className="btn btn-dark btn-color mr-4">
                         + New Color
                     </button>
+
+                    <Modal isOpen={show2} >
+                        <ModalHeader >
+                            Create color !
+                        <Button onClick={handleCloseColor}>Exit</Button>
+                        </ModalHeader>
+                        <ModalBody>
+                            {msgErrorColor ? <Alert> {msgErrorColor} </Alert> : null}
+                            <Form onSubmit={onSubmit2}>
+                                <FormGroup>
+                                    <Label for="newColor">New name</Label>
+                                    <Input
+                                        type="text"
+                                        name="newColor"
+                                        id="newColor"
+                                        placeholder="Color name"
+                                        onChange={onChangeColor}
+                                    />
+                                    <Button color="dark" className="mt-4" block>
+                                        Update
+                                </Button>
+                                </FormGroup>
+                            </Form>
+                        </ModalBody>
+                    </Modal>
+
                     <button onClick={handleShow} className="btn btn-dark btn-color">
                         Update Color
                     </button>
