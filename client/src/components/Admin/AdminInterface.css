@@ -110,3 +110,11 @@
 .pagination>li:last-child>span {
     border-radius: unset
 }
+
+.btn-color {
+    width: 48% !important;
+}
+
+.modal-title {
+    display: contents;
+}
