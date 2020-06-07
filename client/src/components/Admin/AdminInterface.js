@@ -124,7 +124,7 @@ const AdminInterface = () => {
                 toast.error('Error !', {position: 'top-center'});
             })
     }
-
+    console.log(config)
     const handlePageClickCategories = (e) => {
         const selectedPage = e.selected;
         const newOffset = selectedPage * limitCategories;
@@ -149,10 +149,20 @@ const AdminInterface = () => {
     }
 
     const redirectCreate = (data) => {
-        if(data === 'product') window.location.href = '/admin/create/product';
-        if(data === 'category') window.location.href = '/admin/create/category';
-        if(data === 'subcategory') window.location.href = '/admin/create/subcategory';
-        if(data === 'color') window.location.href = '/admin/create/color';
+        switch (data) {
+            case 'product':
+                window.location.href = '/admin/create/product';
+                break;
+            case 'category':
+                window.location.href = '/admin/create/category';
+                break;
+            case 'subcategory':
+                window.location.href = '/admin/create/subcategory';
+                break;
+            case 'color':
+                window.location.href = '/admin/create/color';
+                break;
+        }
     }
 
     const AllProducts = () => {

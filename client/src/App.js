@@ -28,6 +28,7 @@ import AccessSubProductInterface from './components/Admin/SubProduct/AccessSubPr
 import AccessUpdateSubProduct from './components/Admin/UpdateSubProduct/AccessUpdateSubProduct';
 import AccessSubCategoryInterface from './components/Admin/SubCategory/AccessSubCategoryInterface';
 import CreateImage from './components/Admin/CreateImage/CreateImage';
+import CreateImageSubproduct from './components/Admin/CreateImage/CreateImageSubproduct';
 import AccessUpdateCategory from './components/Admin/UpdateCategory/AccessUpdateCategory';
 import AccessUpdateSubCategory from './components/Admin/UpdateSubCategory/AccessUpdateSubCategoy';
 
@@ -59,6 +60,7 @@ class App extends React.Component {
                         <Route exact path="/admin/create/category" component={AccessCreateCategory} />
                         <Route exact path="/admin/create/subcategory" component={AccessCreateSubCategory} />
                         <Route exact path="/admin/create/image/:idproduct" component={CreateImage} />
+                        <Route exact path="/admin/create/image/:idproduct/:idsubproduct" component={CreateImageSubproduct} />
                         <Route exact path="/admin/update/product/:id" component={AccessUpdateProduct} />
                         <Route exact path="/admin/update/category/:id" component={AccessUpdateCategory} />
                         <Route path='*' exact={true} component={NotFound} />
