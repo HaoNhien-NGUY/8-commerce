@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Parallax,Background } from "react-parallax";
 import './CreateProduct.css';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import store from '../../../store';
+import Modal from 'react-bootstrap/Modal';
+import CreateCategorySubModal from '../CreateCategorySub/CreateCategorySubModal'
 
 function CreateProduct() {
     const [btnSex, setBtnSex] = useState('');
-    const [formControl, setFormControl] = useState({});
+    const [formControl, setFormControl] = useState({"subcategory": 1});
     const [isReady, setIsReady] = useState(false);
     const [statusState, setStatusState] = useState(true);
     const [isInvalid, setIsInvalid] = useState(false);
+    const [subcategories, setSubCategories] = useState([]);
+    const [isSubCategoriesReady, setIsSubCategoriesReady] = useState(false);
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const token = store.getState().auth.token
     const config = {
         headers: {
-                "Content-type": "application/json"
+            "Content-type": "application/json"
         }
     }
     useEffect(() => {
@@ -25,7 +33,38 @@ function CreateProduct() {
         }
     }, [token]);
 
+    useEffect(() => {
+        if (show == false) {
+            axios
+            .get("http://localhost:8000/api/subcategory/")
+            .then((res) => {
+                console.log(res.data);
+                setSubCategories(res.data);
+                setIsSubCategoriesReady(true);
+                })
+            .catch((error) => {
+                console.log(error.response);
+                });
+        }
+    }, [show]);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/subcategory/")
+            .then((res) => {
+                console.log(res.data);
+                setSubCategories(res.data);
+                setIsSubCategoriesReady(true);
+                })
+            .catch((error) => {
+                console.log(error.response);
+                });
+
+    }, [isSubCategoriesReady] )
+
     function handleChange(event) {
+        console.log(event.target)
+
         let res = event.target.value.trim();
         let val = res.replace(/[\s]{2,}/g, " ");
 
@@ -34,6 +73,8 @@ function CreateProduct() {
         } else {
             setFormControl({ ...formControl, [event.target.name]: val });
         }
+
+        console.log(formControl);
     }
     
     function formSubmit(e) {
@@ -126,9 +167,21 @@ function CreateProduct() {
                 </div>
                 <div className="form-group">
                     <label htmlFor="subcategory">SubCategory</label>
-                    <input className={"form-control " + (isInvalid.subcategory ? 'is-invalid' : 'inputeStyle')} type="number" name="subcategory" id="category" placeholder="category n°" onChange={handleChange}/>
-                    <div className="invalid-feedback">{ isInvalid.subcategory }</div>
-                    <a className='text-info' style={{ cursor:'pointer' }} onClick={() => window.open('/admin/create/category')}> Create a new category ? </a>
+                    <select
+                    className=" col-3 form-control"
+                    id="category"
+                    name="subcategory"
+                    onChange={handleChange}
+                    >
+                    { isSubCategoriesReady 
+                        ? subcategories.map( ( subcategory ) => (
+                        <option key={subcategory.id} value={subcategory.id}>
+                        {subcategory.name}
+                        </option>) )
+                        : null
+                    }
+                    </select>
+                    <a className='text-info small' style={{ cursor:'pointer' }} variant="primary" onClick={handleShow}> Create a new category ? </a>
                 </div>
                 <div className="form-group">
                     <label htmlFor="price">Promo</label>
@@ -146,6 +199,10 @@ function CreateProduct() {
                 </div>
                 <button type="submit" className="btn btn-dark" onClick={formSubmit}>Submit</button>
             </form>
+
+            <Modal show={show} onHide={handleClose}>
+                <CreateCategorySubModal />
+            </Modal>
         </div>
     )
 }
