@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Parallax, Background } from "react-parallax";
 import axios from 'axios';
 import './Category.css';
 import { ToastContainer, toast } from 'react-toastify';
