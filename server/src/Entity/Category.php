@@ -7,10 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
+ * @UniqueEntity("name")
  */
 class Category
 {
@@ -25,13 +27,12 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"products","category"})
-     * @Assert\Unique
      */
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity=SubCategory::class, mappedBy="Category")
-     * @Groups({"products","category"})
+     * @Groups({"category"})
      */
     private $subCategories;
 

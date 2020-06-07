@@ -73,7 +73,7 @@ class Subproduct
     /**
      * @ORM\ManyToOne(targetEntity=Color::class, inversedBy="subproduct")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"subproduct"})
+     * @Groups({"subproduct","products"})
      */
     private $color;
 
@@ -85,6 +85,7 @@ class Subproduct
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('price', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('price', new Assert\Type(['type' => ['integer', 'double', 'numeric']]));
         $metadata->addPropertyConstraint('size', new Assert\NotBlank());
         $metadata->addPropertyConstraint('weight', new Assert\NotBlank());
     }

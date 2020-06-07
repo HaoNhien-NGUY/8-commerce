@@ -2,19 +2,25 @@ import React, { useState, useEffect } from 'react';
 import {BrowserRouter as Router, 
     Link
   } from "react-router-dom";
+import $ from 'jquery';
 import axios from 'axios';
 import './SubProductInterface.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReactPaginate from 'react-paginate';
 import { useRouteMatch } from "react-router-dom";
 import store from '../../../store';
 
 const SubProductInterface = () => {
 
+    const [limit, setLimit] = useState(2);
+    const [offset, setOffset] = useState(0);
+    const [pageCount, setPageCount] = useState();
+    const [postData, setPostData] = useState();
+    const [getSubProducts, setGetSubProducts] = useState([]);
     const [subProducts, setSubProducts] = useState([]);
     const [titleProduct, setTitleProduct] = useState('');
     let id = useRouteMatch("/admin/subproduct/:id").params.id;
-
     const token = store.getState().auth.token
     const config = {
         headers: {
@@ -26,22 +32,31 @@ const SubProductInterface = () => {
             config.headers['x-auth-token'] = token
         }
     }, [token]);
-    
+
+    // useEffect(() => {
+    //     receivedData()
+    // }, [offset, subProducts])
     useEffect(() => {
         axios.get("http://localhost:8000/api/product/"+id, config)
-        .then(res => {
-                setTitleProduct(res.data.title)
-                console.log(res.data.subproducts)
-                setSubProducts(res.data.subproducts);    
+        .then(async res => {
+            await setPageCount(Math.ceil(res.data.subproducts.length / limit))
+            setTitleProduct(res.data.title)
+            let arrSubProduct = []
+            let nbr;
+            for(let i = 0; i !== limit; i++)
+            {   
+
+                if(res.data.subproducts[offset+i]) arrSubProduct.push(res.data.subproducts[offset+i]);
+                console.log(arrSubProduct);
+            }
+            setSubProducts(arrSubProduct);    
         })
         .catch(error => {
           toast.error('Error !', {position: 'top-center'});
         });
-    }, [])
-    console.log(subProducts);
+    }, [offset])
 
     const deleteProduct = (idSub) => {
-        console.log(idSub);
         axios.delete("http://localhost:8000/api/subproduct/"+idSub, config)
         .then(res => {
             axios.get("http://localhost:8000/api/product/"+id, config)
@@ -58,10 +73,19 @@ const SubProductInterface = () => {
         });
     }
 
+    const handlePageClick = (e) => {
+
+        const selectedPage = e.selected;
+        const newOffset = selectedPage * limit;
+        setOffset(newOffset)
+    };
+
     const redirectCreate = () => {
         window.location.href='/admin/subproduct/'+id+'/create';
     }
-
+    // $.each(products_temp, (index, product) => {
+    //     product.subproducts.map(item => arr.push(item.price))
+    // });
     return(
         <div className="container">
             <ToastContainer />
@@ -70,7 +94,7 @@ const SubProductInterface = () => {
             </h1>
             <div className="row justify-content-end mb-2">
               <h3 className="mr-auto ml-2">All Subproducts of <b>{titleProduct}</b></h3>
-              <button onClick={() => window.location.href='/admin/update/'+id} className='btn btn-outline-info m-2'> modify the product </button>
+              <button onClick={() => window.location.href='/admin/update/product/'+id} className='btn btn-outline-info m-2'> modify the product </button>
               <button onClick={() => window.location.href='/admin'} className='float-right btn m-2 btn-warning'> Back to dashboard </button>
               <button onClick={redirectCreate} className="btn btn-dark">
                 + New Subproduct for <b>{titleProduct}</b>
@@ -88,10 +112,22 @@ const SubProductInterface = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    
-                    {subProducts.length > 0 ? subProducts.map((subproduct) => 
+                    {console.log(subProducts)}
+                {subProducts && subProducts.length > 0 ? subProducts.map((subproduct) =>  
                     <tr key={subproduct.id}>
-                        {console.log(subproduct)}
+                        <td><p className="m-2 align-items-center">{subproduct.id}</p></td>
+                        <td><p className="m-2">{subproduct.price} €</p></td>
+                        <td><p className="m-2">{subproduct.color.name}</p></td>
+                        <td><p className="m-2">{subproduct.size}</p></td>
+                        <td><p className="m-2">{subproduct.weight}</p></td>
+                        <td> <button onClick={() => window.location.href='/admin/create/image/'+id+'/'+subproduct.id}className="btn btn-outline-dark m-2">View</button></td>
+                        <td> <button onClick={() => window.location.href='/admin/subproduct/'+id+'/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
+                        <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
+                    </tr>
+                    ) : null}
+                    {/* {subProducts.length > 0 ? subProducts.map((subproduct) => 
+                    <tr key={subproduct.id}>
+                        {console.log(subproduct.map((e) => e.price))}
                         <td><p className="m-2 align-items-center">{subproduct.id}</p></td>
                         <td><p className="m-2">{subproduct.price} €</p></td>
                         <td><p className="m-2">{subproduct.color}</p></td>
@@ -100,9 +136,25 @@ const SubProductInterface = () => {
                         <td> <button onClick={() => window.location.href='/admin/subproduct/'+id+'/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>
-                    ) : null}
+                    ) : null} */}
                 </tbody>
             </table>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div>
+                    <ReactPaginate
+                        previousLabel={"prev"}
+                        nextLabel={"next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={2}
+                        onPageChange={handlePageClick}
+                        containerClassName={"pagination"}
+                        subContainerClassName={"pages pagination"}
+                        activeClassName={"active"} />
+                </div>
             </div>
         </div>
         

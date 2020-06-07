@@ -1,23 +1,15 @@
 import React, { useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom';
 import PropTypes from "prop-types";
-import './Admin.css';
-import { Spinner } from 'react-bootstrap'
-import AdminInterface from './AdminInterface';
+import { Spinner } from 'react-bootstrap';
+import UpdateCategory from './UpdateCategory';
 
-const Admin = ({ auth }) => {
-
+const AccessUpdateCategory = ({auth}) => {
+  
   if (!auth.authenticated && !auth.isLoading) {
     if (auth.user !== null && auth.user.role === 'admin') {
       return (
-        <AdminInterface />
+        <UpdateCategory />
       )
     }
     else {
@@ -36,12 +28,12 @@ const Admin = ({ auth }) => {
 
 }
 
-Admin.propTypes = {
-  auth: PropTypes.object.isRequired
-};
+AccessUpdateCategory.propTypes = {
+    auth: PropTypes.object.isRequired
+  };
 
 const mapStateToProps = state => ({
-  auth: state.auth,
+    auth: state.auth,
 })
 
-export default connect(mapStateToProps)(Admin)
+export default connect(mapStateToProps)(AccessUpdateCategory)

@@ -17,6 +17,8 @@ function CreateSubProduct() {
     const [promo, setPromo] = useState(0);
     const [stock, setStock] = useState(0);
     const [titleProduct, setTitleProduct] = useState('');
+    const [colors, setColors] = useState([]);
+
     const lauch = (e) =>{
         e.preventDefault()
         setIsReady(true);
@@ -39,7 +41,14 @@ function CreateSubProduct() {
     useEffect(() => {
         axios.get("http://localhost:8000/api/product/"+id, config)
         .then(res => {
+            axios.get("http://127.0.0.1:8000/api/color", config).then( allColors => {
+                let optionColors = [];
+                allColors.data.map(colorMap => {
+                    optionColors.push(<option key={colorMap.id} value={colorMap.id}>{colorMap.name}</option>)
+                });
+                setColors(optionColors);
                 setTitleProduct(res.data.title)
+            });
         })
         .catch(error => {
             toast.error('Error !', {position: 'top-center'});
@@ -78,8 +87,11 @@ function CreateSubProduct() {
                     <input className="inputeStyle form-control" type="number" name="price" placeholder="ex: 123" onChange={(e) => setPrice(e.target.value)}/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="color">Color</label>
-                    <input className="inputeStyle form-control" type="text" name="color" placeholder="Color article" onChange={(e) => setColor(e.target.value)}/>
+                <label htmlFor="color">Color</label>
+                    <select name="color" className="form-control form-control-lg" onChange={(e) => setColor(e.target.value)}>
+                            <option value="">--- SELECT COLOR ---</option>
+                            {colors}
+                    </select>
                 </div>
                 <div className="form-group">
                     <label htmlFor="size">Size</label>

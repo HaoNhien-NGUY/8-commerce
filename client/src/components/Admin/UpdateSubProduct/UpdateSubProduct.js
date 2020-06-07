@@ -11,16 +11,14 @@ import store from '../../../store';
 function UpdateSubProduct() {
     const [isReady, setIsReady] = useState(false);
     const [price, setPrice] = useState(1);
-    const [color, setColor] = useState('');
+    const [color, setColor] = useState(1);
     const [size, setSize] = useState('');
     const [weight, setWeight] = useState(1);
     const [promo, setPromo] = useState(0);
     const [stock, setStock] = useState(0);
     const [titleProduct, setTitleProduct] = useState('');
-    const lauch = (e) =>{
-        e.preventDefault()
-        setIsReady(true);
-    }
+    const [colors, setColors] = useState([]);
+
     let id = useRouteMatch("/admin/subproduct/:id/:subproduct/update").params.id;
     let idSubproduct = useRouteMatch("/admin/subproduct/:id/:subproduct/update").params.subproduct;
 
@@ -30,29 +28,43 @@ function UpdateSubProduct() {
                 "Content-type": "application/json"
         }
     }
+    
+    const lauch = (e) =>{
+        e.preventDefault()
+        setIsReady(true);
+    }
+
     useEffect(() => {
         if (token) {
             config.headers['x-auth-token'] = token
         }
     }, [token]);
-
+    
     useEffect(() => {
         axios.get("http://localhost:8000/api/product/"+id, config)
-        .then(res => {
-            $.each(res.data.subproducts, (index, subproduct) => {
-                if(subproduct.id === parseInt(idSubproduct))
-                {
-                    console.log(subproduct);
-                    setPrice(subproduct.price);
-                    setColor(subproduct.color);
-                    setSize(subproduct.size);
-                    setWeight(subproduct.weight);
-                    subproduct.promo === null ? setPromo(0) :setPromo(subproduct.promo);
-                    setStock(subproduct.price);
-                }
+        .then(async res => {
+            await axios.get("http://127.0.0.1:8000/api/color", config).then( allColors => {
+                $.each(res.data.subproducts, (index, subproduct) => {
+                    if(subproduct.id === parseInt(idSubproduct))
+                    {
+                    let optionColors = [];
+                        allColors.data.map(colorMap => {
+                            colorMap.name === subproduct.color.name 
+                            ? optionColors.push(<option key={colorMap.id} defaultValue={colorMap.id} selected>{colorMap.name}</option>)
+                            : optionColors.push(<option key={colorMap.id} value={colorMap.id}>{colorMap.name}</option>)
+                        });
+                        setColors(optionColors);
+                        setPrice(subproduct.price);
+                        setColor(subproduct.color.id);
+                        setSize(subproduct.size);
+                        setWeight(subproduct.weight);
+                        subproduct.promo === null ? setPromo(0) :setPromo(subproduct.promo);
+                        setStock(subproduct.price);
+                    }
+                });
             });
-            console.log(Object.keys(res.data.subproducts).map(i => res.data.subproducts[i]))
-
+            // console.log(Object.keys(res.data.subproducts).map(i => res.data.subproducts[i]))
+            
             setTitleProduct(res.data.title)
         })
         .catch(error => {
@@ -63,10 +75,12 @@ function UpdateSubProduct() {
     useEffect(() => {
         if (isReady) {
             setIsReady(false)
+            console.log(color)
+
             const body = {
                 "product_id": id,
                 "price": parseInt(price),
-                "color_id": color.trim().toLowerCase().charAt(0),
+                "color_id": parseInt(color),
                 "size": size,
                 "weight": parseInt(weight),
                 "promo": parseInt(promo),
@@ -74,13 +88,12 @@ function UpdateSubProduct() {
             }
             console.log(body);
             axios.put("http://127.0.0.1:8000/api/subproduct/"+idSubproduct, body, config).then( e => {
-                toast.success('Product correctly added!', { position: "top-center"})
+                toast.success('Product correctly updated!', { position: "top-center"});
             }).catch( err => {
                 toast.error('Error !', {position: 'top-center'});
             });
         }
     }, [isReady]);
-
     return (
         <div className='container'>
             <ToastContainer />
@@ -94,7 +107,11 @@ function UpdateSubProduct() {
                 </div>
                 <div className="form-group">
                     <label htmlFor="color">Color</label>
-                    <input className="inputeStyle form-control" type="text" name="color" placeholder="Color article" value={color} onChange={(e) => setColor(e.target.value)}/>
+                    <select name="color" className="form-control form-control-lg" onChange={(e) => setColor(e.target.value)}>
+                            <option value="">--- SELECT COLOR ---</option>
+                            {colors}
+                    </select>
+                    {/* <input className="inputeStyle form-control" type="text" name="color" placeholder="Color article" value={color} onChange={(e) => setColor(e.target.value)}/> */}
                 </div>
                 <div className="form-group">
                     <label htmlFor="size">Size</label>

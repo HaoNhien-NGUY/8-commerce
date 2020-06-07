@@ -3,36 +3,49 @@
 namespace App\Controller;
 
 
-use App\Entity\Category;
-use App\Entity\Product;
-use App\Entity\SubCategory;
-use App\Kernel;
-use App\Repository\ImageRepository;
-use App\Repository\ColorRepository;
-use App\Repository\SubproductRepository;
-use App\Repository\ProductRepository;
 use DateTime;
+use App\Kernel;
+use App\Entity\Product;
+use App\Entity\Category;
+use App\Entity\SubCategory;
+use App\Repository\ColorRepository;
+use App\Repository\ImageRepository;
+use App\Repository\ProductRepository;
+use App\Repository\SubproductRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 
 class ProductController extends AbstractController
 {
     /**
      * @Route("/api/product", name="product_index", methods="GET")
      */
-    public function index(Request $request, ProductRepository $productRepository)
+    public function index(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer)
     {
         $count = $productRepository->countResults();
         $products = $productRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
+        $products = $normalizer->normalize($products, null, ['groups' => 'products']);
+        $products = array_map(function($v){
+            $path = "./images/".$v['id']."/default";
+            if (!is_dir($path)) return $v;
 
+            $imgArray = (array_diff(scandir($path), [".", ".."]));
+            $imgArray = array_map(function ($img) use ($v){
+                return "/api/image/". $v['id'] ."/default/$img";
+            }, $imgArray);
+            return array_merge($v, ["images" => array_values($imgArray)]);
+        }, $products);
+        
         return $this->json(['nbResults' => $count, 'data' => $products], 200, [], ['groups' => 'products']);
     }
 
@@ -63,7 +76,7 @@ class ProductController extends AbstractController
 
             return $this->json(['product' => $product], 201, [], ['groups' => 'products']);
         } catch (NotEncodableValueException $e) {
-            return $this->json($e->getMessage(), 400);
+            return $this->json(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -72,11 +85,31 @@ class ProductController extends AbstractController
      */
     public function productDetails(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer, EntityManagerInterface $em)
     {
-        $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        $productId = $request->attributes->get('id');
+        $product = $productRepository->findOneBy(['id' => $productId]);
         if ($product) {
             $productResp = $normalizer->normalize($product, null, ['groups' => 'products']);
             $sum = $productRepository->findStockSum($product);
             $productResp = array_merge($productResp, $sum[0]);
+
+            $imgArray = [];
+            $colorIdArr = scandir("./images/$productId");
+            $colorIdArr = array_filter($colorIdArr, function ($v) {
+                return is_numeric($v);
+            });
+
+            foreach ($colorIdArr as $v) {
+                $path = "/api/image/$productId/$v";
+                $ColorImgLinks["color_id"] = $v;
+                $imgLinks = array_diff(scandir("./images/$productId/$v"), [".", ".."]);
+                $imgLinks = array_map(function ($v) use ($path) {
+                    return "$path/$v";
+                }, $imgLinks);
+
+                $ColorImgLinks["links"] = array_values($imgLinks);
+                array_push($imgArray, $ColorImgLinks);
+            }
+            $productResp = array_merge($productResp, ["images" => $imgArray]);
 
             $product->setClicks($product->getClicks() + 1);
             $em->persist($product);
@@ -90,24 +123,31 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product/{id}", name="product_update", methods="PUT", requirements={"id":"\d+"})
      */
-    public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ProductRepository $productRepository)
+    public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, ProductRepository $productRepository)
     {
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);;
             if ($product) {
+                try {
+                    $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
+                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo'],
+                        AbstractNormalizer::OBJECT_TO_POPULATE => $product
+                    ]);
+                } catch (NotNormalizableValueException $e) {
+                    return $this->json(['message' => $e->getMessage()], 400, []);
+                }
                 if (isset($req->subcategory)) {
                     $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->category);
                     $product->setSubCategory($subcategory);
                 }
-                if (isset($req->promo) && $req->promo === 0) {
+                if (isset($req->promo)) {
                     $promoNb = $req->promo === 0 ? null : $req->promo;
                     $product->setPromo($promoNb);
                 }
                 if (isset($req->title)) $product->setTitle($req->title);
                 if (isset($req->description)) $product->setDescription($req->description);
-                if (isset($req->price)) $product->setPrice($req->price);
                 if (isset($req->sex)) $product->setSex($req->sex);
                 if (isset($req->status)) $product->setStatus($req->status);
 
@@ -122,7 +162,7 @@ class ProductController extends AbstractController
                 return $this->json(['message' => 'product not found'], 404, []);
             }
         } catch (NotEncodableValueException $e) {
-            return $this->json($e->getMessage(), 400);
+            return $this->json(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -183,16 +223,34 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route("/api/product/{id}/image", name="subproduct_add_image", methods="POST",requirements={"id":"\d+"})
+     * @Route("/api/image/{productid}/{colorid}/{imagename}", name="get_image", methods="GET" , requirements={"productid":"\d+"})
      */
-    public function addImage(Request $request, SubproductRepository $subrepo, ColorRepository $colorRepo)
+    public function getImage(Request $request)
     {
+        $productId = $request->attributes->get('productid');
+        $colorId = $request->attributes->get('colorid');
+        $imageName = $request->attributes->get('imagename');
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $name = "./images/$productId/$colorId/$imageName";
+        $fp = fopen($name, 'rb');
+
+        header("Content-Type: image/jpg");
+        header("Content-Length: " . filesize($name));
+
+        return new Response(fpassthru($fp), 200);
+    }
+
+
+    /**
+     * @Route("/api/image/{id}", name="product_add_image", methods="POST",requirements={"id":"\d+"})
+     */
+    public function addImage(Request $request)
+    {
 
         $productId = $request->attributes->get('id');
         $uploadedFile = $request->files->get('image');
         $colorId = $request->request->get('color');
+        $name = "./images/$productId/$colorId/";
 
         $ext = $uploadedFile->getClientOriginalExtension();
 
@@ -201,46 +259,21 @@ class ProductController extends AbstractController
                 'message' => 'Wrong extension'
             ], 400);
         }
-        //product id / color / img 
-        $value = new \DateTime('now');
+
         if (isset($colorId) && isset($uploadedFile) && isset($productId)) {
-            $filename = str_replace(':', '-', $value->format('Y-m-dH:i:s')) . '.' . $ext;
-            if ($colorId == 'default') {
-                $file = $uploadedFile->move('../../client/images/' . $productId . '/default', $filename);
-            } else {
-                $file = $uploadedFile->move('../../client/images/' . $productId . '/' . $colorId, $filename);
-            }
+
+            $filename = is_dir($name) && count(array_diff(scandir($name), array('.', '..'))) > 0 ?  (count(array_diff(scandir($name), array('.', '..'))) + 1) . '.' . $ext : "1" . '.' . $ext;
+
+            $file = $uploadedFile->move($name, $filename);
 
             return $this->json([
                 'message' => 'Picture correctly added'
             ], 200);
         } else {
+
             return $this->json([
                 'message' => 'Not found'
             ], 404);
-        }
-    }
-
-    /**
-     * @Route("/api/product/{id}/image", name="get_images", methods="GET",requirements={"id":"\d+"})
-     */
-    public function getImage(Request $request)
-    {
-        $jsonContent = $request->getContent();
-        $req = json_decode($jsonContent);
-
-        $productId = $request->attributes->get('id');
-        $colorId = $req->color;
-        $path = '../../client/images/'. $productId . '/'. $colorId;
-
-        if (isset($colorId) && isset($productId) && is_dir($path)) {
-            $images = array_diff(scandir($path),array('.', '..'));
-            return $this->json($images, 200);
-        }
-        else{
-            return $this->json([
-                'message' => 'Not found'
-            ], 400);
         }
     }
 }
