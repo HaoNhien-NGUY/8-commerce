@@ -15,7 +15,7 @@ function ProductDescription() {
     let id = useRouteMatch("/product/:id").params.id;
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/product/' + id).then(resp => {
-            console.log(resp.data)
+            // console.log(resp.data)
             setProduct(resp.data);
         });
         return () => {
@@ -31,13 +31,19 @@ function ProductDescription() {
     let SizeOption = [];
     let ColorOption = [];
     let testProps = "";
+    let subCategory = "";
+    let Categoryname = '';
 
+  
     if (product) {
 
         if (product.length == 0) {
             loadingScreen.push(<div className="loading-screen"></div>);
         }
         else {
+
+            subCategory = product.subCategory.name;
+            Categoryname = product.subCategory.Category.name;
             testProps = product.description;
             let count = 0;
             if (product.subproducts && product.subproducts.length > 0) {
@@ -112,14 +118,14 @@ function ProductDescription() {
     }
 
     const setChosenProduct = async () => {
-        console.log('Seeting chosen product')
+        // console.log('Seeting chosen product')
         await setChosenProductColor('') //permet de ne pas boucler inf
         await setChosenSubProduct(product.subproducts.filter(item => item.size == chosenProductSize && item.color.id == chosenProductColor)[0])
     }
 
     const verifyIfAProductIsChosen = () => {
         // console.log('verifyIfAProductIsChosen')
-        console.log(chosenSubProduct)
+        // console.log(chosenSubProduct)
         if (chosenSubProduct && chosenSubProduct != null) {
             return true;
         } else {
@@ -128,9 +134,13 @@ function ProductDescription() {
     }
 
     const subproductsAvailable = () => {
+
+       let pathCat = "/"+Categoryname;
+       let pathSub = "/"+subCategory;
+
         return (
-            <div class="divDetails">
-                <span>Path/to/category/article</span>
+            <div className="divDetails">
+                <span><a href={pathCat}>{Categoryname}</a> / <a href={pathSub}>{subCategory}</a></span>
                 <h1>{details.title}</h1>
                 <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.price : details.price} €</h3>
                 <p className='description'>
@@ -164,7 +174,7 @@ function ProductDescription() {
     // Product doesnt have subproducts
     const subproductsUnavailable = () => {
         return (
-            <div class="divDetails">
+            <div className="divDetails">
                 <h1>{details.title}</h1>
                 <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.price + '€' : details.price} </h3>
                 <p className='description'>
@@ -197,9 +207,9 @@ function ProductDescription() {
     return (
         <div>
 
-            <div class="container-fluid m-0 p-0">
-                <div class="row">
-                    <div class="col-md-7 productImgBg m-0 p-0">
+            <div className="container-fluid m-0 p-0">
+                <div className="row">
+                    <div className="col-md-7 productImgBg m-0 p-0">
                         <div className='ulImgProduct'>
                             {miniImageProduct}
                         </div>
@@ -207,12 +217,12 @@ function ProductDescription() {
                             {imageProduct}
                         </div>
                     </div>
-                    <div class="col-md-5 m-0 p-0">
+                    <div className="col-md-5 m-0 p-0">
                         {product.subproducts && product.subproducts.length > 0 ? subproductsAvailable() : subproductsUnavailable()}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-12 sndrow"><br /> <br /> <br /> <br /> <br /> <br /> <br />   <br /> <br /> <br /> <br /> <br /> <br /> <br />   <br /> <br /> <br /> <br /> <br /> <br /> <br /></div>
+                <div className="row">
+                    <div className="col-sm-12 sndrow"><br /> <br /> <br /> <br /> <br /> <br /> <br />   <br /> <br /> <br /> <br /> <br /> <br /> <br />   <br /> <br /> <br /> <br /> <br /> <br /> <br /></div>
                 </div>
             </div>
         </div>
