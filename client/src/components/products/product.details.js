@@ -15,7 +15,7 @@ function ProductDescription() {
     let id = useRouteMatch("/product/:id").params.id;
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/product/' + id).then(resp => {
-            // console.log(resp.data)
+            console.log(resp.data)
             setProduct(resp.data);
         });
         return () => {
@@ -34,7 +34,7 @@ function ProductDescription() {
     let subCategory = "";
     let Categoryname = '';
 
-  
+
     if (product) {
 
         if (product.length == 0) {
@@ -64,9 +64,20 @@ function ProductDescription() {
         }
     }
 
-    const imageProduit1 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-front-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
-    const imageProduit2 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-back-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
+    let imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
+    // let imageProduit1 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-front-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
+    // let imageProduit2 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-back-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
+    // let imageProduit3 = "http://127.0.0.1:8000/api/image/1/default/1.jpg";
+    // let imageProduit4 = "http://127.0.0.1:8000/api/image/1/default/2.jpg";
+    // console.log(product.images)
 
+    let obj = {'img-0': imageDefault}
+    if (product && product.images && product.images[0]) { //[0] = default, à modifier en state
+        obj = {}
+        for (let i = 0; i < product.images[0].links.length; i++) {
+            obj['img-' + i] = "http://127.0.0.1:8000" + product.images[0].links[i];
+        }
+    }
 
     const details = {
         title: product.title,
@@ -77,7 +88,8 @@ function ProductDescription() {
 
     //Lien : https://server.com/images/:product_id/:color_id/uplaod_date.jpg
     // for (let [key, value] of Object.entries({propsImage})) {
-    for (let [key, value] of Object.entries({ 'img-1': imageProduit1, 'img-2': imageProduit2 })) {
+    // for (let [key, value] of Object.entries({ 'img-1': (product && product.images ? imageProduit3 : imageProduit1), 'img-2': imageProduit2 })) {
+    for (let [key, value] of Object.entries(obj)) {
         const ref = React.createRef();
         const handleClick = () =>
             ref.current.scrollIntoView({
@@ -135,8 +147,8 @@ function ProductDescription() {
 
     const subproductsAvailable = () => {
 
-       let pathCat = "/"+Categoryname;
-       let pathSub = "/"+subCategory;
+        let pathCat = "/" + Categoryname;
+        let pathSub = "/" + subCategory;
 
         return (
             <div className="divDetails">
@@ -153,17 +165,17 @@ function ProductDescription() {
 
                 <p>Size</p>
                 <select id='selectSize' onChange={e => e.preventDefault() + console.log(e.target.value) + setChosenProductSize(e.target.value)}>
-                    <option value='No-Choice-Size'  className='selectChoice' selected disabled>--- SIZE ({SizeOption.length})---</option>
+                    <option value='No-Choice-Size' className='selectChoice' selected disabled>--- SIZE ({SizeOption.length})---</option>
                     {SizeOption}
                 </select>
                 {chosenProductSize ?
-                <>
-                <p>Color</p>
-                    <select id='selectColor' onChange={e => e.preventDefault() + setChosenProductColor(e.target.value)}>
-                        <option value='No-Choice-Color' key="001" className='selectChoice'>--- COLOR ({createOptions().length}) ---</option>
-                        {createOptions()}
-                    </select>
-                </>
+                    <>
+                        <p>Color</p>
+                        <select id='selectColor' onChange={e => e.preventDefault() + setChosenProductColor(e.target.value)}>
+                            <option value='No-Choice-Color' key="001" className='selectChoice'>--- COLOR ({createOptions().length}) ---</option>
+                            {createOptions()}
+                        </select>
+                    </>
                     : null
                 }
                 <button className='btn-cart'>Add to cart</button>

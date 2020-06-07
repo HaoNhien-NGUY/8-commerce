@@ -57,7 +57,7 @@ const AdminInterface = () => {
 
     useEffect(() => {
         receivedData()
-    }, [offset, products]) 
+    }, [offset, products])
 
     useEffect(() => {
         receivedDataCategories()
@@ -75,9 +75,9 @@ const AdminInterface = () => {
                 const newPostData = res.data.data.map((product) =>
                     <tr key={product.id}>
                         <td><p className="m-2 align-items-center">{product.id}</p></td>
-                        <td><p className="m-2">{product.title.length > 15 ?  product.title.substr(0,15) + '...' : product.title }</p></td>
+                        <td><p className="m-2">{product.title.length > 15 ? product.title.substr(0, 15) + '...' : product.title}</p></td>
                         <td><p className="m-2">{product.status ? 'Active' : 'Inactive'}</p></td>
-                        <td><p className="m-2">{product.subCategory.name.length > 15 ? product.subCategory.name.substr(0,15) + "..." : product.subCategory.name}</p></td>
+                        <td><p className="m-2">{product.subCategory.name.length > 15 ? product.subCategory.name.substr(0, 15) + "..." : product.subCategory.name}</p></td>
                         <td><p className="m-2">{product.sex}</p></td>
                         <td><button onClick={() => window.location.href = 'admin/create/image/' + product.id} className="btn  add btn-outline-success">Add</button> </td>
                         <td> <button onClick={() => window.location.href = 'admin/subproduct/' + product.id} className="btn btn-outline-dark "><span className="viewsub">View</span></button></td>
@@ -97,7 +97,7 @@ const AdminInterface = () => {
         const newOffset = selectedPage * limit;
         setOffset(newOffset)
     };
-
+    
     const deleteProduct = (id) => {
         axios.delete("http://localhost:8000/api/product/" + id, config)
             .then(res => {
