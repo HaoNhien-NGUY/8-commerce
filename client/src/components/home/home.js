@@ -45,7 +45,6 @@ function Home() {
             //Boucler sur l'objet pour voir si il y a un prix minimal ou si il n'est pas disponible
             if (Object.keys(prices).length > 0) {
                 const entries = Object.entries(prices)
-                console.log(entries)
                 for (const [id, prices_list] of entries) {
                     for (let j = 0; j < products_temp.length; j++) {
                         
@@ -105,7 +104,8 @@ function Home() {
                                     <p>{e.lowest_price}</p>
                                     <a href={"/product/" + e.id}>
                                         <div className="ProductHomeImgContainer">
-                                            <img className="ProductHomeImg" src={imageProduit1}></img>
+                                            {console.log(e)}
+                                            <img className="ProductHomeImg" src={e.images !== undefined ? 'http://127.0.0.1:8000/api'+e.images[0] : imageProduit1}></img>
                                             <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img>
                                         </div>
                                     </a>

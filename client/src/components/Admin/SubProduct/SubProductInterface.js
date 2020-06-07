@@ -94,7 +94,7 @@ const SubProductInterface = () => {
             </h1>
             <div className="row justify-content-end mb-2">
               <h3 className="mr-auto ml-2">All Subproducts of <b>{titleProduct}</b></h3>
-              <button onClick={() => window.location.href='/admin/update/'+id} className='btn btn-outline-info m-2'> modify the product </button>
+              <button onClick={() => window.location.href='/admin/update/product/'+id} className='btn btn-outline-info m-2'> modify the product </button>
               <button onClick={() => window.location.href='/admin'} className='float-right btn m-2 btn-warning'> Back to dashboard </button>
               <button onClick={redirectCreate} className="btn btn-dark">
                 + New Subproduct for <b>{titleProduct}</b>
@@ -120,6 +120,7 @@ const SubProductInterface = () => {
                         <td><p className="m-2">{subproduct.color.name}</p></td>
                         <td><p className="m-2">{subproduct.size}</p></td>
                         <td><p className="m-2">{subproduct.weight}</p></td>
+                        <td> <button onClick={() => window.location.href='/admin/create/image/'+id+'/'+subproduct.id}className="btn btn-outline-dark m-2">View</button></td>
                         <td> <button onClick={() => window.location.href='/admin/subproduct/'+id+'/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
                         <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
                     </tr>

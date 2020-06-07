@@ -3,26 +3,27 @@
 namespace App\Controller;
 
 
-use App\Entity\Category;
-use App\Entity\Product;
-use App\Entity\SubCategory;
-use App\Kernel;
-use App\Repository\ImageRepository;
-use App\Repository\ColorRepository;
-use App\Repository\SubproductRepository;
-use App\Repository\ProductRepository;
 use DateTime;
+use App\Kernel;
+use App\Entity\Product;
+use App\Entity\Category;
+use App\Entity\SubCategory;
+use App\Repository\ColorRepository;
+use App\Repository\ImageRepository;
+use App\Repository\ProductRepository;
+use App\Repository\SubproductRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 
 class ProductController extends AbstractController
 {
@@ -211,7 +212,7 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route("/api/image/{productid}/{colorid}/{imagename}", name="get_image", methods="GET" , requirements={"productid":"\d+","colorid":"\d+"})
+     * @Route("/api/image/{productid}/{colorid}/{imagename}", name="get_image", methods="GET" , requirements={"productid":"\d+"})
      */
     public function getImage(Request $request)
     {
@@ -225,7 +226,7 @@ class ProductController extends AbstractController
         header("Content-Type: image/jpg");
         header("Content-Length: " . filesize($name));
 
-        fpassthru($fp);
+        return new Response(fpassthru($fp), 200);
     }
 
 
