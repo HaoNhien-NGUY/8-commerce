@@ -105,7 +105,7 @@ function Home() {
                                     <p>{e.lowest_price}</p>
                                     <a href={"/product/" + e.id}>
                                         <div className="ProductHomeImgContainer">
-                                            <img className="ProductHomeImg" src={e.images !== undefined ? 'http://127.0.0.1:8000/api'+e.images[0] : imageProduit1}></img>
+                                            <img className="ProductHomeImg" src={e.images !== undefined ? 'http://127.0.0.1:8000/'+e.images[0] : imageProduit1}></img>
                                             <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img>
                                         </div>
                                     </a>
