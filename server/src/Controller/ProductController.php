@@ -70,6 +70,7 @@ class ProductController extends AbstractController
         
         return $this->json(['nbResults' => $count, 'data' => $products], 200, [], ['groups' => 'products']);
     }
+
     /**
      * @Route("/api/product", name="product_create", methods="POST")
      */
@@ -120,6 +121,15 @@ class ProductController extends AbstractController
                 return is_numeric($v);
             });
 
+            $path = "/api/image/$productId";
+            $ColorImgLinks["color_id"] = "default";
+            $imgLinks = array_diff(scandir("./images/$productId/default"), [".", ".."]);
+            $imgLinks = array_map(function ($v) use ($path) {
+                return "$path/default/$v";
+            }, $imgLinks);
+
+            $ColorImgLinks["links"] = array_values($imgLinks);
+            array_push($imgArray, $ColorImgLinks);
             foreach ($colorIdArr as $v) {
                 $path = "/api/image/$productId/$v";
                 $ColorImgLinks["color_id"] = $v;

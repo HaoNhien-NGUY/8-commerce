@@ -15,6 +15,7 @@ function ProductDescription() {
     let id = useRouteMatch("/product/:id").params.id;
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/product/' + id).then(resp => {
+            console.log(resp.data)
             setProduct(resp.data);
         });
         return () => {
