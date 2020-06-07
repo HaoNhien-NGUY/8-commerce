@@ -17,7 +17,6 @@ class IndexNavbar extends Component {
         isOpen: false,
         search: '',
     }
-    
     static propTypes = {
         auth: PropTypes.object.isRequired
     }
@@ -73,10 +72,7 @@ class IndexNavbar extends Component {
                     </Navbar.Collapse>
                 </Navbar>
                 <Navbar id="underline">
-                    <Form inline className="searchcontainer">
-                    <FormControl type="text" placeholder="Search"/>
-                    <Button variant="" id="searchLogo"><img src={searchLogo}/></Button>
-                    </Form>  
+                    <Nav.Link href="/search" id="searchLogo"><img src={searchLogo}/></Nav.Link>
                     <Nav>
                         {!isLoading ? isAuthenticated ? authLinks : guestLinks : null}
                     </Nav>
