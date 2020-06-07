@@ -28,9 +28,11 @@ import AccessSubProductInterface from './components/Admin/SubProduct/AccessSubPr
 import AccessUpdateSubProduct from './components/Admin/UpdateSubProduct/AccessUpdateSubProduct';
 import AccessSubCategoryInterface from './components/Admin/SubCategory/AccessSubCategoryInterface';
 import CreateImage from './components/Admin/CreateImage/CreateImage';
+import SearchSidebar from './components/Search/Sidebar'
 import CreateImageSubproduct from './components/Admin/CreateImage/CreateImageSubproduct';
 import AccessUpdateCategory from './components/Admin/UpdateCategory/AccessUpdateCategory';
 import AccessUpdateSubCategory from './components/Admin/UpdateSubCategory/AccessUpdateSubCategoy';
+
 
 class App extends React.Component {
 
@@ -49,9 +51,9 @@ class App extends React.Component {
                     <Switch>
                         <Route exact path="/" component={Home} />
                         <Route exact path="/product/:id" component={Product} />
+                        <Route exact path="/search" component={SearchSidebar} />
                         <Route exact path="/admin" component={AccessAdmin} />
-                        <Route exact path="/admin/subcategory/:id" component={AccessSubCategoryInterface} />
-                        <Route exact path="/admin/subcategory/:id/:subcategory/update" component={AccessUpdateSubCategory} />
+                        <Route exact path="/admin/subcategory/:id"component={AccessSubCategoryInterface} />
                         <Route exact path="/admin/subproduct/:id" component={AccessSubProductInterface} />
                         <Route exact path="/admin/subproduct/:id/create" component={AccessCreateSubProduct} />
                         <Route exact path="/admin/subproduct/:id/:subproduct/update" component={AccessUpdateSubProduct} />

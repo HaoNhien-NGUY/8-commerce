@@ -1,7 +1,6 @@
 <?php
 
 namespace App;
-
 use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\JsonResponse;
 

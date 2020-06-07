@@ -58,7 +58,7 @@ class ProductRepository extends ServiceEntityRepository
 
     public function filterProducts($data, $limit, $offset)
     {
-        $query = "SELECT product.id FROM product LEFT JOIN subproduct ON product.id = subproduct.product_id LEFT JOIN color ON subproduct.color_id = color.id WHERE ";
+        $query = "SELECT * FROM product LEFT JOIN subproduct ON product.id = subproduct.product_id LEFT JOIN color ON subproduct.color_id = color.id WHERE ";
         $arrayExecute = [];
         if ($data['price']) {
             $query .= ' (subproduct.price > ? AND subproduct.price < ?) AND ';
@@ -93,6 +93,10 @@ class ProductRepository extends ServiceEntityRepository
         if (substr($query, -6) == "WHERE ") {
             $query = substr($query, 0, -6);
         }
+        if (substr($query, -4) == "AND ") {
+            $query = substr($query, 0, -4);
+        }
+        $query .= ' GROUP BY product.id ';
         if ($data['order_by']) {
             switch ($data['order_by']) {
                 case 'popularity':
@@ -111,9 +115,10 @@ class ProductRepository extends ServiceEntityRepository
         } else {
             $query .= ' ASC ';
         }
-        array_push($arrayExecute, intval($limit), intval($offset));
-        $query .= " LIMIT ? OFFSET ?";
-
+        if (isset($limit) && isset($offset)) {
+            array_push($arrayExecute, intval($limit), intval($offset));
+            $query .= " LIMIT ? OFFSET ?";
+        }
         $conn = $this->getEntityManager()
             ->getConnection();
         $stmt = $conn->prepare($query);
@@ -125,15 +130,19 @@ class ProductRepository extends ServiceEntityRepository
             }
         }
         $stmt->execute();
-        $products = $stmt->fetchAll();
-        $productIds = [];
-        foreach ($products as $key => $value) {
-            array_push($productIds, $value['id']);
-        }
-        $newQuery = "SELECT * FROM product WHERE id IN(" . implode(',', $productIds) . ")";
-        $stmt = $conn->prepare($newQuery);
-        $stmt->execute();
         return $stmt->fetchAll();
+        // $products = $stmt->fetchAll();
+        // if (!empty($products)) {
+        //     $productIds = [];
+        //     foreach ($products as $key => $value) {
+        //         array_push($productIds, $value['id']);
+        //     }
+        //     $newQuery = "SELECT * FROM product WHERE id IN(" . implode(',', $productIds) . ")";
+        //     $stmt = $conn->prepare($newQuery);
+        //     $stmt->execute();
+        //     return $stmt->fetchAll();
+        // }
+        // return [];
     }
 
 
