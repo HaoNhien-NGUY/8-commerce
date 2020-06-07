@@ -12,8 +12,9 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import store from '../../store';
 import {
-    Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, NavLink, Alert, Select
+    Button, Form, FormGroup, Label, Input, Alert
 } from 'reactstrap'
+import Modal from 'react-bootstrap/Modal';
 
 const AdminInterface = () => {
     const [products, setProducts] = useState([]);
@@ -37,7 +38,6 @@ const AdminInterface = () => {
     const [msgErrorColor, setErrorColor] = useState(null);
     const [showImage, setShowImage] = useState(false);
     const [picture, setPicture] = useState([]);
-    const [msgErrorImage, setErrorImage] = useState(null);
     const [imageId, setImageId] = useState(null);
     const optionColors = [];
 
@@ -193,13 +193,12 @@ const AdminInterface = () => {
     function onSubmitImage(e) {
         e.preventDefault();
 
-        console.log(imageId);
         if (picture.length === 0) {
             return toast.error("You need to pick a photo", { position: "top-center" });
         }
 
         let fileExtension = picture[0].name.split('.').pop();
-        let exts = ['jpg', 'jpeg', 'png']
+        let exts = ['jpg', 'jpeg', 'png'];
 
         if (!exts.includes(fileExtension)) {
             return toast.error("Your picture need to have the \'jpg\', \'jpeg\',\'png\' extension", { position: "top-center" });
@@ -212,8 +211,10 @@ const AdminInterface = () => {
         axios.post('http://localhost:8000/api/image/' + imageId, bodyFormData, config)
             .then(response => {
                 setPicture([]);
+                setShowImage(false);
+                toast.success("Image correctly added !", { position: "top-center" });
             }).catch((error) => {
-                console.log(error.response);
+                toast.error("Error !", { position: "top-center" });
             })
     }
 
@@ -259,13 +260,11 @@ const AdminInterface = () => {
                             activeClassName={"active"}
                         />
 {/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
-                        <Modal isOpen={showImage} >
-                            <ModalHeader >
-                                Update color !
-                            <Button onClick={handleImage}>Exit</Button>
-                            </ModalHeader>
-                            <ModalBody>
-                                {msgErrorImage ? <Alert> {msgErrorImage} </Alert> : null}
+                        <Modal show={showImage} onHide={handleImage}>
+                            <Modal.Header closeButton>
+                                Download Image !
+                            </Modal.Header>
+                            <Modal.Body>
                                 <Form onSubmit={onSubmitImage}>
                                     <FormGroup>
                                         <Label for="image">Image</Label>
@@ -280,7 +279,7 @@ const AdminInterface = () => {
                                         </Button>
                                     </FormGroup>
                                 </Form>
-                            </ModalBody>
+                            </Modal.Body>
                         </Modal>
                     </div>
                 </div>
@@ -436,12 +435,11 @@ const AdminInterface = () => {
                         + New Color
                     </button>
 
-                    <Modal isOpen={show2} >
-                        <ModalHeader >
+                    <Modal show={show2} onHide={handleCloseColor} >
+                        <Modal.Header closeButton>
                             Create color !
-                        <Button onClick={handleCloseColor}>Exit</Button>
-                        </ModalHeader>
-                        <ModalBody>
+                        </Modal.Header>
+                        <Modal.Body>
                             {msgErrorColor ? <Alert> {msgErrorColor} </Alert> : null}
                             <Form onSubmit={onSubmit2}>
                                 <FormGroup>
@@ -458,19 +456,18 @@ const AdminInterface = () => {
                                 </Button>
                                 </FormGroup>
                             </Form>
-                        </ModalBody>
+                        </Modal.Body>
                     </Modal>
 
                     <button onClick={handleShow} className="btn btn-dark btn-color">
                         Update Color
                     </button>
 
-                    <Modal isOpen={show} >
-                        <ModalHeader >
+                    <Modal show={show} onHide={handleClose}>
+                        <Modal.Header closeButton>
                             Update color !
-                        <Button onClick={handleClose}>Exit</Button>
-                        </ModalHeader>
-                        <ModalBody>
+                        </Modal.Header>
+                        <Modal.Body>
                             {msgError ? <Alert> {msgError} </Alert> : null}
                             <Form onSubmit={onSubmit}>
                                 <FormGroup>
@@ -488,12 +485,11 @@ const AdminInterface = () => {
                                     />
                                     <Button color="dark" className="mt-4" block>
                                         Update
-                                </Button>
+                                    </Button>
                                 </FormGroup>
                             </Form>
-                        </ModalBody>
+                        </Modal.Body>
                     </Modal>
-
                 </div>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">
