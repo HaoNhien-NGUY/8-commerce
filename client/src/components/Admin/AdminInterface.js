@@ -35,6 +35,10 @@ const AdminInterface = () => {
     const [show2, setShowColor] = useState(false);
     const [colorCreate, setColor] = useState("");
     const [msgErrorColor, setErrorColor] = useState(null);
+    const [showImage, setShowImage] = useState(false);
+    const [picture, setPicture] = useState([]);
+    const [msgErrorImage, setErrorImage] = useState(null);
+    const [imageId, setImageId] = useState(null);
     const optionColors = [];
 
     const token = store.getState().auth.token
@@ -78,7 +82,10 @@ const AdminInterface = () => {
                         <td><p className="m-2">{product.title}</p></td>
                         <td><p className="m-2">{product.price} €</p></td>
                         <td><p className="m-2">{product.sex}</p></td>
-                        <td><button onClick={() => window.location.href = 'admin/create/image/' + product.id} className="btn  add btn-outline-success">Add</button> </td>
+                        {/* <td><button onClick={() => window.location.href = 'admin/create/image/' + product.id} className="btn add btn-outline-success">Add</button> </td> */}
+                        <td>
+                            <button onClick={e => e.preventDefault() + handleShowImage(product.id)} className="btn add btn-outline-success">Add</button>
+                        </td>
                         <td> <button onClick={() => window.location.href = 'admin/subproduct/' + product.id} className="btn btn-outline-dark "><span className="viewsub">View</span></button></td>
                         <td><button onClick={() => window.location.href = 'admin/update/product/' + product.id} className="btn modify btn-outline-info m-2">Modify</button></td>
                         <td><button onClick={() => deleteProduct(product.id)} className="btn delete btn-outline-danger mr-2">Delete</button></td>
@@ -172,6 +179,44 @@ const AdminInterface = () => {
         }
     }
 
+    const handleImage = () => setShowImage(false);
+    const handleShowImage = (id) => {
+        setShowImage(true);
+        setImageId(id);
+    }
+
+    const onChangeImage = (event) => {
+        let files = event.target.files;
+        setPicture(files);
+    }
+
+    function onSubmitImage(e) {
+        e.preventDefault();
+
+        console.log(imageId);
+        if (picture.length === 0) {
+            return toast.error("You need to pick a photo", { position: "top-center" });
+        }
+
+        let fileExtension = picture[0].name.split('.').pop();
+        let exts = ['jpg', 'jpeg', 'png']
+
+        if (!exts.includes(fileExtension)) {
+            return toast.error("Your picture need to have the \'jpg\', \'jpeg\',\'png\' extension", { position: "top-center" });
+        }
+
+        const bodyFormData = new FormData();
+        bodyFormData.append('image', picture[0]);
+        bodyFormData.append('color', 'default');
+
+        axios.post('http://localhost:8000/api/image/' + imageId, bodyFormData, config)
+            .then(response => {
+                setPicture([]);
+            }).catch((error) => {
+                console.log(error.response);
+            })
+    }
+
     const AllProducts = () => {
         return (
             <>
@@ -211,7 +256,32 @@ const AdminInterface = () => {
                             onPageChange={handlePageClick}
                             containerClassName={"pagination"}
                             subContainerClassName={"pages pagination"}
-                            activeClassName={"active"} />
+                            activeClassName={"active"}
+                        />
+{/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
+                        <Modal isOpen={showImage} >
+                            <ModalHeader >
+                                Update color !
+                            <Button onClick={handleImage}>Exit</Button>
+                            </ModalHeader>
+                            <ModalBody>
+                                {msgErrorImage ? <Alert> {msgErrorImage} </Alert> : null}
+                                <Form onSubmit={onSubmitImage}>
+                                    <FormGroup>
+                                        <Label for="image">Image</Label>
+                                        <Input
+                                            type="file"
+                                            name="image"
+                                            id="image"
+                                            onChange={onChangeImage}
+                                        />
+                                        <Button color="dark" className="mt-4" block>
+                                            Submit
+                                        </Button>
+                                    </FormGroup>
+                                </Form>
+                            </ModalBody>
+                        </Modal>
                     </div>
                 </div>
             </>
