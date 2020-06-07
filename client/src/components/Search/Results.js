@@ -9,11 +9,14 @@ function Results(props) {
     var imageProduit1 = ''; 
     var imageProduit2 = ''
 
+    if (results.length < 1) {
+      return <h1>No Results</h1>;
+    }
     return (
       <div className="container">
         <div className="row justify-content-around">
           
-          {results.map((e) => {          
+          {results.map((e) => {
           //     if(e.subproducts[0] && e.subproducts[0])
           //     {
           //         imageProduit1 = e.subproducts[0].images[0].image; 

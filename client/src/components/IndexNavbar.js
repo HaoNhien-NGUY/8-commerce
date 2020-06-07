@@ -73,10 +73,7 @@ class IndexNavbar extends Component {
                     </Navbar.Collapse>
                 </Navbar>
                 <Navbar id="underline">
-                    <Form inline className="searchcontainer">
-                    <FormControl type="text" placeholder="Search"/>
-                    <Button variant="" id="searchLogo"><img src={searchLogo}/></Button>
-                    </Form>  
+                    <Nav.Link variant="" id="searchLogo" href="/search"><img src={searchLogo}/></Nav.Link>
                     <Nav>
                         {!isLoading ? isAuthenticated ? authLinks : guestLinks : null}
                     </Nav>
