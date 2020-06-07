@@ -39,19 +39,31 @@ const SubProductInterface = () => {
     useEffect(() => {
         axios.get("http://localhost:8000/api/product/"+id, config)
         .then(async res => {
-            await setPageCount(Math.ceil(res.data.subproducts.length / limit))
-            setTitleProduct(res.data.title)
-            let arrSubProduct = []
-            let nbr;
-            for(let i = 0; i !== limit; i++)
-            {   
-
-                if(res.data.subproducts[offset+i]) arrSubProduct.push(res.data.subproducts[offset+i]);
-                console.log(arrSubProduct);
+          
+            console.log(res.data);
+            if(res.data.subproducts)
+            {
+                setTitleProduct(res.data.title)
+                await setPageCount(Math.ceil(res.data.subproducts.length / limit))
+                let arrSubProduct = [];
+                let nbr;
+                for(let i = 0; i !== limit; i++)
+                {   
+                    if(res.data.subproducts[offset+i]) arrSubProduct.push(res.data.subproducts[offset+i]);
+                    console.log(arrSubProduct);
+                }
+                setSubProducts(arrSubProduct);  
             }
-            setSubProducts(arrSubProduct);    
+            else
+            {
+                console.log('palala');
+                setTitleProduct(res.data.empty.title)
+                setPageCount(0)
+            }
+  
         })
         .catch(error => {
+            console.log(error);
           toast.error('Error !', {position: 'top-center'});
         });
     }, [offset])
@@ -103,13 +115,15 @@ const SubProductInterface = () => {
             <div className="row border p-2">
             <table>
                 <thead>
-                    <tr>
-                        <th><p className="m-2 align-items-center"> ID </p></th>
-                        <th><p className="m-2"> Price </p></th>
-                        <th><p className="m-2"> Color </p></th>
-                        <th><p className="m-2"> Size </p></th>
-                        <th><p className="m-2"> Weight </p></th>
-                    </tr>
+                    {pageCount > 0 &&
+                        <tr>
+                            <th><p className="m-2 align-items-center"> ID </p></th>
+                            <th><p className="m-2"> Price </p></th>
+                            <th><p className="m-2"> Color </p></th>
+                            <th><p className="m-2"> Size </p></th>
+                            <th><p className="m-2"> Weight </p></th>
+                        </tr>
+                    }
                 </thead>
                 <tbody>
                     {console.log(subProducts)}
@@ -142,7 +156,8 @@ const SubProductInterface = () => {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
-                    <ReactPaginate
+                    {pageCount > 0 &&
+                        <ReactPaginate
                         previousLabel={"prev"}
                         nextLabel={"next"}
                         breakLabel={"..."}
@@ -154,6 +169,8 @@ const SubProductInterface = () => {
                         containerClassName={"pagination"}
                         subContainerClassName={"pages pagination"}
                         activeClassName={"active"} />
+                    }
+                    
                 </div>
             </div>
         </div>

@@ -11,9 +11,9 @@ function Home() {
 
     const [products, setProducts] = useState([]);
 
-    var imageProduit1 = '';
-    var imageProduit2 = ''
-
+    let imageProduit1 = '';
+    let imageProduit2 = ''
+    let nbrArctPop = 5;
     const isEmpty = (obj) => {
         for (var key in obj) {
             if (obj.hasOwnProperty(key))
@@ -23,7 +23,7 @@ function Home() {
     }
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/product').then(resp => {
+        axios.get('http://127.0.0.1:8000/api/product/home?limit='+nbrArctPop).then(resp => {
 
 
             //Display Lowest Price Image
@@ -105,8 +105,20 @@ function Home() {
                                     <a href={"/product/" + e.id}>
                                         <div className="ProductHomeImgContainer">
                                             {console.log(e)}
-                                            <img className="ProductHomeImg" src={e.images !== undefined ? 'http://127.0.0.1:8000/api'+e.images[0] : imageProduit1}></img>
-                                            <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img>
+                                            {e.images &&
+                                                <img className="ProductHomeImg" src={'http://127.0.0.1:8000'+e.images[0]}></img>
+                                            }
+                                            {e.images && e.images.length > 1 &&
+                                                <img className="ProductHomeImg ProductHomeImg2" src={'http://127.0.0.1:8000'+e.images[1]}></img>
+
+                                            }
+                                            
+                                            
+
+
+                                            {/* <img className="ProductHomeImg" src={e.images !== undefined ? 'http://127.0.0.1:8000'+e.images[0] : imageProduit1}></img> */}
+
+                                            {/* <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img> */}
                                         </div>
                                     </a>
                                     <button className='btn-cart'>Add to cart</button>

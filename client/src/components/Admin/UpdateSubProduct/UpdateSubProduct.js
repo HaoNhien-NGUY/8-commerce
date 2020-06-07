@@ -36,6 +36,7 @@ function UpdateSubProduct() {
 
     useEffect(() => {
         if (token) {
+            
             config.headers['x-auth-token'] = token
         }
     }, [token]);
@@ -80,7 +81,7 @@ function UpdateSubProduct() {
             const body = {
                 "product_id": id,
                 "price": parseInt(price),
-                "color_id": parseInt(color),
+                "color_id": color,
                 "size": size,
                 "weight": parseInt(weight),
                 "promo": parseInt(promo),

@@ -65,6 +65,11 @@ class SubProductController extends AbstractController
             $em->persist($subproduct);
             $em->flush();
 
+            if (!file_exists("./images/$data->product_id/$data->color_id")) {
+                // mkdir("./public/images/$data->product_id", 0755, true);
+                 mkdir("./images/$data->product_id/$data->color_id", 0777, true);
+            }
+
             return $this->json([
                 'message' => 'created',
                 'subProduct' => $subproduct
