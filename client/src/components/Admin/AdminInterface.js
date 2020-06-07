@@ -57,7 +57,7 @@ const AdminInterface = () => {
 
     useEffect(() => {
         receivedData()
-    }, [offset, products])
+    }, [offset, products]) 
 
     useEffect(() => {
         receivedDataCategories()
@@ -75,8 +75,9 @@ const AdminInterface = () => {
                 const newPostData = res.data.data.map((product) =>
                     <tr key={product.id}>
                         <td><p className="m-2 align-items-center">{product.id}</p></td>
-                        <td><p className="m-2">{product.title}</p></td>
+                        <td><p className="m-2">{product.title.length > 15 ?  product.title.substr(0,15) + '...' : product.title }</p></td>
                         <td><p className="m-2">{product.status ? 'Active' : 'Inactive'}</p></td>
+                        <td><p className="m-2">{product.subCategory.name.length > 15 ? product.subCategory.name.substr(0,15) + "..." : product.subCategory.name}</p></td>
                         <td><p className="m-2">{product.sex}</p></td>
                         <td><button onClick={() => window.location.href = 'admin/create/image/' + product.id} className="btn  add btn-outline-success">Add</button> </td>
                         <td> <button onClick={() => window.location.href = 'admin/subproduct/' + product.id} className="btn btn-outline-dark "><span className="viewsub">View</span></button></td>
@@ -117,7 +118,6 @@ const AdminInterface = () => {
     const receivedDataCategories = () => {
         axios.get(`http://127.0.0.1:8000/api/category?offset=${offsetCategories}&limit=${limitCategories}`, config)
             .then(async res => {
-                console.log(res.data);
                 await setPageCountCategories(Math.ceil(res.data.nbResults / limitCategories))
                 const newPostDataCategories = res.data.data.map((category) =>
                     <tr key={category.id}>
@@ -188,6 +188,7 @@ const AdminInterface = () => {
                                 <th><p className="m-2 align-items-center"> ID </p></th>
                                 <th><p className="m-2"> Title </p></th>
                                 <th><p className="m-2"> Status </p></th>
+                                <th><p className="m-2"> SubCategory </p></th>
                                 <th><p className="m-2"> Sex </p></th>
                                 <th><p className="m-2"> Image </p></th>
                                 <th colSpan="3"><p className="m-2"> Subproduct </p></th>
