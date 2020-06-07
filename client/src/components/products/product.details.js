@@ -33,10 +33,10 @@ function ProductDescription() {
     let testProps = "";
     let subCategory = "";
     let Categoryname = '';
-
+    let Unavailable = []
   
     if (product) {
-
+        console.log(product)
         if (product.length == 0) {
             loadingScreen.push(<div className="loading-screen"></div>);
         }
@@ -62,6 +62,11 @@ function ProductDescription() {
                 }
             }
         }
+            if (product.status == false)
+
+            Unavailable.push(<div className="overlayUnavailable"><h5>This product is unavailable</h5></div>);
+
+
     }
 
     const imageProduit1 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-front-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
@@ -133,12 +138,10 @@ function ProductDescription() {
     }
 
     const subproductsAvailable = () => {
-
        let pathCat = "/"+Categoryname;
        let pathSub = "/"+subCategory;
-
         return (
-            <div className="divDetails">
+            <div className="divDetails">{Unavailable}
                 <span><a href={pathCat}>{Categoryname}</a> / <a href={pathSub}>{subCategory}</a></span>
                 <h1>{details.title}</h1>
                 <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.price : details.price} €</h3>
@@ -152,7 +155,7 @@ function ProductDescription() {
 
                 <p>Size</p>
                 <select id='selectSize' onChange={e => e.preventDefault() + console.log(e.target.value) + setChosenProductSize(e.target.value)}>
-                    <option value='No-Choice-Size'  className='selectChoice' selected disabled>--- SIZE ({SizeOption.length})---</option>
+                    <option value='No-Choice-Size'  className='selectChoice' defaultValue disabled>--- SIZE ({SizeOption.length})---</option>
                     {SizeOption}
                 </select>
                 {chosenProductSize ?
@@ -173,7 +176,7 @@ function ProductDescription() {
     // Product doesnt have subproducts
     const subproductsUnavailable = () => {
         return (
-            <div className="divDetails">
+            <div className="divDetails">{Unavailable}
                 <h1>{details.title}</h1>
                 <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.price + '€' : details.price} </h3>
                 <p className='description'>
@@ -205,16 +208,21 @@ function ProductDescription() {
 
     return (
         <div>
-
             <div className="container-fluid m-0 p-0">
                 <div className="row">
                     <div className="col-md-7 productImgBg m-0 p-0">
-                        <div className='ulImgProduct'>
+                    {product.status == true ?  <> <div className='ulImgProduct'>
                             {miniImageProduct}
                         </div>
                         <div className='ImageContainer'>
                             {imageProduct}
+                        </div></> : <>
+                            <div className='ulImgProduct unavailable'>
+                            {miniImageProduct}
                         </div>
+                        <div className='ImageContainer unavailable'>
+                            {imageProduct}
+                        </div></>}                        
                     </div>
                     <div className="col-md-5 m-0 p-0">
                         {product.subproducts && product.subproducts.length > 0 ? subproductsAvailable() : subproductsUnavailable()}

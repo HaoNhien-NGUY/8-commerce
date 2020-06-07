@@ -66,6 +66,16 @@ code {
     background-color: #f0f0f0;
 }
 
+.ulImgProduct.unavailable img {
+    filter: grayscale(50%);
+    opacity: 0.5
+}
+
+.ImageContainer.unavailable img {
+    opacity: 0.8
+
+}
+
 .ImageContainer {
     margin: 0 0 0 9vw;
 }
@@ -144,6 +154,17 @@ code {
     background-color: #f0f0f0;
 }
 
+.overlayUnavailable {
+    position: absolute;
+    background-color: #ffffff;
+    opacity: 0.86;
+    width: 100%;
+    height: 120%;
+    display: flex;
+    align-items: center!important;
+    justify-content: center;
+}
+
 
 /*---------- homepage ----------*/
 
@@ -179,11 +200,10 @@ code {
     transition: all 0.2s ease-in-out;
 }
 
-.ProductHomeImgContainer.unavailable  {
-filter: grayscale(100%);
-opacity: 0.5;
+.ProductHomeImgContainer.unavailable {
+    filter: grayscale(100%);
+    opacity: 0.5;
 }
-
 
 .ProductHomeImg {
     width: 70%;
