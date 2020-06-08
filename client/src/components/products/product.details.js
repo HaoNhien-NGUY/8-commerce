@@ -177,8 +177,8 @@ function ProductDescription() {
 
     const subproductsAvailable = () => {
 
-        let pathCat = "/" + Categoryname;
-        let pathSub = "/" + subCategory;
+        let pathCat = "/search?category=" + Categoryname;
+        let pathSub = "/search?subcategory=" + subCategory;
 
         return (
             <div className="divDetails">
