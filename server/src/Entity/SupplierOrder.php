@@ -55,6 +55,11 @@ class SupplierOrder
      */
     private $subproduct;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $stock;
+
     public function __construct()
     {
         $this->subproduct = new ArrayCollection();
@@ -159,6 +164,18 @@ class SupplierOrder
         if ($this->subproduct->contains($subproduct)) {
             $this->subproduct->removeElement($subproduct);
         }
+
+        return $this;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(int $stock): self
+    {
+        $this->stock = $stock;
 
         return $this;
     }
