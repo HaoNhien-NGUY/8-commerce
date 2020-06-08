@@ -103,10 +103,6 @@ function CreateProduct() {
         } else {
             invalids.description = "Please enter a Description";
         }
-        
-        if (!formControl.price) {
-            invalids.price = "Please enter a number";
-        }
 
         if (!formControl.subcategory) {
             invalids.category = "Please enter a number";
@@ -173,15 +169,10 @@ function CreateProduct() {
                         : null
                     }
                     </select>
-                    <a className='text-info small' style={{ cursor:'pointer' }} variant="primary" onClick={handleShow}> Create a new category ? </a>
+                    <a className='text-info small' style={{ cursor:'pointer' }} variant="primary" onClick={handleShow}> Create a new subcategory ? </a>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="price">Price</label>
-                    <input className={"form-control " + (isInvalid.price ? 'is-invalid' : 'inputeStyle')} type="number" name="price" id="price" placeholder="ex: 123" onChange={handleChange}/>
-                    <div className="invalid-feedback">{ isInvalid.price }</div>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="price">Promo</label>
+                    <label htmlFor="promo">Promo</label>
                     <input className={"form-control " + (isInvalid.promo ? 'is-invalid' : 'inputeStyle')} type="number" name="promo" id="promo" min="0" max="100" placeholder="0 - 100" onChange={handleChange}/>
                     <div className="invalid-feedback">{ isInvalid.promo }</div>
                 </div>
