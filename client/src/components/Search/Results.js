@@ -27,7 +27,7 @@ function Results(props) {
                 {/* <img src={'../../../../images/1/default/2020-06-0603-16-51.jpg'} />  */}
                 <div className='p-4 m-5 bg-gray'>
                   <span className="HomeArticleTItle">{e.title}</span>
-                  <p>{e.lowest_price}</p>
+                  <p>{e.price} €</p>
                   <a href={"/product/" + e.product_id}>
                     <div className="ProductHomeImgContainer">
                       <img className="ProductHomeImg" src={e.images && e.images[1] ? process.env.REACT_APP_API_LINK + e.images[1]  : imageDefault}></img>
