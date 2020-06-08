@@ -85,6 +85,7 @@ code {
     margin: 0 auto;
     width: 60%;
     position: sticky;
+    margin-bottom: 20%;
 }
 
 .divDetails:hover .more {
@@ -157,9 +158,9 @@ code {
 .overlayUnavailable {
     position: absolute;
     background-color: #ffffff;
-    opacity: 0.86;
+    opacity: 0.80;
     width: 100%;
-    height: 120%;
+    height: 110%;
     display: flex;
     align-items: center!important;
     justify-content: center;

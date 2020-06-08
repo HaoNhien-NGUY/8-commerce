@@ -62,11 +62,10 @@ function ProductDescription() {
                 }
             }
         }
-            if (product.status == false)
-
-            Unavailable.push(<div className="overlayUnavailable"><h5>This product is unavailable</h5></div>);
-
-
+        if (product.status == false) {
+        Unavailable.push(<div className="overlayUnavailable"><h5>This product is unavailable</h5></div>);
+        countstockAll = 0;
+        }
     }
 
     const imageProduit1 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-front-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
@@ -141,8 +140,9 @@ function ProductDescription() {
        let pathCat = "/"+Categoryname;
        let pathSub = "/"+subCategory;
         return (
-            <div className="divDetails">{Unavailable}
+            <div className="divDetails">
                 <span><a href={pathCat}>{Categoryname}</a> / <a href={pathSub}>{subCategory}</a></span>
+                {Unavailable}
                 <h1>{details.title}</h1>
                 <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.price : details.price} €</h3>
                 <p className='description'>
@@ -168,7 +168,7 @@ function ProductDescription() {
                 </>
                     : null
                 }
-                <button className='btn-cart'>Add to cart</button>
+               {product.status == true ?  <button className='btn-cart'>Add to cart</button> :  <button className='btn-cart'>Out of stock</button>}
             </div>
         )
     }
@@ -176,9 +176,10 @@ function ProductDescription() {
     // Product doesnt have subproducts
     const subproductsUnavailable = () => {
         return (
-            <div className="divDetails">{Unavailable}
+            <div className="divDetails">
                 <h1>{details.title}</h1>
                 <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.price + '€' : details.price} </h3>
+                {Unavailable}
                 <p className='description'>
                     {details.description_1}
                     <span className='complete'>{details.description_2}</span>
