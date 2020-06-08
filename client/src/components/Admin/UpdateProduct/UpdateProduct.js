@@ -79,7 +79,7 @@ const UpdateProduct = () => {
             const body = {
                 "title": title,
                 "description": description,
-                "category": parseInt(subCategory),
+                "subcategory": parseInt(subCategory),
                 "price": parseInt(price),
                 "promo": parseInt(promo),
                 "sex": sex,
