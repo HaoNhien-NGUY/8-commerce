@@ -51,14 +51,9 @@ class SupplierOrder
     private $created_at;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Subproduct::class, inversedBy="supplierOrders")
+     * @ORM\OneToMany(targetEntity="SupplierOrderSubproduct", mappedBy="supplierOrder")
      */
     private $subproduct;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $stock;
 
     public function __construct()
     {

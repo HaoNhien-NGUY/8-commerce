@@ -87,6 +87,8 @@ class ProductController extends AbstractController
             $subCategory = $this->getDoctrine()
                 ->getRepository(SubCategory::class)
                 ->find($req->subcategory);
+            if (!isset($subCategory)) return $this->json(['message' => 'subcategory not found'], 400, []);
+            
             $product->setSubCategory($subCategory);
             $product->setCreatedAt(new DateTime());
 
