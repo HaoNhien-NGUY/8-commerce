@@ -176,7 +176,7 @@ class ProductController extends AbstractController
                 } catch (NotNormalizableValueException $e) {
                     return $this->json(['message' => $e->getMessage()], 400, []);
                 }
-                if (isset($req->subcategory)) {
+                if (isset($req->category)) {
                     $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->category);
                     $product->setSubCategory($subcategory);
                 }
