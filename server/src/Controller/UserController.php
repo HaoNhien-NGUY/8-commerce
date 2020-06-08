@@ -5,9 +5,11 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Entity\SupplierOrderSubproduct;
 use App\Entity\Supplier;
 use App\Entity\SupplierOrder;
 use App\Repository\SupplierRepository;
+use App\Repository\ProductRepository;
 use App\Repository\SupplierOrderRepository;
 use App\Repository\SubproductRepository;
 use App\Repository\UserRepository;
@@ -26,6 +28,26 @@ use ReallySimpleJWT\Token;
 
 class UserController extends AbstractController
 {
+
+    /**
+     * @Route("/link", name="link", methods="POST")
+     */
+    public function supplierLink(EntityManagerInterface $em,SubproductRepository $prorepo , SupplierOrderRepository $suprepo)
+    {
+       // Expected value of type "App\Entity\Subproduct" for association field "App\Entity\SupplierOrderSubproduct#$subproduct", got "App\Entity\Product" instead.
+    $product = $prorepo->findOneBy(['id'=>1]);
+    $order = $suprepo->findOneBy(['id' =>1]);
+     $supplier = new SupplierOrderSubproduct();
+     $supplier->setSupplierOrder($order);
+     $supplier->setSubproduct($product);
+     $supplier->setStock(1);
+     $em->persist($supplier);
+     $em->flush();
+
+     return new Response('LINK SHINKAI');
+
+    }
+
     /**
      * @Route("/supplier", name="supplier", methods="GET")
      */

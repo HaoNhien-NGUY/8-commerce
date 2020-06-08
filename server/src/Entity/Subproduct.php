@@ -78,9 +78,12 @@ class Subproduct
     private $color;
 
     /**
-     * @ORM\ManyToMany(targetEntity=SupplierOrder::class, mappedBy="subproduct")
-     */
+     * @ORM\OneToMany(targetEntity="SupplierOrderSubproduct", mappedBy="Subproducts", fetch="EXTRA_LAZY")
+     * @ORM\JoinColumn(nullable=false)
+    */
     private $supplierOrders;
+
+  
 
     public function __construct()
     {
