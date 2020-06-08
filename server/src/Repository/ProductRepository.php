@@ -60,6 +60,10 @@ class ProductRepository extends ServiceEntityRepository
     {
         $query = "SELECT * FROM product LEFT JOIN subproduct ON product.id = subproduct.product_id LEFT JOIN color ON subproduct.color_id = color.id WHERE ";
         $arrayExecute = [];
+        if ($data['search']) {
+            $query .= ' (product.title REGEXP ? OR product.description REGEXP ?) AND ';
+            array_push($arrayExecute, $data['search'], $data['search']);
+        }
         if ($data['price']) {
             $query .= ' (subproduct.price > ? AND subproduct.price < ?) AND ';
             array_push($arrayExecute, $data['price']['start'], $data['price']['end']);

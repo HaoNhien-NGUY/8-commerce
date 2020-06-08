@@ -176,7 +176,7 @@ class ProductController extends AbstractController
                 } catch (NotNormalizableValueException $e) {
                     return $this->json(['message' => $e->getMessage()], 400, []);
                 }
-                if (isset($req->subcategory)) {
+                if (isset($req->category)) {
                     $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->category);
                     $product->setSubCategory($subcategory);
                 }
@@ -234,12 +234,12 @@ class ProductController extends AbstractController
         $products = $productRepository->findSearchResult($request->attributes->get('search'), $request->query->get('limit'), $request->query->get('offset'));
         $products = $normalizer->normalize($products, null, ['groups' => 'products']);
         $products = array_map(function($v){
-            $path = "./images/".$v['id']."/default";
+            $path = "./images/".$v['product_id']."/default";
             if (!is_dir($path)) return $v;
 
             $imgArray = (array_diff(scandir($path), [".", ".."]));
             $imgArray = array_map(function ($img) use ($v){
-                return "/api/image/". $v['id'] ."/default/$img";
+                return "/api/image/". $v['product_id'] ."/default/$img";
             }, $imgArray);
             return array_merge($v, ["images" => array_values($imgArray)]);
         }, $products);
@@ -260,12 +260,12 @@ class ProductController extends AbstractController
         $products = $productRepository->filterProducts($data, $request->query->get('limit'), $request->query->get('offset'));
         $products = $normalizer->normalize($products, null, ['groups' => 'products']);
         $products = array_map(function($v){
-            $path = "./images/".$v['id']."/default";
+            $path = "./images/".$v['product_id']."/default";
             if (!is_dir($path)) return $v;
 
             $imgArray = (array_diff(scandir($path), [".", ".."]));
             $imgArray = array_map(function ($img) use ($v){
-                return "/api/image/". $v['id'] ."/default/$img";
+                return "/api/image/". $v['product_id'] ."/default/$img";
             }, $imgArray);
             return array_merge($v, ["images" => array_values($imgArray)]);
         }, $products);

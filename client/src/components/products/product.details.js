@@ -6,6 +6,7 @@ import ReactImageMagnify from 'react-image-magnify';
 
 function ProductDescription() {
     const [product, setProduct] = useState([]);
+    const [lowestPrice, setLowestPrice] = useState([]);
     const [chosenProductSize, setChosenProductSize] = useState('');
     const [chosenProductColor, setChosenProductColor] = useState('');
     const [chosenSubProduct, setChosenSubProduct] = useState();
@@ -15,9 +16,47 @@ function ProductDescription() {
     let id = useRouteMatch("/product/:id").params.id;
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/product/' + id).then(resp => {
-            // console.log(resp.data)
             setProduct(resp.data);
+
+            //Getting the lowest price
+            let prices = {}
+            let product_temp = resp.data
+            let unavailable_msg = 'Available Soon...'
+            console.log(product_temp)
+            prices[product_temp.id] = []
+            if (isEmpty(product_temp.subproducts)) {
+                console.log('vide', product_temp)
+                //Product doesnt have subproducts, display unavailable_msg
+                prices[product_temp.id].push(unavailable_msg)
+            } else {
+                //Product has subproducts
+                product_temp.subproducts.map(p => prices[product_temp.id].push(p.price))
+            }
+
+            //Boucler sur l'objet pour voir si il y a un prix minimal ou si il n'est pas disponible
+            if (Object.keys(prices).length > 0) {
+                const entries = Object.entries(prices)
+                for (const [id, prices_list] of entries) {
+                    console.log(prices_list)
+                    if (prices_list[0] == unavailable_msg) {
+                        product_temp['lowest_price'] = unavailable_msg
+                    } else {
+                        product_temp['lowest_price'] = 'Starts at ' + Math.min.apply(Math, prices_list) + ' €'
+                    }
+                }
+            }
+
+            setLowestPrice(product_temp['lowest_price'])
         });
+
+        const isEmpty = (obj) => {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key))
+                    return false;
+            }
+            return true;
+        }
+
         return () => {
         }
     }, []);
@@ -54,11 +93,6 @@ function ProductDescription() {
 
                     if (!(ColorOption.find(fruit => fruit.props.value === product.subproducts[i].color)))
                         ColorOption.push(<option value={product.subproducts[i].color}>{product.subproducts[i].color}</option>);
-
-                    // for (let j = 0; j < product.subproducts[i].images.length; j++) {
-                    //     propsImage["img-" + count] = product.subproducts[i].images[j].image;
-                    //     count++;
-                    // }
                 }
             }
         }
@@ -68,19 +102,24 @@ function ProductDescription() {
         }
     }
 
-    const imageProduit1 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-front-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
-    const imageProduit2 = "https://cdn.shopify.com/s/files/1/0017/9686/6113/products/travel-backpack-large-leather-black-back-grey-haerfest-sidelugagge-carry-on-professional-work_large.jpg";
+    let imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
+
+    let obj = { 'img-0': imageDefault }
+    if (product && product.images && product.images[0]) { //[0] = default, à modifier en state
+        obj = {}
+        for (let i = 0; i < product.images[0].links.length; i++) {
+            obj['img-' + i] = "http://127.0.0.1:8000" + product.images[0].links[i];
+        }
+    }
 
     const details = {
         title: product.title,
-        price: 'Soon', //remplacer avec une fonction ici
+        price: lowestPrice,
         description_1: testProps.substr(0, 192),
         description_2: testProps.substr(192)
     };
 
-    //Lien : https://server.com/images/:product_id/:color_id/uplaod_date.jpg
-    // for (let [key, value] of Object.entries({propsImage})) {
-    for (let [key, value] of Object.entries({ 'img-1': imageProduit1, 'img-2': imageProduit2 })) {
+    for (let [key, value] of Object.entries(obj)) {
         const ref = React.createRef();
         const handleClick = () =>
             ref.current.scrollIntoView({
@@ -137,14 +176,16 @@ function ProductDescription() {
     }
 
     const subproductsAvailable = () => {
-       let pathCat = "/"+Categoryname;
-       let pathSub = "/"+subCategory;
+
+        let pathCat = "/" + Categoryname;
+        let pathSub = "/" + subCategory;
+
         return (
             <div className="divDetails">
                 <span><a href={pathCat}>{Categoryname}</a> / <a href={pathSub}>{subCategory}</a></span>
                 {Unavailable}
                 <h1>{details.title}</h1>
-                <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.price : details.price} €</h3>
+                <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.price + '€' : details.price}</h3>
                 <p className='description'>
                     {details.description_1}
                     <span className='complete'>{details.description_2}</span>
@@ -155,17 +196,17 @@ function ProductDescription() {
 
                 <p>Size</p>
                 <select id='selectSize' onChange={e => e.preventDefault() + console.log(e.target.value) + setChosenProductSize(e.target.value)}>
-                    <option value='No-Choice-Size'  className='selectChoice' defaultValue disabled>--- SIZE ({SizeOption.length})---</option>
+                    <option value='No-Choice-Size' className='selectChoice' selected disabled>--- SIZE ({SizeOption.length})---</option>
                     {SizeOption}
                 </select>
                 {chosenProductSize ?
-                <>
-                <p>Color</p>
-                    <select id='selectColor' onChange={e => e.preventDefault() + setChosenProductColor(e.target.value)}>
-                        <option value='No-Choice-Color' key="001" className='selectChoice'>--- COLOR ({createOptions().length}) ---</option>
-                        {createOptions()}
-                    </select>
-                </>
+                    <>
+                        <p>Color</p>
+                        <select id='selectColor' onChange={e => e.preventDefault() + setChosenProductColor(e.target.value)}>
+                            <option value='No-Choice-Color' key="001" className='selectChoice'>--- COLOR ({createOptions().length}) ---</option>
+                            {createOptions()}
+                        </select>
+                    </>
                     : null
                 }
                {product.status == true ?  <button className='btn-cart'>Add to cart</button> :  <button className='btn-cart'>Out of stock</button>}

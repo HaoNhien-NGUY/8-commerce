@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Parallax, Background } from "react-parallax";
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
+import FormGroup from 'react-bootstrap/FormGroup';
+import Button from 'react-bootstrap/Button';
 import axios from 'axios';
-import './SubCategory.css';
+import './Category.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import store from '../../../store';
 
-function CreateSubCategory() {
-    const [formControl, setFormControl] = useState({});
+function CreateCategorySubModal() {
+  const [formControl, setFormControl] = useState({});
     const [allCategory, setAllCategory] = useState([]);
     const [isReady, setIsReady] = useState(false);
     const [isInvalid, setIsInvalid] = useState(false);
@@ -85,29 +88,42 @@ function CreateSubCategory() {
         }
     }, [isReady]);
 
-    return (
-        <div className='container'>
-        <ToastContainer />
-            <h1 className="text-center">Create SubCategory !</h1>
-            <div className="btnLink">
-                <button onClick={() => window.location.href = '/admin'} className='btn btn-warning margin-right'> Back to Dashboard </button>
-                <button onClick={() => window.location.href = '/admin/create/category'} className='btn btn-warning'> Create Category </button>
-            </div>
-            <form id="formCategory">
-                <div className="form-group">
-                    <label htmlFor="subCategory">SubCategory name</label>
-                    <input className={"form-control " + (isInvalid.subCategory ? 'is-invalid' : 'inputeStyle')} type="text" name="subCategory" placeholder="subCategory" onChange={handleChange} />
-                    <div className="invalid-feedback">{ isInvalid.subCategory }</div>
-                </div>
-                <select className={"form-control form-control-lg " + (isInvalid.category ? 'is-invalid' : 'inputeStyle')} id="selectCategory" onChange={handleSelect}>
-                    <option value="">--- CHOICE CATEGORY ---</option>
-                    {optionCategory}
-                </select>
-                <div className="invalid-feedback">{ isInvalid.category }</div>
-                <button type="submit" className="btn btn-dark" onClick={formSubmit}>Create</button>
-            </form>
-        </div>
-    )
+
+  return (
+    <>
+      <Modal.Header closeButton>
+        Create Sub Category !
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <FormGroup>
+                  {/* <label htmlFor="category">Category name</label>
+                  <input id="category" className={"form-control " + (isInvalid.category ? 'is-invalid' : 'inputeStyle')} type="text" name="category" placeholder="Category" onChange={handleChange}/>
+                  <button type="submit" className="btn btn-dark" onClick={formSubmit}>Create</button> */}
+
+            <select className={"form-control form-control-lg small" + (isInvalid.category ? 'is-invalid' : 'inputeStyle')} id="selectCategory" onChange={handleSelect}>
+              <option value="">Choose the Category</option>
+              {optionCategory}
+            </select>
+            <br/>
+
+            <div className="invalid-feedback">{ isInvalid.category }</div>
+
+            <label htmlFor="subCategory">SubCategory</label>
+            <input className={"form-control " + (isInvalid.subCategory ? 'is-invalid' : 'inputeStyle')} type="text" name="subCategory" placeholder="subCategory" onChange={handleChange} />
+
+            <div className="invalid-feedback">{ isInvalid.subCategory }</div>
+
+            
+
+            <button type="submit" className="btn btn-dark" onClick={formSubmit}>Create</button>
+          </FormGroup>
+        </Form>
+      </Modal.Body>
+
+    </>
+  )
 }
 
-export default CreateSubCategory;
+export default CreateCategorySubModal;
+

@@ -25,7 +25,21 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ColorController extends AbstractController
 {
+    /**
+     * @Route("/api/color/{color}", name="color_details", methods="GET")
+     */
+    public function colorDetails(ColorRepository $colorRepository,Request $request)
+    {
+        $colorId = $request->attributes->get('color');
+        $color = $colorRepository->findOneBy(['id' => $colorId ]);
 
+        if ($color) {
+            return $this->json($color, 200, [],['groups' => 'color']);
+        }
+        else {
+            return $this->json(['Color not found'], 404, []);
+        }
+    }
 
     /**
      * @Route("/api/color/", name="color_index", methods="GET")
@@ -40,20 +54,29 @@ class ColorController extends AbstractController
     /**
      * @Route("/api/color/{color}", name="color_create", methods="POST")
      */
-    public function colorCreate(Request $request,EntityManagerInterface $em, ValidatorInterface $validator)
+    public function colorCreate(Request $request,EntityManagerInterface $em, ValidatorInterface $validator, ColorRepository $colorRepository)
     {
-        $newColor = $request->attributes->get('color');
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+        $oldColor = $colorRepository->findOneBy(['name' => $request->attributes->get("color") ]);
 
-        $color = new Color();
-        $color->setName($newColor);
+        if ($oldColor) {
+            return $this->json(['message' => 'Color already exist'], 400, []);
+        } else {
 
-        $error = $validator->validate($color);
-        if (count($error) > 0) return $this->json($error, 400);
-
-        $em->persist($color);
-        $em->flush();
-
-        return $this->json(['message' => 'Color correctly added'], 200, []);
+            $newColor = $request->attributes->get('color');
+            
+            $color = new Color();
+            $color->setName($newColor);
+            
+            $error = $validator->validate($color);
+            if (count($error) > 0) return $this->json($error, 400);
+            
+            $em->persist($color);
+            $em->flush();
+            
+            return $this->json(['message' => 'Color correctly added'], 200, []);
+        }
     }
 
     /**
@@ -71,6 +94,36 @@ class ColorController extends AbstractController
             return $this->json(['message' => 'Color successfully removed'], 200, []);
         } else {
             return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
+     * @Route("/api/color/{color}", name="color_update", methods="PUT")
+     */
+    public function colorUpdate(Request $request,EntityManagerInterface $em, ValidatorInterface $validator, ColorRepository $colorRepository)
+    {
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+        $newColor = $colorRepository->findOneBy(['name' => $req->name ]);
+
+        if ($newColor) {
+            return $this->json(['message' => 'Color already exist'], 400, []);
+        }
+        else {
+            //Récupérer la couleur dans la DB
+            $id = $request->attributes->get('id');
+            $color = $colorRepository->findOneBy(['id' => $request->attributes->get('color') ]);
+            $color->setName($req->name);
+    
+            //Vérifier les erreurs
+            $error = $validator->validate($color);
+            if (count($error) > 0) return $this->json($error, 400);
+    
+            //Enregistrer
+            $em->persist($color);
+            $em->flush();
+    
+            return $this->json(['message' => 'Color correctly updated'], 200, []);
         }
     }
 }

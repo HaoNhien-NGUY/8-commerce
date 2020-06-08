@@ -11,15 +11,17 @@ import "bootstrap-slider/dist/css/bootstrap-slider.css";
 import "./Sidebar.css";
 import axios from "axios";
 import Results from "./Results";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class SearchSidebar extends Component {
   constructor() {
     super();
 
     this.state = {
-      sliderCurrentValue: [0, 100],
+      sliderCurrentValue: [0, 5000],
       sliderStep: 50,
-      sliderMax: 500,
+      sliderMax: 5000,
       sliderMin: 0,
 
       sexe: null,
@@ -37,9 +39,12 @@ export default class SearchSidebar extends Component {
 
       showFilter: false,
 
-      isResultsReady: false
+      isResultsReady: false,
+
+      searchValue: null,
     };
 
+    this.handleSearch = this.handleSearch.bind(this);
     this.sliderChangeValue = this.sliderChangeValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSexe = this.handleSexe.bind(this);
@@ -51,6 +56,10 @@ export default class SearchSidebar extends Component {
     this.showFilter = this.showFilter.bind(this);
     this.checkEmptyArray = this.checkEmptyArray.bind(this);
     this.showFilter = this.showFilter.bind(this);
+  }
+
+  handleSearch(e) {
+    this.setState({ searchValue: e.target.value });
   }
 
   sliderChangeValue(e) {
@@ -111,12 +120,34 @@ export default class SearchSidebar extends Component {
     if (!this.state.showFilter) {
       this.handleSubmit()
     }
+    else {
+      toast.dark('Close filter\'s box', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
   }
 
   async handleSortBy(e) {
     await this.setState({ sortBy: e.target.value });
     if (!this.state.showFilter) {
       this.handleSubmit()
+    } 
+    else {
+      toast.dark('Close filter\'s box', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
     }
   }
 
@@ -140,6 +171,7 @@ export default class SearchSidebar extends Component {
       subcategory: this.state.subcategory,
       order_by: this.state.orderBy.toLowerCase(),
       order_by_sort: this.state.sortBy,
+      search: this.state.searchValue
     };
 
     if (e) {
@@ -201,16 +233,18 @@ export default class SearchSidebar extends Component {
 
     return (
       <div className="container">
+        <ToastContainer />
         <form className="form-group justify-content-center" >
-
+          
           {/* SEARCH BAR */}
           <div className="form-group row justify-content-center">
             <input
               type="search"
               placeholder="Search a product"
               className="form-control col-8"
+              onChange={this.handleSearch}
             ></input>
-            <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0">
+            <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0" onClick={this.handleSubmit}>
               Search
             </button>
             <span
@@ -406,15 +440,14 @@ export default class SearchSidebar extends Component {
               </div>
 
               {/* Search button w/ filters */}
-              <div className="row">
+              {/* <div className="row">
                 <button
                   type="submit"
                   className="btn btn-dark"
-                  onClick={this.handleSubmit}
                 >
                   Search with filters
                 </button>
-              </div>
+              </div> */}
             </div>
           </Collapse>
 
@@ -463,7 +496,7 @@ export default class SearchSidebar extends Component {
         </form>
 
         {this.state.isResultsReady 
-          ? <Results results={results} /> 
+          ? <Results results={results} />
           : null}
       </div>
     );
