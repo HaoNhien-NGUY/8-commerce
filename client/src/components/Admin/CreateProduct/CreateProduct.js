@@ -59,7 +59,6 @@ function CreateProduct() {
             .catch((error) => {
                 console.log(error.response);
                 });
-
     }, [isSubCategoriesReady] )
 
     function handleChange(event) {
@@ -73,8 +72,6 @@ function CreateProduct() {
         } else {
             setFormControl({ ...formControl, [event.target.name]: val });
         }
-
-        console.log(formControl);
     }
     
     function formSubmit(e) {
@@ -148,7 +145,7 @@ function CreateProduct() {
         <div className='container'>
             <ToastContainer />
             <h1 className="text-center">Create your Product !</h1>
-            <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to dashboard </button>
+            <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to Dashboard </button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="title">Title</label>
@@ -159,11 +156,6 @@ function CreateProduct() {
                     <label htmlFor="description">Description</label><br/>
                     <textarea className={(isInvalid.description ? 'is-invalid' : 'inputeStyle')} name="description" id="description" form="formItem" placeholder="Your item description .." onChange={handleChange}/>
                     <div className="invalid-feedback">{ isInvalid.description }</div>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="price">Price</label>
-                    <input className={"form-control " + (isInvalid.price ? 'is-invalid' : 'inputeStyle')} type="number" name="price" id="price" placeholder="ex: 123" onChange={handleChange}/>
-                    <div className="invalid-feedback">{ isInvalid.price }</div>
                 </div>
                 <div className="form-group">
                     <label htmlFor="subcategory">SubCategory</label>
@@ -182,6 +174,11 @@ function CreateProduct() {
                     }
                     </select>
                     <a className='text-info small' style={{ cursor:'pointer' }} variant="primary" onClick={handleShow}> Create a new category ? </a>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="price">Price</label>
+                    <input className={"form-control " + (isInvalid.price ? 'is-invalid' : 'inputeStyle')} type="number" name="price" id="price" placeholder="ex: 123" onChange={handleChange}/>
+                    <div className="invalid-feedback">{ isInvalid.price }</div>
                 </div>
                 <div className="form-group">
                     <label htmlFor="price">Promo</label>
