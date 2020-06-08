@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,6 +27,7 @@ class Subproduct
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="subproducts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"subproduct"})
      */
     private $product;
 
