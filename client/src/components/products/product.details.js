@@ -19,8 +19,8 @@ function ProductDescription() {
   //tant que taille et couleur ne sont pas choisies, ne pas afficher de prix...
   let id = useRouteMatch("/product/:id").params.id;
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/product/' + id).then(async resp => {
-      await setProduct(resp.data);
+    axios.get('http://127.0.0.1:8000/api/product/' + id).then(resp => {
+      setProduct(resp.data);
 
       //Getting the lowest price
       let prices = {}
@@ -142,7 +142,7 @@ function ProductDescription() {
         }
       }
     }
-    
+
     let imgprod = [];
     let minimgprod = [];
     for (let [key, value] of Object.entries(obj)) {
