@@ -12,6 +12,8 @@ import profileLogo from '../img/profile.png'
 import searchLogo from '../img/search.png'
 import adminLogo from '../img/gear.png'
 import { Navbar, Nav, NavItem, Form, Button, FormControl, NavDropdown, Glyphicon } from "react-bootstrap";
+import SuggestionSearch from './Search/SuggestionSearch'
+
 class IndexNavbar extends Component {
     state = {
         isOpen: false,
@@ -55,10 +57,10 @@ class IndexNavbar extends Component {
 
         const productsInCart  = 124
         return (
-   <div id="navbarholder">       
-                <Navbar color="light" light expand="lg" id="navbar">
+            <div id="navbarholder">       
+                <Navbar color="light" light="true" expand="lg" id="navbar">
                     <Navbar.Brand href="/" id="brandName">8-commerce</Navbar.Brand>
-                  <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <NavItem>
                             <Nav.Link href="#">Homme</Nav.Link>
@@ -72,6 +74,7 @@ class IndexNavbar extends Component {
                     </Navbar.Collapse>
                 </Navbar>
                 <Navbar id="underline">
+                    <SuggestionSearch />
                     <Nav.Link href="/search" id="searchLogo"><img src={searchLogo}/></Nav.Link>
                     <Nav>
                         {!isLoading ? isAuthenticated ? authLinks : guestLinks : null}
@@ -87,7 +90,7 @@ class IndexNavbar extends Component {
                     </Nav.Link>
                     
                 </Navbar>
-                </div>
+            </div>
         )
     }
 }
