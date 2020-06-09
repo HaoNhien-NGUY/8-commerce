@@ -11,10 +11,9 @@ import ReactPaginate from 'react-paginate';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import store from '../../store';
-import {
-    Button, Form, FormGroup, Label, Input, Alert
-} from 'reactstrap'
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap'
 import Modal from 'react-bootstrap/Modal';
+import SupplierCommand from './TabSupplier/TapSupplier';
 
 const AdminInterface = () => {
     const [products, setProducts] = useState([]);
@@ -42,6 +41,10 @@ const AdminInterface = () => {
     const [imageId, setImageId] = useState(null);
     const [showCate, setShowCate] = useState(false);
     const [categoryName, setCategoryName] = useState([]);
+    const [showCateEdit, setShowCateEdit] = useState(false);
+    const [categoryNameEdit, setCategoryNameEdit] = useState([]);
+    const [cateEditId, setCateEditId] = useState(null);
+    const [oldCateEditName, setOldCateEditName] = useState('');
 
     const token = store.getState().auth.token
     const config = {
@@ -131,7 +134,7 @@ const AdminInterface = () => {
                     <tr key={category.id}>
                         <td><p className="m-2 align-items-center">{category.id}</p></td>
                         <td><p className="m-2">{category.name}</p></td>
-                        <td> <button onClick={() => window.location.href = 'admin/update/category/' + category.id} className="btn btn-outline-info m-1"> Modify </button></td>
+                        <td> <button onClick={e => e.preventDefault() + handleShowCateEdit(category.id, category.name)} className="btn btn-outline-info m-1"> Modify </button></td>
                         <td> <button onClick={() => window.location.href = '/admin/subcategory/' + category.id} className="btn btn-outline-dark m-1"> SubCategories</button></td>
                         <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-1"> Delete </button></td>
                     </tr>
@@ -212,14 +215,43 @@ const AdminInterface = () => {
             })
     }
 
+    const handleCloseCateEdit = () => setShowCateEdit(false);
+    const handleShowCateEdit = (id, name) => {
+        setShowCateEdit(true);
+        setCateEditId(id);
+        setOldCateEditName(name);
+    }
+    const onChangeCateEdit = (event) => {
+        let res = event.target.value.trim();
+        let str = res.toLowerCase();
+        let category = str.charAt(0).toUpperCase() + str.slice(1);
+        setCategoryNameEdit(category.replace(/[\s]{2,}/g, " "))
+    }
+    function onSubmitCateEdit(e) {
+        e.preventDefault();
+        if (categoryNameEdit.length === 0) {
+            return toast.error("You need to enter a new category", { position: "top-center" });
+        }
+        if (categoryNameEdit.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
+            return toast.error("Invalid charactere", { position: "top-center" });
+        } else {
+            const body = {
+                "name": categoryNameEdit,
+            }
+            axios.put("http://localhost:8000/api/category/"+cateEditId, body, config ).then( e => {
+                toast.success('Category correctly updated!', { position: "top-center"});
+                setShowCateEdit(false);
+            }).catch( err => {
+                toast.error('Error !', {position: 'top-center'});
+            });
+        }
+    }
+
     const AllProducts = () => {
         return (
             <>
                 <div className="row justify-content-end mb-2">
-
-                    <button onClick={() => redirectCreate('product')} className="btn btn-success">
-                        + New Product
-                    </button>
+                    <button onClick={() => redirectCreate('product')} className="btn btn-success">+ New Product</button>
                 </div>
                 <div className="row border p-2">
                     <table>
@@ -234,11 +266,27 @@ const AdminInterface = () => {
                                 <th colSpan="4"><p className="m-2"> Actions </p></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {postData}
-                        </tbody>
+                        <tbody>{postData}</tbody>
                     </table>
                 </div>
+                <Modal show={showCateEdit} onHide={handleCloseCateEdit}>
+                    <Modal.Header closeButton>Update Category !</Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={onSubmitCateEdit}>
+                            <FormGroup>
+                                <Label for="cateEdit">Category name</Label>
+                                <Input
+                                    type="text"
+                                    name="cateEdit"
+                                    id="cateEdit"
+                                    placeholder={oldCateEditName}
+                                    onChange={onChangeCateEdit}
+                                />
+                                <Button color="dark" className="mt-4" block>Update</Button>
+                            </FormGroup>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div>
                         <ReactPaginate
@@ -255,9 +303,7 @@ const AdminInterface = () => {
                             activeClassName={"active"} />
                         {/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
                         <Modal show={showImage} onHide={handleImage}>
-                            <Modal.Header closeButton>
-                                Download Image !
-                            </Modal.Header>
+                            <Modal.Header closeButton>Download Image !</Modal.Header>
                             <Modal.Body>
                                 <Form onSubmit={onSubmitImage}>
                                     <FormGroup>
@@ -268,9 +314,7 @@ const AdminInterface = () => {
                                             id="image"
                                             onChange={onChangeImage}
                                         />
-                                        <Button color="dark" className="mt-4" block>
-                                            Submit
-                                        </Button>
+                                        <Button color="dark" className="mt-4" block>Submit</Button>
                                     </FormGroup>
                                 </Form>
                             </Modal.Body>
@@ -294,10 +338,10 @@ const AdminInterface = () => {
         e.preventDefault();
         
         if (categoryName.length === 0) {
-            return toast.error("You need to pick a photo", { position: "top-center" });
+            return toast.error("You need to enter a category", { position: "top-center" });
         }
 
-        if (categoryName.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
+        if (categoryName.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
             return toast.error("Invalid charactere", { position: "top-center" });
         } else {
             const body = {
@@ -316,13 +360,9 @@ const AdminInterface = () => {
         return (
             <>
                 <div className="row justify-content-end mb-2">
-                    <button onClick={handleShowCate} className="btn btn-success m-1">
-                        + New Category
-                    </button>
+                    <button onClick={handleShowCate} className="btn btn-success m-1">+ New Category</button>
                         <Modal show={showCate} onHide={handleCloseCate}>
-                            <Modal.Header closeButton>
-                                Create category !
-                            </Modal.Header>
+                            <Modal.Header closeButton>Create category !</Modal.Header>
                             <Modal.Body>
                                 <Form onSubmit={onSubmitCate}>
                                     <FormGroup>
@@ -333,16 +373,12 @@ const AdminInterface = () => {
                                             id="category"
                                             onChange={onChangeCate}
                                         />
-                                        <Button color="dark" className="mt-4" block>
-                                            Submit
-                                        </Button>
+                                        <Button color="dark" className="mt-4" block>Submit</Button>
                                     </FormGroup>
                                 </Form>
                             </Modal.Body>
                         </Modal>
-                    <button onClick={() => redirectCreate('subcategory')} className="btn btn-success m-1">
-                        + New SubCategory
-                    </button>
+                    <button onClick={() => redirectCreate('subcategory')} className="btn btn-success m-1">+ New SubCategory</button>
                 </div>
                 <div className="row border p-2">
                     <table>
@@ -353,9 +389,7 @@ const AdminInterface = () => {
                                 <th><p colspan="3" className="m-1"> Actions </p></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {postDataCategories}
-                        </tbody>
+                        <tbody>{postDataCategories}</tbody>
                     </table>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -416,7 +450,6 @@ const AdminInterface = () => {
                 const body = {
                     "name": newColor
                 }
-
                 axios.put("http://localhost:8000/api/color/" + oldColor, body, config).then(res => {
                     toast.success(res.data.message, { position: "top-center" });
                     axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
@@ -425,7 +458,6 @@ const AdminInterface = () => {
                 }).catch(err => {
                     toast.error('Color name already exist !', { position: 'top-center' });
                 })
-
                 setShow(false);
             }
         }
@@ -455,7 +487,6 @@ const AdminInterface = () => {
                 const body = {
                     "name": colorCreate
                 }
-
                 axios.post("http://127.0.0.1:8000/api/color/" + colorCreate, body, config).then(res => {
                     toast.success('Color correctly added!', { position: "top-center" });
                     axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
@@ -464,7 +495,6 @@ const AdminInterface = () => {
                 }).catch(err => {
                     toast.error('Color already exist!', { position: 'top-center' });
                 });
-
                 setShowColor(false);
             }
         }
@@ -477,14 +507,9 @@ const AdminInterface = () => {
         return (
             <>
                 <div className="row justify-content-end mb-2">
-                    <button onClick={handleShowColor} className="btn btn-success mr-4 pr-5 pl-5">
-                        + New Color
-                    </button>
-
+                    <button onClick={handleShowColor} className="btn btn-success mr-4 pr-5 pl-5">+ New Color</button>
                     <Modal show={show2} onHide={handleCloseColor} >
-                        <Modal.Header closeButton>
-                            Create color !
-                        </Modal.Header>
+                        <Modal.Header closeButton>Create color !</Modal.Header>
                         <Modal.Body>
                             {msgErrorColor ? <Alert> {msgErrorColor} </Alert> : null}
                             <Form onSubmit={onSubmit2}>
@@ -497,22 +522,14 @@ const AdminInterface = () => {
                                         placeholder="Color name"
                                         onChange={onChangeColor}
                                     />
-                                    <Button color="dark" className="mt-4" block>
-                                        Create
-                                </Button>
+                                    <Button color="dark" className="mt-4" block>Create</Button>
                                 </FormGroup>
                             </Form>
                         </Modal.Body>
                     </Modal>
-
-                    <button onClick={handleShow} className="btn btn-info pl-5 pr-5">
-                        Update Color
-                    </button>
-
+                    <button onClick={handleShow} className="btn btn-info pl-5 pr-5">Update Color</button>
                     <Modal show={show} onHide={handleClose}>
-                        <Modal.Header closeButton>
-                            Update color !
-                        </Modal.Header>
+                        <Modal.Header closeButton>Update color !</Modal.Header>
                         <Modal.Body>
                             {msgError ? <Alert> {msgError} </Alert> : null}
                             <Form onSubmit={onSubmit}>
@@ -529,14 +546,11 @@ const AdminInterface = () => {
                                         placeholder="Color name"
                                         onChange={onChange}
                                     />
-                                    <Button color="dark" className="mt-4" block>
-                                        Update
-                                </Button>
+                                    <Button color="dark" className="mt-4" block>Update</Button>
                                 </FormGroup>
                             </Form>
                         </Modal.Body>
                     </Modal>
-
                 </div>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">
@@ -556,7 +570,6 @@ const AdminInterface = () => {
     return (
         <div className="container adminTable">
             <ToastContainer />
-
             <h1 className="mb-5">
                 <i class="material-icons md-36">speed</i> ADMIN - Dashboard
             </h1>
@@ -565,6 +578,7 @@ const AdminInterface = () => {
                     <Tab><h3 className="tabtitles mr-3 ml-3">Products</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3">Categories</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3">Colors</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3">Suppliers</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
@@ -574,6 +588,9 @@ const AdminInterface = () => {
                 </TabPanel>
                 <TabPanel>
                     {AllColors()}
+                </TabPanel>
+                <TabPanel>
+                    <SupplierCommand />
                 </TabPanel>
             </Tabs>
         </div>

@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Product
 {
     /**
-     * @Groups({"products","category"})
+     * @Groups({"products","category","subproduct", "supplier_order_details"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -25,7 +25,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products","category"})
+     * @Groups({"products","category", "subproduct", "supplier_order_details"})
      */
     private $title;
 
@@ -90,7 +90,6 @@ class Product
         $metadata->addPropertyConstraint('title', new Assert\NotBlank());
         $metadata->addPropertyConstraint('description', new Assert\NotBlank());
         $metadata->addPropertyConstraint('description', new Assert\Type(['type' => ['string']]));
-        $metadata->addPropertyConstraint('status', new Assert\NotBlank());
         $metadata->addPropertyConstraint('status', new Assert\Type(['type' => ['bool']]));
         $metadata->addPropertyConstraint('sex', new Assert\NotBlank());
         $metadata->addPropertyConstraint('sex', new Assert\Type(['type' => ['alpha']]));

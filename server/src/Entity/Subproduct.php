@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,49 +20,50 @@ class Subproduct
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="subproducts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"subproduct", "supplier_order_details"})
      */
     private $product;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="float", length=255)
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $weight;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $promo;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $stock;
 
@@ -73,13 +75,22 @@ class Subproduct
     /**
      * @ORM\ManyToOne(targetEntity=Color::class, inversedBy="subproduct")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"subproduct","products"})
+     * @Groups({"subproduct","products", "supplier_order_details"})
      */
     private $color;
+
+    /**
+     * @ORM\OneToMany(targetEntity="SupplierOrderSubproduct", mappedBy="Subproducts", fetch="EXTRA_LAZY")
+     * @ORM\JoinColumn(nullable=false)
+    */
+    private $supplierOrders;
+
+  
 
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->supplierOrders = new ArrayCollection();
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
@@ -219,6 +230,34 @@ class Subproduct
     public function setColor(?Color $color): self
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SupplierOrder[]
+     */
+    public function getSupplierOrders(): Collection
+    {
+        return $this->supplierOrders;
+    }
+
+    public function addSupplierOrder(SupplierOrder $supplierOrder): self
+    {
+        if (!$this->supplierOrders->contains($supplierOrder)) {
+            $this->supplierOrders[] = $supplierOrder;
+            $supplierOrder->addSubproduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupplierOrder(SupplierOrder $supplierOrder): self
+    {
+        if ($this->supplierOrders->contains($supplierOrder)) {
+            $this->supplierOrders->removeElement($supplierOrder);
+            $supplierOrder->removeSubproduct($this);
+        }
 
         return $this;
     }
