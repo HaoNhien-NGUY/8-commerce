@@ -196,7 +196,7 @@ function ProductDescription() {
                     {details.description_1}
                     <span className='complete'>{details.description_2}</span>
                 </p>
-                <p className="more" onClick={Complete}>{completeDes}</p>
+                {testProps.length > 192 ? <p className="more" onClick={Complete}>{completeDes}</p>: null }
                 <p>{verifyIfAProductIsChosen() ? chosenSubProduct.stock + " pièces disponibles" : countstockAll + " pièces totales disponibles"}</p>
                 {chosenProductSize != '' && chosenProductColor != '' ? console.log('PRODUCT IS CHOSEN') + setChosenProduct() : console.log('NO CHOICE')}
 
