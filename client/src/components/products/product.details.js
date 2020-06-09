@@ -12,12 +12,15 @@ function ProductDescription() {
   const [chosenProductSize, setChosenProductSize] = useState('');
   const [chosenProductColor, setChosenProductColor] = useState('');
   const [chosenSubProduct, setChosenSubProduct] = useState();
+  const [imageProduct, setImageProduct] = useState();
+  const [miniImageProduct, setMiniImageProduct] = useState();
+  const imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
 
   //tant que taille et couleur ne sont pas choisies, ne pas afficher de prix...
   let id = useRouteMatch("/product/:id").params.id;
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/product/' + id).then(resp => {
-      setProduct(resp.data);
+    axios.get('http://127.0.0.1:8000/api/product/' + id).then(async resp => {
+      await setProduct(resp.data);
 
       //Getting the lowest price
       let prices = {}
@@ -60,8 +63,6 @@ function ProductDescription() {
   }, []);
 
   const [completeDes, setCompleteDes] = useState('.. More ⇒');
-  const imageProduct = [];
-  const miniImageProduct = [];
   const loadingScreen = [];
   let propsImage = {}
   let countstockAll = 0;
@@ -110,16 +111,6 @@ function ProductDescription() {
     }
   }
 
-  let imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
-
-  let obj = { 'img-0': imageDefault }
-  if (product && product.images && product.images[0]) { //[0] = default, à modifier en state
-    obj = {}
-    for (let i = 0; i < product.images[0].links.length; i++) {
-      obj['img-' + i] = "http://127.0.0.1:8000" + product.images[0].links[i];
-    }
-  }
-
   const details = {
     title: product.title,
     price: lowestPrice,
@@ -127,16 +118,46 @@ function ProductDescription() {
     description_2: testProps.substr(192)
   };
 
-  for (let [key, value] of Object.entries(obj)) {
-    const ref = React.createRef();
-    const handleClick = () =>
-      ref.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    imageProduct.push(<span key={value + "span"} ref={ref}><ReactImageMagnify {...showImage(value)} /></span>);
-    miniImageProduct.push(<div key={value + "div"} onClick={handleClick}><img className='imgIcone' src={value} /></div>);
-  }
+  useEffect(() => {
+    console.log('testing the useeffect')
+    let obj = { 'img-0': imageDefault }
+
+    if (product && product.images && product.images[0]) { //[0] = default, à modifier en state
+      obj = {}
+      if (chosenSubProduct) {
+        // anker
+        for (let i = 0; i < product.images.length; i++) {
+          console.log('testing img', product.images[i].color_id, chosenProductColor)
+          if (product.images[i].color_id === chosenProductColor) {
+            console.log('inside')
+            for (let j = 0; j < product.images[i].links.length; j++) {
+              console.log('inside-2', i,j, product.images[i].links[j])
+              obj['img-' + j] = "http://127.0.0.1:8000" + product.images[i].links[j];
+            }
+          }
+        }
+      } else {
+        for (let i = 0; i < product.images[0].links.length; i++) {
+          obj['img-' + i] = "http://127.0.0.1:8000" + product.images[0].links[i];
+        }
+      }
+    }
+    
+    let imgprod = [];
+    let minimgprod = [];
+    for (let [key, value] of Object.entries(obj)) {
+      const ref = React.createRef();
+      const handleClick = () =>
+        ref.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      imgprod.push(<span key={value + "span"} ref={ref}><ReactImageMagnify {...showImage(value)} /></span>);
+      setImageProduct(imgprod);
+      minimgprod.push(<div key={value + "div"} onClick={handleClick}><img className='imgIcone' src={value} /></div>);
+      setMiniImageProduct(minimgprod);
+    }
+  }, [product, chosenSubProduct]);
 
   function showImage(pathImg) {
     const imageProps = {
@@ -201,8 +222,8 @@ function ProductDescription() {
         {chosenProductSize != '' && chosenProductColor != '' ? console.log('PRODUCT IS CHOSEN') + setChosenProduct() : console.log('NO CHOICE')}
 
         <p>Color</p>
-        <select id='selectColor' onChange={e => e.preventDefault() + console.log(e.target.value) + setChosenProductColor(e.target.value)}>
-          <option value='No-Choice-Color' key="001" className='selectChoice' defaultValue>--- COLOR ({ColorOption.length})---</option>
+        <select id='selectColor' defaultValue="No-Choice-Color" onChange={e => e.preventDefault() + console.log(e.target.value) + setChosenProductColor(e.target.value)}>
+          <option value='No-Choice-Color' key="001" className='selectChoice' disabled>--- COLOR ({ColorOption.length})---</option>
           {ColorOption}
         </select>
         {chosenProductColor ?
@@ -280,7 +301,7 @@ function ProductDescription() {
     let arr = product.subproducts.filter(item => item.color.id == chosenProductColor)
     let options = []
     let arr_size_no_rep = []
-    options.push(<option value='No-Choice-Size' key="size-no-choice" className='selectChoice' disabled>--- SIZE ({arr.length})---</option>)
+    options.push(<option value='No-Choice-Size' key="size-no-choice" className='selectChoice'>--- SIZE ({arr.length})---</option>)
     for (let i = 0; i < arr.length; i++) {
       let size_value = arr[i].size
       if (!arr_size_no_rep.includes(size_value)) {
