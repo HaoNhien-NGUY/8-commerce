@@ -111,12 +111,6 @@ class SupplierOrderController extends AbstractController
                     $supplierOrder->setSupplier($supplier);
                 }
 
-                if (isset($req->subproduct_id)) {
-                    $subproduct = $subproductRepository->find($req->subproduct_id);
-                    if (!isset($subproduct)) return $this->json(['message' => 'Subproduct not found'], 400, []);
-                    $supplierOrder->addSubproduct($subproduct);
-                }
-
                 $error = $validator->validate($supplierOrder);
                 if (count($error) > 0) return $this->json($error, 400);
 
@@ -148,9 +142,11 @@ class SupplierOrderController extends AbstractController
 
         $orderSubproduct = new SupplierOrderSubproduct();
 
+        if(!isset($req->quantity)) return $this->json(['message' => 'quantity missing'], 400); 
+        
+        $orderSubproduct->setQuantity($req->quantity);
         $orderSubproduct->setSubproduct($subproduct);
         $orderSubproduct->setSupplierOrder($supplierOrder);
-        $orderSubproduct->setQuantity($req->quantity);
 
         $em->persist($orderSubproduct);
         $em->flush();
