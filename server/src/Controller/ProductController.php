@@ -226,16 +226,11 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route("/api/product/search", name="product_search", methods="POST")
+     * @Route("/api/product/search/{search}", name="product_search", methods="GET")
      */
     public function productSearch(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer)
     {
-        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
-            $data = json_decode($request->getContent(), true);
-            $request->request->replace(is_array($data) ? $data : array());
-        }
-
-        $products = $productRepository->findSearchProduct($data);
+        $products = $productRepository->findSearchResult($request->attributes->get('search'), $request->query->get('limit'), $request->query->get('offset'));
         $products = $normalizer->normalize($products, null, ['groups' => 'products']);
         $products = array_map(function ($v) {
             $path = "./images/" . $v['product_id'] . "/default";
@@ -247,10 +242,8 @@ class ProductController extends AbstractController
             }, $imgArray);
             return array_merge($v, ["images" => array_values($imgArray)]);
         }, $products);
-        
-        $catSubcat = $productRepository->findSearchCategorySubcategory($data);
 
-        return $this->json(['products' => $products, 'catsubcat' => $catSubcat], 200);
+        return $this->json($products, 200);
     }
 
     /**
@@ -275,6 +268,7 @@ class ProductController extends AbstractController
             }, $imgArray);
             return array_merge($v, ["images" => array_values($imgArray)]);
         }, $products);
+
         return $this->json($products, 200);
     }
 
