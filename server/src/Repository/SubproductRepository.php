@@ -19,6 +19,14 @@ class SubproductRepository extends ServiceEntityRepository
         parent::__construct($registry, Subproduct::class);
     }
 
+    public function countAllResults()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     // /**
     //  * @return Subproduct[] Returns an array of Subproduct objects
     //  */
