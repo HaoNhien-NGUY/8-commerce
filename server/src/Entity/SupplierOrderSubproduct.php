@@ -2,15 +2,12 @@
 
 namespace App\Entity;
 
-// use App\Repository\SupplierOrderRepository;
-// use Doctrine\Common\Collections\ArrayCollection;
-// use Doctrine\Common\Collections\Collection;
+use App\Repository\SupplierOrderSubproductRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="supplier_order_subproduct")
+ * @ORM\Entity(repositoryClass=SupplierOrderSubproductRepository::class)
  */
 class SupplierOrderSubproduct
 {
@@ -22,59 +19,62 @@ class SupplierOrderSubproduct
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Subproduct")
+     * @ORM\Column(type="integer")
+     * @Groups("supplier_order_details")
+     */
+    private $quantity;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Subproduct::class, inversedBy="supplierOrderSubproducts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("supplier_order_details")
      */
     private $subproduct;
 
     /**
-     * @ORM\ManyToOne(targetEntity="SupplierOrder",inversedBy="subproducts")
+     * @ORM\ManyToOne(targetEntity=SupplierOrder::class, inversedBy="supplierOrderSubproducts")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $supplier_order;
+    private $supplierOrder;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"supplier_order_details"})
-     */
-    private $stock;
-
-
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSubproduct()
+    public function getQuantity(): ?int
     {
-        return $this->subproduct;
+        return $this->quantity;
     }
 
-    public function setSubproduct($subproduct)
+    public function setQuantity(int $quantity): self
     {
-        $this->subproduct = $subproduct;
-    }
-
-    public function getSupplierOrder()
-    {
-        return $this->supplier_order;
-    }
-
-    public function setSupplierOrder($supplier_order)
-    {
-        $this->supplier_order = $supplier_order;
-    }
-
-    public function getStock(): ?int
-    {
-        return $this->stock;
-    }
-
-    public function setStock(int $stock): self
-    {
-        $this->stock = $stock;
+        $this->quantity = $quantity;
 
         return $this;
     }
 
+    public function getSubproduct(): ?Subproduct
+    {
+        return $this->subproduct;
+    }
+
+    public function setSubproduct(?Subproduct $subproduct): self
+    {
+        $this->subproduct = $subproduct;
+
+        return $this;
+    }
+
+    public function getSupplierOrder(): ?SupplierOrder
+    {
+        return $this->supplierOrder;
+    }
+
+    public function setSupplierOrder(?SupplierOrder $supplierOrder): self
+    {
+        $this->supplierOrder = $supplierOrder;
+
+        return $this;
+    }
 }

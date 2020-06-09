@@ -61,14 +61,14 @@ class SupplierOrder
     private $created_at;
 
     /**
-     * @ORM\OneToMany(targetEntity="SupplierOrderSubproduct", mappedBy="supplierOrder")
-     * @Groups({"supplier_order_details"})
+     * @ORM\OneToMany(targetEntity=SupplierOrderSubproduct::class, mappedBy="supplierOrder")
+     * @Groups("supplier_order_details")
      */
-    private $subproduct;
+    private $supplierOrderSubproducts;
 
     public function __construct()
     {
-        $this->subproduct = new ArrayCollection();
+        $this->supplierOrderSubproducts = new ArrayCollection();
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
@@ -157,39 +157,32 @@ class SupplierOrder
     }
 
     /**
-     * @return Collection|Subproduct[]
+     * @return Collection|SupplierOrderSubproduct[]
      */
-    public function getSubproduct(): Collection
+    public function getSupplierOrderSubproducts(): Collection
     {
-        return $this->subproduct;
+        return $this->supplierOrderSubproducts;
     }
 
-    public function addSubproduct(Subproduct $subproduct): self
+    public function addSupplierOrderSubproduct(SupplierOrderSubproduct $supplierOrderSubproduct): self
     {
-        if (!$this->subproduct->contains($subproduct)) {
-            $this->subproduct[] = $subproduct;
+        if (!$this->supplierOrderSubproducts->contains($supplierOrderSubproduct)) {
+            $this->supplierOrderSubproducts[] = $supplierOrderSubproduct;
+            $supplierOrderSubproduct->setSupplierOrder($this);
         }
 
         return $this;
     }
 
-    public function removeSubproduct(Subproduct $subproduct): self
+    public function removeSupplierOrderSubproduct(SupplierOrderSubproduct $supplierOrderSubproduct): self
     {
-        if ($this->subproduct->contains($subproduct)) {
-            $this->subproduct->removeElement($subproduct);
+        if ($this->supplierOrderSubproducts->contains($supplierOrderSubproduct)) {
+            $this->supplierOrderSubproducts->removeElement($supplierOrderSubproduct);
+            // set the owning side to null (unless already changed)
+            if ($supplierOrderSubproduct->getSupplierOrder() === $this) {
+                $supplierOrderSubproduct->setSupplierOrder(null);
+            }
         }
-
-        return $this;
-    }
-
-    public function getStock(): ?int
-    {
-        return $this->stock;
-    }
-
-    public function setStock(int $stock): self
-    {
-        $this->stock = $stock;
 
         return $this;
     }

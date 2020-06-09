@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Subproduct;
 use App\Entity\Supplier;
 use App\Entity\SupplierOrder;
+use App\Entity\SupplierOrderSubproduct;
 use App\Repository\SubproductRepository;
 use App\Repository\SupplierOrderRepository;
+use App\Repository\SupplierOrderSubproductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,9 +39,9 @@ class SupplierOrderController extends AbstractController
      */
     public function supplierOrderDetails(Request $request, SupplierOrderRepository $supplierOrderRepository)
     {
-        $supplierOrder = $supplierOrderRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        $supplierOrder = $supplierOrderRepository->find($request->attributes->get('id'));
+
         if ($supplierOrder) {
-            // dd($supplierOrder);
             return $this->json($supplierOrder, 200, [], ['groups' => 'supplier_order_details']);
         } else {
             return $this->json(['message' => 'not found'], 404, []);
@@ -128,6 +130,32 @@ class SupplierOrderController extends AbstractController
         } catch (NotEncodableValueException $e) {
             return $this->json(['message' => $e->getMessage()], 400);
         }
+    }
+
+    /**
+     * @Route("/api/supplier/order/{id}/add", name="supplier_order_add_subproduct", methods="POST", requirements={"id":"\d+"})
+     */
+    public function supplierOderAddSubproduct(Request $request, EntityManagerInterface $em, SupplierOrderRepository $supplierOrderRepository, SubproductRepository $subproductRepository) {
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+
+        if(!isset($req->subproduct_id)) return $this->json(['message' => 'subproduct_id not found'], 400); 
+        $subproduct = $subproductRepository->find($req->subproduct_id);
+        if(!isset($subproduct)) return $this->json(['message' => 'Subproduct not found'], 400); 
+
+        $supplierOrder = $supplierOrderRepository->find($request->attributes->get('id'));
+        if(!isset($supplierOrder)) return $this->json(['message' => 'SupplierOrder not found'], 400); 
+
+        $orderSubproduct = new SupplierOrderSubproduct();
+
+        $orderSubproduct->setSubproduct($subproduct);
+        $orderSubproduct->setSupplierOrder($supplierOrder);
+        $orderSubproduct->setQuantity($req->quantity);
+
+        $em->persist($orderSubproduct);
+        $em->flush();
+
+        return $this->json(['message' => 'Subproduct added', 'subproduct' => $orderSubproduct], 200, [], ['groups' => 'supplier_order_details']);
     }
 
     /**
