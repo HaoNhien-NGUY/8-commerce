@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import "./CreateOrder.css";
+import CartSubProduct from "./CartSubProduct";
+import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 function CreateOrder() {
     const [show, setShow] = useState(false);
@@ -16,6 +17,7 @@ function CreateOrder() {
     const [allSupplier, setAllSupplier] = useState([]);
     const [allSubProduct, setAllSubproduct] = useState([]);
     const [isReady, setIsReady] = useState(false);
+    const [cart, setCart] = useState([]);
     const optionSelect = [];
     const optionSubProduct = [];
 
@@ -96,10 +98,15 @@ function CreateOrder() {
     useEffect(() => {
         if (isReady) {
             setIsReady(false);
-            console.log(idSupplier);
-            console.log(subProduct);
-            console.log(ourAdress);
-            console.log(quantity);
+
+            let obj = {
+                "idSupplier" : idSupplier,
+                "subProduct" : subProduct,
+                "ourAdress" : ourAdress,
+                "quantity" : quantity
+            }
+            setCart([...cart, obj]);
+            
             // const body = {
             //     "our_address" : ourAdress,
             //     "status" : false,
@@ -115,18 +122,19 @@ function CreateOrder() {
             // });
         }
     }, [isReady]);
-
+    
     return (
+        <>
         <div className="container">
             <h1>New Order</h1>
             <Form onSubmit={onSubmit2}>
                 <FormGroup>
-                    <select className={"form-control " + (isInvalid.idsupplier ? 'is-invalid' : 'inputeStyle')} onChange={e => setIdSupplier(e.target.value)}>
+                    <select className={"form-control mtop30 " + (isInvalid.idsupplier ? 'is-invalid' : 'inputeStyle')} onChange={e => setIdSupplier(e.target.value)}>
                         <option value="">- - - Select Supplier - - -</option>
                         {optionSelect}
                     </select>
                     <div className="invalid-feedback">{ isInvalid.idsupplier }</div>
-                    <select className={"form-control " + (isInvalid.subproduct ? 'is-invalid' : 'inputeStyle')} onChange={ e => setSubProduct(e.target.value)}>
+                    <select className={"form-control mtop30 " + (isInvalid.subproduct ? 'is-invalid' : 'inputeStyle')} onChange={ e => setSubProduct(e.target.value)}>
                         <option value="">- - - Select SubProduct - - -</option>
                         {optionSubProduct}
                     </select>
@@ -153,6 +161,8 @@ function CreateOrder() {
                 </FormGroup>
             </Form>
         </div>
+        <CartSubProduct handleCart={cart} />
+        </>
     )
 }
 
