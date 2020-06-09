@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import $ from 'jquery';
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from "react";
+import $ from "jquery";
+import axios from "axios";
 import { useRouteMatch } from "react-router-dom";
-import ReactImageMagnify from 'react-image-magnify';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ReactImageMagnify from "react-image-magnify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ProductDescription() {
   const [product, setProduct] = useState([]);
@@ -322,4 +322,4 @@ function ProductDescription() {
   )
 }
 
-export default ProductDescription;  
+export default ProductDescription;
