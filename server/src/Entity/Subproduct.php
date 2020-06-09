@@ -20,50 +20,50 @@ class Subproduct
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="subproducts")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"subproduct"})
+     * @Groups({"subproduct", "supplier_order_details"})
      */
     private $product;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="float", length=255)
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $weight;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $promo;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"products", "subproduct"})
+     * @Groups({"products", "subproduct", "supplier_order_details"})
      */
     private $stock;
 
@@ -75,7 +75,7 @@ class Subproduct
     /**
      * @ORM\ManyToOne(targetEntity=Color::class, inversedBy="subproduct")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"subproduct","products"})
+     * @Groups({"subproduct","products", "supplier_order_details"})
      */
     private $color;
 

@@ -79,16 +79,22 @@ class ProductController extends AbstractController
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
-            $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts'],
-                ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
-            ]);
+
+            try {
+                $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
+                    AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts'],
+                    ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
+                ]);
+            } catch (NotNormalizableValueException $e) {
+                return $this->json(['message' => $e->getPrevious()->getMessage()], 400, []);
+            }
+
             if (!isset($req->subcategory)) return $this->json(['message' => 'subcategory missing'], 400, []);
             $subCategory = $this->getDoctrine()
                 ->getRepository(SubCategory::class)
                 ->find($req->subcategory);
             if (!isset($subCategory)) return $this->json(['message' => 'subcategory not found'], 400, []);
-            
+
             $product->setSubCategory($subCategory);
             $product->setCreatedAt(new DateTime());
 
