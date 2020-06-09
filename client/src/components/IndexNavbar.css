@@ -1,6 +1,4 @@
 @import url('https://fonts.googleapis.com/css?family=Material+Icons');
-
-
 #productsCart div {
     color: black;
     margin-top: 0.7vh;
@@ -23,6 +21,7 @@
     margin: 0;
     padding: 0;
 }
+
 #searchLogo {
     padding: 0.5vh;
 }
@@ -51,7 +50,7 @@
 }
 
 @media (max-width: 574px) {
-    .searchcontainer { 
+    .searchcontainer {
         width: 40vw!important;
     }
     .searchcontainer input {
@@ -62,9 +61,8 @@
     }
 }
 
-
 @media (max-width: 524px) {
-    .searchcontainer { 
+    .searchcontainer {
         width: 60vw!important;
     }
     .searchcontainer input {
@@ -73,4 +71,61 @@
     #productsCart {
         width: auto!important;
     }
+}
+
+
+/* ------------ cart ---------*/
+
+.cartContainer {
+    position: absolute;
+    right: 1vw;
+    width: 22vw;
+    background-color: white;
+    top: 4vw;
+    z-index: 400;
+    padding: 1.5vw
+}
+
+.cartIcon {
+    margin-top: 0.6vw;
+}
+
+
+.statutpanier {text-align: center;}
+.productinCart a {font-size: 0.9em;}
+
+.btn-cart {
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    background-color: black;
+    border: 1px solid black;
+    color: white;
+    transition: .4s;
+}
+
+.productinCart {
+    width: 100%;
+}
+
+.productinCart img {
+    height: 4vw;
+    float: left;
+}
+
+.tableborder {
+    border-bottom: 1px solid black;
+    padding: 1vw 0
+}
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    padding: 1vw;
+}
+
+.detailsproduct {
+    display: flex;
+    font-size: 0.9em;
+    justify-content: space-between
 }
