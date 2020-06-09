@@ -73,7 +73,6 @@ code {
 
 .ImageContainer.unavailable img {
     opacity: 0.8
-
 }
 
 .ImageContainer {
@@ -254,3 +253,46 @@ code {
 .Pagination a:hover {
     text-decoration: none;
 }
+
+
+/*-------- Large Panier ------ */
+
+.LargeCart {
+    width: 60%;
+    margin: 3vw auto;
+}
+
+.LargeCart .total {
+    padding: 1.5em
+}
+
+.ImageCart {
+    width: 30%;
+    padding-right: 30px!important
+}
+
+.ImageCart img {
+    width: 100%;
+}
+
+@media (max-width: 992px) {
+    #underline {
+        justify-content: flex-end!important;
+    }
+    /* .rowcustom {
+        flex-direction: column;
+        width: 100%!important;
+    } */
+    .col-sm-6 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1066px) {
+    .col-md-6 {
+        flex: none!important;
+        max-width: 100%!important;
+        width: 100%!important;
+    }
+}
+

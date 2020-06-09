@@ -20,8 +20,8 @@ class IndexNavbar extends Component {
         productsCart: [],
         prixTotal: 0,
         nombreTotal: 0
+        }
     }
-   }
     static propTypes = {
         auth: PropTypes.object.isRequired
     }
@@ -37,7 +37,6 @@ componentDidMount() {
             let somme = data.data.price * e.quantite
             this.setState({ prixTotal: this.state.prixTotal + somme});
             this.setState({ nombreTotal: this.state.nombreTotal + e.quantite});
-
             axios.get("http://127.0.0.1:8000/api/product/"+ data.data.product.id,{
             }).then((product) => {
                  let img = product.data.images.find(o => o.color_id === data.data.color.id.toString());
@@ -45,7 +44,6 @@ componentDidMount() {
                     img = {image: img.links[0]}
                  else 
                     img = {image: product.data.images[0].links[0]}
-
                     let total = Object.assign(data.data, img)
                     let quantity = {quantity: e.quantite}
                     total = Object.assign(data.data,quantity )
@@ -58,8 +56,7 @@ componentDidMount() {
     }
 } 
 
-operation()
-{
+operation() {
     this.setState({
         isOpen: !this.state.isOpen
     })
@@ -101,63 +98,63 @@ operation()
 
         const productsInCart  = this.state.nombreTotal;
 
-     
-        return (
-        <div id="navbarholder">       
-                <Navbar color="light" light expand="lg" id="navbar">
-                    <Navbar.Brand href="/" id="brandName">8-commerce</Navbar.Brand>
-                  <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <NavItem>
-                            <Nav.Link href="#">Homme</Nav.Link>
-                        </NavItem>
-                        <NavItem>
-                            <Nav.Link href="#">Femme</Nav.Link>
-                        </NavItem>
-                        <NavItem>
-                            <Nav.Link href="#">Accessoires</Nav.Link>
-                        </NavItem>
-                    </Navbar.Collapse>
-                </Navbar>
-                <Navbar id="underline">
-                    <Nav.Link href="/search" id="searchLogo"><img src={searchLogo}/></Nav.Link>
-                    <Nav>
-                        {!isLoading ? isAuthenticated ? authLinks : guestLinks : null}
-                    </Nav>
-                    { user !== null && user.role === 'admin' ?  
-                    <Nav.Link href="/admin" id="adminLogo">
-                        <img src={adminLogo}/>
-                    </Nav.Link> 
-                    : null }
-                    <div className="p-0" id="productsCart" onClick={()=>this.operation()}>
-                    <div className="float-left">{productsInCart}</div><img  className="float-left align-bottom" src="https://img.icons8.com/windows/32/000000/shopping-bag.png"/>
-                    </div>
-                    {this.state.isOpen ?
-                      <div id="minicart" className="cartContainer">{Message}
-                        <table className="productinCart">
-                        <tbody> { this.state.productsCart != [] && this.state.productsCart.map(e=> {
-                            console.log(e)
-                            return (
-                                <>
-                                <tr>
-                                <td rowspan="2" className="tableborder"> <img src={'http://127.0.0.1:8000'+e.image}/></td>
-                                <td><a href={"/product/"+e.product.id}>{e.product.title}</a></td>
-                                </tr>
-                                <tr className="tableborder">
-                                <td className="detailsproduct"><span>color: {e.color.name}</span><span>size: {e.size}</span><span>quantity:  {e.quantity}</span>   </td>
-                                </tr>
-                                </>
-                            )
-                        })}  
-                        </tbody>  
-                        </table>        
-                        <div className="total"> <span>{this.state.nombreTotal} produits</span><span>Total : {this.state.prixTotal} €</span></div>
-                        <a href="/panier"><button  className="btn-cart">Voir le panier</button></a>
-                    </div>    
-                    : null}
-                    </Navbar>
-                    </div>
-        )
+    return (
+    <div id="navbarholder">       
+    <Navbar color="light" light expand="lg" id="navbar">
+        <Navbar.Brand href="/" id="brandName">8-commerce</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+            <NavItem>
+                <Nav.Link href="#">Homme</Nav.Link>
+            </NavItem>
+            <NavItem>
+                <Nav.Link href="#">Femme</Nav.Link>
+            </NavItem>
+            <NavItem>
+                <Nav.Link href="#">Accessoires</Nav.Link>
+            </NavItem>
+        </Navbar.Collapse>
+    </Navbar>
+    <hr/>
+    <Navbar id="underline">
+        <Nav.Link href="/search" id="searchLogo"><img src={searchLogo}/></Nav.Link>
+        <Nav>
+            {!isLoading ? isAuthenticated ? authLinks : guestLinks : null}
+        </Nav>
+        { user !== null && user.role === 'admin' ?  
+        <Nav.Link href="/admin" id="adminLogo">
+            <img src={adminLogo}/>
+        </Nav.Link> 
+        : null }
+        <div className="p-0" id="productsCart" onClick={()=>this.operation()}>
+        <div className="float-left">{productsInCart}</div><img  className="float-left align-bottom" src="https://img.icons8.com/windows/32/000000/shopping-bag.png"/>
+        </div>
+        {this.state.isOpen ?
+            <div id="minicart" className="cartContainer">{Message}
+            <table className="productinCart">
+            <tbody> { this.state.productsCart != [] && this.state.productsCart.map(e=> {
+                console.log(e)
+                return (
+                    <>
+                    <tr>
+                    <td rowspan="2" className="tableborder"> <img src={'http://127.0.0.1:8000'+e.image}/></td>
+                    <td><a href={"/product/"+e.product.id}>{e.product.title}</a></td>
+                    </tr>
+                    <tr className="tableborder">
+                    <td className="detailsproduct"><span>color: {e.color.name}</span><span>size: {e.size}</span><span>quantity:  {e.quantity}</span>   </td>
+                    </tr>
+                    </>
+                )
+            })}  
+            </tbody>  
+            </table>        
+            <div className="total"> <span>{this.state.nombreTotal} produits</span><span>Total : {this.state.prixTotal} €</span></div>
+            <a href="/panier"><button  className="btn-cart">Voir le panier</button></a>
+        </div>    
+        : null}
+        </Navbar>
+        </div>
+    )
     }
 }
 

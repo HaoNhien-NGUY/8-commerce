@@ -217,9 +217,7 @@ function ProductDescription() {
     }
     
     const addCart = () => { 
-        // [{"productid":2,"quantite":1},{"productid":3,"quantite":5}]
         let panier = sessionStorage.getItem('panier', []);
-        
         if (chosenSubProduct && chosenSubProduct.id) {
             if (panier == null) {
                 sessionStorage.setItem('panier', JSON.stringify([{"productid": chosenSubProduct.id, "quantite" : 1}]));
@@ -242,6 +240,7 @@ function ProductDescription() {
                     }
                 });
                 sessionStorage.setItem('panier', JSON.stringify(cart));
+                // document.location.reload(true);
             }
         } else {
             console.log("pas select");
