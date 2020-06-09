@@ -80,17 +80,14 @@ class Subproduct
     private $color;
 
     /**
-     * @ORM\OneToMany(targetEntity="SupplierOrderSubproduct", mappedBy="Subproducts", fetch="EXTRA_LAZY")
-     * @ORM\JoinColumn(nullable=false)
-    */
-    private $supplierOrders;
-
-  
+     * @ORM\OneToMany(targetEntity=SupplierOrderSubproduct::class, mappedBy="subproduct")
+     */
+    private $supplierOrderSubproducts;
 
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
-        $this->supplierOrders = new ArrayCollection();
+        $this->supplierOrderSubproducts = new ArrayCollection();
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
@@ -235,28 +232,31 @@ class Subproduct
     }
 
     /**
-     * @return Collection|SupplierOrder[]
+     * @return Collection|SupplierOrderSubproduct[]
      */
-    public function getSupplierOrders(): Collection
+    public function getSupplierOrderSubproducts(): Collection
     {
-        return $this->supplierOrders;
+        return $this->supplierOrderSubproducts;
     }
 
-    public function addSupplierOrder(SupplierOrder $supplierOrder): self
+    public function addSupplierOrderSubproduct(SupplierOrderSubproduct $supplierOrderSubproduct): self
     {
-        if (!$this->supplierOrders->contains($supplierOrder)) {
-            $this->supplierOrders[] = $supplierOrder;
-            $supplierOrder->addSubproduct($this);
+        if (!$this->supplierOrderSubproducts->contains($supplierOrderSubproduct)) {
+            $this->supplierOrderSubproducts[] = $supplierOrderSubproduct;
+            $supplierOrderSubproduct->setSubproduct($this);
         }
 
         return $this;
     }
 
-    public function removeSupplierOrder(SupplierOrder $supplierOrder): self
+    public function removeSupplierOrderSubproduct(SupplierOrderSubproduct $supplierOrderSubproduct): self
     {
-        if ($this->supplierOrders->contains($supplierOrder)) {
-            $this->supplierOrders->removeElement($supplierOrder);
-            $supplierOrder->removeSubproduct($this);
+        if ($this->supplierOrderSubproducts->contains($supplierOrderSubproduct)) {
+            $this->supplierOrderSubproducts->removeElement($supplierOrderSubproduct);
+            // set the owning side to null (unless already changed)
+            if ($supplierOrderSubproduct->getSubproduct() === $this) {
+                $supplierOrderSubproduct->setSubproduct(null);
+            }
         }
 
         return $this;
