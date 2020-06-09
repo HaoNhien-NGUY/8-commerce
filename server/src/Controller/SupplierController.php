@@ -73,6 +73,7 @@ class SupplierController extends AbstractController
             if ($supplier) {
                 try {
                     $jsonContent = $request->getContent();
+                    $data = json_decode($jsonContent);
                     $supplier = $serializer->deserialize($jsonContent, Supplier::class, 'json', [
                         AbstractNormalizer::IGNORED_ATTRIBUTES => ['supplierOrders'],
                         AbstractNormalizer::OBJECT_TO_POPULATE => $supplier
@@ -80,6 +81,8 @@ class SupplierController extends AbstractController
                 } catch (NotNormalizableValueException $e) {
                     return $this->json(['message' => $e->getMessage()], 400, []);
                 }
+
+                if(!isset($data->name)) return $this->json(['message' => 'name is missing'], 400, []); 
 
                 $error = $validator->validate($supplier);
                 if (count($error) > 0) return $this->json($error, 400);
