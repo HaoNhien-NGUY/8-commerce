@@ -59,7 +59,6 @@ export default class SearchSidebar extends Component {
     this.handleSortBy = this.handleSortBy.bind(this);
     this.showFilter = this.showFilter.bind(this);
     this.checkEmptyArray = this.checkEmptyArray.bind(this);
-    this.checkNull = this.checkNull.bind(this);
     this.showFilter = this.showFilter.bind(this);
   }
 
@@ -187,12 +186,6 @@ export default class SearchSidebar extends Component {
     }
   }
 
-  checkNull(value) {
-    if (value == ''){
-      return true;
-    }
-  }
-
   handleSubmit(e) {
     let jsonRequest = {
       price: {
@@ -202,8 +195,8 @@ export default class SearchSidebar extends Component {
       sex: this.state.sexe,
       size: this.checkEmptyArray(this.state.size),
       color: this.checkEmptyArray(this.state.color),
-      subcategory: this.checkNull(this.state.subcategory) ? null : this.state.subcategory,
-      category: this.checkNull(this.state.category) ? null : this.state.category,
+      subcategory: this.state.subcategory,
+      category: this.state.category,
       order_by: this.state.orderBy.toLowerCase(),
       order_by_sort: this.state.sortBy,
       search: this.state.searchValue
@@ -278,6 +271,14 @@ export default class SearchSidebar extends Component {
       .catch((error) => {
         console.log(error.response);
       });
+
+
+      // $('select option:contains("Handbags")').prop('selected',true);
+
+      // $('#sel1 option').filter(function() { 
+      //   return ($(this).val() == 'Handbags');
+      // }).prop('selected', true);
+      
   }
 
   async defaultValueSubCategory(value) {
@@ -523,7 +524,7 @@ export default class SearchSidebar extends Component {
                   onChange={this.handleSubCategory}
                 >
 
-                  <option value={null}></option>
+                  <option defaultValue="null"></option>
 
                   {isSubCategoriesReady
                     ? 
