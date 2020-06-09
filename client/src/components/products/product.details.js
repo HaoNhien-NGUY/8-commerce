@@ -91,7 +91,7 @@ function ProductDescription() {
                 for (let i = 0; i < product.subproducts.length; i++) {
                     countstockAll = countstockAll + product.subproducts[i].stock;
                     if (!(SizeOption.find(fruit => fruit.props.value === product.subproducts[i].size)))
-                        SizeOption.push(<option value={product.subproducts[i].size}>{product.subproducts[i].size}</option>);
+                        SizeOption.push(<option key={product.subproducts[i].size+'option'} value={product.subproducts[i].size}>{product.subproducts[i].size}</option>);
 
                     if (!(ColorOption.find(fruit => fruit.props.value === product.subproducts[i].color)))
                         ColorOption.push(<option value={product.subproducts[i].color}>{product.subproducts[i].color}</option>);
@@ -128,8 +128,8 @@ function ProductDescription() {
                 behavior: 'smooth',
                 block: 'start',
             });
-        imageProduct.push(<span ref={ref}><ReactImageMagnify {...showImage(value)} /></span>);
-        miniImageProduct.push(<div onClick={handleClick}><img className='imgIcone' src={value} /></div>);
+        imageProduct.push(<span key={value+"span"} ref={ref}><ReactImageMagnify {...showImage(value)} /></span>);
+        miniImageProduct.push(<div key={value+"div"} onClick={handleClick}><img className='imgIcone' src={value} /></div>);
     }
 
     function showImage(pathImg) {
@@ -198,7 +198,7 @@ function ProductDescription() {
 
                 <p>Size</p>
                 <select id='selectSize' onChange={e => e.preventDefault() + console.log(e.target.value) + setChosenProductSize(e.target.value)}>
-                    <option value='No-Choice-Size' className='selectChoice' selected disabled>--- SIZE ({SizeOption.length})---</option>
+                    <option value='No-Choice-Size' className='selectChoice' defaultValue disabled>--- SIZE ({SizeOption.length})---</option>
                     {SizeOption}
                 </select>
                 {chosenProductSize ?
