@@ -18,8 +18,6 @@ import {
   Form,
   Button,
   FormControl,
-  NavDropdown,
-  Glyphicon,
 } from "react-bootstrap";
 class IndexNavbar extends Component {
   constructor() {
@@ -160,7 +158,6 @@ class IndexNavbar extends Component {
               {Message}
               <table className="productinCart">
                 <tbody>
-                  {" "}
                   {this.state.productsCart != [] &&
                     this.state.productsCart.map((e) => {
                       console.log(e);
@@ -168,7 +165,6 @@ class IndexNavbar extends Component {
                         <>
                           <tr>
                             <td rowSpan="2" className="tableborder">
-                              {" "}
                               <img src={"http://127.0.0.1:8000" + e.image} />
                             </td>
                             <td>
@@ -181,7 +177,7 @@ class IndexNavbar extends Component {
                             <td className="detailsproduct">
                               <span>color: {e.color.name}</span>
                               <span>size: {e.size}</span>
-                              <span>quantity:s {e.quantity}</span>{" "}
+                              <span>quantity:s {e.quantity}</span>
                             </td>
                           </tr>
                         </>
@@ -190,7 +186,6 @@ class IndexNavbar extends Component {
                 </tbody>
               </table>
               <div className="total">
-                {" "}
                 <span>{this.state.nombreTotal} produits</span>
                 <span>Total : {this.state.prixTotal} €</span>
               </div>

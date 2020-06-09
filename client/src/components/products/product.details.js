@@ -319,7 +319,6 @@ function ProductDescription() {
           }
         });
         sessionStorage.setItem("panier", JSON.stringify(cart));
-       ;
       }
       document.location.reload(true);
     } else {

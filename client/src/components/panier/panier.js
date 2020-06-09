@@ -45,15 +45,14 @@ class Panier extends Component {
     }
   }
 
-    handleChange(e) {
-        e.preventDefault();
-        console.log("wesh")
+  handleChange(e) {
+    e.preventDefault();
+    console.log(e);
     // if (quantity.value != "") {
     //   if (quantity.value != quantity.defaultValue);
     //   let panier = sessionStorage.getItem("panier", []);
     //   console.log(panier, quantity.id);
-    }
-  
+  }
 
   render() {
     const Message = [];
@@ -98,18 +97,17 @@ class Panier extends Component {
                               <span>size: {e.size}</span>
                               <span>
                                 quantity:
-                                <form
-                                  onSubmit={this.handleChange}
-                                >
+                                
                                   <input
                                     type="number"
-                                    id={"quantity_" + e.id}
+                                    id={e.id}
                                     name="tentacles"
                                     defaultValue={e.quantity}
+                                    onChange={this.handleChange}
                                     min="1"
                                     max="20"
                                   ></input>
-                                </form>
+                                
                               </span>
                             </td>
                           </tr>
