@@ -23,14 +23,16 @@ function Suppliers() {
             "Content-type": "application/json"
         }
     }
-    // useEffect(() => {
-    //     axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
-    //         setAllSupplier(e.data);
-    //     });
-    // }, []);
-    // allSupplier.map(supp => {
-    //     optionSelect.push(<option key={supp.id} value={supp.id}>{supp.name}</option>)
-    // });
+    useEffect(() => {
+        axios.get("http://127.0.0.1:8000/api/supplier", config).then(e => {
+            setAllSupplier(e.data.data);
+        });
+    }, []);
+
+    allSupplier.map(supp => {
+        optionSelect.push(<option key={supp.id} value={supp.id}>{supp.name}</option>)
+    });
+
     const [isInvalid, setIsInvalid] = useState(false);
     const onChangeAdress = (event) => {
         let res = event.target.value.trim();
@@ -71,17 +73,31 @@ function Suppliers() {
         }
     }
 
+    const Shipping = (days) => {
+        var result = new Date();
+        result.setDate(result.getDate() + days);
+        let dd = result.getDate();
+        let mm = result.getMonth();
+        let yy = result.getFullYear();
+        let date = dd + "/" + mm + "/" + yy;
+        return date;
+    }
+
     useEffect(() => {
         if (isReady) {
-            setIsReady(false);
-            console.log("ok");
-            // const body = JSON.stringify({ ...formControl })
-            // console.log(body);
-            // axios.post("http://127.0.0.1:8000/api/product", body, config).then( e => {
-            //     toast.success('Product correctly added!', { position: "top-center"});
-            // }).catch( err => {
-            //     toast.error('Error !', {position: 'top-center'});
-            // });
+            const body = {
+                "our_address" : ourAdress,
+                "status" : false,
+                "price" : price,
+                "arrival_date" : Shipping(3),
+                "supplier_id" : idSupplier
+            }
+            axios.post("http://127.0.0.1:8000/api/supplier/order", body, config).then( e => {
+                setIsReady(false);
+                toast.success('Product correctly added!', { position: "top-center"});
+            }).catch( err => {
+                toast.error('Error !', {position: 'top-center'});
+            });
         }
     }, [isReady]);
 
@@ -90,7 +106,7 @@ function Suppliers() {
         let res = event.target.value.trim();
         let str = res.toLowerCase();
         let supplier = str.charAt(0).toUpperCase() + str.slice(1);
-        setSupplierName(supplier.replace(/[\s]{2,}/g, " "))
+        setSupplierName(supplier.replace(/[\s]{2,}/g, " "));
     }
     function onSubmit(e) {
         e.preventDefault();
@@ -100,9 +116,15 @@ function Suppliers() {
         if (supplierName.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
             return toast.error("Invalid charactere", { position: "top-center" });
         } else {
-            
-            //requete axios pour ajouter dans la bdd
-            toast.success("Supplier correctly added !", { position: "top-center" });
+            const body = {
+                "name" : supplierName
+            }
+            axios.post("http://127.0.0.1:8000/api/supplier", body, config).then( e => {
+                toast.success("Supplier correctly added !", { position: "top-center" });
+                setShow(false);
+            }).catch( err => {
+                toast.error('Error !', {position: 'top-center'});
+            });
         }
     }
 
@@ -110,7 +132,7 @@ function Suppliers() {
         <>
             <ToastContainer />
             <div className="row justify-content-end mb-2">
-                <button onClick={() => setShow2(true)} className="btn btn-success m-1">+ New Order</button>
+                <button onClick={() => window.location.href = 'admin/order'} className="btn btn-success m-1">+ New Order</button>
                 <Modal show={show2} onHide={() => setShow2(false)}>
                     <Modal.Header closeButton>New Order !</Modal.Header>
                     <Modal.Body>
@@ -118,8 +140,7 @@ function Suppliers() {
                             <FormGroup>
                                 <select className={"form-control form-control-sm " + (isInvalid.idsupplier ? 'is-invalid' : 'inputeStyle')} onChange={e => setIdSupplier(e.target.value)}>
                                     <option value="">---SELECT SUPPLIER---</option>
-                                    <option value="0">testvalue</option>
-                                    {/* {optionSelect} */}
+                                    {optionSelect}
                                 </select>
                                 <div className="invalid-feedback">{ isInvalid.idsupplier }</div>
                                 <Label for="supplier">Our adress</Label>

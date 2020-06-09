@@ -31,6 +31,7 @@ import SearchSidebar from './components/Search/Sidebar'
 import CreateImageSubproduct from './components/Admin/CreateImage/CreateImageSubproduct';
 import AccessUpdateCategory from './components/Admin/UpdateCategory/AccessUpdateCategory';
 import AccessUpdateSubCategory from './components/Admin/UpdateSubCategory/AccessUpdateSubCategoy';
+import AccessCreateOrder from './components/Admin/CreateOrder/AccessCreateOrder';
 
 
 class App extends React.Component {
@@ -52,6 +53,7 @@ class App extends React.Component {
                         <Route exact path="/product/:id" component={Product} />
                         <Route exact path="/search" component={SearchSidebar} />
                         <Route exact path="/admin" component={AccessAdmin} />
+                        <Route exact path="/admin/order"component={AccessCreateOrder} />
                         <Route exact path="/admin/subcategory/:id"component={AccessSubCategoryInterface} />
                         <Route exact path="/admin/subproduct/:id" component={AccessSubProductInterface} />
                         <Route exact path="/admin/subproduct/:id/create" component={AccessCreateSubProduct} />
