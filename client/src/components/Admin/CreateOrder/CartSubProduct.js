@@ -59,7 +59,7 @@ function Cart(props) {
                                 <span><b>Color:</b> {e.subProductColor}</span>
                                 <span><b>Size:</b> {e.subProductSize}</span>
                                 <span><b>Quantity:</b> {e.quantity}</span>
-                                <span><b>Price:</b> {e.price * e.quantity}</span>
+                                <span><b>Price:</b> {e.price * e.quantity} €</span>
                             </td>
                         </tr>
                     </tbody>
@@ -90,6 +90,7 @@ function Cart(props) {
             } else {
                 setIsInvalid(invalids);
                 axios.post("http://127.0.0.1:8000/api/supplier/order", obj, config).then( res => {
+                    let count = 0;
                     toast.success('Order correctly submited !', { position: "top-center"});
                     supplierOrder.map(order => {
                         const body = {
@@ -98,6 +99,10 @@ function Cart(props) {
                         };
                         axios.post(`http://127.0.0.1:8000/api/supplier/order/${res.data.SupplierOrder.id}/add`, body, config).then(e => {
                             console.log(e);
+                            count++;
+                            if (count == supplierOrder.length) {
+                                window.location.reload();
+                            }
                         }).catch(error => {
                             console.log(error);
                         });
@@ -105,6 +110,7 @@ function Cart(props) {
                 }).catch( err => {
                     toast.error('Error !', {position: 'top-center'});
                 });
+                
             }
         } else {
             invalids.error = "Re-enter the address";
