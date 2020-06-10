@@ -36,7 +36,6 @@ class IndexNavbar extends Component {
   };
 
   componentDidMount() {
-    const Message = [];
     let panier = JSON.parse(sessionStorage.getItem("panier", []));
     if (panier) {
       panier.map((e) => {
@@ -178,9 +177,9 @@ class IndexNavbar extends Component {
                           </tr>
                           <tr className="tableborder">
                             <td className="detailsproduct">
-                              <span>color: {e.color.name}</span>
+                              <span>quantity: {e.quantity}</span>
                               <span>size: {e.size}</span>
-                              <span>quantity:s {e.quantity}</span>
+                              <span>price: {e.price} €</span>
                             </td>
                           </tr>
                         </>
