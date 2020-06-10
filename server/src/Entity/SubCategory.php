@@ -26,13 +26,13 @@ class SubCategory
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="subCategories")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(onDelete="CASCADE")  
      * @Groups({"products", "subcategory"})
      */
     private $Category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="subCategory")
+     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="subCategory",orphanRemoval=true, cascade={"persist", "remove"}))
      */
     private $Product;
 

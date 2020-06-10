@@ -31,7 +31,7 @@ class Category
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=SubCategory::class, mappedBy="Category")
+     * @ORM\OneToMany(targetEntity=SubCategory::class, mappedBy="Category",orphanRemoval=true, cascade={"persist", "remove"}))
      * @Groups({"category"})
      */
     private $subCategories;
