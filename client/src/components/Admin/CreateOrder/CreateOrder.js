@@ -12,12 +12,13 @@ function CreateOrder() {
     const [show2, setShow2] = useState(false);
     const [idSupplier, setIdSupplier] = useState([]);
     const [ourAdress, setOurAdress] = useState([]);
-    const [subProduct, setSubProduct] = useState([]);
+    const [product, setProduct] = useState([]);
     const [quantity, setQuantity] = useState([]);
     const [allSupplier, setAllSupplier] = useState([]);
     const [allSubProduct, setAllSubproduct] = useState([]);
     const [isReady, setIsReady] = useState(false);
     const [cart, setCart] = useState([]);
+    const [panier, setPanier] = useState([]);
     const optionSelect = [];
     const optionSubProduct = [];
 
@@ -44,7 +45,7 @@ function CreateOrder() {
 
     allSubProduct.map(sub => {
         optionSubProduct.push(<option key={sub.id} value={sub.id}>
-                {sub.id}: {sub.product.title.substr(0, 41)} - {sub.color.name} - {sub.size} ({sub.stock ? sub.stock : 0})
+                {sub.product.id}: {sub.product.title.substr(0, 41)} - {sub.color.name} - {sub.size} ({sub.stock ? sub.stock : 0})
             </option>)
     });
 
@@ -54,7 +55,7 @@ function CreateOrder() {
         setOurAdress(res.replace(/[\s]{2,}/g, " "));
     }
     const onChangeQty = (event) => {
-        setQuantity(event.target.value);
+        setQuantity(parseInt(event.target.value));
     }
     function onSubmit2(e) {
         e.preventDefault();
@@ -70,7 +71,7 @@ function CreateOrder() {
         } else {
             invalids.adress = "PLease enter adress";
         }
-        if (subProduct == "") {
+        if (product == "") {
             invalids.subproduct = "Select subProduct";
         }
         if (quantity.length == 0) {
@@ -97,16 +98,38 @@ function CreateOrder() {
 
     useEffect(() => {
         if (isReady) {
+            console.log('1', cart)
             setIsReady(false);
-
-            let obj = {
-                "idSupplier" : idSupplier,
-                "subProduct" : subProduct,
-                "ourAdress" : ourAdress,
-                "quantity" : quantity
+            if(cart.length === 0)
+            {
+                let obj = {
+                    "idSupplier" : idSupplier,
+                    "product" : product,
+                    "ourAdress" : ourAdress,
+                    "quantity" : quantity
+                }
+                setCart([...cart, obj]);
             }
-            setCart([...cart, obj]);
-            
+            cart.map((order) => 
+            {
+                let obj = {
+                    "idSupplier" : idSupplier,
+                    "product" : product,
+                    "ourAdress" : ourAdress,
+                    "quantity" : quantity
+                }
+                if(order.product === product && order.ourAdress === ourAdress)
+                {
+                    order.quantity = order.quantity + quantity
+                    setCart([...cart]);
+                }
+                else
+                {
+                    setCart([...cart, obj]);
+                }
+            })
+            console.log('2', cart)
+
             // const body = {
             //     "our_address" : ourAdress,
             //     "status" : false,
@@ -123,6 +146,44 @@ function CreateOrder() {
         }
     }, [isReady]);
     
+    useEffect(() => {
+        if(cart.length > 0){
+            console.log(cart)
+            console.log(1);
+            let arr = [];
+            cart.map(async (order, i) => {
+               await axios.get("http://127.0.0.1:8000/api/subproduct/"+order.product, config).then(async e => {
+                    await axios.get("http://127.0.0.1:8000/api/product/"+e.data.product.id, config).then( product => {
+                    console.log('product', product)
+                    arr.push(
+                        <div key={i+product}> 
+                            <span key={e.id+12+e.data.product.title+order.idSupplier}> {
+                           
+                                product.data.images.map((image, ind) => parseInt(image.color_id) === parseInt(e.data.color.id) 
+                                ?  <img key={e.data.id+e.data.color.id} className="" src={'http://127.0.0.1:8000'+image.links[0]}></img>  
+                                : null && ind === product.data.images.length - 1 ? <img className="" src={'http://127.0.0.1:8000'+product.data.images[0].links[0]}></img> : console.log('NUALALALALAALALl'))
+
+                            }</span>
+                            <h4>Title: {e.data.product.title}</h4>
+                        </div>);
+                        
+                    toast.success('!', { position: "top-center"});
+                    }).catch( err => {
+                        toast.error('Error !', {position: 'top-center'});
+                    });
+               toast.success('Product correctly added!', { position: "top-center"});
+               }).catch( err => {
+                   toast.error('Error !', {position: 'top-center'});
+               });
+               console.log('pushPanier', arr);
+                setPanier(arr);
+               console.log(3);
+           })
+        }
+    }, [cart])
+
+
+console.log(panier)
     return (
         <>
         <div className="container">
@@ -134,7 +195,7 @@ function CreateOrder() {
                         {optionSelect}
                     </select>
                     <div className="invalid-feedback">{ isInvalid.idsupplier }</div>
-                    <select className={"form-control mtop30 " + (isInvalid.subproduct ? 'is-invalid' : 'inputeStyle')} onChange={ e => setSubProduct(e.target.value)}>
+                    <select className={"form-control mtop30 " + (isInvalid.subproduct ? 'is-invalid' : 'inputeStyle')} onChange={ e => setProduct(e.target.value)}>
                         <option value="">- - - Select SubProduct - - -</option>
                         {optionSubProduct}
                     </select>
@@ -155,13 +216,17 @@ function CreateOrder() {
                             id="quantity"
                             className={"quantity mr-5 " + (isInvalid.quantity ? 'is-invalid' : 'inputeStyle')}
                             onChange={onChangeQty}/>
-                        <Button color="success" className="btnOrder" block>Submit</Button>
+                        <Button color="success" className="btnOrder" id='prevuBtn' block>Submit</Button>
                     </div>
                     <div className="invalid-feedback">{ isInvalid.quantity }</div>
                 </FormGroup>
             </Form>
+    
         </div>
-        <CartSubProduct handleCart={cart} />
+        <div id="div-panier">
+            {panier}
+        </div>
+        {/* <CartSubProduct handleCart={getCart} config={config} /> */}
         </>
     )
 }
