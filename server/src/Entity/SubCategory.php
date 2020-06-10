@@ -20,14 +20,14 @@ class SubCategory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"products","category"})
+     * @Groups({"products","category", "subcategory"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="subCategories")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("products")
+     * @Groups({"products", "subcategory"})
      */
     private $Category;
 
@@ -38,7 +38,7 @@ class SubCategory
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products","category"})
+     * @Groups({"products","category", "subcategory"})
      */
     private $name;
 

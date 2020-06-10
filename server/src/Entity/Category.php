@@ -20,13 +20,13 @@ class Category
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"products","category"})
+     * @Groups({"products","category", "subcategory"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products","category"})
+     * @Groups({"products","category", "subcategory"})
      */
     private $name;
 
