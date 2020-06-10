@@ -16,11 +16,24 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SubProductController extends AbstractController
 {
+    /**
+     * @Route("/api/subproduct", name="subproduct_index" , methods="GET")
+     */
+    public function subproductIndex(Request $request, NormalizerInterface $normalizer, SubproductRepository $subproductRepository)
+    {
+        $count = $subproductRepository->countAllResults();
+        $subProduct = $subproductRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
+        $subProduct = $normalizer->normalize($subProduct, null, ['groups' => 'subproduct']);
+
+        return $this->json(['nbResults' => $count, 'data' => $subProduct], 200, [], ['groups' => 'subproduct']);
+    }
+
     /**
      * @Route("/api/subproduct/{id}", name="subproduct_get",methods="GET", requirements={"id":"\d+"})
      */
@@ -28,7 +41,7 @@ class SubProductController extends AbstractController
     {
         $subProduct = $subproductRepository->findOneBy(['id' => $request->attributes->get('id')]);
         if ($subProduct) {
-            return $this->json($subProduct, 200, [], ['groups' => 'products']);
+            return $this->json($subProduct, 200, [], ['groups' => 'subproduct']);
         } else {
             return $this->json(['message' => 'not found'], 404, []);
         }
@@ -37,17 +50,14 @@ class SubProductController extends AbstractController
     /**
      * @Route("/api/subproduct", name="subproduct_create", methods="POST")
      */
-    public function subProductCreate(Request $request, SerializerInterface $serializer, ProductRepository $productRepository, EntityManagerInterface $em, ValidatorInterface $validator)
+    public function subProductCreate(Request $request, SerializerInterface $serializer, ProductRepository $productRepository, SubproductRepository $subproductRepository, EntityManagerInterface $em, ValidatorInterface $validator)
     {
         try {
             $jsonContent = $request->getContent();
             $data = json_decode($jsonContent);
-            if (!isset($data->product_id)) return $this->json(['message' => 'product id missing.'], 400);
-
-            $product = $productRepository->findOneBy(['id' => $data->product_id]);
 
             try {
-                $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json');
+                $subproduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['color', 'product', 'size']]);
             } catch (NotNormalizableValueException $e) {
                 return $this->json(['message' => $e->getMessage()], 400);
             }
@@ -56,6 +66,14 @@ class SubProductController extends AbstractController
             $color = $this->getDoctrine()->getRepository(Color::class)->find($data->color_id);
             if (!$color) return $this->json(['message' => 'color not found.'], 404);
 
+            if (!isset($data->size)) return $this->json(['message' => 'Size is missing.'], 400);
+            if ($subproductRepository->findOneBy(['color' => $color, 'size' => $data->size])) return $this->json(['message' => 'SubProduct already exists'], 400);
+
+            if (!isset($data->product_id)) return $this->json(['message' => 'product id missing.'], 400);
+            $product = $productRepository->findOneBy(['id' => $data->product_id]);
+            if (!$product) return $this->json(['message' => 'product not found.'], 404);
+
+            $subproduct->setSize(strtoupper($data->size));
             $subproduct->setColor($color);
             $subproduct->setCreatedAt(new \DateTime());
             $subproduct->setProduct($product);
@@ -67,8 +85,7 @@ class SubProductController extends AbstractController
             $em->flush();
 
             if (!file_exists("./images/$data->product_id/$data->color_id")) {
-                // mkdir("./public/images/$data->product_id", 0755, true);
-                 mkdir("./images/$data->product_id/$data->color_id", 0777, true);
+                mkdir("./images/$data->product_id/$data->color_id", 0777, true);
             }
 
             return $this->json([
@@ -80,7 +97,7 @@ class SubProductController extends AbstractController
         }
     }
 
-  /**
+    /**
      * @Route("/api/subproduct/{id}", name="subproduct_update", methods="PUT")
      */
     public function subProductUpdate(Request $request, EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator, SubproductRepository $subproductRepository, ColorRepository $colorRepository)
@@ -95,12 +112,10 @@ class SubProductController extends AbstractController
                     $subProduct = $serializer->deserialize($jsonContent, Subproduct::class, 'json', [
                         AbstractNormalizer::OBJECT_TO_POPULATE => $subProduct
                     ]);
-                    if(isset($data->color_id))
-                    {
+                    if (isset($data->color_id)) {
                         $color = $colorRepository->findOneBy(['id' => $data->color_id]);
                         $subProduct->setColor($color);
                     }
-
                 } catch (NotNormalizableValueException $e) {
                     return $this->json(['message' => $e->getMessage()], 400, []);
                 }
