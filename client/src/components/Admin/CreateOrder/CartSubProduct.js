@@ -25,7 +25,10 @@ function Cart(props) {
     }
 
     props.handleCart.map((e) => {
+        console.log(e);
         let obj = {
+            "idColor": e.idColor,
+            "idProduct": e.idProduct,
             "quantity": e.quantity,
             "subproduct_id": e.idSubProduct,
             "our_address" : e.ourAdress,
@@ -37,8 +40,9 @@ function Cart(props) {
         supplierOrder.push(obj);
         nbrProduct.push(e.quantity);
         nbrPrice.push(e.quantity * e.price);
+        
         divOrder.push(
-            <div className="divOrderCart">
+            <div className="divOrderCart" key={e.idSubProduct}>
                 <table className="productinCart">
                     <tbody>
                         <tr>

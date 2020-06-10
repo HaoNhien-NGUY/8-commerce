@@ -43,7 +43,7 @@ function CreateOrder() {
     });
 
     allSubProduct.map(sub => {
-        optionSubProduct.push(<option key={sub.id} value={sub.id + "/" + sub.product.id + "/" + sub.product.title + "/" + sub.color.name + "/" + sub.size + "/" + sub.price}>
+        optionSubProduct.push(<option key={sub.id} value={sub.id + "/" + sub.product.id + "/" + sub.product.title + "/" + sub.color.name + "/" + sub.size + "/" + sub.price + "/" + sub.color.id}>
                 {sub.product.id}: {sub.product.title.substr(0, 41)} - {sub.color.name} - {sub.size} ({sub.stock ? sub.stock : 0})
             </option>)
     });
@@ -98,7 +98,8 @@ function CreateOrder() {
                 "subProductSize" : info[4],
                 "ourAdress" : ourAdress,
                 "quantity" : quantity,
-                "price" : info[5]
+                "price" : info[5],
+                "idColor": info[6]
             }
             setCart([...cart, obj]);
         }
