@@ -88,7 +88,7 @@ class SubCategoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/subcategory/{id}", name="subcategory_update", methods="PUT")
+     * @Route("/api/subcategory/{id}", name="subcategory_update", methods="PUT",requirements={"id":"\d+"})
      */
     public function subcategoryUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, CategoryRepository $categoryRepository,SubCategoryRepository $subCategoryRepository)
     {
@@ -119,6 +119,33 @@ class SubCategoryController extends AbstractController
         } catch (NotEncodableValueException $e) {
             return $this->json($e->getMessage(), 400);
         }
+    }
+
+    /**
+     * @Route("/api/subcategory/migrate", name="subcategory_migrate", methods="PUT")
+     */
+    public function subCategoryMigrate(Request $request, EntityManagerInterface $em,SubCategoryRepository $subcategory,ProductRepository $productrepo)
+    {
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+
+        $products = $productrepo->findBy(['subCategory' => $req->oldsubcategory]);
+        if(!$products){
+            return $this->json(['message' => 'Products not found for this Id'], 404);
+        }
+        $newsubcategory = $subcategory->findOneBy(['id' => $req->newsubcategory]);
+        if(!$newsubcategory){
+            return $this->json(['message' => 'SubCategory not found for this Id'], 404);
+        }
+
+        foreach($products as $product){ 
+            $product->setSubCategory($newsubcategory);
+            $em->persist($newsubcategory);
+        }
+
+        $em->flush();
+
+        return $this->json(['message' => 'Product/s have been successfully migrated'],200);
     }
 
 }
