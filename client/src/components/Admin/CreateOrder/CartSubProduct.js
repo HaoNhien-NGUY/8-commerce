@@ -91,7 +91,6 @@ function Cart(props) {
                 setIsInvalid(invalids);
                 axios.post("http://127.0.0.1:8000/api/supplier/order", obj, config).then( res => {
                     let count = 0;
-                    toast.success('Order correctly submited !', { position: "top-center"});
                     supplierOrder.map(order => {
                         const body = {
                             "subproduct_id" : order.subproduct_id,
