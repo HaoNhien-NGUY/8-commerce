@@ -22,7 +22,7 @@ class IndexNavbar extends Component {
     static propTypes = {
         auth: PropTypes.object.isRequired
     }
-   
+
     render() {
         const { user, isAuthenticated, isLoading } = this.props.auth
 
@@ -57,7 +57,7 @@ class IndexNavbar extends Component {
 
         const productsInCart  = 124
         return (
-            <div id="navbarholder">       
+            <div id="navbarholder" ref={node => { this.node = node; }}>       
                 <Navbar color="light" light="true" expand="lg" id="navbar">
                     <Navbar.Brand href="/" id="brandName">8-commerce</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
