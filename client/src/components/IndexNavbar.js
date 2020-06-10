@@ -11,6 +11,8 @@ import "./IndexNavbar.css";
 import profileLogo from "../img/profile.png";
 import searchLogo from "../img/search.png";
 import adminLogo from "../img/gear.png";
+import SuggestionSearch from './Search/SuggestionSearch'
+
 import {
   Navbar,
   Nav,
@@ -127,6 +129,7 @@ class IndexNavbar extends Component {
           </Navbar.Collapse>
         </Navbar>
         <Navbar id="underline">
+        <SuggestionSearch />
           <Nav.Link href="/search" id="searchLogo">
             <img src={searchLogo} />
           </Nav.Link>

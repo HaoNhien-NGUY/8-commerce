@@ -26,7 +26,7 @@ class SubCategoryController extends AbstractController
     public function index(Request $request, SubCategoryRepository $sCategoryRepository,SerializerInterface $serializer)
     {
         $category = $sCategoryRepository->findAll();
-        return $this->json($category, 200, [],['groups' => 'category']);
+        return $this->json($category, 200, [],['groups' => 'subcategory']);
     }
 
     /**
@@ -81,7 +81,7 @@ class SubCategoryController extends AbstractController
     {
         $subCategory = $subCatRepository->findOneBy(['id' => $request->attributes->get('id')]);
         if ($subCategory) {
-            return $this->json($subCategory, 200, [], ['groups' => 'category']);
+            return $this->json($subCategory, 200, [], ['groups' => 'subcategory']);
         } else {
             return $this->json(['message' => 'not found'], 404, []);
         }
