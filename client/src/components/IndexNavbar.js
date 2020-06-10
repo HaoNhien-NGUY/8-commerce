@@ -17,9 +17,6 @@ import {
   Navbar,
   Nav,
   NavItem,
-  Form,
-  Button,
-  FormControl,
 } from "react-bootstrap";
 class IndexNavbar extends Component {
   constructor() {
@@ -157,6 +154,7 @@ class IndexNavbar extends Component {
           </div>
           {this.state.isOpen ? (
             <div id="minicart" className="cartContainer">
+              <button className="buttonreset" onClick={() => this.operation()}><i class="material-icons md-36 marg">clear</i></button>
               {Message}
               <table className="productinCart">
                 <tbody>
@@ -166,7 +164,7 @@ class IndexNavbar extends Component {
                       return (
                         <>
                           <tr>
-                            <td rowSpan="2" className="tableborder">
+                            <td rowSpan="2" className="tableborder imgcontainer">
                               <img src={"http://127.0.0.1:8000" + e.image} />
                             </td>
                             <td>
@@ -177,9 +175,8 @@ class IndexNavbar extends Component {
                           </tr>
                           <tr className="tableborder">
                             <td className="detailsproduct">
-                              <span>quantity: {e.quantity}</span>
-                              <span>size: {e.size}</span>
-                              <span>price: {e.price} €</span>
+                              <div>price: {e.price}€<br />size: {e.size}</div>
+                              <div>color: {e.color.name}<br /> quantity: {e.quantity}</div>
                             </td>
                           </tr>
                         </>
