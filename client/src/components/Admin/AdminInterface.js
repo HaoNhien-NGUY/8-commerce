@@ -552,7 +552,7 @@ const AdminInterface = () => {
                         </Modal.Body>
                     </Modal>
                 </div>
-                <ul className="list-group list-group-flush">
+                {/* <ul className="list-group list-group-flush">
                     <li className="list-group-item">
                         <div className="d-flex">
                             <select className="form-control form-control-lg" onChange={handleSelectColor}>
@@ -562,7 +562,7 @@ const AdminInterface = () => {
                             <button className="btn btn-outline-danger ml-4 deleteColor" onClick={handleColorClick}>Delete</button>
                         </div>
                     </li>
-                </ul>
+                </ul> */}
             </>
         )
     }

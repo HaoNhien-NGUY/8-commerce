@@ -34,7 +34,6 @@ class SubProductController extends AbstractController
         return $this->json(['nbResults' => $count, 'data' => $subProduct], 200, [], ['groups' => 'subproduct']);
     }
 
-
     /**
      * @Route("/api/subproduct/{id}", name="subproduct_get",methods="GET", requirements={"id":"\d+"})
      */

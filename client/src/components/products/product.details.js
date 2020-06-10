@@ -15,6 +15,13 @@ function ProductDescription() {
   const [imageProduct, setImageProduct] = useState();
   const [miniImageProduct, setMiniImageProduct] = useState();
   const imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
+  const isEmpty = (obj) => {
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key))
+        return false;
+    }
+    return true;
+  }
 
   //tant que taille et couleur ne sont pas choisies, ne pas afficher de prix...
   let id = useRouteMatch("/product/:id").params.id;
@@ -49,14 +56,6 @@ function ProductDescription() {
       }
       setLowestPrice(product_temp['lowest_price'])
     });
-
-    const isEmpty = (obj) => {
-      for (var key in obj) {
-        if (obj.hasOwnProperty(key))
-          return false;
-      }
-      return true;
-    }
 
     return () => {
     }
@@ -122,21 +121,25 @@ function ProductDescription() {
     console.log('testing the useeffect')
     let obj = { 'img-0': imageDefault }
 
-    if (product && product.images && product.images[0]) { //[0] = default, à modifier en state
+    if (product && product.images) { //[0] = default, à modifier en state
       obj = {}
-      if (chosenSubProduct) {
-        // anker
+      if (chosenProductColor) {
         for (let i = 0; i < product.images.length; i++) {
-          console.log('testing img', product.images[i].color_id, chosenProductColor)
-          if (product.images[i].color_id === chosenProductColor) {
-            console.log('inside')
+          console.log('testing img', product.images[i].color_id, chosenProductColor, product.images[i].links.length)
+          if (product.images[i].color_id === chosenProductColor && product.images[i].links.length > 0) {
             for (let j = 0; j < product.images[i].links.length; j++) {
-              console.log('inside-2', i,j, product.images[i].links[j])
+              console.log('inside-2', i, j, product.images[i].links[j])
               obj['img-' + j] = "http://127.0.0.1:8000" + product.images[i].links[j];
             }
           }
+          let verif = 0;
+          for (var key in obj) {
+            if (obj.hasOwnProperty(key))
+              verif++;
+          }
+          if (isEmpty(obj)) obj = { 'img-0': imageDefault }
         }
-      } else {
+      } else if (product.images[0]) {
         for (let i = 0; i < product.images[0].links.length; i++) {
           obj['img-' + i] = "http://127.0.0.1:8000" + product.images[0].links[i];
         }
@@ -157,7 +160,7 @@ function ProductDescription() {
       minimgprod.push(<div key={value + "div"} onClick={handleClick}><img className='imgIcone' src={value} /></div>);
       setMiniImageProduct(minimgprod);
     }
-  }, [product, chosenSubProduct]);
+  }, [product, chosenProductColor]);
 
   function showImage(pathImg) {
     const imageProps = {
@@ -289,7 +292,7 @@ function ProductDescription() {
         <p>{verifyIfAProductIsChosen() ? chosenSubProduct.stock + " pièces disponibles" : countstockAll + " pièces totales disponibles"}</p>
         {chosenProductSize != '' && chosenProductColor != '' ? console.log('PRODUCT IS CHOSEN') + setChosenProduct() : console.log('NO CHOICE')}
         <select id='selectSize' onChange={e => e.preventDefault() + console.log(e.target.value) + setChosenProductSize(e.target.value)}>
-          <option value='' className='selectChoice'>--- SIZE ({SizeOption.length})---</option>
+          <option value='' className='selectChoice' disabled>--- SIZE ({SizeOption.length})---</option>
           {SizeOption}
         </select>
         <button className='btn-cart' style={{ background: 'lightgrey', border: 'lightgrey' }}>Unavalaible</button>
@@ -301,7 +304,7 @@ function ProductDescription() {
     let arr = product.subproducts.filter(item => item.color.id == chosenProductColor)
     let options = []
     let arr_size_no_rep = []
-    options.push(<option value='No-Choice-Size' key="size-no-choice" className='selectChoice'>--- SIZE ({arr.length})---</option>)
+    options.push(<option value='No-Choice-Size' key="size-no-choice" className='selectChoice' disabled>--- SIZE ({arr.length})---</option>)
     for (let i = 0; i < arr.length; i++) {
       let size_value = arr[i].size
       if (!arr_size_no_rep.includes(size_value)) {
