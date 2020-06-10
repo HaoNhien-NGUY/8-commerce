@@ -111,7 +111,7 @@ class SupplierOrderController extends AbstractController
                     $supplierOrder->setSupplier($supplier);
                 }
 
-                if(isset($req->status) && $req->status === true) {
+                if(isset($req->status) && $req->status === true && $supplierOrder->getStatus() !== true) {
                     $supplierOrderSubproduct = $supplierOrder->getSupplierOrderSubproducts();
                     foreach ($supplierOrderSubproduct as $value) {
                         $quantity = ($value->getQuantity());
