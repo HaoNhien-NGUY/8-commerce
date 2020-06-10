@@ -16,7 +16,7 @@ function Home() {
     let nbrArctPop = 6;
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/product/home?limit='+nbrArctPop).then(resp => {
+        axios.get('http://127.0.0.1:8000/api/product?limit='+nbrArctPop).then(resp => {
             //Display Lowest Price Image
             let prices = {}
             let products_temp = resp.data.data
