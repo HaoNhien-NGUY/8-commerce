@@ -85,21 +85,10 @@ function CreateOrder() {
         }
     }
 
-    const Shipping = (days) => {
-        var result = new Date();
-        result.setDate(result.getDate() + days);
-        let dd = result.getDate();
-        let mm = result.getMonth();
-        let yy = result.getFullYear();
-        let date = dd + "/" + mm + "/" + yy;
-        return date;
-    }
-
     useEffect(() => {
         if (isReady) {
             setIsReady(false);
             let info = subProduct.split("/");
-
             let obj = {
                 "idSupplier" : idSupplier,
                 "idSubProduct" : info[0],
@@ -112,20 +101,6 @@ function CreateOrder() {
                 "price" : info[5]
             }
             setCart([...cart, obj]);
-            
-            // const body = {
-            //     "our_address" : ourAdress,
-            //     "status" : false,
-            //     "price" : price,
-            //     "arrival_date" : Shipping(3),
-            //     "supplier_id" : idSupplier
-            // }
-            // axios.post("http://127.0.0.1:8000/api/supplier/order", body, config).then( e => {
-            //     setIsReady(false);
-            //     toast.success('Product correctly added!', { position: "top-center"});
-            // }).catch( err => {
-            //     toast.error('Error !', {position: 'top-center'});
-            // });
         }
     }, [isReady]);
     
@@ -133,18 +108,17 @@ function CreateOrder() {
         <>
         <div className="container">
             <h1>New Order</h1>
+            <div className="row justify-content-end mb-2">
+                <button onClick={() => window.location.href = '/admin'} className='float-right btn btn-warning m-2'> Back to Dashboard </button>
+            </div>
             <Form onSubmit={onSubmit2}>
                 <FormGroup>
+                <Label for="supplier">Supplier</Label>
                     <select className={"form-control mtop30 " + (isInvalid.idsupplier ? 'is-invalid' : 'inputeStyle')} onChange={e => setIdSupplier(e.target.value)}>
                         <option value="">- - - Select Supplier - - -</option>
                         {optionSelect}
                     </select>
                     <div className="invalid-feedback">{ isInvalid.idsupplier }</div>
-                    <select className={"form-control mtop30 " + (isInvalid.subproduct ? 'is-invalid' : 'inputeStyle')} onChange={ e => setSubProduct(e.target.value)}>
-                        <option value="">- - - Select SubProduct - - -</option>
-                        {optionSubProduct}
-                    </select>
-                    <div className="invalid-feedback">{ isInvalid.subproduct }</div>
                     <Label for="supplier">Our adress</Label>
                     <Input
                         type="text"
@@ -153,6 +127,12 @@ function CreateOrder() {
                         className={(isInvalid.adress ? 'is-invalid' : 'inputeStyle')}
                         onChange={onChangeAdress}/>
                         <div className="invalid-feedback">{ isInvalid.adress }</div>
+                    <Label for="products">Products</Label>
+                    <select className={"form-control mtop30 " + (isInvalid.subproduct ? 'is-invalid' : 'inputeStyle')} onChange={ e => setSubProduct(e.target.value)}>
+                        <option value="">- - - Select SubProduct - - -</option>
+                        {optionSubProduct}
+                    </select>
+                    <div className="invalid-feedback">{ isInvalid.subproduct }</div>
                     <Label for="quantity">Quantity</Label>
                     <div className="d-flex">
                         <Input
