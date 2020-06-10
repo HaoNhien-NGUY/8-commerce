@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import "./CreateOrder.css";
-
+import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Cart(props) {
+    const [isInvalid, setIsInvalid] = useState(false);
     const nbrProduct = [];
     const nbrPrice = [];
     const divOrder = [];
@@ -26,7 +25,6 @@ function Cart(props) {
     }
 
     props.handleCart.map((e) => {
-        console.log(e);
         let obj = {
             "quantity": e.quantity,
             "subproduct_id": e.idSubProduct,
@@ -35,7 +33,7 @@ function Cart(props) {
             "price" : e.price * e.quantity,
             "arrival_date" : Shipping(3),
             "supplier_id" : e.idSupplier
-        }
+        };
         supplierOrder.push(obj);
         nbrProduct.push(e.quantity);
         nbrPrice.push(e.quantity * e.price);
@@ -63,63 +61,71 @@ function Cart(props) {
                     </tbody>
                 </table>
             </div>
-        )
+        );
     })
 
     const submitOrder = (priceOrder) => {
+        let invalids = {};
         const config = {
             headers: {
                 "Content-type": "application/json"
             }
-        }
-        
+        };
         let obj = {
             "our_address" : props.ourAdress,
             "status" : false,
             "price" : priceOrder,
             "arrival_date" : Shipping(3),
             "supplier_id" : props.idSupplier
-        }
+        };
 
-        axios.post("http://127.0.0.1:8000/api/supplier/order", obj, config).then( res => {
-            toast.success('Order correctly submited !', { position: "top-center"});
-            supplierOrder.map(order => {
-                const body = {
-                    "subproduct_id" : order.subproduct_id,
-                    "quantity" : order.quantity
-                }
-                axios.post(`http://127.0.0.1:8000/api/supplier/order/${res.data.SupplierOrder.id}/add`, body, config).then(e => {
-                    console.log(e);
-                }).catch(error => {
-                    console.log(error);
+        if (props.ourAdress != "") {
+            if (props.ourAdress.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]/)) {
+                invalids.error = "Re-enter the correct address";
+                setIsInvalid(invalids);
+            } else {
+                setIsInvalid(invalids);
+                axios.post("http://127.0.0.1:8000/api/supplier/order", obj, config).then( res => {
+                    toast.success('Order correctly submited !', { position: "top-center"});
+                    supplierOrder.map(order => {
+                        const body = {
+                            "subproduct_id" : order.subproduct_id,
+                            "quantity" : order.quantity
+                        };
+                        axios.post(`http://127.0.0.1:8000/api/supplier/order/${res.data.SupplierOrder.id}/add`, body, config).then(e => {
+                            console.log(e);
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                    });
+                }).catch( err => {
+                    toast.error('Error !', {position: 'top-center'});
                 });
-            });
-        }).catch( err => {
-            toast.error('Error !', {position: 'top-center'});
-        });
-
-        // window.location.reload();
+            }
+        } else {
+            invalids.error = "Re-enter the address";
+            setIsInvalid(invalids);
+        }
     }
-
 
     if (props.handleCart.length > 0) {
         return (
             <>
-                <div className="container">
+                <div className="container mb-5">
                     <ToastContainer />
                     {divOrder}
                     <div className="total">
                         <span>Products: {nbrProduct.map(e => {sumProduct = (Number(sumProduct) + Number(e))})}{sumProduct}</span>
                         <span>price {nbrPrice.map(e => {sumPrice = (Number(sumPrice) + Number(e))})}{sumPrice}€</span>
                     </div>
-                    <button className="btn btn-success btnOrder" onClick={e => e.preventDefault() + submitOrder(sumPrice)}>Validate Order</button>
+                    <button className={"btn btn-success btnOrder " + (isInvalid.error ? 'is-invalid' : '')} onClick={e => e.preventDefault() + submitOrder(sumPrice)}>Validate Order</button>
+                    <div className="invalid-feedback">{ isInvalid.error }</div>
                 </div>
             </>
         )
     } else {
         return false
     }
-
 }
 
 export default Cart;
