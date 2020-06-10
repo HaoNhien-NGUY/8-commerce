@@ -119,7 +119,10 @@ class SupplierOrderController extends AbstractController
                         $subprod->setStock($subprod->getStock() + $quantity);
                         $em->persist($subprod);
                     }
+                    $supplierOrder->setStatus(true);
                 }
+
+                if(isset($req->status) && $req->status === false) $supplierOrder->setStatus(false);
 
                 $error = $validator->validate($supplierOrder);
                 if (count($error) > 0) return $this->json($error, 400);
