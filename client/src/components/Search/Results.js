@@ -35,7 +35,7 @@ function Results(props) {
                       <img className="ProductHomeImg ProductHomeImg2" src={e.images && e.images[1] ? process.env.REACT_APP_API_LINK + e.images[0] : imageDefault}></img>
                     </div>
                   </a>
-                  <button className='btn-cart'>Add to cart</button>
+                  <button className='btn-cart'>View Product</button>
                 </div>
               </div>
             </div>
