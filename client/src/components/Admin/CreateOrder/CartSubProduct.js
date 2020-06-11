@@ -6,13 +6,31 @@ import { ToastContainer, toast } from 'react-toastify';
 
 function Cart(props) {
     const [isInvalid, setIsInvalid] = useState(false);
+    const [countProps, setCountProps] = useState(0);
+    const [divOrder, setDivOrder] = useState([]);
     const nbrProduct = [];
     const nbrPrice = [];
-    const divOrder = [];
+    //const divOrder = [];
     let sumProduct = 0;
     let sumPrice = 0;
-    
+    const config = {
+        headers: {
+            "Content-type": "application/json"
+        }
+    }
     const supplierOrder = [];
+    useEffect(() => {
+        if(props.handleCart && props.handleCart.length !== countProps)
+        { console.log('propscounter ', countProps);
+        let nbr = countProps + 1;
+            setCountProps(nbr);
+            console.log('propscounter ', countProps);
+            console.log('div order ', divOrder);
+        }
+    }, [props])
+    useEffect(() => {
+        renderProduct();
+    }, [countProps])
 
     const Shipping = (days) => {
         var result = new Date();
@@ -23,51 +41,67 @@ function Cart(props) {
         let date = dd + "-" + mm + "-" + yy;
         return date;
     }
-
-    props.handleCart.map((e) => {
-        console.log(e);
-        let obj = {
-            "idColor": e.idColor,
-            "idProduct": e.idProduct,
-            "quantity": e.quantity,
-            "subproduct_id": e.idSubProduct,
-            "our_address" : e.ourAdress,
-            "status" : false,
-            "price" : e.price * e.quantity,
-            "arrival_date" : Shipping(3),
-            "supplier_id" : e.idSupplier
-        };
-        supplierOrder.push(obj);
-        nbrProduct.push(e.quantity);
-        nbrPrice.push(e.quantity * e.price);
-        
-        divOrder.push(
-            <div className="divOrderCart" key={e.idSubProduct}>
-                <table className="productinCart">
-                    <tbody>
-                        <tr>
-                            <td rowSpan="3" className="tableborder">
-                                <img src="http://127.0.0.1:8000/api/image/2/default/1.jpg"/>
-                            </td>
-                            <td>
-                                <span><b>Title:</b> { e.subProductTitle}</span>
-                            </td>
-                        </tr>
-                        <tr className="tableborder">
-                            <td className="detailsproduct">
-                                <span><b>ID:</b> {e.idSubProduct}</span>
-                                <span><b>Color:</b> {e.subProductColor}</span>
-                                <span><b>Size:</b> {e.subProductSize}</span>
-                                <span><b>Quantity:</b> {e.quantity}</span>
-                                <span><b>Price:</b> {e.price * e.quantity}</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        );
-    })
-
+    const renderProduct = () => {
+        props.handleCart.map((e) => {
+            let obj = {
+                "idColor": e.idColor,
+                "idProduct": e.idProduct,
+                "quantity": e.quantity,
+                "subproduct_id": e.idSubProduct,
+                "our_address" : e.ourAdress,
+                "status" : false,
+                "price" : e.price * e.quantity,
+                "arrival_date" : Shipping(3),
+                "supplier_id" : e.idSupplier
+            };
+            supplierOrder.push(obj);
+            nbrProduct.push(e.quantity);
+            nbrPrice.push(e.quantity * e.price);
+            let imageSet = [];
+                axios.get("http://127.0.0.1:8000/api/product/"+e.idProduct, config).then(async product => {
+                    await product.data.images.map((image) => { 
+                        if(image.color_id.toString() === e.idColor.toString())
+                        { 
+                            imageSet.push(<img key={image.links[0]+e.idColor} className="" src={'http://127.0.0.1:8000'+image.links[0]}></img>);
+                        }})
+                         setDivOrder([...divOrder,
+                            <div className="divOrderCart" key={e.idSubProduct}>
+                                <table className="productinCart">
+                                    <tbody>
+                                        <tr>
+                                            <td rowSpan="3" className="tableborder">
+                                                {console.log('v2 ',imageSet.length)}
+                                                {   imageSet.length > 0 
+                                                    ? imageSet 
+                                                    : <img  src={'https://i.ibb.co/j5qSV4j/missing.jpg'}></img>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span><b>Title:</b> { e.subProductTitle}</span>
+                                            </td>
+                                        </tr>
+                                        <tr className="tableborder">
+                                            <td className="detailsproduct">
+                                                <span><b>ID:</b> {e.idSubProduct}</span>
+                                                <span><b>Color:</b> {e.subProductColor}</span>
+                                                <span><b>Size:</b> {e.subProductSize}</span>
+                                                <span><b>Quantity:</b> {e.quantity}</span>
+                                                <span><b>Price:</b> {e.price * e.quantity} €</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                         ]);
+                       console.log(imageSet.length)
+                        toast.success('!', { position: "top-center"});
+                        }).catch( err => {
+                            console.log('error ', err)
+                            toast.error('Error !', {position: 'top-center'});
+                        })
+                       
+        })
+    }
     const submitOrder = (priceOrder) => {
         let invalids = {};
         const config = {
@@ -90,7 +124,7 @@ function Cart(props) {
             } else {
                 setIsInvalid(invalids);
                 axios.post("http://127.0.0.1:8000/api/supplier/order", obj, config).then( res => {
-                    toast.success('Order correctly submited !', { position: "top-center"});
+                    let count = 0;
                     supplierOrder.map(order => {
                         const body = {
                             "subproduct_id" : order.subproduct_id,
@@ -98,6 +132,10 @@ function Cart(props) {
                         };
                         axios.post(`http://127.0.0.1:8000/api/supplier/order/${res.data.SupplierOrder.id}/add`, body, config).then(e => {
                             console.log(e);
+                            count++;
+                            if (count == supplierOrder.length) {
+                                window.location.reload();
+                            }
                         }).catch(error => {
                             console.log(error);
                         });
@@ -105,6 +143,7 @@ function Cart(props) {
                 }).catch( err => {
                     toast.error('Error !', {position: 'top-center'});
                 });
+                
             }
         } else {
             invalids.error = "Re-enter the address";
