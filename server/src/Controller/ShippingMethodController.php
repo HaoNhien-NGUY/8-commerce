@@ -33,6 +33,19 @@ class ShippingMethodController extends AbstractController
     }
 
     /**
+     * @Route("/api/shippingmethod/{id}", name="shippingmethod_details", methods="GET", requirements={"id":"\d+"})
+     */
+    public function shippingMethodDetails(Request $request, ShippingMethodRepository $shippingMethodRepository)
+    {
+        $shippingMethod = $shippingMethodRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        if ($shippingMethod) {
+            return $this->json($shippingMethod, 200, [], ['groups' => 'shipping']);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
      * @Route("/api/shippingmethod", name="shippingmethod_create", methods="POST")
      */
     public function shippingMethod_create(Request $request ,ShippingMethodRepository $shippingMethodRepository,EntityManagerInterface $em)
