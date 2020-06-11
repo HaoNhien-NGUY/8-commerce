@@ -49,7 +49,7 @@ export default class SearchSidebar extends Component {
       resultExist: true,
     };
 
-    this.handleSearch = this.handleSearch.bind(this);
+    this.handleName = this.handleName.bind(this);
     this.sliderChangeValue = this.sliderChangeValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSexe = this.handleSexe.bind(this);
@@ -64,10 +64,11 @@ export default class SearchSidebar extends Component {
     this.checkNull = this.checkNull.bind(this);
     this.showFilter = this.showFilter.bind(this);
     this.defaultValueSexe = this.defaultValueSexe.bind(this);
+    this.defaultValueName = this.defaultValueName.bind(this);
     // this.checkIfCatsubcatExists = this.checkIfCatsubcatExists.bind(this);
   }
 
-  handleSearch(e) {
+  handleName(e) {
     this.setState({ searchValue: e.target.value, isResultsReady: false });
   }
 
@@ -289,6 +290,30 @@ export default class SearchSidebar extends Component {
         });
     }
 
+    if (paramsURL[0] == "name") {
+      this.defaultValueName(paramsURL[1])
+
+      axios
+        .get("http://localhost:8000/api/subcategory/")
+        .then((res) => {
+          console.log(res.data);
+          this.setState({ subcategories: res.data, isSubCategoryReady: true });
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+  
+      axios
+        .get("http://localhost:8000/api/category/")
+        .then((res) => {
+          console.log(res.data.data);
+          this.setState({ categories: res.data.data, isCategoryReady: true });
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    }
+
     else if (paramsURL[0] == "subcategory") {
       this.defaultValueSubCategory(paramsURL[1])
       console.log(paramsURL[1])
@@ -433,6 +458,12 @@ export default class SearchSidebar extends Component {
     this.handleSubmit();
   }
 
+  async defaultValueName(value) {
+    await this.setState({searchValue: value})
+    $('#inputSearchName').val(value);
+    this.handleSubmit();
+  }
+
   
 
   render() {
@@ -454,7 +485,8 @@ export default class SearchSidebar extends Component {
               type="search"
               placeholder="Search a product"
               className="form-control col-8"
-              onChange={this.handleSearch}
+              onChange={this.handleName}
+              id="inputSearchName"
             ></input>
             <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0" onClick={this.handleSubmit}>
               Search
