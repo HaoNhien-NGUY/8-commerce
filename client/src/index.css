@@ -289,8 +289,7 @@ code {
   }
 }
 
-.supbtn,.buttonreset {
-  position: absolute;
+.supbtn{
   right: 1em;
   top: 0;
   margin: 0;
@@ -300,6 +299,10 @@ code {
   border: none;
 }
 
+.buttonreset {
+  position: absolute;
+
+}
 .productcarttitle {
   display: flex;
   justify-content: space-between;
