@@ -561,6 +561,10 @@ const AdminInterface = () => {
                         </Modal.Body>
                     </Modal>
                 </div>
+                <select className="form-control form-control-lg" onChange={handleSelectColor}>
+                    <option value="">--- SELECT COLOR ---</option>
+                    {optionColors}
+                </select>
                 {/* <ul className="list-group list-group-flush">
                     <li className="list-group-item">
                         <div className="d-flex">
