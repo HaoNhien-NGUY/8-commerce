@@ -35,7 +35,7 @@ function Suppliers() {
                 <tr key={order.id}>
                     <td><p className="myMargin align-items-center">{order.id}</p></td>
                     <td><p className="myMargin">{order.our_address}</p></td>
-                    <td><p className="myMargin">{order.price}</p></td>
+                    <td><p className="myMargin">{order.price} €</p></td>
                     <td><button onClick={e => e.preventDefault() + showDetailsOrder(order.id)} className="btn btn-outline-dark m-1">View</button></td>
                     {order.status == false ?
                         <td><button onClick={e => e.preventDefault() + markShipped(order.id)} className="btn btn-outline-success m-1">Mark as arrived</button></td> :
@@ -159,7 +159,7 @@ function Suppliers() {
                                                 <span><b>Color:</b> {subProduct.subproduct.color.name}</span>
                                                 <span><b>Size:</b> {subProduct.subproduct.size}</span>
                                                 <span><b>Quantity:</b> {subProduct.quantity}</span>
-                                                <span><b>Price:</b> {subProduct.subproduct.price}</span>
+                                                <span><b>Price:</b> {subProduct.subproduct.price} €</span>
                                             </td>
                                         </tr>
                                     </tbody>
