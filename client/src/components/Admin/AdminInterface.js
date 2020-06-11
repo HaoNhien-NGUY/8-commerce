@@ -584,14 +584,14 @@ const AdminInterface = () => {
         <div className="container adminTable">
             <ToastContainer />
             <h1 className="mb-5">
-                <i class="material-icons md-36 marg">speed</i> ADMIN - Dashboard
+                <i className="material-icons md-36 marg">speed</i> ADMIN - Dashboard
             </h1>
             <Tabs forceRenderTabPanel={true}>
                 <TabList className="tabsHolder" style={{ paddingLeft: 0 }}>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i class="material-icons md-36 marg">source</i>Products</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i class="material-icons md-36 marg">collections</i>Categories</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i class="material-icons md-36 marg">color_lens</i>Colors</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i class="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">source</i>Products</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">collections</i>Categories</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">color_lens</i>Colors</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
