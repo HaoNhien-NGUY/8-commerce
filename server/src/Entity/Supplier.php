@@ -42,9 +42,15 @@ class Supplier
      */
     private $supplierOrders;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="supplier")
+     */
+    private $product;
+
     public function __construct()
     {
         $this->supplierOrders = new ArrayCollection();
+        $this->product = new ArrayCollection();
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
@@ -94,6 +100,37 @@ class Supplier
             // set the owning side to null (unless already changed)
             if ($supplierOrder->getSupplier() === $this) {
                 $supplierOrder->setSupplier(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProduct(): Collection
+    {
+        return $this->product;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->product->contains($product)) {
+            $this->product[] = $product;
+            $product->setSupplier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->product->contains($product)) {
+            $this->product->removeElement($product);
+            // set the owning side to null (unless already changed)
+            if ($product->getSupplier() === $this) {
+                $product->setSupplier(null);
             }
         }
 

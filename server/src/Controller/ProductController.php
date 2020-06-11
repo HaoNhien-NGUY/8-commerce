@@ -12,6 +12,7 @@ use App\Repository\ColorRepository;
 use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SubproductRepository;
+use App\Repository\SupplierRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +53,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product", name="product_create", methods="POST")
      */
-    public function productCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
+    public function productCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator,SupplierRepository $supplierRepository)
     {
         try {
             $jsonContent = $request->getContent();
@@ -65,9 +66,13 @@ class ProductController extends AbstractController
             $subCategory = $this->getDoctrine()
                 ->getRepository(SubCategory::class)
                 ->find($req->subcategory);
+
             $product->setSubCategory($subCategory);
             $product->setCreatedAt(new DateTime());
-
+            if(isset($req->supplier)){
+                $supplier = $supplierRepository->findOneBy(['id' => $req->supplier]);
+                $product->setSupplier($supplier);
+            }
             $error = $validator->validate($product);
             if (count($error) > 0) return $this->json($error, 400);
 

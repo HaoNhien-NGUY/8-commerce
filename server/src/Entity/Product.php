@@ -78,6 +78,12 @@ class Product
      */
     private $subCategory;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Supplier::class, inversedBy="product")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $supplier;
+
 
 
     public function __construct()
@@ -225,6 +231,18 @@ class Product
     public function setSubCategory(?SubCategory $subCategory): self
     {
         $this->subCategory = $subCategory;
+
+        return $this;
+    }
+
+    public function getSupplier(): ?Supplier
+    {
+        return $this->supplier;
+    }
+
+    public function setSupplier(?Supplier $supplier): self
+    {
+        $this->supplier = $supplier;
 
         return $this;
     }
