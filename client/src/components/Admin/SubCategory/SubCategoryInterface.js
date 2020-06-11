@@ -179,7 +179,7 @@ const SubCategoryInterface = () => {
                                     placeholder={oldSubCatName}
                                     onChange={onChangeNew}
                                 />
-                                <Button color="dark" className="mt-4" block>Update</Button>
+                                <Button color="dark" className="mt-4" block>Create</Button>
                             </FormGroup>
                         </Form>
                     </Modal.Body>

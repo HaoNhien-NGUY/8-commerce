@@ -229,6 +229,7 @@ const SubProductInterface = () => {
                                         </select><br />
                                         <Label for="image">Image</Label>
                                         <Input
+                                            multiple="multiple"
                                             type="file"
                                             name="image"
                                             id="image"
