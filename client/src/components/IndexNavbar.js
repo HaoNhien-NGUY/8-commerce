@@ -118,13 +118,13 @@ class IndexNavbar extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <NavItem>
-              <Nav.Link href="#">Homme</Nav.Link>
+              <Nav.Link href="/search?sexe=H">Homme</Nav.Link>
             </NavItem>
             <NavItem>
-              <Nav.Link href="#">Femme</Nav.Link>
+              <Nav.Link href="/search?sexe=F">Femme</Nav.Link>
             </NavItem>
             <NavItem>
-              <Nav.Link href="#">Accessoires</Nav.Link>
+              <Nav.Link href="/search?category=Accessories">Accessoires</Nav.Link>
             </NavItem>
           </Navbar.Collapse>
         </Navbar>
