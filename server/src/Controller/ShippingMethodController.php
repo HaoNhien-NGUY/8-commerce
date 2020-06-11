@@ -48,7 +48,7 @@ class ShippingMethodController extends AbstractController
     /**
      * @Route("/api/shippingmethod", name="shippingmethod_create", methods="POST")
      */
-    public function shippingMethod_create(Request $request ,ShippingMethodRepository $shippingMethodRepository,EntityManagerInterface $em)
+    public function shippingMethodCreate(Request $request ,ShippingMethodRepository $shippingMethodRepository,EntityManagerInterface $em)
     {
         $req = json_decode($request->getContent());
         
@@ -64,7 +64,56 @@ class ShippingMethodController extends AbstractController
             $em->flush();
             return $this->json(['message'=>'Region successfully created',$shippingMethod], 200,[],['groups' => 'shipping']);
         }
+    }
 
+    /**
+     * @Route("/api/shippingmethod/{id}", name="shippingmethod_remove", methods="DELETE", requirements={"id":"\d+"})
+     */
+    public function shippingMethodRemove(Request $request ,ShippingMethodRepository $shippingMethodRepository,EntityManagerInterface $em)
+    { 
+        $shippingMethod = $shippingMethodRepository->findOneBy(['id' => $request->attributes->get('id')]);
+
+        if ($shippingMethod) {
+            $em->remove($shippingMethod);
+            $em->flush();
+
+            return $this->json([
+                'message' => 'region removed',
+                'product' => $shippingMethod
+            ], 200, [], ['groups' => 'shipping']);
+        } else {
+            return $this->json(['message' => 'ShippingMethod not found'], 404, []);
+        }
+    }
+
+    /**
+     * @Route("/api/shippingmethod/{id}", name="shippingmethod_update", methods="PUT",requirements={"id":"\d+"})
+     */
+    public function shippingMethodUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ShippingMethodRepository $shippingMethodRepository)
+    {
+        try {
+            $jsonContent = $request->getContent();
+            $req = json_decode($jsonContent);
+            $shippingMethod = $shippingMethodRepository->findOneBy(['id' => $request->attributes->get('id')]);
+            
+            if ($shippingMethod) {
+                if (!isset($req->name)) {
+                    return $this->json(['message' => 'name is undefined'], 404, []);
+                }
+                $shippingMethod->setName($req->name);
+
+                $error = $validator->validate($shippingMethod);
+                if (count($error) > 0) return $this->json($error, 400);
+                $em->persist($shippingMethod);
+                $em->flush();
+
+                return $this->json($shippingMethod, 200, [], ['groups' => 'shipping']);
+            } else {
+                return $this->json(['message' => 'category not found'], 404, []);
+            }
+        } catch (NotEncodableValueException $e) {
+            return $this->json($e->getMessage(), 400);
+        }
     }
 
 }

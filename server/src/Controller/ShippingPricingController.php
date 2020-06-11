@@ -49,7 +49,7 @@ class ShippingPricingController extends AbstractController
     /**
      * @Route("/api/shippingpricing", name="shippingpricing_create", methods="POST")
      */
-    public function shippingMethod_create(Request $request ,ShippingPricingRepository $shippingPricingRepository,ShippingMethodRepository $shippingMethodRepository,RegionRepository $regionRepository,EntityManagerInterface $em)
+    public function shippingMethodCreate(Request $request ,ShippingPricingRepository $shippingPricingRepository,ShippingMethodRepository $shippingMethodRepository,RegionRepository $regionRepository,EntityManagerInterface $em)
     {
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
