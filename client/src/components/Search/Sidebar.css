@@ -6,3 +6,87 @@
 .container {
   border-bottom: 0!important;
 }
+
+.searchbar-name {
+  width: 100%;
+}
+
+
+/* FILTER BOX */
+#filter-div {
+  padding: 30px 10px;
+  width: 20vw;
+  height: auto;
+  float: left;
+  margin: 20vh 0;
+  border: 1px solid rgb(224, 224, 224);
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 0 3px 3px 0;
+}
+
+.filter-label {
+  margin-left: 20px;
+}
+
+.f-gender div {
+  display: inline;
+  /* justify-content: middle; */
+}
+
+.f-border {
+  margin-left: 20px;
+}
+
+.f-slider-val {
+  width:90%;
+}
+
+
+
+
+/* SLIDER */
+.slider.slider-horizontal .slider-track {
+  height: 5px;
+}
+
+.slider {
+  /* margin: 0 20px; */
+  margin-left: 30px;
+  width: 80%!important;
+  /* height: 4px!important; */
+}
+
+.slider-handle {
+  background-color: black;
+  background-image: none;
+  border-radius: 100%;
+  width: 15px;
+  height: 15px;
+}
+
+.slider-selection {
+  background-color: rgb(211, 211, 211);
+  background-image: none;
+}
+
+/* ANIMATION FILTER BOX */
+.to-right {
+  animation-name: slideLeftToRight;
+  animation-duration: 0.7s; 
+}
+
+@keyframes slideLeftToRight {
+  from {transform: translateX(-20vw)} 
+  to {transform: translateX(0vw)}
+}
+
+.to-left {
+  /* animation-name: slideRightToLeft;
+  animation-duration: 1s;  */
+  animation: slideRightToLeft 0.7s forwards;
+}
+
+@keyframes slideRightToLeft {
+  from {transform: translateX(0vw)} 
+  to {transform: translateX(-20vw)}
+}
