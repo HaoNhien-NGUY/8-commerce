@@ -63,6 +63,7 @@ export default class SearchSidebar extends Component {
     this.checkEmptyArray = this.checkEmptyArray.bind(this);
     this.checkNull = this.checkNull.bind(this);
     this.showFilter = this.showFilter.bind(this);
+    this.defaultValueSexe = this.defaultValueSexe.bind(this);
     // this.checkIfCatsubcatExists = this.checkIfCatsubcatExists.bind(this);
   }
 
@@ -264,7 +265,31 @@ export default class SearchSidebar extends Component {
 
     // this.checkIfCatsubcatExists(paramsURL[1])
 
-    if (paramsURL[0] == "subcategory") {
+    if (paramsURL[0] == "sexe") {
+      this.defaultValueSexe(paramsURL[1])
+
+      axios
+        .get("http://localhost:8000/api/subcategory/")
+        .then((res) => {
+          console.log(res.data);
+          this.setState({ subcategories: res.data, isSubCategoryReady: true });
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+  
+      axios
+        .get("http://localhost:8000/api/category/")
+        .then((res) => {
+          console.log(res.data.data);
+          this.setState({ categories: res.data.data, isCategoryReady: true });
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    }
+
+    else if (paramsURL[0] == "subcategory") {
       this.defaultValueSubCategory(paramsURL[1])
       console.log(paramsURL[1])
 
@@ -367,6 +392,11 @@ export default class SearchSidebar extends Component {
     this.handleSubmit()
   }
 
+  async defaultValueSexe(value) {
+    await this.setState({sexe: value})
+    this.handleSubmit();
+  }
+
   render() {
     const isCategoryReady = this.state.isCategoryReady
     const isColorReady = this.state.isColorsReady;
@@ -442,6 +472,7 @@ export default class SearchSidebar extends Component {
                       name="optradio"
                       value="H"
                       onChange={this.handleSexe}
+                      checked={this.state.sexe == 'H' ? true : false}
                     />
                     Men
                   </label>
@@ -454,6 +485,7 @@ export default class SearchSidebar extends Component {
                       name="optradio"
                       value="F"
                       onChange={this.handleSexe}
+                      checked={this.state.sexe == 'F' ? true : false}
                     />
                     Women
                   </label>
