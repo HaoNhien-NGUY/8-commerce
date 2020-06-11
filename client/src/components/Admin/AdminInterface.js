@@ -41,11 +41,17 @@ const AdminInterface = () => {
     const [imageId, setImageId] = useState(null);
     const [showCate, setShowCate] = useState(false);
     const [categoryName, setCategoryName] = useState([]);
+    const [showSubCate, setShowSubCate] = useState(false);
+    const [subCategoryName, setSubCategoryName] = useState([]);
+    const [categorySelected, setCategorySelected] = useState('');
+    const [allCategory, setAllCategory] = useState([]);
+    const [isInvalid, setIsInvalid] = useState(false);
+    const [isReady, setIsReady] = useState(false);
     const [showCateEdit, setShowCateEdit] = useState(false);
     const [categoryNameEdit, setCategoryNameEdit] = useState([]);
     const [cateEditId, setCateEditId] = useState(null);
     const [oldCateEditName, setOldCateEditName] = useState('');
-
+    const optionCategory = [];
     const token = store.getState().auth.token
     const config = {
         headers: {
@@ -145,7 +151,6 @@ const AdminInterface = () => {
                 toast.error('Error !', { position: 'top-center' });
             })
     }
-    // console.log(config)
     const handlePageClickCategories = (e) => {
         const selectedPage = e.selected;
         const newOffset = selectedPage * limitCategories;
@@ -173,12 +178,6 @@ const AdminInterface = () => {
         switch (data) {
             case 'product':
                 window.location.href = '/admin/create/product';
-                break;
-            case 'category':
-                window.location.href = '/admin/create/category';
-                break;
-            case 'subcategory':
-                window.location.href = '/admin/create/subcategory';
                 break;
         }
     }
@@ -326,8 +325,6 @@ const AdminInterface = () => {
         )
     }
 
-    const handleCloseCate = () => setShowCate(false);
-    const handleShowCate = () => setShowCate(true);
     const onChangeCate = (event) => {
         let res = event.target.value.trim();
         let str = res.toLowerCase();
@@ -342,7 +339,7 @@ const AdminInterface = () => {
             return toast.error("You need to enter a category", { position: "top-center" });
         }
 
-        if (categoryName.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
+        if (categoryName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
             return toast.error("Invalid charactere", { position: "top-center" });
         } else {
             const body = {
@@ -350,6 +347,7 @@ const AdminInterface = () => {
             }
             axios.post("http://127.0.0.1:8000/api/category/create/" + categoryName, body, config).then(res => {
                 toast.success('Category correctly added!', { position: "top-center" });
+                
             }).catch(err => {
                 toast.error('Category already exist!', { position: 'top-center' });
             });
@@ -357,14 +355,73 @@ const AdminInterface = () => {
         }
     }
 
+    useEffect(() => {
+        axios.get("http://127.0.0.1:8000/api/category", config).then(e => {
+            setAllCategory(e.data.data);
+        });
+    }, []);
+
+    allCategory.map(category => {
+        optionCategory.push(<option key={category.id} value={category.name}>{category.name}</option>)
+    });
+
+    const onChangeSubCate = (event) => {
+        let res = event.target.value.trim();
+        let str = res.toLowerCase();
+        let category = str.charAt(0).toUpperCase() + str.slice(1);
+        setSubCategoryName(category.replace(/[\s]{2,}/g, " "));
+    }
+
+    function onSubmitSubCate(e) {
+        e.preventDefault();
+        let invalids = {};
+        
+        if (!categorySelected) {
+            invalids.category = "Select category";
+        }
+
+        if (subCategoryName && subCategoryName.length > 0) {
+            if (subCategoryName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
+                invalids.subCategory = "Charactere invalid";
+            }
+        } else {
+            invalids.subCategory = "Please enter a subCategory";
+        }
+
+        if (Object.keys(invalids).length === 0) {
+            setIsInvalid(invalids);
+            setIsReady(true);
+        } else {
+            setIsInvalid(invalids);
+        }
+    }
+
+    useEffect(() => {
+        if (isReady) {
+            setIsReady(false);
+            const body = [];
+            axios.post("http://127.0.0.1:8000/api/subcategory/create/" + categorySelected + "/" + subCategoryName, body, config)
+                .then(res => {
+                    toast.success('SubCategory correctly added!', { position: 'top-center' });
+                    setShowSubCate(false)
+                }).catch(err => {
+                    toast.error('SubCategory already exist!', { position: 'top-center' });
+                });
+        }
+    }, [isReady]);
+
+    function handleSelect(event) {
+        setCategorySelected(event.target.value);
+    }
+
     const AllCategories = () => {
         return (
             <>
                 <div className="row justify-content-end mb-2">
-                    <button onClick={handleShowCate} className="btn btn-success m-1">
+                    <button onClick={() => setShowCate(true)} className="btn btn-success m-1">
                         + New Category
                     </button>
-                    <Modal show={showCate} onHide={handleCloseCate}>
+                    <Modal show={showCate} onHide={() => setShowCate(false)}>
                         <Modal.Header closeButton>
                             Create category !
                             </Modal.Header>
@@ -385,9 +442,37 @@ const AdminInterface = () => {
                             </Form>
                         </Modal.Body>
                     </Modal>
-                    <button onClick={() => redirectCreate('subcategory')} className="btn btn-success m-1">
+                    <button onClick={() => setShowSubCate(true)} className="btn btn-success m-1">
                         + New SubCategory
                     </button>
+                    <Modal show={showSubCate} onHide={() => setShowSubCate(false)}>
+                        <Modal.Header closeButton>
+                            Create SubCategory !
+                            </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={onSubmitSubCate}>
+                                <FormGroup>
+                                    <select className={"form-control form-control-lg " + (isInvalid.category ? 'is-invalid' : 'inputeStyle')} id="selectCategory" onChange={handleSelect}>
+                                        <option value="">--- CHOICE CATEGORY ---</option>
+                                        {optionCategory}
+                                    </select>
+                                    <div className="invalid-feedback">{isInvalid.category}</div>
+                                    <Label for="category">SubCategory name</Label>
+                                    <Input
+                                        type="text"
+                                        name="category"
+                                        id="category"
+                                        className={(isInvalid.subCategory ? 'is-invalid' : 'inputeStyle')}
+                                        onChange={onChangeSubCate}
+                                    />
+                                    <div className="invalid-feedback">{isInvalid.subCategory}</div>
+                                    <Button color="dark" className="mt-4" block>
+                                        Submit
+                                    </Button>
+                                </FormGroup>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
                 </div>
                 <div className="row border p-2">
                     <table>
@@ -395,7 +480,7 @@ const AdminInterface = () => {
                             <tr>
                                 <th><p className="m-2 align-items-center"> ID </p></th>
                                 <th><p className="m-2"> Name </p></th>
-                                <th><p colspan="3" className="m-1"> Actions </p></th>
+                                <th><p colSpan="3" className="m-1"> Actions </p></th>
                             </tr>
                         </thead>
                         <tbody>{postDataCategories}</tbody>

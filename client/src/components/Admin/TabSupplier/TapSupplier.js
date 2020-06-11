@@ -185,7 +185,7 @@ function Suppliers() {
                             <th><p className="myMargin align-items-center"> ID </p></th>
                             <th><p className="myMargin"> Order </p></th>
                             <th><p className="myMargin"> Price </p></th>
-                            <th><p className="myMargin" colspan="3" className="m-1"> Actions </p></th>
+                            <th><p className="myMargin" colSpan="3" className="m-1"> Actions </p></th>
                         </tr>
                     </thead>
                     <tbody>{postDataOrder}</tbody>
