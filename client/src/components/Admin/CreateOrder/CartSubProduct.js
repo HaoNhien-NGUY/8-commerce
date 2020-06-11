@@ -6,13 +6,27 @@ import { ToastContainer, toast } from 'react-toastify';
 
 function Cart(props) {
     const [isInvalid, setIsInvalid] = useState(false);
+    const [countProps, setCountProps] = useState(0);
+    const [divOrder, setDivOrder] = useState([]);
     const nbrProduct = [];
     const nbrPrice = [];
-    const divOrder = [];
     let sumProduct = 0;
     let sumPrice = 0;
-    
+    const config = {
+        headers: {
+            "Content-type": "application/json"
+        }
+    };
     const supplierOrder = [];
+    useEffect(() => {
+        if(props.handleCart && props.handleCart.length !== countProps) {
+        let nbr = countProps + 1;
+            setCountProps(nbr);
+        }
+    }, [props]);
+    useEffect(() => {
+        renderProduct();
+    }, [countProps]);
 
     const Shipping = (days) => {
         var result = new Date();
@@ -22,10 +36,8 @@ function Cart(props) {
         let yy = result.getFullYear();
         let date = dd + "-" + mm + "-" + yy;
         return date;
-    }
-
-    props.handleCart.map((e) => {
-        console.log(e);
+    };
+    props.handleCart.map(e => {
         let obj = {
             "idColor": e.idColor,
             "idProduct": e.idProduct,
@@ -40,34 +52,49 @@ function Cart(props) {
         supplierOrder.push(obj);
         nbrProduct.push(e.quantity);
         nbrPrice.push(e.quantity * e.price);
-        
-        divOrder.push(
-            <div className="divOrderCart" key={e.idSubProduct}>
-                <table className="productinCart">
-                    <tbody>
-                        <tr>
-                            <td rowSpan="3" className="tableborder">
-                                <img src="http://127.0.0.1:8000/api/image/2/default/1.jpg"/>
-                            </td>
-                            <td>
-                                <span><b>Title:</b> { e.subProductTitle}</span>
-                            </td>
-                        </tr>
-                        <tr className="tableborder">
-                            <td className="detailsproduct">
-                                <span><b>ID:</b> {e.idSubProduct}</span>
-                                <span><b>Color:</b> {e.subProductColor}</span>
-                                <span><b>Size:</b> {e.subProductSize}</span>
-                                <span><b>Quantity:</b> {e.quantity}</span>
-                                <span><b>Price:</b> {e.price * e.quantity} €</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        );
-    })
-
+    });
+    const renderProduct = () => {
+        props.handleCart.map((e) => {
+            let imageSet = [];
+            axios.get("http://127.0.0.1:8000/api/product/"+e.idProduct, config).then(async product => {
+                await product.data.images.map((image) => { 
+                    if(image.color_id.toString() === e.idColor.toString())
+                    { 
+                        imageSet.push(<img key={image.links[0]+e.idColor} className="" src={'http://127.0.0.1:8000'+image.links[0]}></img>);
+                }})
+                setDivOrder([...divOrder,
+                <div className="divOrderCart" key={countProps}>
+                    <table className="productinCart">
+                        <tbody>
+                            <tr>
+                                <td rowSpan="3" className="tableborder">
+                                    {   imageSet.length > 0 
+                                        ? imageSet 
+                                        : <img  src={'https://i.ibb.co/j5qSV4j/missing.jpg'}></img>
+                                    }
+                                </td>
+                                <td>
+                                    <span><b>Title:</b> { e.subProductTitle}</span>
+                                </td>
+                            </tr>
+                            <tr className="tableborder">
+                                <td className="detailsproduct">
+                                    <span><b>ID:</b> {e.idSubProduct}</span>
+                                    <span><b>Color:</b> {e.subProductColor}</span>
+                                    <span><b>Size:</b> {e.subProductSize}</span>
+                                    <span><b>Quantity:</b> {e.quantity}</span>
+                                    <span><b>Price:</b> {e.price * e.quantity} €</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                ]);
+            }).catch( err => {
+                toast.error('Error !', {position: 'top-center'});
+            })         
+        })
+    }
     const submitOrder = (priceOrder) => {
         let invalids = {};
         const config = {
@@ -91,12 +118,15 @@ function Cart(props) {
                 setIsInvalid(invalids);
                 axios.post("http://127.0.0.1:8000/api/supplier/order", obj, config).then( res => {
                     let count = 0;
+                    console.log(supplierOrder);
                     supplierOrder.map(order => {
+                        console.log("dans map")
                         const body = {
                             "subproduct_id" : order.subproduct_id,
                             "quantity" : order.quantity
                         };
                         axios.post(`http://127.0.0.1:8000/api/supplier/order/${res.data.SupplierOrder.id}/add`, body, config).then(e => {
+                            console.log("dans axios")
                             console.log(e);
                             count++;
                             if (count == supplierOrder.length) {
@@ -109,7 +139,6 @@ function Cart(props) {
                 }).catch( err => {
                     toast.error('Error !', {position: 'top-center'});
                 });
-                
             }
         } else {
             invalids.error = "Re-enter the address";
@@ -120,7 +149,7 @@ function Cart(props) {
     if (props.handleCart.length > 0) {
         return (
             <>
-                <div className="container mb-5">
+                <div className="container mb-5" key={countProps}>
                     <ToastContainer />
                     {divOrder}
                     <div className="total">
