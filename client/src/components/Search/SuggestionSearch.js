@@ -96,7 +96,7 @@ export default class SuggestionSearch extends Component {
             className="mr-sm-2"
             onChange={this.handleInput}
             id="form"
-            autocomplete="off"
+            autoComplete="off"
           />
         </Form>
 
