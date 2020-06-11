@@ -84,19 +84,6 @@ class RegionController extends AbstractController
         }
     }
 
-        /**
-     * @Route("/api/category/{id}", name="category_details", methods="GET", requirements={"id":"\d+"})
-     */
-    public function categoryDetails(Request $request, CategoryRepository $CatRepository)
-    {
-        $Category = $CatRepository->findOneBy(['id' => $request->attributes->get('id')]);
-        if ($Category) {
-            return $this->json($Category, 200, [], ['groups' => 'category']);
-        } else {
-            return $this->json(['message' => 'not found'], 404, []);
-        }
-    }
-
       /**
      * @Route("/api/region/{id}", name="region_update", methods="PUT",requirements={"id":"\d+"})
      */
