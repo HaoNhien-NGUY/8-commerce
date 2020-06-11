@@ -62,8 +62,6 @@ function CreateProduct() {
     }, [isSubCategoriesReady] )
 
     function handleChange(event) {
-        console.log(event.target)
-
         let res = event.target.value.trim();
         let val = res.replace(/[\s]{2,}/g, " ");
 
@@ -81,7 +79,7 @@ function CreateProduct() {
         if (formControl.title) {
             if (formControl.title == "") {
                 invalids.title = "Please enter a Title";
-            } else if (formControl.title.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]/g)) {
+            } else if (formControl.title.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]/g)) {
                 invalids.title = "Charactere invalid";
             } else if (formControl.title.length < 2) {
                 invalids.title = "2 characters minimum";
@@ -127,8 +125,7 @@ function CreateProduct() {
     useEffect( () => {
         if (isReady) {
             setIsReady(false);
-            const body = JSON.stringify({ ...formControl })
-            console.log(body);
+            const body = JSON.stringify({ ...formControl });
             axios.post("http://127.0.0.1:8000/api/product", body, config).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"});
             }).catch( err => {
