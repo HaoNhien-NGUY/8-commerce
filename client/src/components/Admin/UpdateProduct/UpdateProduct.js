@@ -39,7 +39,8 @@ const UpdateProduct = () => {
 
     function formSubmit(e) {
         e.preventDefault();
-
+        console.log(subCategory);
+        if(subCategory === null) return toast.error('You need to choose a subcategory', {position: 'top-center'});
         setIsReady(true);
     }
     useEffect(() => {
@@ -114,9 +115,8 @@ const UpdateProduct = () => {
                     <textarea className="inputeStyle" name="description" id="description" form="formItem" placeholder="Your item description .." value={description} onChange={(e) => setDescription(e.target.value)} />
                 </div>
                 <div className="form-group">
-                    {/* <label htmlFor="category">Category</label>
-                    <input className="inputeStyle form-control" type="text" name="category" placeholder="category" value={subCategory.id} onChange={(e) => setSubCategory(e.target.value)}/> */}
-                    <select className="form-control form-control-lg" id="selectCategory" onChange={(e) => setSubCategory(parseInt(e.target.value))}>
+                    <label htmlFor="subcategory">SubCategory</label>
+                    <select className="form-control form-control-lg" name='subcategory' id="selectCategory" onChange={(e) => setSubCategory(e.target.value === "" ? null : parseInt(e.target.value))}>
                         <option value="" >--- CHOICE CATEGORY ---</option>
                         {subCategories}
                     </select>
