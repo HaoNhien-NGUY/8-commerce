@@ -347,7 +347,23 @@ const AdminInterface = () => {
             }
             axios.post("http://127.0.0.1:8000/api/category/create/" + categoryName, body, config).then(res => {
                 toast.success('Category correctly added!', { position: "top-center" });
-                
+                axios.get(`http://127.0.0.1:8000/api/category?offset=${offsetCategories}&limit=${limitCategories}`, config)
+                    .then(async res => {
+                        await setPageCountCategories(Math.ceil(res.data.nbResults / limitCategories))
+                        const newPostDataCategories = res.data.data.map((category) =>
+                            <tr key={category.id}>
+                                <td><p className="m-2 align-items-center">{category.id}</p></td>
+                                <td><p className="m-2">{category.name}</p></td>
+                                <td> <button onClick={e => e.preventDefault() + handleShowCateEdit(category.id, category.name)} className="btn btn-outline-info m-1"> Modify </button></td>
+                                <td> <button onClick={() => window.location.href = '/admin/subcategory/' + category.id} className="btn btn-outline-dark m-1"> SubCategories</button></td>
+                                <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-1"> Delete </button></td>
+                            </tr>
+                        )
+                        setPostDataCategories(newPostDataCategories)
+                    })
+                    .catch(error => {
+                        toast.error('Error !', { position: 'top-center' });
+                    })
             }).catch(err => {
                 toast.error('Category already exist!', { position: 'top-center' });
             });
