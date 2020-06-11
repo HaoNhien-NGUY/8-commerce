@@ -309,6 +309,7 @@ const AdminInterface = () => {
                                     <FormGroup>
                                         <Label for="image">Image</Label>
                                         <Input
+                                            multiple="multiple"
                                             type="file"
                                             name="image"
                                             id="image"

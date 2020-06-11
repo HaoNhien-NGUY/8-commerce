@@ -117,7 +117,7 @@ const UpdateProduct = () => {
                 <div className="form-group">
                     <label htmlFor="subcategory">SubCategory</label>
                     <select className="form-control form-control-lg" name='subcategory' id="selectCategory" onChange={(e) => setSubCategory(e.target.value === "" ? null : parseInt(e.target.value))}>
-                        <option value="" >--- CHOICE CATEGORY ---</option>
+                        <option value="" >--- CHOICE SUBCATEGORY ---</option>
                         {subCategories}
                     </select>
                 </div>
