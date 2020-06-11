@@ -146,9 +146,9 @@ function Suppliers() {
                                 <table className="productinCart">
                                     <tbody>
                                         <tr>
-                                            <td rowSpan="3" className="tableborder">
+                                            {/* <td rowSpan="3" className="tableborder">
                                                 <img src="http://127.0.0.1:8000/api/image/2/default/1.jpg"/>
-                                            </td>
+                                            </td> */}
                                             <td>
                                                 <span><b>Title:</b> { subProduct.subproduct.product.title}</span>
                                             </td>
