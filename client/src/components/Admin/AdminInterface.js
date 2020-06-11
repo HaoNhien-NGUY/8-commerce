@@ -17,12 +17,12 @@ import SupplierCommand from './TabSupplier/TapSupplier';
 
 const AdminInterface = () => {
     const [products, setProducts] = useState([]);
-    const [limit, setLimit] = useState(2);
+    const [limit, setLimit] = useState(5);
     const [offset, setOffset] = useState(0);
     const [pageCount, setPageCount] = useState();
     const [postData, setPostData] = useState();
     const [categories, setCategories] = useState([]);
-    const [limitCategories, setLimitCategories] = useState(2);
+    const [limitCategories, setLimitCategories] = useState(5);
     const [offsetCategories, setOffsetCategories] = useState(0);
     const [pageCountCategories, setPageCountCategories] = useState();
     const [postDataCategories, setPostDataCategories] = useState();
