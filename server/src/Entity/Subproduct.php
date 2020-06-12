@@ -20,7 +20,7 @@ class Subproduct
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"products", "subproduct", "supplier_order_details"})
+     * @Groups({"products", "subproduct", "supplier_order_details", "supplier_products"})
      */
     private $id;
 
@@ -33,19 +33,19 @@ class Subproduct
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"products", "subproduct", "supplier_order_details"})
+     * @Groups({"products", "subproduct", "supplier_order_details", "supplier_products"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products", "subproduct", "supplier_order_details"})
+     * @Groups({"products", "subproduct", "supplier_order_details", "supplier_products"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="float", length=255)
-     * @Groups({"products", "subproduct", "supplier_order_details"})
+     * @Groups({"products", "subproduct", "supplier_order_details", "supplier_products"})
      */
     private $weight;
 
@@ -63,7 +63,7 @@ class Subproduct
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"products", "subproduct", "supplier_order_details"})
+     * @Groups({"products", "subproduct", "supplier_order_details", "supplier_products"})
      */
     private $stock;
 
@@ -75,7 +75,7 @@ class Subproduct
     /**
      * @ORM\ManyToOne(targetEntity=Color::class, inversedBy="subproduct")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"subproduct","products", "supplier_order_details"})
+     * @Groups({"subproduct","products", "supplier_order_details", "supplier_products"})
      */
     private $color;
 
