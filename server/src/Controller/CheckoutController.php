@@ -58,10 +58,8 @@ class CheckoutController extends AbstractController
                 $lowestPrice = $method['price'];
                 $lowestKey = $key;
             }
-
             $shippingMethods[] = $method;
         }
-
         return $this->json(["lowestPriceKey" => $lowestKey, "shippingMethods" => $shippingMethods], 200);
     }
 
