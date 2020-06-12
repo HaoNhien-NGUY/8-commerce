@@ -21,13 +21,13 @@ class Supplier
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"supplier", "supplier_details", "supplierOrders", "supplier_order_details"})
+     * @Groups({"supplier", "supplier_details", "supplierOrders", "supplier_order_details", "products"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"supplier", "supplier_details", "supplierOrders", "supplier_order_details"})
+     * @Groups({"supplier", "supplier_details", "supplierOrders", "supplier_order_details", "products"})
      * @Assert\Length(
      * min = 2,
      * minMessage = "Supplier name must be at least {{ limit }} characters long",
@@ -44,6 +44,7 @@ class Supplier
 
     /**
      * @ORM\OneToMany(targetEntity=Product::class, mappedBy="supplier")
+     * @Groups("supplier_products")
      */
     private $product;
 

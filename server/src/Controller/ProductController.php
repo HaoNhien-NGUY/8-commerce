@@ -8,6 +8,7 @@ use App\Kernel;
 use App\Entity\Product;
 use App\Entity\Category;
 use App\Entity\SubCategory;
+use App\Entity\Supplier;
 use App\Repository\ColorRepository;
 use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
@@ -53,7 +54,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product", name="product_create", methods="POST")
      */
-    public function productCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator,SupplierRepository $supplierRepository)
+    public function productCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator, SupplierRepository $supplierRepository)
     {
         try {
             $jsonContent = $request->getContent();
@@ -66,20 +67,23 @@ class ProductController extends AbstractController
             $subCategory = $this->getDoctrine()
                 ->getRepository(SubCategory::class)
                 ->find($req->subcategory);
+            if (!isset($subCategory)) return $this->json(['message' => 'subcategory not found'], 400, []);
 
+            if (!isset($req->supplier)) return $this->json(['message' => 'supplier missing'], 400, []);
+            $supplier = $supplierRepository->findOneBy(['id' => $req->supplier]);
+            if (!isset($supplier)) return $this->json(['message' => 'supplier not found'], 400, []);
+
+            $product->setSupplier($supplier);
             $product->setSubCategory($subCategory);
             $product->setCreatedAt(new DateTime());
-            if(isset($req->supplier)){
-                $supplier = $supplierRepository->findOneBy(['id' => $req->supplier]);
-                $product->setSupplier($supplier);
-            }
+
             $error = $validator->validate($product);
             if (count($error) > 0) return $this->json($error, 400);
 
             $em->persist($product);
             $em->flush();
 
-            return $this->json(['product' => $product], 201, [], ['groups' => 'products']);
+            return $this->json(['messgae' => 'created', 'product' => $product], 201, [], ['groups' => 'products']);
         } catch (NotEncodableValueException $e) {
             return $this->json(['message' => $e->getMessage()], 400);
         }
@@ -157,11 +161,18 @@ class ProductController extends AbstractController
                 }
                 if (isset($req->subcategory)) {
                     $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->subcategory);
+                    if(!isset($subcategory)) return $this->json(['message' => 'subcategory not found'], 400, []);
                     $product->setSubCategory($subcategory);
                 }
                 if (isset($req->promo)) {
                     $promoNb = $req->promo === 0 ? null : $req->promo;
                     $product->setPromo($promoNb);
+                }
+
+                if(isset($req->supplier_id)) {
+                    $supplier = $this->getDoctrine()->getRepository(Supplier::class)->find($req->supplier_id);
+                    if(!isset($supplier)) return $this->json(['message' => 'supplier not found'], 400, []);
+                    $product->setSupplier($supplier);
                 }
 
                 $error = $validator->validate($product);
@@ -222,7 +233,7 @@ class ProductController extends AbstractController
             }, $imgArray);
             return array_merge($v, ["images" => array_values($imgArray)]);
         }, $products);
-        
+
         $catSubcat = $productRepository->findSearchCategorySubcategory($data);
 
         return $this->json(['products' => $products, 'catsubcat' => $catSubcat], 200);
