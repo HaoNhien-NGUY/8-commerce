@@ -38,7 +38,8 @@ class CheckoutController extends AbstractController
 
         $shippingPricings = $region->getShippingPricings();;
         $shippingMethods = [];
-        foreach ($shippingPricings as $val) {
+        $lowestPrice = 0;
+        foreach ($shippingPricings as $key => $val) {
             $method['id'] = $val->getShippingMethod()->getId();
             $method['name'] = $val->getShippingMethod()->getName();
             $method['duration'] = $val->getDuration();
@@ -50,10 +51,18 @@ class CheckoutController extends AbstractController
             }
             $method['price'] = $price + $val->getBasePrice();
 
-            $shippingMethods["Methods"][] = $method;
+            if ($key == 0) {
+                $lowestPrice = $method['price'];
+                $lowestKey = $key;
+            } else if ($lowestPrice > $method['price']) {
+                $lowestPrice = $method['price'];
+                $lowestKey = $key;
+            }
+
+            $shippingMethods[] = $method;
         }
 
-        return $this->json($shippingMethods, 200);
+        return $this->json(["lowestPriceKey" => $lowestKey, "shippingMethods" => $shippingMethods], 200);
     }
 
     // this route sendback payment methods depending on region restrictions
