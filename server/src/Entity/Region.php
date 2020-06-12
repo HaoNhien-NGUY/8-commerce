@@ -17,13 +17,13 @@ class Region
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"shipping"})
+     * @Groups({"shipping", "user_address"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"shipping"})
+     * @Groups({"shipping", "user_address"})
      */
     private $name;
 
