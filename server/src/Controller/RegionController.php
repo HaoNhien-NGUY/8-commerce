@@ -84,7 +84,7 @@ class RegionController extends AbstractController
         }
     }
 
-      /**
+    /**
      * @Route("/api/region/{id}", name="region_update", methods="PUT",requirements={"id":"\d+"})
      */
     public function regionUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, RegionRepository $regionRepository)

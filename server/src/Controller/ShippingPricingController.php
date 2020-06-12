@@ -34,9 +34,22 @@ class ShippingPricingController extends AbstractController
     }
 
     /**
+     * @Route("/api/shippingpricing/{id}", name="shippingpricing_details", methods="GET", requirements={"id":"\d+"})
+     */
+    public function shippingPricingDetails(Request $request, ShippingPricingRepository $shippingPricingRepository)
+    {
+        $region = $shippingPricingRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        if ($region) {
+            return $this->json($region, 200, [], ['groups' => 'shipping']);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
      * @Route("/api/shippingpricing", name="shippingpricing_create", methods="POST")
      */
-    public function shippingMethod_create(Request $request ,ShippingPricingRepository $shippingPricingRepository,ShippingMethodRepository $shippingMethodRepository,RegionRepository $regionRepository,EntityManagerInterface $em)
+    public function shippingMethodCreate(Request $request ,ShippingPricingRepository $shippingPricingRepository,ShippingMethodRepository $shippingMethodRepository,RegionRepository $regionRepository,EntityManagerInterface $em)
     {
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
@@ -88,6 +101,74 @@ class ShippingPricingController extends AbstractController
             $em->flush();
             return $this->json(['message'=>'Shipping Pricing successfully created',$shippingPricing], 200,[],['groups' => 'shipping']);
         }
-
     }
+
+
+    /**
+     * @Route("/api/shippingpricing/{id}", name="shippingpricing_remove", methods="DELETE", requirements={"id":"\d+"})
+     */
+    public function shippingPricingRemove(Request $request, ShippingPricingRepository $shippingPricingRepository, EntityManagerInterface $em)
+    {
+        $shippingPricing = $shippingPricingRepository->findOneBy(['id' => $request->attributes->get('id')]);
+
+        if ($shippingPricing) {
+            $em->remove($shippingPricing);
+            $em->flush();
+
+            return $this->json([
+                'message' => 'Shipping pricing removed',
+                'product' => $shippingPricing
+            ], 200, [], ['groups' => 'shipping']);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
+     * @Route("/api/shippingpricing/{id}", name="shippingpricing_update", methods="PUT",requirements={"id":"\d+"})
+     */
+    public function shippingPricingUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ShippingPricingRepository $shippingPricingRepository,ShippingMethodRepository $shippingMethodRepository,RegionRepository $regionRepository)
+    {
+        try {
+            $jsonContent = $request->getContent();
+            $req = json_decode($jsonContent);
+     
+            $shippingPricing = $shippingPricingRepository->findOneBy(['id' => $request->attributes->get('id')]);
+            
+            if ($shippingPricing) {
+
+                if (isset($req->shippingMethod)) {
+               
+                    $shippingMethod = $shippingMethodRepository->findOneBy(['id' => $req->shippingMethod]); 
+              
+                    $shippingPricing->setShippingMethod($shippingMethod);
+                }
+                if (isset($req->region)) {
+                    $shippingMethod = $regionRepository->findOneBy(['id' => $req->region]);
+                    $shippingPricing->setRegion($shippingMethod);
+                }
+                if (isset($req->pricePerKilo)) {
+                    $shippingPricing->setPricePerKilo($req->pricePerKilo);
+                }
+                if (isset($req->duration)) {
+                    $shippingPricing->setDuration($req->duration);
+                }
+                if (isset($req->basePrice)) {
+                    $shippingPricing->setBasePrice($req->basePrice);
+                }
+
+                $error = $validator->validate($shippingPricing);
+                if (count($error) > 0) return $this->json($error, 400);
+                $em->persist($shippingPricing);
+                $em->flush();
+
+                return $this->json($shippingPricing, 200, [], ['groups' => 'shipping']);
+            } else {
+                return $this->json(['message' => 'Shipping pricing not found'], 404, []);
+            }
+        } catch (NotEncodableValueException $e) {
+            return $this->json($e->getMessage(), 400);
+        }
+    }
+
 }
