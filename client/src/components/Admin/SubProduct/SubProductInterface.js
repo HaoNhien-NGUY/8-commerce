@@ -182,7 +182,7 @@ const SubProductInterface = () => {
                                 <th><p className="m-2"> Color </p></th>
                                 <th><p className="m-2"> Size </p></th>
                                 <th><p className="m-2"> Weight </p></th>
-                                <th><p className="m-2" colspan="3"> Actions </p></th>
+                                <th><p className="m-2" colSpan="3"> Actions </p></th>
                             </tr>
                         }
                     </thead>

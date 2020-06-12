@@ -3,6 +3,7 @@ import './CreateProduct.css';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import store from '../../../store';
 import Modal from 'react-bootstrap/Modal';
 import CreateCategorySubModal from '../CreateCategorySub/CreateCategorySubModal'
@@ -17,8 +18,12 @@ function CreateProduct() {
     const [supplier, setSupplier] = useState([]);
     const [isSubCategoriesReady, setIsSubCategoriesReady] = useState(false);
     const [isSupplierReady, setIsSupplierReady] = useState(false);
-
+    const [countProduct, setCountProduct] = useState(0);
     const [show, setShow] = useState(false);
+    const [redirection, setRedirection] = useState(false);
+
+    const handleCloseRedirection = () => setRedirection(false);
+
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -36,7 +41,16 @@ function CreateProduct() {
     }, [token]);
 
     useEffect(() => {
-        if (show == false) {
+      axios.get("http://127.0.0.1:8000/api/product", config).then( e => {
+            let nbr = e.data.data[e.data.nbResults-1].id
+            setCountProduct(nbr);
+            }).catch( err => {
+                toast.error('Error redirection after create a product!', {position: 'top-center'});
+            });
+    }, [redirection])
+
+    useEffect(() => {
+        if (show === false) {
             axios
             .get("http://localhost:8000/api/subcategory/")
             .then((res) => {
@@ -154,6 +168,7 @@ function CreateProduct() {
             console.log(body);
             axios.post("http://127.0.0.1:8000/api/product", body, config).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"});
+                setRedirection(true);
             }).catch( err => {
                 toast.error('Error !', {position: 'top-center'});
             });
@@ -229,9 +244,17 @@ function CreateProduct() {
                 </div>
                 <button type="submit" className="btn btn-dark" onClick={formSubmit}>Submit</button>
             </form>
-
             <Modal show={show} onHide={handleClose}>
                 <CreateCategorySubModal />
+            </Modal>
+
+            <Modal className='modalRedirection' show={redirection} onHide={handleCloseRedirection}>
+              <Modal.Header closeButton> Create a SubProduct for this?</Modal.Header>
+              <Modal.Body>
+
+                <Button color="success" className="mt-4" onClick={() => window.location.replace("/admin/subproduct/"+countProduct+"/create")} block>Redirection</Button>
+                <Button color="outline-dark" className="mt-4" onClick={() => setRedirection(false)} block>Close</Button>
+              </Modal.Body>
             </Modal>
         </div>
     )
