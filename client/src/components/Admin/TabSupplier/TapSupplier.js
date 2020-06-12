@@ -79,7 +79,8 @@ function Suppliers() {
 
     function showDetailsOrder(id) {
         axios.get("http://127.0.0.1:8000/api/supplier/order/" + id, config).then(res => {
-            setDivOrder(res.data.supplierOrderSubproducts)
+            setDivOrder(res.data.supplierOrderSubproducts);
+            console.log(res.data.supplierOrderSubproducts)
             setShowDetails(true);
         }).catch(error => {
             console.log(error);
@@ -95,7 +96,7 @@ function Suppliers() {
         axios.put("http://127.0.0.1:8000/api/supplier/order/" + id, body, config).then(res => {
             toast.success("Order received !", { position: "top-center" });
             axios.get("http://127.0.0.1:8000/api/supplier/order", config).then(e => {
-                console.log(e.data.data)
+                console.log(e.data.data);
                 const newPostDataOrder = e.data.data.map((order) =>
                     <tr key={order.id}>
                         <td><p className="myMargin align-items-center">{order.id}</p></td>
@@ -185,7 +186,7 @@ function Suppliers() {
                             <th><p className="myMargin align-items-center"> ID </p></th>
                             <th><p className="myMargin"> Order </p></th>
                             <th><p className="myMargin"> Price </p></th>
-                            <th><p className="myMargin" colspan="3" className="m-1"> Actions </p></th>
+                            <th><p className="myMargin" colSpan="3" className="m-1"> Actions </p></th>
                         </tr>
                     </thead>
                     <tbody>{postDataOrder}</tbody>
