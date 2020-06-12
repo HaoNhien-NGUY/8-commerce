@@ -106,18 +106,9 @@ class ProductController extends AbstractController
                 $imgArray = [];
                 $colorIdArr = scandir("./images/$productId");
                 $colorIdArr = array_filter($colorIdArr, function ($v) {
-                    return is_numeric($v);
+                    return is_numeric($v) || $v == "default";
                 });
 
-                $path = "/api/image/$productId";
-                $ColorImgLinks["color_id"] = "default";
-                $imgLinks = array_diff(scandir("./images/$productId/default"), [".", ".."]);
-                $imgLinks = array_map(function ($v) use ($path) {
-                    return "$path/default/$v";
-                }, $imgLinks);
-
-                $ColorImgLinks["links"] = array_values($imgLinks);
-                array_push($imgArray, $ColorImgLinks);
                 foreach ($colorIdArr as $v) {
                     $path = "/api/image/$productId/$v";
                     $ColorImgLinks["color_id"] = $v;
@@ -127,7 +118,7 @@ class ProductController extends AbstractController
                     }, $imgLinks);
 
                     $ColorImgLinks["links"] = array_values($imgLinks);
-                    array_push($imgArray, $ColorImgLinks);
+                    $imgArray[] = $ColorImgLinks;
                 }
                 $productResp = array_merge($productResp, ["images" => $imgArray]);
             }
