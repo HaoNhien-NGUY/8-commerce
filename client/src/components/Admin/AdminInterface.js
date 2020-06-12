@@ -11,9 +11,10 @@ import ReactPaginate from 'react-paginate';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import store from '../../store';
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap'
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
 import SupplierCommand from './TabSupplier/TapSupplier';
+import Color from './Color/Color';
 
 const AdminInterface = () => {
     const [products, setProducts] = useState([]);
@@ -26,16 +27,6 @@ const AdminInterface = () => {
     const [offsetCategories, setOffsetCategories] = useState(0);
     const [pageCountCategories, setPageCountCategories] = useState();
     const [postDataCategories, setPostDataCategories] = useState();
-    const [allColors, setAllColors] = useState([]);
-    const [colorSelected, setColorSelected] = useState('');
-    const [show, setShow] = useState(false);
-    const [newColor, setNewColor] = useState("");
-    const [oldColor, setOldColor] = useState("");
-    const [msgError, setMsgError] = useState(null);
-    const [show2, setShowColor] = useState(false);
-    const [colorCreate, setColor] = useState("");
-    const [msgErrorColor, setErrorColor] = useState(null);
-    const optionColors = [];
     const [showImage, setShowImage] = useState(false);
     const [picture, setPicture] = useState([]);
     const [imageId, setImageId] = useState(null);
@@ -65,22 +56,12 @@ const AdminInterface = () => {
     }, [token]);
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
-            setAllColors(e.data);
-        });
-    }, []);
-
-    useEffect(() => {
         receivedData()
     }, [offset, products])
 
     useEffect(() => {
         receivedDataCategories()
     }, [offsetCategories, categories])
-
-    allColors.map(color => {
-        optionColors.push(<option key={color.id} value={color.id}>{color.name}</option>)
-    });
 
     const receivedData = () => {
         axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`, config)
@@ -375,7 +356,7 @@ const AdminInterface = () => {
         axios.get("http://127.0.0.1:8000/api/category", config).then(e => {
             setAllCategory(e.data.data);
         });
-    }, []);
+    }, [postDataCategories]);
 
     allCategory.map(category => {
         optionCategory.push(<option key={category.id} value={category.name}>{category.name}</option>)
@@ -522,161 +503,10 @@ const AdminInterface = () => {
         )
     }
 
-    const handleSelectColor = (e) => {
-        setColorSelected(e.target.value);
-    }
-
-    const handleColorClick = () => {
-        if (colorSelected) {
-            axios.delete("http://localhost:8000/api/color/" + colorSelected, config).then(res => {
-                toast.success(res.data.message, { position: "top-center" });
-            }).catch(err => {
-                toast.error('Error !', { position: 'top-center' });
-            })
-        } else {
-            toast.error('Error ! No color selected', { position: 'top-center' });
-        }
-    }
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const selectNewColor = (event) => setOldColor(event.target.value);
-    const onChange = (event) => {
-        let res = event.target.value.trim();
-        let str = res.toLowerCase();
-        let color = str.charAt(0).toUpperCase() + str.slice(1);
-        setNewColor(color.replace(/[\s]{2,}/g, " "));
-    }
-
-    function onSubmit(e) {
-        e.preventDefault()
-
-        if (oldColor && newColor) {
-            setMsgError(null);
-
-            if (newColor.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
-                setMsgError("Invalid charactere");
-            } else {
-                const body = {
-                    "name": newColor
-                }
-                axios.put("http://localhost:8000/api/color/" + oldColor, body, config).then(res => {
-                    toast.success(res.data.message, { position: "top-center" });
-                    axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
-                        setAllColors(e.data);
-                    });
-                }).catch(err => {
-                    toast.error('Color name already exist !', { position: 'top-center' });
-                })
-                setShow(false);
-            }
-        }
-        else {
-            setMsgError("selected the 2 colors");
-        }
-    }
-
-    const handleCloseColor = () => setShowColor(false);
-    const handleShowColor = () => setShowColor(true);
-    const onChangeColor = (event) => {
-        let res = event.target.value.trim();
-        let str = res.toLowerCase();
-        let color = str.charAt(0).toUpperCase() + str.slice(1);
-        setColor(color.replace(/[\s]{2,}/g, " "));
-    }
-
-    function onSubmit2(e) {
-        e.preventDefault()
-
-        if (colorCreate) {
-            setErrorColor(null);
-
-            if (colorCreate.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
-                setErrorColor("Invalid charactere");
-            } else {
-                const body = {
-                    "name": colorCreate
-                }
-                axios.post("http://127.0.0.1:8000/api/color/" + colorCreate, body, config).then(res => {
-                    toast.success('Color correctly added!', { position: "top-center" });
-                    axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
-                        setAllColors(e.data);
-                    });
-                }).catch(err => {
-                    toast.error('Color already exist!', { position: 'top-center' });
-                });
-                setShowColor(false);
-            }
-        }
-        else {
-            setErrorColor("selected the 2 colors");
-        }
-    }
-
     const AllColors = () => {
         return (
             <>
-                <div className="row justify-content-end mb-2">
-                    <button onClick={handleShowColor} className="btn btn-success mr-4 pr-5 pl-5">+ New Color</button>
-                    <Modal show={show2} onHide={handleCloseColor} >
-                        <Modal.Header closeButton>Create color !</Modal.Header>
-                        <Modal.Body>
-                            {msgErrorColor ? <Alert> {msgErrorColor} </Alert> : null}
-                            <Form onSubmit={onSubmit2}>
-                                <FormGroup>
-                                    <Label for="newColor">New name</Label>
-                                    <Input
-                                        type="text"
-                                        name="newColor"
-                                        id="newColor"
-                                        placeholder="Color name"
-                                        onChange={onChangeColor}
-                                    />
-                                    <Button color="dark" className="mt-4" block>Create</Button>
-                                </FormGroup>
-                            </Form>
-                        </Modal.Body>
-                    </Modal>
-                    <button onClick={handleShow} className="btn btn-info pl-5 pr-5">Update Color</button>
-                    <Modal show={show} onHide={handleClose}>
-                        <Modal.Header closeButton>Update color !</Modal.Header>
-                        <Modal.Body>
-                            {msgError ? <Alert> {msgError} </Alert> : null}
-                            <Form onSubmit={onSubmit}>
-                                <FormGroup>
-                                    <select className="form-control form-control" onChange={selectNewColor}>
-                                        <option value="">---SELECT COLOR---</option>
-                                        {optionColors}
-                                    </select><br />
-                                    <Label for="newColor">New name</Label>
-                                    <Input
-                                        type="text"
-                                        name="newColor"
-                                        id="newColor"
-                                        placeholder="Color name"
-                                        onChange={onChange}
-                                    />
-                                    <Button color="dark" className="mt-4" block>Update</Button>
-                                </FormGroup>
-                            </Form>
-                        </Modal.Body>
-                    </Modal>
-                </div>
-                <select className="form-control form-control-lg" onChange={handleSelectColor}>
-                    <option value="">--- SELECT COLOR ---</option>
-                    {optionColors}
-                </select>
-                {/* <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
-                        <div className="d-flex">
-                            <select className="form-control form-control-lg" onChange={handleSelectColor}>
-                                <option value="">--- SELECT COLOR ---</option>
-                                {optionColors}
-                            </select>
-                            <button className="btn btn-outline-danger ml-4 deleteColor" onClick={handleColorClick}>Delete</button>
-                        </div>
-                    </li>
-                </ul> */}
+                <Color />
             </>
         )
     }
