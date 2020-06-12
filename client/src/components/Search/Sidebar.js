@@ -67,19 +67,31 @@ export default class SearchSidebar extends Component {
     this.showFilter = this.showFilter.bind(this);
     this.defaultValueSexe = this.defaultValueSexe.bind(this);
     this.defaultValueName = this.defaultValueName.bind(this);
-    // this.checkIfCatsubcatExists = this.checkIfCatsubcatExists.bind(this);
+    this.handleSubmitEnter = this.handleSubmitEnter.bind(this);
+  }
+
+  handleSubmitEnter(e) {
+    if (e.keyCode === 13) {
+      this.handleSubmit()
+    }
+    else if (e.keyCode === 27) {
+      this.setState({showFilter: false})
+    }
   }
 
   handleName(e) {
-    this.setState({ searchValue: e.target.value, isResultsReady: false });
+    this.setState({ searchValue: e.target.value});
+    // this.handleSubmit();
   }
 
   sliderChangeValue(e) {
     this.setState({ sliderCurrentValue: e.target.value, isResultsReady: false });
+    this.handleSubmit();
   }
 
   handleSexe(e) {
     this.setState({ sexe: e.target.value, isResultsReady: false });
+    this.handleSubmit();
   }
 
   handleSize(e) {
@@ -99,6 +111,7 @@ export default class SearchSidebar extends Component {
     }
 
     this.setState({ size: newSizes });
+    this.handleSubmit();
   }
 
   handleColor(e) {
@@ -118,22 +131,24 @@ export default class SearchSidebar extends Component {
     }
 
     this.setState({ color: newColors });
+    this.handleSubmit();
   }
 
-  handleSubCategory(e) {
+  async handleSubCategory(e) {
     e.preventDefault();
 
     console.log(e.target.value);
-    this.setState({ subcategory: e.target.value });
+    await this.setState({ subcategory: e.target.value });
+    this.handleSubmit();
   }
 
-  handleCategory(e) {
+  async handleCategory(e) {
     e.preventDefault();
 
     console.log(e.target.value);
     this.setState({ category: e.target.value });
 
-    axios
+    await axios
       .get("http://localhost:8000/api/category/")
       .then(async (res) => {
         console.log(res.data.data);
@@ -148,42 +163,17 @@ export default class SearchSidebar extends Component {
       .catch((error) => {
         console.log(error.response);
       });
+    this.handleSubmit();
   }
 
   async handleOrderBy(e) {
     await this.setState({ orderBy: e.target.text });
-    if (!this.state.showFilter) {
-      this.handleSubmit()
-    }
-    else {
-      toast.dark('Close filter\'s box', {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        });
-    }
+    this.handleSubmit()
   }
 
   async handleSortBy(e) {
     await this.setState({ sortBy: e.target.value });
-    if (!this.state.showFilter) {
-      this.handleSubmit()
-    } 
-    else {
-      toast.dark('Close filter\'s box', {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        });
-    }
+    this.handleSubmit()
   }
 
   checkEmptyArray(array) {
@@ -231,9 +221,9 @@ export default class SearchSidebar extends Component {
       )
       .then((res) => {
         this.setState({results: res.data, isResultsReady: true});
-        if (this.state.showFilter == true){
-          this.showFilter()
-        }
+        // if (this.state.showFilter == true){
+        //   this.showFilter()
+        // }
       })
       .catch((error) => {
         console.log(error.response);
@@ -244,29 +234,8 @@ export default class SearchSidebar extends Component {
     this.setState({ showFilter: !this.state.showFilter, justArrived: false });
   }
 
-  // checkIfCatsubcatExists(catsubcat) {
-  //   console.log(catsubcat)
-  //   axios
-  //   .post("http://localhost:8000/api/product/search", { search: catsubcat }, { "Content-Type": "application/json" })
-  //   .then(async (res) => {
-  //     console.log(res.data.catsubcat);
-      
-  //       if (
-  //         res.data.catsubcat[0].category.length < 1 ||
-  //         res.data.catsubcat[1].subcategory.length < 1
-  //       ) {
-  //         await this.setState({subcategory: null, category: null})
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error.response);
-  //     });
-  // }
-
   componentDidMount() {
     let paramsURL = this.props.location.search.substr(1).split("=")
-
-    // this.checkIfCatsubcatExists(paramsURL[1])
 
     if (paramsURL[0] == "sexe") {
       this.defaultValueSexe(paramsURL[1])
@@ -319,40 +288,6 @@ export default class SearchSidebar extends Component {
     else if (paramsURL[0] == "subcategory") {
       this.defaultValueSubCategory(paramsURL[1])
       console.log(paramsURL[1])
-
-      // axios
-      //   .get("http://localhost:8000/api/subcategory/")
-      //   .then(async (res) => {
-      //     console.log(res.data);
-
-      //     await res.data.map( async subcat => {
-      //       // console.log(subcat)
-      //       if ( this.state.subcategory == subcat.name ) {
-      //         await this.setState({ 
-      //           subcategories: [{id: subcat.id, name: subcat.name}], 
-      //           category: subcat.Category.name
-      //           // categories: [{name: subcat.Category.name, id: subcat.Category.id 
-      //           });
-      //       }
-      //     })
-      //   })
-      //   .catch((error) => {
-      //     console.log(error.response);
-      //   });
-
-      // axios
-      //   .get("http://localhost:8000/api/category/")
-      //   .then(async (res) => {
-      //     console.log(res.data.data);
-      //     await this.setState({ categories: res.data.data, isCategoryReady: true });
-
-      //     this.setState({isSubCategoryReady: true })
-      //   })
-      //   .catch((error) => {
-      //     console.log(error.response);
-      //   });
-
-        // this.handleSubmit()
 
     }
 
@@ -409,6 +344,8 @@ export default class SearchSidebar extends Component {
       .catch((error) => {
         console.log(error.response);
       });
+
+      this.handleSubmit();
   }
 
   async defaultValueSubCategory(value) {
@@ -483,8 +420,9 @@ export default class SearchSidebar extends Component {
           className={this.state.showFilter ? "to-right" : justArrived ? "d-none" : "to-left" }
           id="filter-div"
         >
+          <i class="material-icons md-18 float-right" onClick={this.showFilter} id="btn-close-filter">close</i>
           {/* Price */}
-          <div className="form-group d-block">
+          <div className="form-group d-block mt-3">
             <label htmlFor="formControlRange" className="filter-label">Price</label>
             <br />
             
@@ -690,14 +628,15 @@ export default class SearchSidebar extends Component {
           </div>
 
           {/* Search button w/ filters */}
-          {/* <div className="">
+          <div className="row">
             <button
               type="submit"
-              className="btn btn-dark"
+              className="btn m-auto"
+              onClick={this.handleSubmit}
             >
-              Search with filters
+              Search
             </button>
-          </div> */}
+          </div>
         </div>
             
 
@@ -705,74 +644,87 @@ export default class SearchSidebar extends Component {
           <ToastContainer />
 
 
-          <form className="form-group justify-content-center" >
             
             {/* SEARCH BAR */}
-            <div className="form-group row justify-content-center">
+            <div className="row justify-content-center d-inline">
+              <i class="material-icons md-24">search</i>
               <input
                 type="search"
-                placeholder="Search a product"
-                className="form-control col-8"
+                placeholder="Search product..."
+                className="col-12 clear"
                 onChange={this.handleName}
                 id="inputSearchName"
+                onKeyDown={this.handleSubmitEnter}
+                autoComplete="off"
               ></input>
-              <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0" onClick={this.handleSubmit}>
+              {/* <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0" onClick={this.handleSubmit}>
                 Search
-              </button>
-              <span
-                className="small mt-auto mb-auto ml-3 text-secondary col-2"
-                id="filter-link"
-                onClick={this.showFilter}
-                aria-controls="filter-div"
-                aria-expanded={this.state.showFilter}
-                >
-                {this.state.showFilter ? "Hide Filters" : "Show Filters"}
-              </span>
+                </button> */}
+              
             </div>
 
             {/* SORT/ORDER BY */}
-            <div className="row float-right mt-2">
-              <ButtonGroup toggle>
-                <ToggleButton
-                  type="radio"
-                  variant="secondary"
-                  name="radio"
-                  value="asc"
-                  checked={sortChecked == "asc"}
-                  onChange={this.handleSortBy}
-                >
-                  ASC
-                </ToggleButton>
-                <ToggleButton
-                  type="radio"
-                  variant="secondary"
-                  name="radio"
-                  value="desc"
-                  checked={sortChecked == "desc"}
-                  onChange={this.handleSortBy}
-                >
-                  DESC
-                </ToggleButton>
-              </ButtonGroup>
+            <div className="row mt-2 p-3">
+                <div className="mr-auto">
+                  <span
+                  className="small text-secondary"
+                  id="filter-link"
+                  onClick={this.showFilter}
+                  aria-controls="filter-div"
+                  aria-expanded={this.state.showFilter}
+                  >
+                  <span className="pb-1"><i class="material-icons md-18 pr-1">filter_alt</i>{this.state.showFilter ? "Hide Filters" : "Show Filters"}</span>
+                  </span>
+                </div>
 
-              <Dropdown>
-                <span className="ml-5 mr-2">Order by</span>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  {this.state.orderBy}
-                </Dropdown.Toggle>
+                <div className="row">
+                  <Dropdown>
+                    <ButtonGroup 
+                    className="btn-sm"
+                    toggle
+                    >
+                      <ToggleButton
+                        type="radio"
+                        variant="secondary"
+                        name="radio"
+                        value="asc"
+                        checked={sortChecked == "asc"}
+                        onChange={this.handleSortBy}
+                        className="btn-sm"
+                      >
+                        ASC
+                      </ToggleButton>
+                      <ToggleButton
+                        type="radio"
+                        variant="secondary"
+                        name="radio" float-left mr-auto
+                        value="desc"
+                        checked={sortChecked == "desc"}
+                        onChange={this.handleSortBy}
+                        className="btn-sm"
+                      >
+                        DESC
+                      </ToggleButton>
+                    </ButtonGroup>
 
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={this.handleOrderBy}>
-                    Popularity
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={this.handleOrderBy}>
-                    Price
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={this.handleOrderBy}>Name</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+                  
+                    <span className="ml-2 mr-2 small">Order by</span>
+                    <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="sm">
+                      {this.state.orderBy}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={this.handleOrderBy}>
+                        Popularity
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={this.handleOrderBy}>
+                        Price
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={this.handleOrderBy}>Name</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
             </div>
-          </form>
 
           {this.state.isResultsReady 
             ? <Results results={results} />

@@ -238,6 +238,7 @@ function ProductDescription() {
           </>
           : null
         }
+        <p className="text-secondary">{verifyIfAProductIsChosen() ? <span><b>{chosenSubProduct.stock}</b> items available</span> : <span><b>{countstockAll}</b>  total items available</span>}</p>
         {product.status == true ? <button onClick={addCart} className='btn-cart'>Add to cart</button> : <button className='btn-cart'>Out of stock</button>}
       </div>
     )
@@ -305,7 +306,7 @@ function ProductDescription() {
       let size_value = arr[i].size
       if (!arr_size_no_rep.includes(size_value)) {
         arr_size_no_rep.push(size_value)
-        options.push(<option key={'sub-option-size-' + i + size_value} value={size_value} className='selectChoice'>{size_value}</option>)
+        options.push(<option key={'sub-option-size-' + i + size_value} value={size_value}>{size_value}</option>)
       }
     }
     return options
