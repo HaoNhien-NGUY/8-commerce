@@ -12,6 +12,9 @@ function Suppliers() {
     const [allSupplier, setAllSupplier] = useState([]);
     const [postDataOrder, setPostDataOrder] = useState([]);
     const [showDetails, setShowDetails] = useState(false);
+    const [limit, setLimit] = useState(5);
+    const [offset, setOffset] = useState(0);
+    const [pageCount, setPageCount] = useState();
     // const [showConfirm, setShowConfirm] = useState(false);
     // const [returnConfirm, setReturnConfirm] = useState(false);
     const optionSelect = [];
@@ -29,7 +32,8 @@ function Suppliers() {
     }, []);
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/supplier/order", config).then(e => {
+        axios.get(`http://127.0.0.1:8000/api/supplier/order?offset=${offset}&limit=${limit}`, config).then(async e => {
+            await setPageCount(Math.ceil(e.data.nbResults / limit))
             console.log(e.data.data)
             const newPostDataOrder = e.data.data.map((order) =>
                 <tr key={order.id}>
@@ -45,8 +49,14 @@ function Suppliers() {
             )
             setPostDataOrder(newPostDataOrder);
         });
-    }, []);
+    }, [offset]);
 
+    const handlePageClick = (e) => {
+        const selectedPage = e.selected;
+        const newOffset = selectedPage * limit;
+        setOffset(newOffset)
+    };
+    
     allSupplier.map(supp => {
         optionSelect.push(<option key={supp.id} value={supp.id}>{supp.name}</option>)
     });
@@ -194,18 +204,18 @@ function Suppliers() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
-                    {/* <ReactPaginate
+                    <ReactPaginate
                         previousLabel={"prev"}
                         nextLabel={"next"}
                         breakLabel={"..."}
                         breakClassName={"break-me"}
-                        pageCount={pageCountCategories}
+                        pageCount={pageCount}
                         marginPagesDisplayed={1}
                         pageRangeDisplayed={2}
-                        onPageChange={handlePageClickCategories}
+                        onPageChange={handlePageClick}
                         containerClassName={"pagination"}
                         subContainerClassName={"pages pagination"}
-                        activeClassName={"active"} /> */}
+                        activeClassName={"active"} />
                 </div>
             </div>
         </>
