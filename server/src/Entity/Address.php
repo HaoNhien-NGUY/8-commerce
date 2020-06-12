@@ -20,6 +20,12 @@ class Address
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="addresses")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $region;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $country;
@@ -41,7 +47,7 @@ class Address
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="Address")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 
@@ -51,13 +57,13 @@ class Address
     private $type;
 
     /**
-     * @ORM\OneToMany(targetEntity=Commande::class, mappedBy="address")
+     * @ORM\OneToMany(targetEntity=UserOrder::class, mappedBy="address")
      */
-    private $commandes;
+    private $userOrders;
 
     public function __construct()
     {
-        $this->commandes = new ArrayCollection();
+        $this->userOrders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -138,32 +144,44 @@ class Address
     }
 
     /**
-     * @return Collection|Commande[]
+     * @return Collection|UserOrder[]
      */
-    public function getCommandes(): Collection
+    public function getUserOrders(): Collection
     {
-        return $this->commandes;
+        return $this->userOrders;
     }
 
-    public function addCommande(Commande $commande): self
+    public function addUserOrder(UserOrder $userOrder): self
     {
-        if (!$this->commandes->contains($commande)) {
-            $this->commandes[] = $commande;
-            $commande->setAddress($this);
+        if (!$this->userOrders->contains($userOrder)) {
+            $this->userOrders[] = $userOrder;
+            $userOrder->setAddress($this);
         }
 
         return $this;
     }
 
-    public function removeCommande(Commande $commande): self
+    public function removeUserOrder(UserOrder $userOrder): self
     {
-        if ($this->commandes->contains($commande)) {
-            $this->commandes->removeElement($commande);
+        if ($this->userOrders->contains($userOrder)) {
+            $this->userOrders->removeElement($userOrder);
             // set the owning side to null (unless already changed)
-            if ($commande->getAddress() === $this) {
-                $commande->setAddress(null);
+            if ($userOrder->getAddress() === $this) {
+                $userOrder->setAddress(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRegion(): ?Region
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?Region $region): self
+    {
+        $this->region = $region;
 
         return $this;
     }

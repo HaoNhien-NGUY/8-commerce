@@ -32,9 +32,15 @@ class Region
      */
     private $shippingPricings;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="region")
+     */
+    private $addresses;
+
     public function __construct()
     {
         $this->shippingPricings = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,6 +85,37 @@ class Region
             // set the owning side to null (unless already changed)
             if ($shippingPricing->getRegion() === $this) {
                 $shippingPricing->setRegion(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Address[]
+     */
+    public function getAddresses(): Collection
+    {
+        return $this->addresses;
+    }
+
+    public function addAddress(Address $address): self
+    {
+        if (!$this->addresses->contains($address)) {
+            $this->addresses[] = $address;
+            $address->setRegion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddress(Address $address): self
+    {
+        if ($this->addresses->contains($address)) {
+            $this->addresses->removeElement($address);
+            // set the owning side to null (unless already changed)
+            if ($address->getRegion() === $this) {
+                $address->setRegion(null);
             }
         }
 
