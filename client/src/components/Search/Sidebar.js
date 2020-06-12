@@ -47,6 +47,8 @@ export default class SearchSidebar extends Component {
       searchValue: null,
 
       resultExist: true,
+
+      justArrived: true,
     };
 
     this.handleName = this.handleName.bind(this);
@@ -239,7 +241,7 @@ export default class SearchSidebar extends Component {
   }
 
   showFilter() {
-    this.setState({ showFilter: !this.state.showFilter });
+    this.setState({ showFilter: !this.state.showFilter, justArrived: false });
   }
 
   // checkIfCatsubcatExists(catsubcat) {
@@ -445,7 +447,6 @@ export default class SearchSidebar extends Component {
       });
 
       this.handleSubmit()
-    // this.handleSubmit()
   }
 
   async defaultValueCategory(value) {
@@ -474,304 +475,310 @@ export default class SearchSidebar extends Component {
     const sortChecked = this.state.sortBy;
     const results = this.state.results;
 
+    const justArrived = this.state.justArrived;
+
     return (
-      <div className="container">
-        <ToastContainer />
-        <form className="form-group justify-content-center" >
-          
-          {/* SEARCH BAR */}
-          <div className="form-group row justify-content-center">
-            <input
-              type="search"
-              placeholder="Search a product"
-              className="form-control col-8"
-              onChange={this.handleName}
-              id="inputSearchName"
-            ></input>
-            <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0" onClick={this.handleSubmit}>
-              Search
-            </button>
-            <span
-              className="small mt-auto mb-auto ml-3 text-secondary col-2"
-              id="filter-link"
-              onClick={this.showFilter}
-              aria-controls="filter-div"
-              aria-expanded={this.state.showFilter}
-              >
-              {this.state.showFilter ? "Hide Filters" : "Show Filters"}
-            </span>
-          </div>
-
-          {/* FILTERs */}
-          <Collapse in={this.state.showFilter}>
-            <div
-              // className={this.state.showFilter ? "" : "d-none"}
-              id="filter-div"
-            >
-              {/* Price */}
-              <div className="form-group row d-block">
-                <label htmlFor="formControlRange">Price</label>
-                <br />
-                <div className="row justify-content-center">
-                  <span className="col-2">
-                    {this.state.sliderCurrentValue[0]}
-                  </span>
-                  <ReactBootstrapSlider
-                    value={this.state.sliderCurrentValue}
-                    change={this.sliderChangeValue}
-                    step={this.state.sliderStep}
-                    max={this.state.sliderMax}
-                    min={this.state.sliderMin}
-                    range={true}
-                    className="col-6 p-absolute"
-                  />
-                  <span className="col-2">
-                    {this.state.sliderCurrentValue[1]}
-                  </span>
-                </div>
-              </div>
-
-              {/* Gender */}
-              <div className="form-group row">
-                <span className="mr-5">Gender</span>
-                <div className="form-check">
-                  <label className="form-check-label">
-                    <input
-                      type="radio"
-                      className="form-check-input"
-                      name="optradio"
-                      value="H"
-                      onChange={this.handleSexe}
-                      checked={this.state.sexe == 'H' ? true : false}
-                    />
-                    Men
-                  </label>
-                </div>
-                <div className="form-check">
-                  <label className="form-check-label">
-                    <input
-                      type="radio"
-                      className="form-check-input"
-                      name="optradio"
-                      value="F"
-                      onChange={this.handleSexe}
-                      checked={this.state.sexe == 'F' ? true : false}
-                    />
-                    Women
-                  </label>
-                </div>
-              </div>
-
-              {/* Size */}
-              <div className="form-group row">
-                <span className="mr-5">Size</span>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="size-xs"
-                    value="xs"
-                    onChange={this.handleSize}
-                  />
-                  <label className="form-check-label" htmlFor="size-xs">
-                    XS
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="size-s"
-                    value="s"
-                    onChange={this.handleSize}
-                  />
-                  <label className="form-check-label" htmlFor="size-s">
-                    S
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="size-m"
-                    value="m"
-                    onChange={this.handleSize}
-                  />
-                  <label className="form-check-label" htmlFor="size-m">
-                    M
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="size-l"
-                    value="l"
-                    onChange={this.handleSize}
-                  />
-                  <label className="form-check-label" htmlFor="size-l">
-                    L
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="size-xl"
-                    value="xl"
-                    onChange={this.handleSize}
-                  />
-                  <label className="form-check-label" htmlFor="size-xl">
-                    XL
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="size-xxl"
-                    value="xxl"
-                    onChange={this.handleSize}
-                  />
-                  <label className="form-check-label" htmlFor="size-xxl">
-                    XXL
-                  </label>
-                </div>
-              </div>
-
-              {/* Color */}
-              <div className="form-group row">
-                <span className="mr-5">Color</span>
-
-                {isColorReady
-                    ? this.state.colors.map((color) => (
-                      <div className="form-check form-check-inline" key={color.id}>
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id={color.id}
-                          value={color.name.toLowerCase()}
-                          onChange={this.handleColor}
-                        />
-                        <label className="form-check-label" htmlFor={color.id}>
-                          {color.name}
-                        </label>
-                      </div>
-                      ))
-                    : null
-                }
-              </div>
-
-              {/* Category */}
-              <div className="form-group row">
-                <label htmlFor="sel1 col-2">
-                  <span className="mr-5">Category</span>
-                </label>
-
-                <select
-                  className=" col-3 form-control"
-                  id="sel1"
-                  onChange={this.handleCategory}
-                >
-                  
-                  <option defaultValue="null"></option>
-
-                  {isCategoryReady
-                    ? 
-                    this.state.categories.map((category) => (
-                      <option key={category.id} value={category.name} >
-                        {category.name}
-                      </option>
-                    ))                    
-                    : null}
-                </select>
-              </div>
-
-              {/* Subcategory */}
-              <div className="form-group row">
-                <label htmlFor="sel1 col-2">
-                  <span className="mr-5">Subcategory</span>
-                </label>
-
-                <select
-                  className=" col-3 form-control"
-                  id="sel1"
-                  onChange={this.handleSubCategory}
-                >
-
-                  <option value={null}></option>
-
-                  {isSubCategoriesReady
-                    ? 
-                    this.state.subcategories.map((subcategory) => (
-                      <option key={subcategory.id} value={subcategory.name} >
-                        {subcategory.name}
-                      </option>
-                    ))                    
-                    : null}
-                </select>
-              </div>
-
-              {/* Search button w/ filters */}
-              {/* <div className="row">
-                <button
-                  type="submit"
-                  className="btn btn-dark"
-                >
-                  Search with filters
-                </button>
-              </div> */}
+      <>
+        <div
+          className={this.state.showFilter ? "to-right" : justArrived ? "d-none" : "to-left" }
+          id="filter-div"
+        >
+          {/* Price */}
+          <div className="form-group d-block">
+            <label htmlFor="formControlRange" className="filter-label">Price</label>
+            <br />
+            
+            <div className="f-slider-val f-border">
+              <span>
+                {this.state.sliderCurrentValue[0]+ " €"}
+              </span>
+              <span className="float-right">
+                {this.state.sliderCurrentValue[1]+ " €"}
+              </span>
             </div>
-          </Collapse>
-
-          {/* SORT/ORDER BY */}
-          <div className="row float-right mt-2">
-            <ButtonGroup toggle>
-              <ToggleButton
-                type="radio"
-                variant="secondary"
-                name="radio"
-                value="asc"
-                checked={sortChecked == "asc"}
-                onChange={this.handleSortBy}
-              >
-                ASC
-              </ToggleButton>
-              <ToggleButton
-                type="radio"
-                variant="secondary"
-                name="radio"
-                value="desc"
-                checked={sortChecked == "desc"}
-                onChange={this.handleSortBy}
-              >
-                DESC
-              </ToggleButton>
-            </ButtonGroup>
-
-            <Dropdown>
-              <span className="ml-5 mr-2">Order by</span>
-              <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                {this.state.orderBy}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={this.handleOrderBy}>
-                  Popularity
-                </Dropdown.Item>
-                <Dropdown.Item onClick={this.handleOrderBy}>
-                  Price
-                </Dropdown.Item>
-                <Dropdown.Item onClick={this.handleOrderBy}>Name</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <ReactBootstrapSlider
+              value={this.state.sliderCurrentValue}
+              change={this.sliderChangeValue}
+              step={this.state.sliderStep}
+              max={this.state.sliderMax}
+              min={this.state.sliderMin}
+              range={true}
+              className="f-border"
+              id="slider"
+            />
           </div>
-        </form>
 
-        {this.state.isResultsReady 
-          ? <Results results={results} />
-          : null}
-      </div>
+          {/* Gender */}
+          <div className="form-group f-gender">
+            <span className="filter-label">Gender</span><br/>
+            <div className="form-check f-border mr-5">
+              <label className="form-check-label">
+                <input
+                  type="radio"
+                  className="form-check-input"
+                  name="optradio"
+                  value="H"
+                  onChange={this.handleSexe}
+                  checked={this.state.sexe == 'H' ? true : false}
+                />
+                Men
+              </label>
+            </div>
+            <div className="form-check">
+              <label className="form-check-label">
+                <input
+                  type="radio"
+                  className="form-check-input"
+                  name="optradio"
+                  value="F"
+                  onChange={this.handleSexe}
+                  checked={this.state.sexe == 'F' ? true : false}
+                />
+                Women
+              </label>
+            </div>
+          </div>
+
+          {/* Size */}
+          <div className="form-group ">
+            <span className="filter-label">Size</span><br/>
+            <div className="form-check form-check-inline f-border">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="size-xs"
+                value="xs"
+                onChange={this.handleSize}
+              />
+              <label className="form-check-label" htmlFor="size-xs">
+                XS
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="size-s"
+                value="s"
+                onChange={this.handleSize}
+              />
+              <label className="form-check-label" htmlFor="size-s">
+                S
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="size-m"
+                value="m"
+                onChange={this.handleSize}
+              />
+              <label className="form-check-label" htmlFor="size-m">
+                M
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="size-l"
+                value="l"
+                onChange={this.handleSize}
+              />
+              <label className="form-check-label" htmlFor="size-l">
+                L
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="size-xl"
+                value="xl"
+                onChange={this.handleSize}
+              />
+              <label className="form-check-label" htmlFor="size-xl">
+                XL
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="size-xxl"
+                value="xxl"
+                onChange={this.handleSize}
+              />
+              <label className="form-check-label" htmlFor="size-xxl">
+                XXL
+              </label>
+            </div>
+          </div>
+
+          {/* Color */}
+          <div className="form-group ">
+            <span className="filter-label">Color</span><br/>
+
+            {isColorReady
+                ? this.state.colors.map((color) => (
+                  <div className="form-check form-check-inline f-border" key={color.id}>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={color.id}
+                      value={color.name.toLowerCase()}
+                      onChange={this.handleColor}
+                    />
+                    <label className="form-check-label" htmlFor={color.id}>
+                      {color.name}
+                    </label>
+                  </div>
+                  ))
+                : null
+            }
+          </div>
+
+          {/* Category */}
+          <div className="form-group ">
+            <label htmlFor="sel1 col-2">
+              <span className="filter-label">Category</span>
+            </label>
+
+            <select
+              className="col-10 form-control f-border"
+              id="sel1"
+              onChange={this.handleCategory}
+            >
+              
+              <option defaultValue="null"></option>
+
+              {isCategoryReady
+                ? 
+                this.state.categories.map((category) => (
+                  <option key={category.id} value={category.name} >
+                    {category.name}
+                  </option>
+                ))                    
+                : null}
+            </select>
+          </div>
+
+          {/* Subcategory */}
+          <div className="form-group">
+            <label htmlFor="sel1 col-2">
+              <span className="filter-label">Subcategory</span>
+            </label>
+
+            <select
+              className="col-10 form-control f-border f-select"
+              id="sel1"
+              onChange={this.handleSubCategory}
+            >
+
+              <option value={null}></option>
+
+              {isSubCategoriesReady
+                ? 
+                this.state.subcategories.map((subcategory) => (
+                  <option key={subcategory.id} value={subcategory.name} >
+                    {subcategory.name}
+                  </option>
+                ))                    
+                : null}
+            </select>
+          </div>
+
+          {/* Search button w/ filters */}
+          {/* <div className="">
+            <button
+              type="submit"
+              className="btn btn-dark"
+            >
+              Search with filters
+            </button>
+          </div> */}
+        </div>
+            
+
+        <div className="container">
+          <ToastContainer />
+
+
+          <form className="form-group justify-content-center" >
+            
+            {/* SEARCH BAR */}
+            <div className="form-group row justify-content-center">
+              <input
+                type="search"
+                placeholder="Search a product"
+                className="form-control col-8"
+                onChange={this.handleName}
+                id="inputSearchName"
+              ></input>
+              <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0" onClick={this.handleSubmit}>
+                Search
+              </button>
+              <span
+                className="small mt-auto mb-auto ml-3 text-secondary col-2"
+                id="filter-link"
+                onClick={this.showFilter}
+                aria-controls="filter-div"
+                aria-expanded={this.state.showFilter}
+                >
+                {this.state.showFilter ? "Hide Filters" : "Show Filters"}
+              </span>
+            </div>
+
+            {/* SORT/ORDER BY */}
+            <div className="row float-right mt-2">
+              <ButtonGroup toggle>
+                <ToggleButton
+                  type="radio"
+                  variant="secondary"
+                  name="radio"
+                  value="asc"
+                  checked={sortChecked == "asc"}
+                  onChange={this.handleSortBy}
+                >
+                  ASC
+                </ToggleButton>
+                <ToggleButton
+                  type="radio"
+                  variant="secondary"
+                  name="radio"
+                  value="desc"
+                  checked={sortChecked == "desc"}
+                  onChange={this.handleSortBy}
+                >
+                  DESC
+                </ToggleButton>
+              </ButtonGroup>
+
+              <Dropdown>
+                <span className="ml-5 mr-2">Order by</span>
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                  {this.state.orderBy}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={this.handleOrderBy}>
+                    Popularity
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={this.handleOrderBy}>
+                    Price
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={this.handleOrderBy}>Name</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </form>
+
+          {this.state.isResultsReady 
+            ? <Results results={results} />
+            : null}
+        </div>
+      </>
     );
   }
 }

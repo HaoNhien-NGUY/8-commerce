@@ -9,12 +9,14 @@ import CreateCategorySubModal from '../CreateCategorySub/CreateCategorySubModal'
 
 function CreateProduct() {
     const [btnSex, setBtnSex] = useState('');
-    const [formControl, setFormControl] = useState({"subcategory": 1});
+    const [formControl, setFormControl] = useState({"subcategory": 1, "supplier": 1});
     const [isReady, setIsReady] = useState(false);
     const [statusState, setStatusState] = useState(true);
     const [isInvalid, setIsInvalid] = useState(false);
     const [subcategories, setSubCategories] = useState([]);
+    const [supplier, setSupplier] = useState([]);
     const [isSubCategoriesReady, setIsSubCategoriesReady] = useState(false);
+    const [isSupplierReady, setIsSupplierReady] = useState(false);
 
     const [show, setShow] = useState(false);
 
@@ -61,11 +63,32 @@ function CreateProduct() {
                 });
     }, [isSubCategoriesReady] )
 
-    function handleChange(event) {
-        console.log(event.target)
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/supplier/")
+            .then((res) => {
+                console.log(res.data.data);
+                setSupplier(res.data.data);
+                setIsSupplierReady(true);
+                })
+            .catch((error) => {
+                console.log(error.response);
+                });
+    }, [isSupplierReady])
 
+    function handleChange(event) {
         let res = event.target.value.trim();
         let val = res.replace(/[\s]{2,}/g, " ");
+
+        if (parseInt(val) || val == 0) {
+            setFormControl({ ...formControl, [event.target.name]: parseInt(val) });
+        } else {
+            setFormControl({ ...formControl, [event.target.name]: val });
+        }
+    }
+
+    function handleChangeSupplier(event) {
+        let val = event.target.value;
 
         if (parseInt(val) || val == 0) {
             setFormControl({ ...formControl, [event.target.name]: parseInt(val) });
@@ -81,7 +104,7 @@ function CreateProduct() {
         if (formControl.title) {
             if (formControl.title == "") {
                 invalids.title = "Please enter a Title";
-            } else if (formControl.title.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]/g)) {
+            } else if (formControl.title.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]/g)) {
                 invalids.title = "Charactere invalid";
             } else if (formControl.title.length < 2) {
                 invalids.title = "2 characters minimum";
@@ -127,7 +150,7 @@ function CreateProduct() {
     useEffect( () => {
         if (isReady) {
             setIsReady(false);
-            const body = JSON.stringify({ ...formControl })
+            const body = JSON.stringify({ ...formControl });
             console.log(body);
             axios.post("http://127.0.0.1:8000/api/product", body, config).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"});
@@ -153,23 +176,42 @@ function CreateProduct() {
                     <textarea className={(isInvalid.description ? 'is-invalid' : 'inputeStyle')} name="description" id="description" form="formItem" placeholder="Your item description .." onChange={handleChange}/>
                     <div className="invalid-feedback">{ isInvalid.description }</div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="subcategory">SubCategory</label>
-                    <select
-                    className=" col-3 form-control"
-                    id="category"
-                    name="subcategory"
-                    onChange={handleChange}
-                    >
-                    { isSubCategoriesReady 
-                        ? subcategories.map( ( subcategory ) => (
-                        <option key={subcategory.id} value={subcategory.id}>
-                        {subcategory.name}
-                        </option>) )
-                        : null
-                    }
-                    </select>
+                <div className="form-group row">
+                    <div className="col-sm-6">
+                        <label htmlFor="subcategory">SubCategory</label>
+                        <select
+                        className="form-control"
+                        id="category"
+                        name="subcategory"
+                        onChange={handleChange}
+                        >
+                        { isSubCategoriesReady 
+                            ? subcategories.map((subcategory) => (
+                            <option key={subcategory.id} value={subcategory.id}>
+                            {subcategory.name}
+                            </option>))
+                            : null
+                        }
+                        </select>
                     <a className='text-info small' style={{ cursor:'pointer' }} variant="primary" onClick={handleShow}> Create a new subcategory ? </a>
+                    </div>
+                    <div className="col-sm-6">
+                        <label htmlFor="supplier">Supplier</label>
+                        <select
+                        className="form-control"
+                        id="supplier"
+                        name="supplier"
+                        onChange={handleChangeSupplier}
+                        >
+                        { isSupplierReady 
+                            ? supplier.map((supplier) => (
+                                <option key={supplier.id} value={supplier.id}>
+                            {supplier.name}
+                            </option>))
+                            : null
+                        }
+                        </select>
+                    </div>
                 </div>
                 <div className="form-group">
                     <label htmlFor="promo">Promo</label>

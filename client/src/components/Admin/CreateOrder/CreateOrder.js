@@ -64,7 +64,7 @@ function CreateOrder() {
             invalids.idsupplier = "PLease select a supplier";
         }
         if (ourAdress != "") {
-            if (ourAdress.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]/)) {
+            if (ourAdress.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?.@#\]]/)) {
                 invalids.adress = "Invalids charactere";
             }
         } else {

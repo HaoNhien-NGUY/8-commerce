@@ -11,9 +11,13 @@ import "./IndexNavbar.css";
 import profileLogo from "../img/profile.png";
 import searchLogo from "../img/search.png";
 import adminLogo from "../img/gear.png";
-import SuggestionSearch from "./Search/SuggestionSearch";
+import SuggestionSearch from './Search/SuggestionSearch'
 
-import { Navbar, Nav, NavItem } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  NavItem,
+} from "react-bootstrap";
 class IndexNavbar extends Component {
   constructor() {
     super();
@@ -120,9 +124,7 @@ class IndexNavbar extends Component {
               <Nav.Link href="/search?sexe=F">Women</Nav.Link>
             </NavItem>
             <NavItem>
-              <Nav.Link href="/search?category=Accessories">
-                Accessories
-              </Nav.Link>
+              <Nav.Link href="/search?category=Accessories">Accessories</Nav.Link>
             </NavItem>
           </Navbar.Collapse>
         </Navbar>
@@ -152,9 +154,7 @@ class IndexNavbar extends Component {
           </div>
           {this.state.isOpen ? (
             <div id="minicart" className="cartContainer">
-              <button className="buttonreset" onClick={() => this.operation()}>
-                <i class="material-icons md-36 marg">clear</i>
-              </button>
+              <button className="buttonreset" onClick={() => this.operation()}><i className="material-icons md-36 marg">clear</i></button>
               {Message}
               <table className="productinCart">
                 <tbody>
@@ -164,10 +164,7 @@ class IndexNavbar extends Component {
                       return (
                         <>
                           <tr>
-                            <td
-                              rowSpan="2"
-                              className="tableborder imgcontainer"
-                            >
+                            <td rowSpan="2" className="tableborder imgcontainer">
                               <img src={"http://127.0.0.1:8000" + e.image} />
                             </td>
                             <td>
@@ -178,14 +175,8 @@ class IndexNavbar extends Component {
                           </tr>
                           <tr className="tableborder">
                             <td className="detailsproduct">
-                              <div>
-                                price: {e.price}€<br />
-                                size: {e.size}
-                              </div>
-                              <div>
-                                color: {e.color.name}
-                                <br /> quantity: {e.quantity}
-                              </div>
+                              <div>price: {e.price}€<br />size: {e.size}</div>
+                              <div>color: {e.color.name}<br /> quantity: {e.quantity}</div>
                             </td>
                           </tr>
                         </>
@@ -194,7 +185,7 @@ class IndexNavbar extends Component {
                 </tbody>
               </table>
               <div className="total">
-                <span>{this.state.nombreTotal} produits</span>
+                <span>{this.state.nombreTotal}  {this.state.nombreTotal > 1 ? 'produits' : 'produit'}</span>
                 <span>Total : {this.state.prixTotal} €</span>
               </div>
               <a href="/panier">
