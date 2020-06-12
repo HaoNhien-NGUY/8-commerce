@@ -9,9 +9,9 @@ html,
 #root,
 body,
 #root > div {
-  height: 100%;
-  min-width: 580px;
-  overflow-x: hidden;
+  width: 100%!important;
+  height: 100%!important;
+  margin: 0!important; padding: 0!important
 }
 
 code {
@@ -26,6 +26,20 @@ code {
 }
 
 /* ------------------ Detail Produtc ------------------- */
+
+.was {
+  color: red;
+}
+.promotag {
+  display: inline-block;
+  font-size: 0.6em;
+  color: #fff;
+  padding: 7px;
+  position: relative;
+  top: -4px;
+  left: 20px;
+  background-color: red;
+}
 
 .btn-cart {
   width: 100%;

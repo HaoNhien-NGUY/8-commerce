@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\AddressRepository;
+use App\Repository\AddressBillingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AddressRepository::class)
+ * @ORM\Entity(repositoryClass=AddressBillingRepository::class)
  */
-class Address
+class AddressBilling
 {
     /**
      * @ORM\Id()
@@ -18,6 +18,12 @@ class Address
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="addressBillings")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $region;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -40,29 +46,45 @@ class Address
     private $address;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="Address")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="addressBillings")
      */
     private $user;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=UserOrder::class, mappedBy="addressBilling")
      */
-    private $type;
+    private $userOrders;
 
     /**
-     * @ORM\OneToMany(targetEntity=Commande::class, mappedBy="address")
+     * @ORM\Column(type="string", length=255)
      */
-    private $commandes;
+    private $firstname;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $lastname;
 
     public function __construct()
     {
-        $this->commandes = new ArrayCollection();
+        $this->userOrders = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getRegion(): ?Region
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?Region $region): self
+    {
+        $this->region = $region;
+
+        return $this;
     }
 
     public function getCountry(): ?string
@@ -125,45 +147,57 @@ class Address
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     /**
-     * @return Collection|Commande[]
+     * @return Collection|UserOrder[]
      */
-    public function getCommandes(): Collection
+    public function getUserOrders(): Collection
     {
-        return $this->commandes;
+        return $this->userOrders;
     }
 
-    public function addCommande(Commande $commande): self
+    public function addUserOrder(UserOrder $userOrder): self
     {
-        if (!$this->commandes->contains($commande)) {
-            $this->commandes[] = $commande;
-            $commande->setAddress($this);
+        if (!$this->userOrders->contains($userOrder)) {
+            $this->userOrders[] = $userOrder;
+            $userOrder->setAddressBilling($this);
         }
 
         return $this;
     }
 
-    public function removeCommande(Commande $commande): self
+    public function removeUserOrder(UserOrder $userOrder): self
     {
-        if ($this->commandes->contains($commande)) {
-            $this->commandes->removeElement($commande);
+        if ($this->userOrders->contains($userOrder)) {
+            $this->userOrders->removeElement($userOrder);
             // set the owning side to null (unless already changed)
-            if ($commande->getAddress() === $this) {
-                $commande->setAddress(null);
+            if ($userOrder->getAddressBilling() === $this) {
+                $userOrder->setAddressBilling(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): self
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): self
+    {
+        $this->lastname = $lastname;
 
         return $this;
     }
