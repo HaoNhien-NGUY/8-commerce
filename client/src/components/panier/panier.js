@@ -115,8 +115,8 @@ class Panier extends Component {
       );
     const productsInCart = this.state.nombreTotal;
     return (
-      <div key={this.state.key} className="container-fluid overflow-hidden m-0 pl-2 pr-2">
-        <div className="row">
+      <div key={this.state.key} className="h-100 container-fluid overflow-hidden m-0 pl-2 pr-2">
+        <div className="row h-100">
           <div className="col-md-6 m-0 p-3">checkout</div>
           <div className="col-md-6 productImgBg m-0 p-3">
             <ToastContainer />

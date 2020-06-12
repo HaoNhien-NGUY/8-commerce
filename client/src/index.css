@@ -27,6 +27,20 @@ code {
 
 /* ------------------ Detail Produtc ------------------- */
 
+.was {
+  color: red;
+}
+.promotag {
+  display: inline-block;
+  font-size: 0.6em;
+  color: #fff;
+  padding: 7px;
+  position: relative;
+  top: -4px;
+  left: 20px;
+  background-color: red;
+}
+
 .btn-cart {
   width: 100%;
   padding: 12px;
