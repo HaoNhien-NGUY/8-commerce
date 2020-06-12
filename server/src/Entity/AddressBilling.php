@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AddressBillingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,32 +17,38 @@ class AddressBilling
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"user_address"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="addressBillings")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"user_address"})
      */
     private $region;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user_address"})
      */
     private $country;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user_address"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user_address"})
      */
     private $postcode;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user_address"})
      */
     private $address;
 
@@ -57,11 +64,13 @@ class AddressBilling
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user_address"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user_address"})
      */
     private $lastname;
 

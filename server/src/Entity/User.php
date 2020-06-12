@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -58,11 +60,15 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=AddressShipping::class, mappedBy="user")
+     * @Groups({"user_address"})
+     * @SerializedName("shippingAddress")
      */
     private $addressShippings;
 
     /**
      * @ORM\OneToMany(targetEntity=AddressBilling::class, mappedBy="user")
+     * @Groups({"user_address"})
+     * @SerializedName("billingAddress")
      */
     private $addressBillings;
 
