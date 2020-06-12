@@ -25,12 +25,6 @@ class UserOrder
     private $subproduct;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Address::class, inversedBy="userOrders")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $address;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $status;
@@ -49,6 +43,18 @@ class UserOrder
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=AddressShipping::class, inversedBy="userOrders")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $addressShipping;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=AddressBilling::class, inversedBy="userOrders")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $addressBilling;
 
     public function __construct()
     {
@@ -134,14 +140,26 @@ class UserOrder
         return $this;
     }
 
-    public function getAddress(): ?Address
+    public function getAddressShipping(): ?AddressShipping
     {
-        return $this->address;
+        return $this->addressShipping;
     }
 
-    public function setAddress(?Address $address): self
+    public function setAddressShipping(?AddressShipping $addressShipping): self
     {
-        $this->address = $address;
+        $this->addressShipping = $addressShipping;
+
+        return $this;
+    }
+
+    public function getAddressBilling(): ?AddressBilling
+    {
+        return $this->addressBilling;
+    }
+
+    public function setAddressBilling(?AddressBilling $addressBilling): self
+    {
+        $this->addressBilling = $addressBilling;
 
         return $this;
     }

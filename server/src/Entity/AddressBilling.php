@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\AddressRepository;
+use App\Repository\AddressBillingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AddressRepository::class)
+ * @ORM\Entity(repositoryClass=AddressBillingRepository::class)
  */
-class Address
+class AddressBilling
 {
     /**
      * @ORM\Id()
@@ -20,7 +20,7 @@ class Address
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="addresses")
+     * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="addressBillings")
      * @ORM\JoinColumn(nullable=false)
      */
     private $region;
@@ -46,20 +46,24 @@ class Address
     private $address;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="Address")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="addressBillings")
      */
     private $user;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $type;
-
-    /**
-     * @ORM\OneToMany(targetEntity=UserOrder::class, mappedBy="address")
+     * @ORM\OneToMany(targetEntity=UserOrder::class, mappedBy="addressBilling")
      */
     private $userOrders;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $firstname;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $lastname;
 
     public function __construct()
     {
@@ -69,6 +73,18 @@ class Address
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getRegion(): ?Region
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?Region $region): self
+    {
+        $this->region = $region;
+
+        return $this;
     }
 
     public function getCountry(): ?string
@@ -131,18 +147,6 @@ class Address
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     /**
      * @return Collection|UserOrder[]
      */
@@ -155,7 +159,7 @@ class Address
     {
         if (!$this->userOrders->contains($userOrder)) {
             $this->userOrders[] = $userOrder;
-            $userOrder->setAddress($this);
+            $userOrder->setAddressBilling($this);
         }
 
         return $this;
@@ -166,22 +170,34 @@ class Address
         if ($this->userOrders->contains($userOrder)) {
             $this->userOrders->removeElement($userOrder);
             // set the owning side to null (unless already changed)
-            if ($userOrder->getAddress() === $this) {
-                $userOrder->setAddress(null);
+            if ($userOrder->getAddressBilling() === $this) {
+                $userOrder->setAddressBilling(null);
             }
         }
 
         return $this;
     }
 
-    public function getRegion(): ?Region
+    public function getFirstname(): ?string
     {
-        return $this->region;
+        return $this->firstname;
     }
 
-    public function setRegion(?Region $region): self
+    public function setFirstname(string $firstname): self
     {
-        $this->region = $region;
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): self
+    {
+        $this->lastname = $lastname;
 
         return $this;
     }

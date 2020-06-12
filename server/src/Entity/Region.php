@@ -33,14 +33,20 @@ class Region
     private $shippingPricings;
 
     /**
-     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="region")
+     * @ORM\OneToMany(targetEntity=AddressShipping::class, mappedBy="region")
      */
-    private $addresses;
+    private $addressShippings;
+
+    /**
+     * @ORM\OneToMany(targetEntity=AddressBilling::class, mappedBy="region")
+     */
+    private $addressBillings;
 
     public function __construct()
     {
         $this->shippingPricings = new ArrayCollection();
-        $this->addresses = new ArrayCollection();
+        $this->addressShippings = new ArrayCollection();
+        $this->addressBillings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,32 +96,63 @@ class Region
 
         return $this;
     }
-
+    
     /**
-     * @return Collection|Address[]
+     * @return Collection|AddressShipping[]
      */
-    public function getAddresses(): Collection
+    public function getAddressShippings(): Collection
     {
-        return $this->addresses;
+        return $this->addressShippings;
     }
 
-    public function addAddress(Address $address): self
+    public function addAddressShipping(AddressShipping $addressShipping): self
     {
-        if (!$this->addresses->contains($address)) {
-            $this->addresses[] = $address;
-            $address->setRegion($this);
+        if (!$this->addressShippings->contains($addressShipping)) {
+            $this->addressShippings[] = $addressShipping;
+            $addressShipping->setRegion($this);
         }
 
         return $this;
     }
 
-    public function removeAddress(Address $address): self
+    public function removeAddressShipping(AddressShipping $addressShipping): self
     {
-        if ($this->addresses->contains($address)) {
-            $this->addresses->removeElement($address);
+        if ($this->addressShippings->contains($addressShipping)) {
+            $this->addressShippings->removeElement($addressShipping);
             // set the owning side to null (unless already changed)
-            if ($address->getRegion() === $this) {
-                $address->setRegion(null);
+            if ($addressShipping->getRegion() === $this) {
+                $addressShipping->setRegion(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AddressBilling[]
+     */
+    public function getAddressBillings(): Collection
+    {
+        return $this->addressBillings;
+    }
+
+    public function addAddressBilling(AddressBilling $addressBilling): self
+    {
+        if (!$this->addressBillings->contains($addressBilling)) {
+            $this->addressBillings[] = $addressBilling;
+            $addressBilling->setRegion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddressBilling(AddressBilling $addressBilling): self
+    {
+        if ($this->addressBillings->contains($addressBilling)) {
+            $this->addressBillings->removeElement($addressBilling);
+            // set the owning side to null (unless already changed)
+            if ($addressBilling->getRegion() === $this) {
+                $addressBilling->setRegion(null);
             }
         }
 
