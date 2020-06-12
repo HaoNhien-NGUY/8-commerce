@@ -19,17 +19,24 @@ function Home() {
         axios.get('http://127.0.0.1:8000/api/product?limit='+nbrArctPop).then(resp => {
             //Display Lowest Price Image
             let prices = {}
+            let promos = {}
             let products_temp = resp.data.data
             let unavailable_msg = 'Available Soon...'
             console.log(products_temp)
             $.each(products_temp, (i, product) => {
                 prices[product.id] = []
+                promos[product.id] = []
                 if (isEmpty(product.subproducts)) {
                     //Product doesnt have subproducts, display unavailable_msg
                     prices[product.id].push(unavailable_msg)
                 } else {
                     //Product has subproducts
-                    product.subproducts.map(p => prices[product.id].push(p.price))
+                    product.subproducts.map(p => {
+                        prices[product.id].push(p.price)
+                        if (p.promo > 0) {
+                            promos[product.id].push(p.promo)
+                        }
+                    })
                 }
             })
 
@@ -38,12 +45,19 @@ function Home() {
                 const entries = Object.entries(prices)
                 for (const [id, prices_list] of entries) {
                     for (let j = 0; j < products_temp.length; j++) {
-                        
                         if ( products_temp[j].id == id ){
                             if ( prices_list[0] == unavailable_msg ) {
                                 products_temp[j]['lowest_price'] = unavailable_msg
                             } else {
-                                products_temp[j]['lowest_price'] = 'Starts at '+Math.min.apply(Math, prices_list)+' €'
+                                let price = Math.min.apply(Math, prices_list)
+                                // console.log(promo[id])
+                                if (isEmpty(promos[id])) {
+                                    products_temp[j]['lowest_price'] = 'Starts at '+ price +' €'
+                                }
+                                else {
+                                    let promo = (price)-(price * (promos[id]/100))
+                                    products_temp[j]['lowest_price'] = <p>Starts at {promo} € <s className="text-danger">{price} €</s></p>
+                                }
                             }
                         }
                     }
@@ -76,6 +90,7 @@ function Home() {
             <div className="row justify-content-around">
 
                 {products.map((e) => {
+                    console.log(products)
                     return (
                         <div className="col-md-4" key={e.id}>
                             <div className='ProductHome'>

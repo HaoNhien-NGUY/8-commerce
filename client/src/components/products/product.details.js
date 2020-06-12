@@ -221,10 +221,9 @@ function ProductDescription() {
           <span className='complete'>{details.description_2}</span>
         </p>
         {testProps.length > 192 ? <p className="more" onClick={Complete}>{completeDes}</p> : null}
-        <p>{verifyIfAProductIsChosen() ? chosenSubProduct.stock + " pièces disponibles" : countstockAll + " pièces totales disponibles"}</p>
         {chosenProductSize != '' && chosenProductColor != '' ? console.log('PRODUCT IS CHOSEN') + setChosenProduct() : console.log('NO CHOICE')}
 
-        <p>Color</p>
+        <p className="mt-5">Color</p>
         <select id='selectColor' defaultValue="No-Choice-Color" onChange={e => e.preventDefault() + console.log(e.target.value) + setChosenProductColor(e.target.value)}>
           <option value='No-Choice-Color' key="001" className='selectChoice' disabled>--- COLOR ({ColorOption.length})---</option>
           {ColorOption}
@@ -239,6 +238,7 @@ function ProductDescription() {
           </>
           : null
         }
+        <p className="text-secondary">{verifyIfAProductIsChosen() ? <span><b>{chosenSubProduct.stock}</b> items available</span> : <span><b>{countstockAll}</b>  total items available</span>}</p>
         {product.status == true ? <button onClick={addCart} className='btn-cart'>Add to cart</button> : <button className='btn-cart'>Out of stock</button>}
       </div>
     )
@@ -309,7 +309,7 @@ function ProductDescription() {
       let size_value = arr[i].size
       if (!arr_size_no_rep.includes(size_value)) {
         arr_size_no_rep.push(size_value)
-        options.push(<option key={'sub-option-size-' + i + size_value} value={size_value} className='selectChoice'>{size_value}</option>)
+        options.push(<option key={'sub-option-size-' + i + size_value} value={size_value}>{size_value}</option>)
       }
     }
     return options
