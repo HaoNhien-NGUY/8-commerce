@@ -157,15 +157,14 @@ function Suppliers() {
                                 <table className="productinCart">
                                     <tbody>
                                         <tr>
-                                            {/* <td rowSpan="3" className="tableborder">
-                                                <img src="http://127.0.0.1:8000/api/image/2/default/1.jpg"/>
-                                            </td> */}
                                             <td>
                                                 <span><b>Title:</b> { subProduct.subproduct.product.title}</span>
                                             </td>
                                         </tr>
+                                        
                                         <tr className="tableborder">
                                             <td className="detailsproduct">
+                                              <img src={`http://127.0.0.1:8000/api/image/${subProduct.subproduct.product.id}/default/1.jpg`}/>
                                                 <span><b>ID:</b> {subProduct.subproduct.id}</span>
                                                 <span><b>Color:</b> {subProduct.subproduct.color.name}</span>
                                                 <span><b>Size:</b> {subProduct.subproduct.size}</span>
