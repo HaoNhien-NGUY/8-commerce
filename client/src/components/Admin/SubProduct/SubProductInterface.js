@@ -170,7 +170,6 @@ const SubProductInterface = () => {
                 <button onClick={redirectCreate} className="btn btn-success m-2">
                     + New Subproduct for <b>{titleProduct}</b>
                 </button>
-                <button onClick={() => window.location.href = '/admin/update/product/' + id} className='btn btn-outline-info m-2'> Modify {titleProduct} </button>
             </div>
             <div className="row border p-2">
                 <table>

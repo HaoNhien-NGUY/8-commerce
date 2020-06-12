@@ -184,7 +184,6 @@ const SubCategoryInterface = () => {
                         </Form>
                     </Modal.Body>
                 </Modal>
-                <button onClick={() => window.location.href = '/admin/update/category/' + id} className='btn btn-outline-info m-2'> Modify {nameCategory} </button>
             </div>
             <div className="row border p-2">
                 <table>

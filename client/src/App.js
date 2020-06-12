@@ -44,8 +44,6 @@ class App extends React.Component {
     render() {
         console.log(store.getState().auth);
         return (
-            //<Product />
-            
             <Provider store={store}>
                 <Router>
                 <IndexNavbar />
@@ -71,7 +69,6 @@ class App extends React.Component {
                     </Switch>
                 </Router>
             </Provider>
-        
         )
     }
 }
