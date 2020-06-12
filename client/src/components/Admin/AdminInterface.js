@@ -66,7 +66,6 @@ const AdminInterface = () => {
     const receivedData = () => {
         axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`, config)
             .then(async res => {
-                console.log('i:', offset, ' limit:', limit)
                 await setPageCount(Math.ceil(res.data.nbResults / limit))
                 const newPostData = res.data.data.map((product) =>
                     <tr key={product.id}>
