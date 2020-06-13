@@ -24,6 +24,12 @@ class UserOrder
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userOrders")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $user;
+
+    /**
      * @ORM\ManyToMany(targetEntity=Subproduct::class, inversedBy="userOrders")
      */
     private $subproduct;
@@ -65,6 +71,7 @@ class UserOrder
      * @Groups({"user_address"})
      */
     private $addressBilling;
+
 
     public function __construct()
     {
@@ -176,6 +183,18 @@ class UserOrder
     public function setAddressBilling(?AddressBilling $addressBilling): self
     {
         $this->addressBilling = $addressBilling;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
