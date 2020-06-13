@@ -117,63 +117,127 @@ class Panier extends Component {
       );
     const productsInCart = this.state.nombreTotal;
     return (
-      <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
-        <div className="row h-100 m-0 p-0">
-          <div className="col-md-6 m-0 p-3"><Checkout /></div>
-          <div className="col-md-6 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
-            <ToastContainer />
-            <div id="LargeCart" className="LargeCart">
-              <h2>See your cart</h2>
-              <hr />
-              {Message}
-              <table >
-                {this.state.productsCart != [] &&
-                  this.state.productsCart.map((e) => {
-                    return (
-                      <tbody key={"tbody" + e.id} className="bitch">
-                        <tr>
-                          <td rowSpan="2" className="tableborder ImageCart">
-                            <img
-                              className=""
-                              src={"http://127.0.0.1:8000" + e.image}
-                            />
-                          </td>
-                          <td className="productcarttitle">
-                            <a href={"/product/" + e.product.id}>
-                              {e.product.title}
-                            </a>
-                            <button value={e.id} id={"button_" + e.id} className="supbtn" onClick={e => this.onsuppress(e.target)}>X</button>
-                          </td>
-                        </tr>
-                        <tr className="tableborder">
-                          <td className="detailsproduct">
-                            <div>price: {e.price}€<br />size: {e.size}</div>
-                            <div>color: {e.color.name}<br />
+      <>
+        {this.state.nombreTotal == 0 ? <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
+          <div className="row h-100 m-0 p-0">
+
+
+            <div className="col-12 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
+              <ToastContainer />
+              <div id="LargeCart" className="LargeCart">
+                <h2>See your cart</h2>
+                <hr />
+                {Message}
+                <table >
+                  {this.state.productsCart != [] &&
+                    this.state.productsCart.map((e) => {
+                      return (
+                        <tbody key={"tbody" + e.id} className="bitch">
+                          <tr>
+                            <td rowSpan="2" className="tableborder ImageCart">
+                              <img
+                                className=""
+                                src={"http://127.0.0.1:8000" + e.image}
+                              />
+                            </td>
+                            <td className="productcarttitle">
+                              <a href={"/product/" + e.product.id}>
+                                {e.product.title}
+                              </a>
+                              <button value={e.id} id={"button_" + e.id} className="supbtn" onClick={e => this.onsuppress(e.target)}>X</button>
+                            </td>
+                          </tr>
+                          <tr className="tableborder">
+                            <td className="detailsproduct">
+                              <div>price: {e.price}€<br />size: {e.size}</div>
+                              <div>color: {e.color.name}<br />
                               quantity:
                                 <input
-                                type="number"
-                                id={e.id}
-                                name="tentacles"
-                                defaultValue={e.quantity}
-                                onChange={e => this.handleChange(e.target)}
-                                min="1"
-                                max="20"
-                              ></input>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    );
-                  })}
-              </table>
-              <div className="total">
-                <span>{this.state.nombreTotal} {this.state.nombreTotal > 1 ? 'produits' : 'produit'}</span>
-                <span>Total : {this.state.prixTotal} €</span>
+                                  type="number"
+                                  id={e.id}
+                                  name="tentacles"
+                                  defaultValue={e.quantity}
+                                  onChange={e => this.handleChange(e.target)}
+                                  min="1"
+                                  max="20"
+                                ></input>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      );
+                    })}
+                </table>
+                <div className="total">
+                  <span>{this.state.nombreTotal} {this.state.nombreTotal > 1 ? 'produits' : 'produit'}</span>
+                  <span>Total : {this.state.prixTotal} €</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+          : <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
+            <div className="row h-100 m-0 p-0">
+              <div className="col-md-6 m-0 p-3"><Checkout /></div>
+
+              <div className="col-md-6 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
+                <ToastContainer />
+                <div id="LargeCart" className="LargeCart">
+                  <h2>See your cart</h2>
+                  <hr />
+                  {Message}
+                  <table >
+                    {this.state.productsCart != [] &&
+                      this.state.productsCart.map((e) => {
+                        return (
+                          <tbody key={"tbody" + e.id} className="bitch">
+                            <tr>
+                              <td rowSpan="2" className="tableborder ImageCart">
+                                <img
+                                  className=""
+                                  src={"http://127.0.0.1:8000" + e.image}
+                                />
+                              </td>
+                              <td className="productcarttitle">
+                                <a href={"/product/" + e.product.id}>
+                                  {e.product.title}
+                                </a>
+                                <button value={e.id} id={"button_" + e.id} className="supbtn" onClick={e => this.onsuppress(e.target)}>X</button>
+                              </td>
+                            </tr>
+                            <tr className="tableborder">
+                              <td className="detailsproduct">
+                                <div>price: {e.price}€<br />size: {e.size}</div>
+                                <div>color: {e.color.name}<br />
+                              quantity:
+                                <input
+                                    type="number"
+                                    id={e.id}
+                                    name="tentacles"
+                                    defaultValue={e.quantity}
+                                    onChange={e => this.handleChange(e.target)}
+                                    min="1"
+                                    max="20"
+                                  ></input>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        );
+                      })}
+                  </table>
+                  <div className="total">
+                    <span>{this.state.nombreTotal} {this.state.nombreTotal > 1 ? 'produits' : 'produit'}</span>
+                    <span>Total : {this.state.prixTotal} €</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>}
+
+
+
+      </>
     );
   }
 }

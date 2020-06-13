@@ -50,32 +50,34 @@ class Checkout extends React.Component {
     _next = () => {
         if (this.state.currentStep === 1) {
             const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
-            const arrayAPIName = arrayOfObj.map(({ productid: subproduct_id, quantite: quantity, ...rest }) => ({ subproduct_id, quantity, ...rest }));
-            let jsonRequest = {
-                "region_id": this.state.region,
-                "subproducts": arrayAPIName
-            };
-            const header = { "Content-Type": "application/json" };
-            axios
-                .post(
-                    "http://localhost:8000/api/checkout/shipping",
-                    jsonRequest,
-                    { headers: header }
-                )
-                .then((res) => {
-                    this.setState({ shipping_methods: res.data.shippingMethods, lowestPriceKey: res.data.lowestPriceKey });
-                    let longestKey = null;
-                    let shortestKey = null;
-                    for (let [key, value] of Object.entries(this.state.shipping_methods)) {
-                        if (value.duration == Math.max.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { longestKey = parseInt(key) }
-                        if (value.duration == Math.min.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { shortestKey = parseInt(key) }
-                    }
-                    this.setState({ "longestKey": longestKey })
-                    this.setState({ "shortestKey": shortestKey })
-                })
-                .catch((error) => {
-                    // console.log(error.response);
-                });
+            if (arrayOfObj) {
+                const arrayAPIName = arrayOfObj.map(({ productid: subproduct_id, quantite: quantity, ...rest }) => ({ subproduct_id, quantity, ...rest }));
+                let jsonRequest = {
+                    "region_id": this.state.region,
+                    "subproducts": arrayAPIName
+                };
+                const header = { "Content-Type": "application/json" };
+                axios
+                    .post(
+                        "http://localhost:8000/api/checkout/shipping",
+                        jsonRequest,
+                        { headers: header }
+                    )
+                    .then((res) => {
+                        this.setState({ shipping_methods: res.data.shippingMethods, lowestPriceKey: res.data.lowestPriceKey });
+                        let longestKey = null;
+                        let shortestKey = null;
+                        for (let [key, value] of Object.entries(this.state.shipping_methods)) {
+                            if (value.duration == Math.max.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { longestKey = parseInt(key) }
+                            if (value.duration == Math.min.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { shortestKey = parseInt(key) }
+                        }
+                        this.setState({ "longestKey": longestKey })
+                        this.setState({ "shortestKey": shortestKey })
+                    })
+                    .catch((error) => {
+                        // console.log(error.response);
+                    });
+            }
         }
         let currentStep = this.state.currentStep
         currentStep = currentStep >= 2 ? 3 : currentStep + 1
@@ -123,6 +125,10 @@ class Checkout extends React.Component {
     render() {
         const { user } = this.props.auth;
 
+        const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
+
+        console.log(arrayOfObj)
+
         return (
             <>
                 {/* <ProgressBar
@@ -157,30 +163,33 @@ class Checkout extends React.Component {
                     )}
                 </Step>
             </ProgressBar> */}
+
                 <React.Fragment>
                     <div className="col-8 LargeCart">
-                        <p>Step {this.state.currentStep} </p>
+                        {arrayOfObj ? <> <p>Step {this.state.currentStep} </p>
+                            <form><Step1
+                                data={this.state}
+                                currentStep={this.state.currentStep}
+                                handleChange={this.handleChange}
+                                user={user}
+                            />
+                                <Step2
+                                    currentStep={this.state.currentStep}
+                                    handleChange={this.handleChange}
+                                    data={this.state}
+                                />
+                                <Step3
+                                    currentStep={this.state.currentStep}
+                                    handleChange={this.handleChange}
+                                    handleSubmit={this.handleSubmit}
+                                    data={this.state}
+                                />
+                                {this.previousButton()}
+                                {this.nextButton()}
+                            </form>  </>
 
-                        <form><Step1
-                            data={this.state}
-                            currentStep={this.state.currentStep}
-                            handleChange={this.handleChange}
-                            user={user}
-                        />
-                            <Step2
-                                currentStep={this.state.currentStep}
-                                handleChange={this.handleChange}
-                                data={this.state}
-                            />
-                            <Step3
-                                currentStep={this.state.currentStep}
-                                handleChange={this.handleChange}
-                                handleSubmit={this.handleSubmit}
-                                data={this.state}
-                            />
-                            {this.previousButton()}
-                            {this.nextButton()}
-                        </form> </div>
+                            : null}
+                    </div>
                 </React.Fragment>
             </>
         );
@@ -188,7 +197,6 @@ class Checkout extends React.Component {
 }
 
 function Step1(props) {
-
     let ShippoingAdressOptions = []
     if (props.data.shippingAddress != null) {
         for (let [key, value] of Object.entries(props.data.shippingAddress)) {
@@ -227,25 +235,25 @@ function Step1(props) {
             <div className="form-row  col-md-12">
                 <div className="form-group col-md-6">
                     <label htmlFor="inputfirstname">Firstname</label>
-                    <input type="text" className="form-control" id="inputfirstname" name="firstname" onChange={props.handleChange} />
+                    <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" name="firstname" onChange={props.handleChange} />
                 </div>
                 <div className="form-group col-md-6">
                     <label htmlFor="inputLastname">Lastname</label>
-                    <input type="text" className="form-control" id="inputLastname" name='lastname' onChange={props.handleChange} />
+                    <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" name='lastname' onChange={props.handleChange} />
                 </div>
             </div>
             <div className="form-group  col-md-12">
                 <label htmlFor="inputAddress">Address</label>
-                <input type="text" className="form-control" id="inputAddress" name='adresse' placeholder="12 rue Martin" onChange={props.handleChange} />
+                <input type="text" className="form-control" id="inputAddress" name='adresse' placeholder="Address" onChange={props.handleChange} />
             </div>
             <div className="form-row  col-md-12">
                 <div className="form-group col-md-6">
                     <label htmlFor="inputCity">City</label>
-                    <input type="text" className="form-control" id="inputCity" name='city' value={props.city} onChange={props.handleChange} />
+                    <input type="text" className="form-control" id="inputCity" name='city' placeholder="City" value={props.city} onChange={props.handleChange} />
                 </div>
                 <div className="form-group col-md-4">
                     <label htmlFor="inputZip">Zip code</label>
-                    <input type="text" className="form-control" id="inputZip" name='zip' value={props.zip} onChange={props.handleChange} />
+                    <input type="text" className="form-control" id="inputZip" name='zip' placeholder="Zipcode" value={props.zip} onChange={props.handleChange} />
                 </div>
             </div>
             <SlideToggle collapsed
@@ -271,7 +279,7 @@ function Step1(props) {
                                     </div>
                                     <div className="form-group col-md-4">
                                         <label htmlFor="inputZip">Country</label>
-                                        <input type="text" className="form-control" id="inputCountry" name='country' value={props.country} onChange={props.handleChange} />
+                                        <input type="text" className="form-control" id="inputCountry" placeholder="Country" name='country' value={props.country} onChange={props.handleChange} />
                                     </div>
                                 </div>
                             </div>
@@ -332,25 +340,25 @@ function Step2(props) {
                                         <div className="form-row  col-md-12">
                                             <div className="form-group col-md-6">
                                                 <label htmlFor="inputfirstname">Firstname</label>
-                                                <input type="text" className="form-control" id="inputfirstname" name="billing_firstname" onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" name="billing_firstname" onChange={props.handleChange} />
                                             </div>
                                             <div className="form-group col-md-6">
                                                 <label htmlFor="inputLastname">Lastname</label>
-                                                <input type="text" className="form-control" id="inputLastname" name='billing_lastname' onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" name='billing_lastname' onChange={props.handleChange} />
                                             </div>
                                         </div>
                                         <div className="form-group  col-md-12">
                                             <label htmlFor="inputAddress">Address</label>
-                                            <input type="text" className="form-control" id="inputAddress" name='billing_adresse' placeholder="12 rue Martin" onChange={props.handleChange} />
+                                            <input type="text" className="form-control" id="inputAddress" placeholder="Address" name='billing_adresse' placeholder="Address" onChange={props.handleChange} />
                                         </div>
                                         <div className="form-row  col-md-12">
                                             <div className="form-group col-md-6">
                                                 <label htmlFor="inputCity">City</label>
-                                                <input type="text" className="form-control" id="inputCity" name='billing_city' value={props.city} onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputCity" placeholder="City" name='billing_city' value={props.city} onChange={props.handleChange} />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="inputZip">Zip code</label>
-                                                <input type="text" className="form-control" id="inputZip" name='billing_zip' value={props.zip} onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputZip" placeholder="Zipcode" name='billing_zip' value={props.zip} onChange={props.handleChange} />
                                             </div>
                                         </div>
                                         <div className="form-row  col-md-12">
@@ -384,6 +392,7 @@ function Step2(props) {
             )
         }
         else {
+
             return (
                 <>Sorry, we are currently not Shipping to your destination</>
             )
