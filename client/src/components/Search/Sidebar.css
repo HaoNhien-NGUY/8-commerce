@@ -1,3 +1,4 @@
+
 #filter-link:hover {
   text-decoration: underline;
   cursor: pointer;
@@ -11,10 +12,27 @@
   width: 100%;
 }
 
+#inputSearchName {
+  border: 0;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+}
+
+#inputSearchName:focus {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(195, 195, 195);
+  transition: width 0.6s cubic-bezier(0.52, -0.43, 0.47, 1.29);
+}
+
 
 /* FILTER BOX */
 #filter-div {
-  padding: 30px 10px;
+  position: absolute;
+  z-index: 998;
+  background-color: #FFF;
+  padding: 10px;
   width: 20vw;
   height: auto;
   float: left;
@@ -22,10 +40,12 @@
   border: 1px solid rgb(224, 224, 224);
   box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.05);
   border-radius: 0 3px 3px 0;
+  overflow: hidden;
+  overflow-y: hidden;
 }
 
-.filter-label {
-  margin-left: 20px;
+#btn-close-filter:hover {
+  cursor: pointer;
 }
 
 .f-gender div {
@@ -40,7 +60,6 @@
 .f-slider-val {
   width:90%;
 }
-
 
 
 

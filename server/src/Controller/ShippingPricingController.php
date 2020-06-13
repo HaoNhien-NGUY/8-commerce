@@ -38,9 +38,9 @@ class ShippingPricingController extends AbstractController
      */
     public function shippingPricingDetails(Request $request, ShippingPricingRepository $shippingPricingRepository)
     {
-        $region = $shippingPricingRepository->findOneBy(['id' => $request->attributes->get('id')]);
-        if ($region) {
-            return $this->json($region, 200, [], ['groups' => 'shipping']);
+        $shippingPricing = $shippingPricingRepository->findOneBy(['id' => $request->attributes->get('id')]);
+        if ($shippingPricing) {
+            return $this->json($shippingPricing, 200, [], ['groups' => 'shipping']);
         } else {
             return $this->json(['message' => 'not found'], 404, []);
         }
@@ -117,7 +117,7 @@ class ShippingPricingController extends AbstractController
 
             return $this->json([
                 'message' => 'Shipping pricing removed',
-                'product' => $shippingPricing
+                'shippingPricing' => $shippingPricing
             ], 200, [], ['groups' => 'shipping']);
         } else {
             return $this->json(['message' => 'not found'], 404, []);

@@ -39,6 +39,7 @@ class CheckoutController extends AbstractController
         $shippingPricings = $region->getShippingPricings();;
         $shippingMethods = [];
         $lowestPrice = 0;
+        $lowestKey = false;
         foreach ($shippingPricings as $key => $val) {
             $method['id'] = $val->getShippingMethod()->getId();
             $method['name'] = $val->getShippingMethod()->getName();

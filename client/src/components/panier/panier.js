@@ -3,6 +3,8 @@ import axios from "axios";
 import { Parallax } from "react-parallax";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Checkout from './Checkout'
+
 
 class Panier extends Component {
   constructor() {
@@ -115,10 +117,11 @@ class Panier extends Component {
       );
     const productsInCart = this.state.nombreTotal;
     return (
-      <div key={this.state.key} className="h-100 container-fluid overflow-hidden m-0 pl-2 pr-2">
-        <div className="row h-100">
-          <div className="col-md-6 m-0 p-3">checkout</div>
-          <div className="col-md-6 productImgBg m-0 p-3">
+      <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
+        <div className="row h-100 m-0 p-0">
+          <div className="col-md-6 m-0 p-3"><Checkout /></div>
+          <div className="col-md-6 order-first order-lg-last order-md-first order-sm-
+    first productImgBg m-0 p-3">
             <ToastContainer />
             <div id="LargeCart" className="LargeCart">
               <h2>Voir le panier</h2>
@@ -168,9 +171,6 @@ class Panier extends Component {
                 <span>{this.state.nombreTotal} {this.state.nombreTotal > 1 ? 'produits' : 'produit'}</span>
                 <span>Total : {this.state.prixTotal} €</span>
               </div>
-              <a href="/panier">
-                <button className="btn-cart">Checkout</button>
-              </a>
             </div>
           </div>
         </div>

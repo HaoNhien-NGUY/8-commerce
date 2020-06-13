@@ -18,15 +18,23 @@ function Cart(props) {
         }
     };
     const supplierOrder = [];
+
     useEffect(() => {
         if(props.handleCart && props.handleCart.length !== countProps) {
         let nbr = countProps + 1;
             setCountProps(nbr);
         }
-    }, [props]);
+    }, [props.handleCart]);
+
     useEffect(() => {
         renderProduct();
     }, [countProps]);
+
+    useEffect(() => {
+        if (props.handleCart.length == 0) {
+            setDivOrder([]);
+        }
+    }, [props.handleCart]);
 
     const Shipping = (days) => {
         var result = new Date();
@@ -55,23 +63,13 @@ function Cart(props) {
     });
     const renderProduct = () => {
         props.handleCart.map((e) => {
-            let imageSet = [];
-            axios.get("http://127.0.0.1:8000/api/product/"+e.idProduct, config).then(async product => {
-                await product.data.images.map((image) => { 
-                    if(image.color_id.toString() === e.idColor.toString())
-                    { 
-                        imageSet.push(<img key={image.links[0]+e.idColor} className="" src={'http://127.0.0.1:8000'+image.links[0]}></img>);
-                }})
-                setDivOrder([...divOrder,
+            setDivOrder([...divOrder,
                 <div className="divOrderCart" key={countProps}>
                     <table className="productinCart">
                         <tbody>
                             <tr>
-                                <td rowSpan="3" className="tableborder">
-                                    {   imageSet.length > 0 
-                                        ? imageSet 
-                                        : <img  src={'https://i.ibb.co/j5qSV4j/missing.jpg'}></img>
-                                    }
+                                <td rowSpan="3" className="tableborder paddright">
+                                    <img className="imgOrder" src={`http://127.0.0.1:8000/api/image/${e.idProduct}/default/1.jpg`}/>
                                 </td>
                                 <td>
                                     <span><b>Title:</b> { e.subProductTitle}</span>
@@ -89,19 +87,11 @@ function Cart(props) {
                         </tbody>
                     </table>
                 </div>
-                ]);
-            }).catch( err => {
-                toast.error('Error !', {position: 'top-center'});
-            })         
+            ]);    
         })
     }
     const submitOrder = (priceOrder) => {
         let invalids = {};
-        const config = {
-            headers: {
-                "Content-type": "application/json"
-            }
-        };
         let obj = {
             "our_address" : props.ourAdress,
             "status" : false,
@@ -118,16 +108,12 @@ function Cart(props) {
                 setIsInvalid(invalids);
                 axios.post("http://127.0.0.1:8000/api/supplier/order", obj, config).then( res => {
                     let count = 0;
-                    console.log(supplierOrder);
                     supplierOrder.map(order => {
-                        console.log("dans map")
                         const body = {
                             "subproduct_id" : order.subproduct_id,
                             "quantity" : order.quantity
                         };
                         axios.post(`http://127.0.0.1:8000/api/supplier/order/${res.data.SupplierOrder.id}/add`, body, config).then(e => {
-                            console.log("dans axios")
-                            console.log(e);
                             count++;
                             if (count == supplierOrder.length) {
                                 window.location.reload();
