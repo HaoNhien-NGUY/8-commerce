@@ -128,9 +128,10 @@ class UserController extends AbstractController
     /**
      * @Route("/api/user/{id}/order/count", name="user_number_orders", methods="GET")
      */
-    public function userNumberOrders(Request $request)
+    public function userNumberOrders(Request $request, UserRepository $userRepository)
     {
-        
+        $nbOrder = $userRepository->countOrdersById($request->attributes->get('id'));
+        return $this->json(["nbOrders" => $nbOrder], 200, []);
     }
 
     private function createToken($user)

@@ -36,11 +36,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function countOrders()
+    public function countOrdersById($id)
     {
         return $this->createQueryBuilder('u')
-            ->leftJoin('u.userOrder', 'uo')
-            ->select('count(uo.id)')
+            ->leftJoin('u.userOrders', 'o')
+            ->select('count(o.id) as orderNumber')
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $id)
             ->getQuery()
             ->getSingleScalarResult();
     }
