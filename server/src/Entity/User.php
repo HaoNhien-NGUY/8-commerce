@@ -72,11 +72,17 @@ class User implements UserInterface
      */
     private $addressBillings;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserOrder::class, mappedBy="user")
+     */
+    private $userOrders;
+
     public function __construct()
     {
         $this->cardCredentials = new ArrayCollection();
         $this->addressShippings = new ArrayCollection();
         $this->addressBillings = new ArrayCollection();
+        $this->userOrders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -282,6 +288,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($addressBilling->getUser() === $this) {
                 $addressBilling->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserOrder[]
+     */
+    public function getUserOrders(): Collection
+    {
+        return $this->userOrders;
+    }
+
+    public function addUserOrder(UserOrder $userOrder): self
+    {
+        if (!$this->userOrders->contains($userOrder)) {
+            $this->userOrders[] = $userOrder;
+            $userOrder->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserOrder(UserOrder $userOrder): self
+    {
+        if ($this->userOrders->contains($userOrder)) {
+            $this->userOrders->removeElement($userOrder);
+            // set the owning side to null (unless already changed)
+            if ($userOrder->getUser() === $this) {
+                $userOrder->setUser(null);
             }
         }
 

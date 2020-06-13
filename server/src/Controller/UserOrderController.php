@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\UserOrder;
+use App\Repository\UserRepository;
 use App\Repository\UserOrderRepository;
 use App\Repository\AddressBillingRepository;
 use App\Repository\AddressShippingRepository;
@@ -33,13 +34,13 @@ class UserOrderController extends AbstractController
     /**
      * @Route("/api/userorder", name="userorder_create", methods="POST")
      */
-    public function userOrder_create(ValidatorInterface $validator,Request $request ,SerializerInterface $serializer ,AddressBillingRepository $addressBillingRepository,AddressShippingRepository $addressShippingRepository,EntityManagerInterface $em)
+    public function userOrder_create(ValidatorInterface $validator,Request $request ,SerializerInterface $serializer ,AddressBillingRepository $addressBillingRepository,UserRepository $userRepository,AddressShippingRepository $addressShippingRepository,EntityManagerInterface $em)
     { 
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
         
         $userOrder = $serializer->deserialize($jsonContent, UserOrder::class, 'json', [
-            AbstractNormalizer::IGNORED_ATTRIBUTES => ['addressShipping', 'addressBilling','createdAt','packaging'],
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['addressShipping', 'addressBilling','createdAt','packaging','user'],
             ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
         ]);
 
@@ -63,6 +64,14 @@ class UserOrderController extends AbstractController
         $addressShipping = $addressShippingRepository->findOneBy(['id' => $req->addressShipping]);
         if(!$addressShipping){
             return $this->json(['message' => 'Address shipping not found'],404);
+        }
+
+        if(isset($req->user)){
+            $user = $userRepository->findOneBy(['id' => $req->user]);
+            if(!$user){
+                return $this->json(['message' => 'User not found'],404);
+            }
+            $userOrder->setUser($user);
         }
         
         $error = $validator->validate($userOrder);
@@ -115,7 +124,7 @@ class UserOrderController extends AbstractController
     /**
      * @Route("/api/userorder/{id}", name="userorder_update", methods="PUT",requirements={"id":"\d+"})
      */
-    public function userOrderUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, UserOrderRepository $userOrderRepository,AddressBillingRepository $addressBillingRepository,AddressShippingRepository $addressShippingRepository)
+    public function userOrderUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, UserOrderRepository $userOrderRepository,AddressBillingRepository $addressBillingRepository,AddressShippingRepository $addressShippingRepository,UserRepository $userRepository)
     {
         try {
             $jsonContent = $request->getContent();
@@ -150,6 +159,14 @@ class UserOrderController extends AbstractController
                         return $this->json(['message' => 'Address billing not found'],404);
                     }
                     $userOrder->setAddressBilling($addressBilling);
+                }
+
+                if(isset($req->user)){
+                    $user = $userRepository->findOneBy(['id' => $req->user]);
+                    if(!$user){
+                        return $this->json(['message' => 'User not found'],404);
+                    }
+                    $userOrder->setUser($user);
                 }
 
                 $error = $validator->validate($userOrder);
