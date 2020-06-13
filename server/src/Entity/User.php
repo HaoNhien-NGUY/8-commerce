@@ -74,6 +74,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=UserOrder::class, mappedBy="user")
+     * @Groups({"user_orders"})
      */
     private $userOrders;
 

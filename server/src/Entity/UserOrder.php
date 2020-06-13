@@ -19,7 +19,7 @@ class UserOrder
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_orders"})
      */
     private $id;
 
@@ -35,26 +35,26 @@ class UserOrder
     private $subproduct;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"user_address"})
+     * @ORM\Column(type="boolean")
+     * @Groups({"user_address", "user_orders"})
      */
     private $status;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_orders"})
      */
     private $trackingNumber;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_orders"})
      */
     private $packaging;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_orders"})
      */
     private $createdAt;
 
@@ -71,6 +71,12 @@ class UserOrder
      * @Groups({"user_address"})
      */
     private $addressBilling;
+
+    /**
+     * @ORM\Column(type="float")
+     * @Groups({"user_orders"})
+     */
+    private $cost;
 
 
     public function __construct()
@@ -195,6 +201,18 @@ class UserOrder
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCost(): ?float
+    {
+        return $this->cost;
+    }
+
+    public function setCost(float $cost): self
+    {
+        $this->cost = $cost;
 
         return $this;
     }

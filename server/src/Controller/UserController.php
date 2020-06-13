@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use ReallySimpleJWT\Token;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 //Salut Victor
 // require '../../vendor/autoload.php';
@@ -126,12 +127,27 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/{id}/order/count", name="user_number_orders", methods="GET")
+     * @Route("/api/user/{id}/orders/count", name="user_number_orders", methods="GET")
      */
     public function userNumberOrders(Request $request, UserRepository $userRepository)
     {
+        $user = $userRepository->find($request->attributes->get('id'));
+        if (!$user) return $this->json(["message" => "user not found"], 404, []);
         $nbOrder = $userRepository->countOrdersById($request->attributes->get('id'));
         return $this->json(["nbOrders" => $nbOrder], 200, []);
+    }
+
+    /**
+     * @Route("/api/user/{id}/orders", name="user_orders", methods="GET")
+     */
+    public function userOrders(Request $request, UserRepository $userRepository, NormalizerInterface $normalizer)
+    {
+        $user = $userRepository->find($request->attributes->get('id'));
+        if (!$user) return $this->json(["message" => "user not found"], 404, []);
+        $userOrders = $normalizer->normalize($user, null, ['groups' => 'user_orders']);
+
+        $nbOrder = $userRepository->countOrdersById($request->attributes->get('id'));
+        return $this->json(array_merge(["nbOrders" => $nbOrder], $userOrders), 200, []);
     }
 
     private function createToken($user)
