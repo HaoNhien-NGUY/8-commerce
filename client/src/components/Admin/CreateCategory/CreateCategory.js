@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Category.css';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import '../UpdateCategory/node_modules/react-toastify/dist/ReactToastify.css';
 import store from '../../../store';
 
 function CreateCategory() {
