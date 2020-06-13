@@ -26,7 +26,7 @@ class Subproduct
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="subproducts")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Groups({"subproduct", "supplier_order_details"})
      */
     private $product;
@@ -75,7 +75,7 @@ class Subproduct
     private $color;
 
     /**
-     * @ORM\OneToMany(targetEntity=SupplierOrderSubproduct::class, mappedBy="subproduct")
+     * @ORM\OneToMany(targetEntity=SupplierOrderSubproduct::class, mappedBy="subproduct", orphanRemoval=true, cascade={"remove"}, cascade={"persist"})
      */
     private $supplierOrderSubproducts;
 
