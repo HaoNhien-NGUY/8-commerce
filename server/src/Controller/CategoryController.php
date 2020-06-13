@@ -140,11 +140,11 @@ class CategoryController extends AbstractController
 
         $subcategories = $subcategory->findBy(['Category' => $req->oldcategory]);
         if(!$subcategories){
-            return $this->json(['message' => 'SubCategory not found for this Id'], 404);
+            return $this->json(['message' => 'Nothing to migrate'], 404);
         }
         $newcategory = $categoryrepo->findOneBy(['id' => $req->newcategory]);
         if(!$newcategory){
-            return $this->json(['message' => 'Category not found for this Id'], 404);
+            return $this->json(['message' => 'This category doesn\'t exist'], 404);
         }
 
         foreach($subcategories as $subcategory){ 
