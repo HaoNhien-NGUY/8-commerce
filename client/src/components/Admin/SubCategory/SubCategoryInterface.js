@@ -22,7 +22,11 @@ const SubCategoryInterface = () => {
     const [oldSubCatName, setOldSubCateName] = useState('');
     const [showNew, setShowNew] = useState(false);
     const [newName, setNewName] = useState([]);
-    const [categoriId, setCategoryId] = useState(null);
+    const [categoryId, setCategoryId] = useState(null);
+    const [deleteSubCategoryModal, setDeleteSubCategoryModal] = useState(false);
+    const [subCategoryId, setSubCategoryId] = useState(0);
+    const [allMigrationSubCategory, setAllMigrationSubCategory] = useState([]);
+    const [subCategoryMigrateSelected, setSubCategoryMigrateSelected] = useState(0);
     let id = useRouteMatch("/admin/subcategory/:id").params.id;
 
     const token = store.getState().auth.token
@@ -39,28 +43,23 @@ const SubCategoryInterface = () => {
     }, [token]);
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/category/" + id, config)
-            .then(res => {
-                console.log(res.data)
-                setNameCategory(res.data.name)
-                setSubCategories(res.data.subCategories);
-            })
-            .catch(error => {
-                toast.error('Error !', { position: 'top-center' });
-            });
+        receivedSubCategories();
     }, [])
 
-    const deleteCategory = (idSub) => {
-        console.log(idSub);
+    const receivedSubCategories = () => {
+        axios.get("http://localhost:8000/api/category/" + id, config)
+        .then(res => {
+            setNameCategory(res.data.name)
+            setSubCategories(res.data.subCategories);
+        })
+        .catch(error => {
+            toast.error('Error !', { position: 'top-center' });
+        });
+    }
+    const deleteSubCategory = (idSub) => {
         axios.delete("http://localhost:8000/api/subcategory/" + idSub, config)
             .then(res => {
-                axios.get("http://localhost:8000/api/category/" + id, config)
-                    .then(res => {
-                        setSubCategories(res.data.subCategories);
-                    })
-                    .catch(error => {
-                        toast.error('Error !', { position: 'top-center' });
-                    });
+                receivedSubCategories();
                 toast.success(res.data.message, { position: "top-center" });
             })
             .catch(error => {
@@ -149,6 +148,38 @@ const SubCategoryInterface = () => {
         }
     }
 
+
+    const handleSelectMigration = (event) => {
+        setSubCategoryMigrateSelected(event.target.value);
+    }
+    const migrationSubCategory = async (idSubCategory) => {
+      const optionSubCategoryMigration = [];
+        console.log(idSubCategory);
+      await axios.get("http://127.0.0.1:8000/api/subcategory/", config).then(e => {
+        let migration = subCategoryMigrateSelected
+        console.log(e)
+          e.data.map((subcategory) => subcategory.id !== idSubCategory ? optionSubCategoryMigration.push(<option key={subcategory.id} value={subcategory.id}>{subcategory.name}</option>) && migration === 0 ? migration = subcategory.id : null : null )
+          setSubCategoryMigrateSelected(migration)
+      }).catch(err => {
+        toast.error('Error to get category!', { position: 'top-center' });
+      });
+  
+      setAllMigrationSubCategory(optionSubCategoryMigration);
+    }
+    const migrateSubCategory = (idTakeMigration, idToMigrate) => {
+      let body = {
+        "newsubcategory": parseInt(idTakeMigration),
+        "oldsubcategory": idToMigrate
+      };
+      console.log(body);
+      axios.put("http://127.0.0.1:8000/api/subcategory/migrate", body, config).then(res => {
+        toast.success(res.message, { position: 'top-center' });
+        deleteSubCategory(idToMigrate);
+      }).catch(err => {
+        console.log(err.message)
+        toast.error(err.message, { position: 'top-center' });
+      });
+    }
     return (
         <div className="container">
             <ToastContainer />
@@ -196,12 +227,12 @@ const SubCategoryInterface = () => {
                     <tbody>
                         {subCategories.length > 0 ? subCategories.map((category) =>
                             <tr key={category.id}>
-                                {console.log(category)}
                                 <td><p className="m-2 align-items-center">{category.id}</p></td>
                                 <td><p className="m-2">{category.name} </p></td>
                                 {/* <td> <button onClick={() => window.location.href = '/admin/subcategory/' + id + '/' + category.id + '/update'} className="btn btn-outline-info m-2">Modify</button></td> */}
                                 <td> <button onClick={e => e.preventDefault() + handleShow(id, category.id, category.name)} className="btn btn-outline-info m-2">Modify</button></td>
-                                <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-2">Delete</button></td>
+                                <td> <button onClick={() => {migrationSubCategory(category.id); setDeleteSubCategoryModal(true); setSubCategoryId(category.id)}} className="btn btn-outline-danger m-2">Delete</button></td>
+                                {/* <td> <button onClick={() => deleteSubCategory(category.id)} className="btn btn-outline-danger m-2">Delete</button></td> */}
                             </tr>
                         ) : null}
                     </tbody>
@@ -224,6 +255,17 @@ const SubCategoryInterface = () => {
                         </Form>
                     </Modal.Body>
                 </Modal>
+                <Modal show={deleteSubCategoryModal} size="lg" onHide={() => setDeleteSubCategoryModal(false)}>
+                      <Modal.Header closeButton>Careful ! Deleting a SubCategory will delete all Products !</Modal.Header>
+                      <Modal.Body>
+                        <h4>I want to keep my Products and migrate them to</h4>
+                        <select className="form-control form-control-lg" onChange={handleSelectMigration}>
+                          {allMigrationSubCategory}
+                        </select>
+                        <Button color="info" className="mt-4" onClick={() => migrateSubCategory(subCategoryMigrateSelected, subCategoryId)} block>Yes, migrate my Product on this SubCategory !</Button>
+                        <Button color="danger" className="mt-4" onClick={() => {deleteSubCategory(subCategoryId); setDeleteSubCategoryModal(false)}} block>No, delete everything</Button>
+                      </Modal.Body>
+                    </Modal>
             </div>
         </div>
 
