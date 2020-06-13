@@ -41,6 +41,7 @@ export default class SearchSidebar extends Component {
       isColorsReady: false,
 
       showFilter: false,
+      displayMethod: "square",
 
       isResultsReady: false,
 
@@ -68,6 +69,7 @@ export default class SearchSidebar extends Component {
     this.defaultValueSexe = this.defaultValueSexe.bind(this);
     this.defaultValueName = this.defaultValueName.bind(this);
     this.handleSubmitEnter = this.handleSubmitEnter.bind(this);
+    this.handleDisplayMethod = this.handleDisplayMethod.bind(this)
   }
 
   handleSubmitEnter(e) {
@@ -232,6 +234,10 @@ export default class SearchSidebar extends Component {
 
   showFilter() {
     this.setState({ showFilter: !this.state.showFilter, justArrived: false });
+  }
+
+  async handleDisplayMethod(e) {
+    await this.setState({ displayMethod: e.target.value });
   }
 
   componentDidMount() {
@@ -411,6 +417,7 @@ export default class SearchSidebar extends Component {
 
     const sortChecked = this.state.sortBy;
     const results = this.state.results;
+    const displayMethod = this.state.displayMethod;
 
     const justArrived = this.state.justArrived;
 
@@ -420,7 +427,7 @@ export default class SearchSidebar extends Component {
           className={this.state.showFilter ? "to-right" : justArrived ? "d-none" : "to-left"}
           id="filter-div"
         >
-          <i class="material-icons md-18 float-right" onClick={this.showFilter} id="btn-close-filter">close</i>
+          <i className="material-icons md-18 float-right" onClick={this.showFilter} id="btn-close-filter">close</i>
           {/* Price */}
           <div className="form-group d-block mt-3">
             <label htmlFor="formControlRange" className="filter-label">Price</label>
