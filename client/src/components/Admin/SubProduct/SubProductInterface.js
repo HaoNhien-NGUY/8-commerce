@@ -30,7 +30,9 @@ const SubProductInterface = () => {
     const [postData, setPostData] = useState();
     const [getSubProducts, setGetSubProducts] = useState([]);
     const [subProducts, setSubProducts] = useState([]);
+    const [deleteSubProductModal, setDeleteSubProductModal] = useState(false);
     const [titleProduct, setTitleProduct] = useState('');
+    const [subProductId, setSubProductId] = useState(0);
     let id = useRouteMatch("/admin/subproduct/:id").params.id;
     const token = store.getState().auth.token
     const config = {
@@ -48,6 +50,9 @@ const SubProductInterface = () => {
     //     receivedData()
     // }, [offset, subProducts])
     useEffect(() => {
+        receivedData();
+    }, [offset])
+    const receivedData = () => {
         axios.get("http://localhost:8000/api/product/" + id, config)
             .then(async res => {
 
@@ -74,18 +79,11 @@ const SubProductInterface = () => {
                 console.log(error);
                 toast.error('Error !', { position: 'top-center' });
             });
-    }, [offset])
-
-    const deleteProduct = (idSub) => {
+    }
+    const deleteSubProduct = (idSub) => {
         axios.delete("http://localhost:8000/api/subproduct/" + idSub, config)
             .then(res => {
-                axios.get("http://localhost:8000/api/product/" + id, config)
-                    .then(res => {
-                        setSubProducts(res.data.subproducts);
-                    })
-                    .catch(error => {
-                        toast.error('Error !', { position: 'top-center' });
-                    });
+                receivedData();
                 toast.success(res.data.message, { position: "top-center" });
             })
             .catch(error => {
@@ -170,7 +168,6 @@ const SubProductInterface = () => {
                 <button onClick={redirectCreate} className="btn btn-success m-2">
                     + New Subproduct for <b>{titleProduct}</b>
                 </button>
-                <button onClick={() => window.location.href = '/admin/update/product/' + id} className='btn btn-outline-info m-2'> Modify {titleProduct} </button>
             </div>
             <div className="row border p-2">
                 <table>
@@ -182,7 +179,7 @@ const SubProductInterface = () => {
                                 <th><p className="m-2"> Color </p></th>
                                 <th><p className="m-2"> Size </p></th>
                                 <th><p className="m-2"> Weight </p></th>
-                                <th><p className="m-2" colspan="3"> Actions </p></th>
+                                <th><p className="m-2" colSpan="3"> Actions </p></th>
                             </tr>
                         }
                     </thead>
@@ -200,22 +197,9 @@ const SubProductInterface = () => {
                                     <button onClick={e => e.preventDefault() + handleShow(id, subproduct.id)} className="btn btn-outline-success m-2">Add Image</button>
                                 </td>
                                 <td> <button onClick={() => window.location.href = '/admin/subproduct/' + id + '/' + subproduct.id + '/update'} className="btn btn-outline-info m-2">Modify</button></td>
-                                <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
+                                <td> <button onClick={() => {setSubProductId(subproduct.id); setDeleteSubProductModal(true)}} className="btn btn-outline-danger m-2">Delete</button></td>
                             </tr>
                         ) : null}
-                        {/* {subProducts.length > 0 ? subProducts.map((subproduct) => 
-                    <tr key={subproduct.id}>
-                        {console.log(subproduct.map((e) => e.price))}
-                        <td><p className="m-2 align-items-center">{subproduct.id}</p></td>
-                        <td><p className="m-2">{subproduct.price} €</p></td>
-                        <td><p className="m-2">{subproduct.color}</p></td>
-                        <td><p className="m-2">{subproduct.size}</p></td>
-                        <td><p className="m-2">{subproduct.weight}</p></td>
-                        <td> <button onClick={() => window.location.href='/admin/subproduct/'+id+'/'+subproduct.id+'/update'}className="btn btn-outline-info m-2">Modify</button></td>
-                        <td> <button onClick={() => deleteProduct(subproduct.id)} className="btn btn-outline-danger m-2">Delete</button></td>
-                    </tr>
-                    ) : null} */}
-
                         <Modal show={show} onHide={handleClose}>
                             <Modal.Header closeButton>
                                 Download Image !
@@ -245,6 +229,13 @@ const SubProductInterface = () => {
 
                     </tbody>
                 </table>
+                <Modal show={deleteSubProductModal} onHide={() => setDeleteSubProductModal(false)}>
+                        <Modal.Header closeButton>Are you sure to delete this subproduct? This action can't go back</Modal.Header>
+                        <Modal.Body>
+                        <Button color="warning" className="mt-4" onClick={() =>  setDeleteSubProductModal(false)} block>No, go back</Button>
+                          <Button color="danger" className="mt-4" onClick={() => {deleteSubProduct(subProductId); setDeleteSubProductModal(false)}} block>Yes, i'm sure about delete this SubProduct</Button>
+                        </Modal.Body>
+                    </Modal>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>

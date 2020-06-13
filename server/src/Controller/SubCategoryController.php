@@ -131,11 +131,11 @@ class SubCategoryController extends AbstractController
 
         $products = $productrepo->findBy(['subCategory' => $req->oldsubcategory]);
         if(!$products){
-            return $this->json(['message' => 'Products not found for this Id'], 404);
+            return $this->json(['message' => 'Nothing to migrate'], 404);
         }
         $newsubcategory = $subcategory->findOneBy(['id' => $req->newsubcategory]);
         if(!$newsubcategory){
-            return $this->json(['message' => 'SubCategory not found for this Id'], 404);
+            return $this->json(['message' => 'This subcategory doesn\'t exist'], 404);
         }
 
         foreach($products as $product){ 

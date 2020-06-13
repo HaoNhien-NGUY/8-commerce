@@ -77,12 +77,12 @@ export default class SearchSidebar extends Component {
       this.handleSubmit()
     }
     else if (e.keyCode === 27) {
-      this.setState({showFilter: false})
+      this.setState({ showFilter: false })
     }
   }
 
   handleName(e) {
-    this.setState({ searchValue: e.target.value});
+    this.setState({ searchValue: e.target.value });
     // this.handleSubmit();
   }
 
@@ -157,7 +157,7 @@ export default class SearchSidebar extends Component {
         await this.setState({ categories: res.data.data, subcategory: null, isCategoryReady: true });
 
         res.data.data.map(cat => {
-          if ( this.state.category == cat.name ) {
+          if (this.state.category == cat.name) {
             this.setState({ subcategories: cat.subCategories, isSubCategoryReady: true });
           }
         })
@@ -187,7 +187,7 @@ export default class SearchSidebar extends Component {
   }
 
   checkNull(value) {
-    if (value == ''){
+    if (value == '') {
       return true;
     }
   }
@@ -222,7 +222,7 @@ export default class SearchSidebar extends Component {
         { headers: header }
       )
       .then((res) => {
-        this.setState({results: res.data, isResultsReady: true});
+        this.setState({ results: res.data, isResultsReady: true });
         // if (this.state.showFilter == true){
         //   this.showFilter()
         // }
@@ -255,7 +255,7 @@ export default class SearchSidebar extends Component {
         .catch((error) => {
           console.log(error.response);
         });
-  
+
       axios
         .get("http://localhost:8000/api/category/")
         .then((res) => {
@@ -279,7 +279,7 @@ export default class SearchSidebar extends Component {
         .catch((error) => {
           console.log(error.response);
         });
-  
+
       axios
         .get("http://localhost:8000/api/category/")
         .then((res) => {
@@ -299,22 +299,22 @@ export default class SearchSidebar extends Component {
 
     else if (paramsURL[0] == "category") {
       this.defaultValueCategory(paramsURL[1])
-      
-      axios
-      .get("http://localhost:8000/api/category/")
-      .then(async (res) => {
-        console.log(res.data.data);
-        await this.setState({ categories: res.data.data, isCategoryReady: true });
 
-        res.data.data.map(cat => {
-          if ( this.state.category == cat.name ) {
-            this.setState({ subcategories: cat.subCategories, isSubCategoryReady: true });
-          }
+      axios
+        .get("http://localhost:8000/api/category/")
+        .then(async (res) => {
+          console.log(res.data.data);
+          await this.setState({ categories: res.data.data, isCategoryReady: true });
+
+          res.data.data.map(cat => {
+            if (this.state.category == cat.name) {
+              this.setState({ subcategories: cat.subCategories, isSubCategoryReady: true });
+            }
+          })
         })
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+        .catch((error) => {
+          console.log(error.response);
+        });
     }
     else {
       axios
@@ -326,7 +326,7 @@ export default class SearchSidebar extends Component {
         .catch((error) => {
           console.log(error.response);
         });
-  
+
       axios
         .get("http://localhost:8000/api/category/")
         .then((res) => {
@@ -351,7 +351,7 @@ export default class SearchSidebar extends Component {
         console.log(error.response);
       });
 
-      this.handleSubmit();
+    this.handleSubmit();
   }
 
   async defaultValueSubCategory(value) {
@@ -359,17 +359,17 @@ export default class SearchSidebar extends Component {
 
     await axios
       .get("http://localhost:8000/api/subcategory/")
-      .then( (res) => {
+      .then((res) => {
         console.log(res.data);
 
-        res.data.map(  subcat => {
+        res.data.map(subcat => {
           // console.log(subcat)
-          if ( this.state.subcategory == subcat.name ) {
-            this.setState({ 
-              subcategories: [{id: subcat.id, name: subcat.name}], 
+          if (this.state.subcategory == subcat.name) {
+            this.setState({
+              subcategories: [{ id: subcat.id, name: subcat.name }],
               category: subcat.Category.name
               // categories: [{name: subcat.Category.name, id: subcat.Category.id 
-              });
+            });
           }
         })
       })
@@ -383,13 +383,13 @@ export default class SearchSidebar extends Component {
         console.log(res.data.data);
         await this.setState({ categories: res.data.data, isCategoryReady: true });
 
-        this.setState({isSubCategoryReady: true })
+        this.setState({ isSubCategoryReady: true })
       })
       .catch((error) => {
         console.log(error.response);
       });
 
-      this.handleSubmit()
+    this.handleSubmit()
   }
 
   async defaultValueCategory(value) {
@@ -398,17 +398,17 @@ export default class SearchSidebar extends Component {
   }
 
   async defaultValueSexe(value) {
-    await this.setState({sexe: value})
+    await this.setState({ sexe: value })
     this.handleSubmit();
   }
 
   async defaultValueName(value) {
-    await this.setState({searchValue: value})
+    await this.setState({ searchValue: value })
     $('#inputSearchName').val(value);
     this.handleSubmit();
   }
 
-  
+
 
   render() {
     const isCategoryReady = this.state.isCategoryReady
@@ -424,7 +424,7 @@ export default class SearchSidebar extends Component {
     return (
       <>
         <div
-          className={this.state.showFilter ? "to-right" : justArrived ? "d-none" : "to-left" }
+          className={this.state.showFilter ? "to-right" : justArrived ? "d-none" : "to-left"}
           id="filter-div"
         >
           <i className="material-icons md-18 float-right" onClick={this.showFilter} id="btn-close-filter">close</i>
@@ -432,13 +432,13 @@ export default class SearchSidebar extends Component {
           <div className="form-group d-block mt-3">
             <label htmlFor="formControlRange" className="filter-label">Price</label>
             <br />
-            
+
             <div className="f-slider-val f-border">
               <span>
-                {this.state.sliderCurrentValue[0]+ " €"}
+                {this.state.sliderCurrentValue[0] + " €"}
               </span>
               <span className="float-right">
-                {this.state.sliderCurrentValue[1]+ " €"}
+                {this.state.sliderCurrentValue[1] + " €"}
               </span>
             </div>
             <ReactBootstrapSlider
@@ -455,7 +455,7 @@ export default class SearchSidebar extends Component {
 
           {/* Gender */}
           <div className="form-group f-gender">
-            <span className="filter-label">Gender</span><br/>
+            <span className="filter-label">Gender</span><br />
             <div className="form-check f-border mr-5">
               <label className="form-check-label">
                 <input
@@ -486,7 +486,7 @@ export default class SearchSidebar extends Component {
 
           {/* Size */}
           <div className="form-group ">
-            <span className="filter-label">Size</span><br/>
+            <span className="filter-label">Size</span><br />
             <div className="form-check form-check-inline f-border">
               <input
                 className="form-check-input"
@@ -563,24 +563,24 @@ export default class SearchSidebar extends Component {
 
           {/* Color */}
           <div className="form-group ">
-            <span className="filter-label">Color</span><br/>
+            <span className="filter-label">Color</span><br />
 
             {isColorReady
-                ? this.state.colors.map((color) => (
-                  <div className="form-check form-check-inline f-border" key={color.id}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id={color.id}
-                      value={color.name.toLowerCase()}
-                      onChange={this.handleColor}
-                    />
-                    <label className="form-check-label" htmlFor={color.id}>
-                      {color.name}
-                    </label>
-                  </div>
-                  ))
-                : null
+              ? this.state.colors.map((color) => (
+                <div className="form-check form-check-inline f-border" key={color.id}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id={color.id}
+                    value={color.name.toLowerCase()}
+                    onChange={this.handleColor}
+                  />
+                  <label className="form-check-label" htmlFor={color.id}>
+                    {color.name}
+                  </label>
+                </div>
+              ))
+              : null
             }
           </div>
 
@@ -595,16 +595,16 @@ export default class SearchSidebar extends Component {
               id="sel1"
               onChange={this.handleCategory}
             >
-              
+
               <option defaultValue="null"></option>
 
               {isCategoryReady
-                ? 
+                ?
                 this.state.categories.map((category) => (
                   <option key={category.id} value={category.name} >
                     {category.name}
                   </option>
-                ))                    
+                ))
                 : null}
             </select>
           </div>
@@ -624,12 +624,12 @@ export default class SearchSidebar extends Component {
               <option value={null}></option>
 
               {isSubCategoriesReady
-                ? 
+                ?
                 this.state.subcategories.map((subcategory) => (
                   <option key={subcategory.id} value={subcategory.name} >
                     {subcategory.name}
                   </option>
-                ))                    
+                ))
                 : null}
             </select>
           </div>
@@ -645,124 +645,96 @@ export default class SearchSidebar extends Component {
             </button>
           </div>
         </div>
-            
+
 
         <div className="container">
           <ToastContainer />
 
 
-            
-            {/* SEARCH BAR */}
-            <div className="row justify-content-center d-inline md-force-align">
-              <i className="material-icons md-24">search</i>
-              <input
-                type="search"
-                placeholder="Search product..."
-                className="col-12 clear"
-                onChange={this.handleName}
-                id="inputSearchName"
-                onKeyDown={this.handleSubmitEnter}
-                autoComplete="off"
-              ></input>
-              {/* <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0" onClick={this.handleSubmit}>
+
+          {/* SEARCH BAR */}
+          <div className="row justify-content-center d-inline">
+            <i class="material-icons md-24">search</i>
+            <input
+              type="search"
+              placeholder="Search product..."
+              className="col-12 clear"
+              onChange={this.handleName}
+              id="inputSearchName"
+              onKeyDown={this.handleSubmitEnter}
+              autoComplete="off"
+            ></input>
+            {/* <button type="submit" className="btn btn-dark col-1 mt-0 ml-2 p-0" onClick={this.handleSubmit}>
                 Search
                 </button> */}
-              
+
+          </div>
+
+          {/* SORT/ORDER BY */}
+          <div className="row mt-2 p-3">
+            <div className="mr-auto">
+              <span
+                className="small text-secondary"
+                id="filter-link"
+                onClick={this.showFilter}
+                aria-controls="filter-div"
+                aria-expanded={this.state.showFilter}
+              >
+                <span className="pb-1"><i class="material-icons md-18 pr-1">filter_alt</i>{this.state.showFilter ? "Hide Filters" : "Show Filters"}</span>
+              </span>
             </div>
 
-            {/* SORT/ORDER BY */}
-            <div className="row mt-2 p-3">
-                <div className="mr-auto">
-                  <span
-                  className="small text-secondary md-force-align"
-                  id="filter-link"
-                  onClick={this.showFilter}
-                  aria-controls="filter-div"
-                  aria-expanded={this.state.showFilter}
-                  >
-                  <span className="pb-1"><i className="material-icons md-18 pr-1">filter_alt</i>{this.state.showFilter ? "Hide Filters" : "Show Filters"}</span>
-                  </span>
-                </div>
-
-                <div className="row">
-                  <Dropdown>
-                    <ButtonGroup 
+            <div className="row">
+              <Dropdown>
+                <ButtonGroup
+                  className="btn-sm"
+                  toggle
+                >
+                  <ToggleButton
+                    type="radio"
+                    variant="secondary"
+                    name="radio"
+                    value="asc"
+                    checked={sortChecked == "asc"}
+                    onChange={this.handleSortBy}
                     className="btn-sm"
-                    toggle
-                    >
-                      <ToggleButton
-                        type="radio"
-                        variant="secondary"
-                        name="radio"
-                        value="asc"
-                        checked={sortChecked == "asc"}
-                        onChange={this.handleSortBy}
-                        className="btn-sm"
-                      >
-                        ASC
+                  >
+                    ASC
                       </ToggleButton>
-                      <ToggleButton
-                        type="radio"
-                        variant="secondary"
-                        name="radio"
-                        value="desc"
-                        checked={sortChecked == "desc"}
-                        onChange={this.handleSortBy}
-                        className="btn-sm"
-                      >
-                        DESC
+                  <ToggleButton
+                    type="radio"
+                    variant="secondary"
+                    name="radio" float-left mr-auto
+                    value="desc"
+                    checked={sortChecked == "desc"}
+                    onChange={this.handleSortBy}
+                    className="btn-sm"
+                  >
+                    DESC
                       </ToggleButton>
-                    </ButtonGroup>
+                </ButtonGroup>
 
-                  
-                    <span className="ml-2 mr-2 small">Order by</span>
-                    <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="sm">
-                      {this.state.orderBy}
-                    </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={this.handleOrderBy}>
-                        Popularity
+                <span className="ml-2 mr-2 small">Order by</span>
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="sm">
+                  {this.state.orderBy}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={this.handleOrderBy}>
+                    Popularity
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={this.handleOrderBy}>
-                        Price
+                  <Dropdown.Item onClick={this.handleOrderBy}>
+                    Price
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={this.handleOrderBy}>Name</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-
-                  <ButtonGroup 
-                    className="btn-sm md-force-align"
-                    toggle
-                    >
-                      <ToggleButton
-                        type="radio"
-                        variant="light"
-                        name="radio"
-                        value="square"
-                        checked={displayMethod == "square"}
-                        onChange={this.handleDisplayMethod}
-                        className="btn-sm"
-                      >
-                        <i className="material-icons md-18 icon-filter">view_module</i>
-                      </ToggleButton>
-                      <ToggleButton
-                        type="radio"
-                        variant="light"
-                        name="radio"
-                        value="line"
-                        checked={displayMethod == "line"}
-                        onChange={this.handleDisplayMethod}
-                        className="btn-sm"
-                      >
-                        <i className="material-icons md-18 icon-filter">view_list</i>
-                      </ToggleButton>
-                    </ButtonGroup>
-                </div>
+                  <Dropdown.Item onClick={this.handleOrderBy}>Name</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
+          </div>
 
-          {this.state.isResultsReady 
-            ? <Results results={results} display={displayMethod}/>
+          {this.state.isResultsReady
+            ? <Results results={results} />
             : null}
         </div>
       </>

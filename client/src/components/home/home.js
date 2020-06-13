@@ -16,7 +16,7 @@ function Home() {
     let nbrArctPop = 6;
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/product?limit='+nbrArctPop).then(resp => {
+        axios.get('http://127.0.0.1:8000/api/product?limit=' + nbrArctPop).then(resp => {
             //Display Lowest Price Image
             let prices = {}
             let promos = {}
@@ -76,7 +76,6 @@ function Home() {
         }
         return true;
     }
-    
 
     return (
         <div className="container-fluid h-100 p-0 m-0">
@@ -86,51 +85,46 @@ function Home() {
         <br />Together.</div>
                 </div>
             </Parallax>
-
-            <div className="row justify-content-around">
-
+            <div className="row justify-content-around m-0 p-0">
                 {products.map((e) => {
                     console.log(products)
                     return (
                         <div className="col-md-4" key={e.id}>
                             <div className='ProductHome'>
                                 <div className='p-4 m-5 bg-gray'>
-                                    <span className="HomeArticleTItle">{e.title.length > 50 ? e.title.substr(0,50) + '...': e.title }</span>
+                                    <span className="HomeArticleTItle">{e.title.length > 50 ? e.title.substr(0, 50) + '...' : e.title}</span>
                                     <p>{e.lowest_price}</p>
                                     {console.log(e.status)}
-                                    {e.images && e.status ==true && 
-                                     <> <a href={"/product/" + e.id}>
-                                        <div className="ProductHomeImgContainer">
-                                            {<img className="ProductHomeImg" src={ e.images ? 'http://127.0.0.1:8000'+e.images[1] : imageDefault}></img>}
-                                            {<img className="ProductHomeImg ProductHomeImg2" src={ e.images && e.images.length > 1  ? 'http://127.0.0.1:8000'+e.images[0] : imageDefault}></img>}
-                                        </div>
-                                    </a>
-                                    <a href={"/product/" + e.id}><button className='btn-cart'>View Product</button></a>
-                                     </>
+                                    {e.images && e.status == true &&
+                                        <> <a href={"/product/" + e.id}>
+                                            <div className="ProductHomeImgContainer">
+                                                {<img className="ProductHomeImg" src={e.images ? 'http://127.0.0.1:8000' + e.images[1] : imageDefault}></img>}
+                                                {<img className="ProductHomeImg ProductHomeImg2" src={e.images && e.images.length > 1 ? 'http://127.0.0.1:8000' + e.images[0] : imageDefault}></img>}
+                                            </div>
+                                        </a>
+                                            <a href={"/product/" + e.id}><button className='btn-cart'>View Product</button></a>
+                                        </>
                                     }
                                     {e.images && e.status == false &&
-                                         <> <a href={"/product/" + e.id}>
-                                         <div className="ProductHomeImgContainer unavailable">
-                                             <img className="ProductHomeImg" src={'http://127.0.0.1:8000'+e.images[0]}></img>
-                                             {e.images && e.images.length > 1 &&
-                                                 <img className="ProductHomeImg ProductHomeImg2" src={'http://127.0.0.1:8000'+e.images[1]}></img>
-                                             }
-                                             {/* <img className="ProductHomeImg" src={e.images !== undefined ? 'http://127.0.0.1:8000'+e.images[0] : imageProduit1}></img> */}
-                                             {/* <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img> */}
-                                         </div>
-                                     </a>
-                                     <a href={"/product/" + e.id}> <button className='btn-cart unavailable' disabled>Product unavailable</button></a>
-                                      </>    
+                                        <> <a href={"/product/" + e.id}>
+                                            <div className="ProductHomeImgContainer unavailable">
+                                                <img className="ProductHomeImg" src={'http://127.0.0.1:8000' + e.images[0]}></img>
+                                                {e.images && e.images.length > 1 &&
+                                                    <img className="ProductHomeImg ProductHomeImg2" src={'http://127.0.0.1:8000' + e.images[1]}></img>
+                                                }
+                                                {/* <img className="ProductHomeImg" src={e.images !== undefined ? 'http://127.0.0.1:8000'+e.images[0] : imageProduit1}></img> */}
+                                                {/* <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img> */}
+                                            </div>
+                                        </a>
+                                            <a href={"/product/" + e.id}> <button className='btn-cart unavailable' disabled>Product unavailable</button></a>
+                                        </>
                                     }
                                     {!e.images &&
-                                             <>
-                                             <img className="ProductHomeImg" src="https://etienneetienne.com/wp-content/uploads/2013/08/square-blank.png"></img>
-                                             <button className='btn-cart unavailable' disabled>Coming Soon</button>
-                                             </>
+                                        <>
+                                            <img className="ProductHomeImg" src="https://etienneetienne.com/wp-content/uploads/2013/08/square-blank.png"></img>
+                                            <button className='btn-cart unavailable' disabled>Coming Soon</button>
+                                        </>
                                     }
-                                    
-                                  
-                                    
                                 </div>
                             </div>
                         </div>

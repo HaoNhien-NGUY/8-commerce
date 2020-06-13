@@ -11,9 +11,11 @@ import ReactPaginate from 'react-paginate';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import store from '../../store';
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap'
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
 import SupplierCommand from './TabSupplier/TapSupplier';
+import Shipping from './TabShipping/TabShipping';
+import Color from './Color/Color';
 
 const AdminInterface = () => {
     const [products, setProducts] = useState([]);
@@ -26,26 +28,28 @@ const AdminInterface = () => {
     const [offsetCategories, setOffsetCategories] = useState(0);
     const [pageCountCategories, setPageCountCategories] = useState();
     const [postDataCategories, setPostDataCategories] = useState();
-    const [allColors, setAllColors] = useState([]);
-    const [colorSelected, setColorSelected] = useState('');
-    const [show, setShow] = useState(false);
-    const [newColor, setNewColor] = useState("");
-    const [oldColor, setOldColor] = useState("");
-    const [msgError, setMsgError] = useState(null);
-    const [show2, setShowColor] = useState(false);
-    const [colorCreate, setColor] = useState("");
-    const [msgErrorColor, setErrorColor] = useState(null);
-    const optionColors = [];
     const [showImage, setShowImage] = useState(false);
     const [picture, setPicture] = useState([]);
     const [imageId, setImageId] = useState(null);
     const [showCate, setShowCate] = useState(false);
     const [categoryName, setCategoryName] = useState([]);
+    const [showSubCate, setShowSubCate] = useState(false);
+    const [subCategoryName, setSubCategoryName] = useState([]);
+    const [categorySelected, setCategorySelected] = useState('');
+    const [allCategory, setAllCategory] = useState([]);
+    const [isInvalid, setIsInvalid] = useState(false);
+    const [isReady, setIsReady] = useState(false);
     const [showCateEdit, setShowCateEdit] = useState(false);
     const [categoryNameEdit, setCategoryNameEdit] = useState([]);
     const [cateEditId, setCateEditId] = useState(null);
     const [oldCateEditName, setOldCateEditName] = useState('');
-
+    const [deleteCategoryModal, setDeleteCategoryModal] = useState(false);
+    const [categoryId, setCategoryId] = useState(0);
+    const [allMigrationCategory, setAllMigrationCategory] = useState([]);
+    const [categoryMigrateSelected, setCategoryMigrateSelected] = useState(0);
+    const [deleteProductModal, setDeleteProductModal] = useState(false);
+    const [productId, setProductId] = useState(0);
+    const optionCategory = [];
     const token = store.getState().auth.token
     const config = {
         headers: {
@@ -59,27 +63,18 @@ const AdminInterface = () => {
     }, [token]);
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
-            setAllColors(e.data);
-        });
-    }, []);
-
-    useEffect(() => {
         receivedData()
     }, [offset, products])
 
     useEffect(() => {
         receivedDataCategories()
-    }, [offsetCategories, categories])
-
-    allColors.map(color => {
-        optionColors.push(<option key={color.id} value={color.id}>{color.name}</option>)
-    });
+		}, [offsetCategories, categories])
+		
+		const handleClose = () => setDeleteCategoryModal(false);
 
     const receivedData = () => {
         axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`, config)
             .then(async res => {
-                console.log('i:', offset, ' limit:', limit)
                 await setPageCount(Math.ceil(res.data.nbResults / limit))
                 const newPostData = res.data.data.map((product) =>
                     <tr key={product.id}>
@@ -92,7 +87,7 @@ const AdminInterface = () => {
                             <button onClick={e => e.preventDefault() + handleShowImage(product.id)} className="btn add btn-outline-success m-1">Add Image</button>
                             <button onClick={() => window.location.href = 'admin/update/product/' + product.id} className="btn modify btn-outline-info m-1">Modify</button>
                             <button onClick={() => window.location.href = 'admin/subproduct/' + product.id} className="btn btn-outline-dark m-1"><span className="viewsub">SubProducts</span></button>
-                            <button onClick={() => deleteProduct(product.id)} className="btn delete btn-outline-danger m-1">Delete</button>
+                            <button onClick={() => {setDeleteProductModal(true); setProductId(product.id);}} className="btn delete btn-outline-danger m-1">Delete</button>
                         </td>
                     </tr>
                 )
@@ -112,13 +107,7 @@ const AdminInterface = () => {
     const deleteProduct = (id) => {
         axios.delete("http://localhost:8000/api/product/" + id, config)
             .then(res => {
-                axios.get("http://localhost:8000/api/product", config)
-                    .then(res => {
-                        setProducts(res.data.data);
-                    })
-                    .catch(error => {
-                        toast.error('Error !', { position: 'top-center' });
-                    });
+                receivedData()
                 toast.success(res.data.message, { position: "top-center" });
             })
             .catch(error => {
@@ -136,7 +125,8 @@ const AdminInterface = () => {
                         <td><p className="m-2">{category.name}</p></td>
                         <td> <button onClick={e => e.preventDefault() + handleShowCateEdit(category.id, category.name)} className="btn btn-outline-info m-1"> Modify </button></td>
                         <td> <button onClick={() => window.location.href = '/admin/subcategory/' + category.id} className="btn btn-outline-dark m-1"> SubCategories</button></td>
-                        <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-1"> Delete </button></td>
+                        <td> <button onClick={async() => { await migrationCategory(category.id); setDeleteCategoryModal(true); setCategoryId(category.id);}} className="btn btn-outline-danger m-1"> Delete </button></td>
+                        {/* <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-1"> Delete </button></td> */}
                     </tr>
                 )
                 setPostDataCategories(newPostDataCategories)
@@ -145,7 +135,6 @@ const AdminInterface = () => {
                 toast.error('Error !', { position: 'top-center' });
             })
     }
-    // console.log(config)
     const handlePageClickCategories = (e) => {
         const selectedPage = e.selected;
         const newOffset = selectedPage * limitCategories;
@@ -155,13 +144,7 @@ const AdminInterface = () => {
     const deleteCategory = (id) => {
         axios.delete("http://localhost:8000/api/category/" + id, config)
             .then(res => {
-                axios.get("http://localhost:8000/api/category", config)
-                    .then(res => {
-                        setCategories(res.data.data);
-                    })
-                    .catch(error => {
-                        toast.error('Error !', { position: 'top-center' });
-                    });
+                receivedDataCategories();
                 toast.success(res.data.message, { position: "top-center" });
             })
             .catch(error => {
@@ -173,12 +156,6 @@ const AdminInterface = () => {
         switch (data) {
             case 'product':
                 window.location.href = '/admin/create/product';
-                break;
-            case 'category':
-                window.location.href = '/admin/create/category';
-                break;
-            case 'subcategory':
-                window.location.href = '/admin/create/subcategory';
                 break;
         }
     }
@@ -288,46 +265,50 @@ const AdminInterface = () => {
                     </Modal.Body>
                 </Modal>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <div>
-                        <ReactPaginate
-                            previousLabel={"prev"}
-                            nextLabel={"next"}
-                            breakLabel={"..."}
-                            breakClassName={"break-me"}
-                            pageCount={pageCount}
-                            marginPagesDisplayed={1}
-                            pageRangeDisplayed={2}
-                            onPageChange={handlePageClick}
-                            containerClassName={"pagination"}
-                            subContainerClassName={"pages pagination"}
-                            activeClassName={"active"} />
-                        {/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
-                        <Modal show={showImage} onHide={handleImage}>
-                            <Modal.Header closeButton>Download Image !</Modal.Header>
-                            <Modal.Body>
-                                <Form onSubmit={onSubmitImage}>
-                                    <FormGroup>
-                                        <Label for="image">Image</Label>
-                                        <Input
-                                            multiple="multiple"
-                                            type="file"
-                                            name="image"
-                                            id="image"
-                                            onChange={onChangeImage}
-                                        />
-                                        <Button color="dark" className="mt-4" block>Submit</Button>
-                                    </FormGroup>
-                                </Form>
-                            </Modal.Body>
-                        </Modal>
-                    </div>
+                  <div>
+                      <ReactPaginate
+                          previousLabel={"prev"}
+                          nextLabel={"next"}
+                          breakLabel={"..."}
+                          breakClassName={"break-me"}
+                          pageCount={pageCount}
+                          marginPagesDisplayed={1}
+                          pageRangeDisplayed={2}
+                          onPageChange={handlePageClick}
+                          containerClassName={"pagination"}
+                          subContainerClassName={"pages pagination"}
+                          activeClassName={"active"} />
+                      {/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
+                      <Modal show={showImage} onHide={handleImage}>
+                          <Modal.Header closeButton>Download Image !</Modal.Header>
+                          <Modal.Body>
+                              <Form onSubmit={onSubmitImage}>
+                                  <FormGroup>
+                                      <Label for="image">Image</Label>
+                                      <Input
+                                          multiple="multiple"
+                                          type="file"
+                                          name="image"
+                                          id="image"
+                                          onChange={onChangeImage}
+                                      />
+                                      <Button color="dark" className="mt-4" block>Submit</Button>
+                                  </FormGroup>
+                              </Form>
+                          </Modal.Body>
+                      </Modal>
+                      <Modal show={deleteProductModal} onHide={() => setDeleteProductModal(false)}>
+                        <Modal.Header closeButton>Careful ! Deleting the Product will delete all of his SubProducts !</Modal.Header>
+                        <Modal.Body>
+                          <Button color="danger" className="mt-4" onClick={() => {deleteProduct(productId); setDeleteProductModal(false)}} block>Yes, delete everything</Button>
+                        </Modal.Body>
+                    </Modal>
                 </div>
+              </div>
             </>
         )
     }
 
-    const handleCloseCate = () => setShowCate(false);
-    const handleShowCate = () => setShowCate(true);
     const onChangeCate = (event) => {
         let res = event.target.value.trim();
         let str = res.toLowerCase();
@@ -342,7 +323,7 @@ const AdminInterface = () => {
             return toast.error("You need to enter a category", { position: "top-center" });
         }
 
-        if (categoryName.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
+        if (categoryName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
             return toast.error("Invalid charactere", { position: "top-center" });
         } else {
             const body = {
@@ -350,6 +331,7 @@ const AdminInterface = () => {
             }
             axios.post("http://127.0.0.1:8000/api/category/create/" + categoryName, body, config).then(res => {
                 toast.success('Category correctly added!', { position: "top-center" });
+                receivedDataCategories();
             }).catch(err => {
                 toast.error('Category already exist!', { position: 'top-center' });
             });
@@ -357,14 +339,104 @@ const AdminInterface = () => {
         }
     }
 
+    useEffect(() => {
+        axios.get("http://127.0.0.1:8000/api/category", config).then(e => {
+            setAllCategory(e.data.data);
+        });
+    }, [postDataCategories]);
+
+    allCategory.map(category => {
+        optionCategory.push(<option key={category.id} value={category.name}>{category.name}</option>)
+    });
+
+    const onChangeSubCate = (event) => {
+        let res = event.target.value.trim();
+        let str = res.toLowerCase();
+        let category = str.charAt(0).toUpperCase() + str.slice(1);
+        setSubCategoryName(category.replace(/[\s]{2,}/g, " "));
+    }
+
+    function onSubmitSubCate(e) {
+        e.preventDefault();
+        let invalids = {};
+        
+        if (!categorySelected) {
+            invalids.category = "Select category";
+        }
+
+        if (subCategoryName && subCategoryName.length > 0) {
+            if (subCategoryName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
+                invalids.subCategory = "Charactere invalid";
+            }
+        } else {
+            invalids.subCategory = "Please enter a subCategory";
+        }
+
+        if (Object.keys(invalids).length === 0) {
+            setIsInvalid(invalids);
+            setIsReady(true);
+        } else {
+            setIsInvalid(invalids);
+        }
+    }
+
+    useEffect(() => {
+        if (isReady) {
+            setIsReady(false);
+            const body = [];
+            axios.post("http://127.0.0.1:8000/api/subcategory/create/" + categorySelected + "/" + subCategoryName, body, config)
+                .then(res => {
+                    toast.success('SubCategory correctly added!', { position: 'top-center' });
+                    setShowSubCate(false)
+                }).catch(err => {
+                    toast.error('SubCategory already exist!', { position: 'top-center' });
+                });
+        }
+    }, [isReady]);
+
+    function handleSelect(event) {
+        setCategorySelected(event.target.value);
+    }
+  const handleSelectMigration = (event) => {
+      setCategoryMigrateSelected(event.target.value);
+  }
+  const migrationCategory = async (idCategory) => {
+    const optionCategoryMigration = [];
+  
+    await axios.get("http://127.0.0.1:8000/api/category", config).then(e => {
+      let migration = categoryMigrateSelected
+        e.data.data.map((category) => category.id !== idCategory ? optionCategoryMigration.push(<option key={category.id} value={category.id}>{category.name}</option>) && migration === 0 ? migration = category.id : null : null )
+        setCategoryMigrateSelected(migration)
+    }).catch(err => {
+      toast.error('Error to get category!', { position: 'top-center' });
+    });
+
+    setAllMigrationCategory(optionCategoryMigration);
+  }
+  const migrateCategory = (idTakeMigration, idToMigrate) => {
+    let body = {
+      "newcategory": parseInt(idTakeMigration),
+      "oldcategory": idToMigrate
+    };
+    console.log(body);
+    axios.put("http://127.0.0.1:8000/api/category/migrate", body, config).then(res => {
+      toast.success(res.message, { position: 'top-center' });
+      deleteCategory(idToMigrate);
+    }).catch(err => {
+      console.log(JSON.stringify(err))
+      console.log(err.response.data)
+      //Message Error 404 : err.response.data.message
+      toast.error(err.response.data.message, { position: 'top-center' });
+    });
+  }
     const AllCategories = () => {
         return (
             <>
                 <div className="row justify-content-end mb-2">
-                    <button onClick={handleShowCate} className="btn btn-success m-1">
+                    <button onClick={() => setShowCate(true)} className="btn btn-success m-1">
                         + New Category
                     </button>
-                    <Modal show={showCate} onHide={handleCloseCate}>
+                    <Modal show={showCate} onHide={() => setShowCate(false)}>
                         <Modal.Header closeButton>
                             Create category !
                             </Modal.Header>
@@ -385,197 +457,86 @@ const AdminInterface = () => {
                             </Form>
                         </Modal.Body>
                     </Modal>
-                    <button onClick={() => redirectCreate('subcategory')} className="btn btn-success m-1">
+                    <button onClick={() => setShowSubCate(true)} className="btn btn-success m-1">
                         + New SubCategory
                     </button>
+                    <Modal show={showSubCate} onHide={() => setShowSubCate(false)}>
+                        <Modal.Header closeButton>
+                            Create SubCategory !
+                            </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={onSubmitSubCate}>
+                                <FormGroup>
+                                    <select className={"form-control form-control-lg " + (isInvalid.category ? 'is-invalid' : 'inputeStyle')} id="selectCategory" onChange={handleSelect}>
+                                        <option value="">--- CHOICE CATEGORY ---</option>
+                                        {optionCategory}
+                                    </select>
+                                    <div className="invalid-feedback">{isInvalid.category}</div>
+                                    <Label for="category">SubCategory name</Label>
+                                    <Input
+                                        type="text"
+                                        name="category"
+                                        id="category"
+                                        className={(isInvalid.subCategory ? 'is-invalid' : 'inputeStyle')}
+                                        onChange={onChangeSubCate}
+                                    />
+                                    <div className="invalid-feedback">{isInvalid.subCategory}</div>
+                                    <Button color="dark" className="mt-4" block>
+                                        Submit
+                                    </Button>
+                                </FormGroup>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
                 </div>
                 <div className="row border p-2">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th><p className="m-2 align-items-center"> ID </p></th>
-                                <th><p className="m-2"> Name </p></th>
-                                <th><p colspan="3" className="m-1"> Actions </p></th>
-                            </tr>
-                        </thead>
-                        <tbody>{postDataCategories}</tbody>
-                    </table>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th><p className="m-2 align-items-center"> ID </p></th>
+                        <th><p className="m-2"> Name </p></th>
+                        <th><p colSpan="3" className="m-1"> Actions </p></th>
+                      </tr>
+                    </thead>
+                    <tbody>{postDataCategories}</tbody>
+                  </table>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    
                     <div>
-                        <ReactPaginate
-                            previousLabel={"prev"}
-                            nextLabel={"next"}
-                            breakLabel={"..."}
-                            breakClassName={"break-me"}
-                            pageCount={pageCountCategories}
-                            marginPagesDisplayed={1}
-                            pageRangeDisplayed={2}
-                            onPageChange={handlePageClickCategories}
-                            containerClassName={"pagination"}
-                            subContainerClassName={"pages pagination"}
-                            activeClassName={"active"} />
+                    <Modal show={deleteCategoryModal} size="lg" onHide={handleClose}>
+                      <Modal.Header closeButton>Careful ! Deleting a category will delete all SubCategories and all Products !</Modal.Header>
+                      <Modal.Body>
+                        <h4>I want to keep my SubCategories and migrate them to</h4>
+                        <select className="form-control form-control-lg" onChange={handleSelectMigration}>
+                          {allMigrationCategory}
+                        </select>
+                        <Button color="info" className="mt-4" onClick={() => migrateCategory(categoryMigrateSelected, categoryId)} block>Yes, migrate on this Category !</Button>
+                        <Button color="danger" className="mt-4" onClick={() => {deleteCategory(categoryId); setDeleteCategoryModal(false)}} block>No, delete everything</Button>
+                      </Modal.Body>
+                    </Modal>
+                    <ReactPaginate
+                        previousLabel={"prev"}
+                        nextLabel={"next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={pageCountCategories}
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={2}
+                        onPageChange={handlePageClickCategories}
+                        containerClassName={"pagination"}
+                        subContainerClassName={"pages pagination"}
+                        activeClassName={"active"} />
                     </div>
                 </div>
             </>
         )
     }
 
-    const handleSelectColor = (e) => {
-        setColorSelected(e.target.value);
-    }
-
-    const handleColorClick = () => {
-        if (colorSelected) {
-            axios.delete("http://localhost:8000/api/color/" + colorSelected, config).then(res => {
-                toast.success(res.data.message, { position: "top-center" });
-            }).catch(err => {
-                toast.error('Error !', { position: 'top-center' });
-            })
-        } else {
-            toast.error('Error ! No color selected', { position: 'top-center' });
-        }
-    }
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const selectNewColor = (event) => setOldColor(event.target.value);
-    const onChange = (event) => {
-        let res = event.target.value.trim();
-        let str = res.toLowerCase();
-        let color = str.charAt(0).toUpperCase() + str.slice(1);
-        setNewColor(color.replace(/[\s]{2,}/g, " "));
-    }
-
-    function onSubmit(e) {
-        e.preventDefault()
-
-        if (oldColor && newColor) {
-            setMsgError(null);
-
-            if (newColor.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
-                setMsgError("Invalid charactere");
-            } else {
-                const body = {
-                    "name": newColor
-                }
-                axios.put("http://localhost:8000/api/color/" + oldColor, body, config).then(res => {
-                    toast.success(res.data.message, { position: "top-center" });
-                    axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
-                        setAllColors(e.data);
-                    });
-                }).catch(err => {
-                    toast.error('Color name already exist !', { position: 'top-center' });
-                })
-                setShow(false);
-            }
-        }
-        else {
-            setMsgError("selected the 2 colors");
-        }
-    }
-
-    const handleCloseColor = () => setShowColor(false);
-    const handleShowColor = () => setShowColor(true);
-    const onChangeColor = (event) => {
-        let res = event.target.value.trim();
-        let str = res.toLowerCase();
-        let color = str.charAt(0).toUpperCase() + str.slice(1);
-        setColor(color.replace(/[\s]{2,}/g, " "));
-    }
-
-    function onSubmit2(e) {
-        e.preventDefault()
-
-        if (colorCreate) {
-            setErrorColor(null);
-
-            if (colorCreate.match(/[-\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
-                setErrorColor("Invalid charactere");
-            } else {
-                const body = {
-                    "name": colorCreate
-                }
-                axios.post("http://127.0.0.1:8000/api/color/" + colorCreate, body, config).then(res => {
-                    toast.success('Color correctly added!', { position: "top-center" });
-                    axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
-                        setAllColors(e.data);
-                    });
-                }).catch(err => {
-                    toast.error('Color already exist!', { position: 'top-center' });
-                });
-                setShowColor(false);
-            }
-        }
-        else {
-            setErrorColor("selected the 2 colors");
-        }
-    }
-
     const AllColors = () => {
         return (
             <>
-                <div className="row justify-content-end mb-2">
-                    <button onClick={handleShowColor} className="btn btn-success mr-4 pr-5 pl-5">+ New Color</button>
-                    <Modal show={show2} onHide={handleCloseColor} >
-                        <Modal.Header closeButton>Create color !</Modal.Header>
-                        <Modal.Body>
-                            {msgErrorColor ? <Alert> {msgErrorColor} </Alert> : null}
-                            <Form onSubmit={onSubmit2}>
-                                <FormGroup>
-                                    <Label for="newColor">New name</Label>
-                                    <Input
-                                        type="text"
-                                        name="newColor"
-                                        id="newColor"
-                                        placeholder="Color name"
-                                        onChange={onChangeColor}
-                                    />
-                                    <Button color="dark" className="mt-4" block>Create</Button>
-                                </FormGroup>
-                            </Form>
-                        </Modal.Body>
-                    </Modal>
-                    <button onClick={handleShow} className="btn btn-info pl-5 pr-5">Update Color</button>
-                    <Modal show={show} onHide={handleClose}>
-                        <Modal.Header closeButton>Update color !</Modal.Header>
-                        <Modal.Body>
-                            {msgError ? <Alert> {msgError} </Alert> : null}
-                            <Form onSubmit={onSubmit}>
-                                <FormGroup>
-                                    <select className="form-control form-control" onChange={selectNewColor}>
-                                        <option value="">---SELECT COLOR---</option>
-                                        {optionColors}
-                                    </select><br />
-                                    <Label for="newColor">New name</Label>
-                                    <Input
-                                        type="text"
-                                        name="newColor"
-                                        id="newColor"
-                                        placeholder="Color name"
-                                        onChange={onChange}
-                                    />
-                                    <Button color="dark" className="mt-4" block>Update</Button>
-                                </FormGroup>
-                            </Form>
-                        </Modal.Body>
-                    </Modal>
-                </div>
-                <select className="form-control form-control-lg" onChange={handleSelectColor}>
-                    <option value="">--- SELECT COLOR ---</option>
-                    {optionColors}
-                </select>
-                {/* <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
-                        <div className="d-flex">
-                            <select className="form-control form-control-lg" onChange={handleSelectColor}>
-                                <option value="">--- SELECT COLOR ---</option>
-                                {optionColors}
-                            </select>
-                            <button className="btn btn-outline-danger ml-4 deleteColor" onClick={handleColorClick}>Delete</button>
-                        </div>
-                    </li>
-                </ul> */}
+                <Color />
             </>
         )
     }
@@ -584,14 +545,15 @@ const AdminInterface = () => {
         <div className="container adminTable">
             <ToastContainer />
             <h1 className="mb-5">
-                <i class="material-icons md-36 marg">speed</i> ADMIN - Dashboard
+                <i className="material-icons md-36 marg">speed</i> ADMIN - Dashboard
             </h1>
             <Tabs forceRenderTabPanel={true}>
                 <TabList className="tabsHolder" style={{ paddingLeft: 0 }}>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i class="material-icons md-36 marg">source</i>Products</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i class="material-icons md-36 marg">collections</i>Categories</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i class="material-icons md-36 marg">color_lens</i>Colors</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i class="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">source</i>Products</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">collections</i>Categories</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">color_lens</i>Colors</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Shipping</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
@@ -604,6 +566,9 @@ const AdminInterface = () => {
                 </TabPanel>
                 <TabPanel>
                     <SupplierCommand />
+                </TabPanel>
+                <TabPanel>
+                    <Shipping />
                 </TabPanel>
             </Tabs>
         </div>

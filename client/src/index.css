@@ -5,13 +5,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+ .my-collapsible__content { overflow: hidden;}
+
 html,
 #root,
 body,
 #root > div {
-  height: 100%;
-  min-width: 580px;
-  overflow-x: hidden;
+  width: 100%!important;
+  height: 100%!important;
+  margin: 0!important; padding: 0!important
 }
 
 code {
@@ -26,6 +28,20 @@ code {
 }
 
 /* ------------------ Detail Produtc ------------------- */
+
+.was {
+  color: red;
+}
+.promotag {
+  display: inline-block;
+  font-size: 0.6em;
+  color: #fff;
+  padding: 7px;
+  position: relative;
+  top: -4px;
+  left: 20px;
+  background-color: red;
+}
 
 .btn-cart {
   width: 100%;
@@ -308,6 +324,76 @@ code {
   justify-content: space-between;
   margin-top: 10px;
   white-space: nowrap;
+}
+/*-------- checkout ------ */
+
+.control {
+    font-family: arial;
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 5px;
+    padding-top: 3px;
+    cursor: pointer;
+    font-size: 16px;
+}
+    .control input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+.control_indicator {
+    position: absolute;
+    top: calc(50% - 10px);
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background: #e6e6e6;
+    border: 0px solid #000000;
+    border-radius: undefinedpx;
+}
+.control:hover input ~ .control_indicator,
+.control input:focus ~ .control_indicator {
+    background: #cccccc;
+}
+
+.control input:checked ~ .control_indicator {
+    background: #2aa1c0;
+}
+.control:hover input:not([disabled]):checked ~ .control_indicator,
+.control input:checked:focus ~ .control_indicator {
+    background-color: #126a83;
+}
+
+.control input:disabled ~ .control_indicator {
+    background: #e6e6e6;
+    opacity: 0.6;
+    pointer-events: none;
+}
+.control_indicator:after {
+    box-sizing: unset;
+    content: '';
+    position: absolute;
+    display: none;
+}
+.control input:checked ~ .control_indicator:after {
+    display: block;
+}
+.control-radio .control_indicator {
+    border-radius: 50%;
+}
+
+.control-radio .control_indicator:after {
+    left: 7px;
+    top: 7px;
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: background 250ms;
+}
+.control-radio input:disabled ~ .control_indicator:after {
+    background: #7b7b7b;
 }
 
 /*-------- Enleve le x des input search ------ */
