@@ -112,7 +112,7 @@ class Panier extends Component {
     if (this.state.nombreTotal == 0)
       Message.push(
         <div key="empty-cart" className="statutpanier col m-0 p-4">
-          YOur cart is currently empty
+          Your cart is currently empty
         </div>
       );
     const productsInCart = this.state.nombreTotal;
