@@ -14,6 +14,7 @@ import store from '../../store';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
 import SupplierCommand from './TabSupplier/TapSupplier';
+import Shipping from './TabShipping/TabShipping';
 import Color from './Color/Color';
 
 const AdminInterface = () => {
@@ -552,6 +553,7 @@ const AdminInterface = () => {
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">collections</i>Categories</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">color_lens</i>Colors</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Shipping</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
@@ -564,6 +566,9 @@ const AdminInterface = () => {
                 </TabPanel>
                 <TabPanel>
                     <SupplierCommand />
+                </TabPanel>
+                <TabPanel>
+                    <Shipping />
                 </TabPanel>
             </Tabs>
         </div>
