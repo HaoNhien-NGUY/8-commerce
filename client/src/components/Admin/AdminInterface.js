@@ -422,8 +422,10 @@ const AdminInterface = () => {
       toast.success(res.message, { position: 'top-center' });
       deleteCategory(idToMigrate);
     }).catch(err => {
-      console.log(err.message)
-      toast.error(err.message, { position: 'top-center' });
+      console.log(JSON.stringify(err))
+      console.log(err.response.data)
+      //Message Error 404 : err.response.data.message
+      toast.error(err.response.data.message, { position: 'top-center' });
     });
   }
     const AllCategories = () => {
