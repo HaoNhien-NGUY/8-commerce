@@ -41,6 +41,7 @@ export default class SearchSidebar extends Component {
       isColorsReady: false,
 
       showFilter: false,
+      displayMethod: "square",
 
       isResultsReady: false,
 
@@ -68,6 +69,7 @@ export default class SearchSidebar extends Component {
     this.defaultValueSexe = this.defaultValueSexe.bind(this);
     this.defaultValueName = this.defaultValueName.bind(this);
     this.handleSubmitEnter = this.handleSubmitEnter.bind(this);
+    this.handleDisplayMethod = this.handleDisplayMethod.bind(this)
   }
 
   handleSubmitEnter(e) {
@@ -232,6 +234,10 @@ export default class SearchSidebar extends Component {
 
   showFilter() {
     this.setState({ showFilter: !this.state.showFilter, justArrived: false });
+  }
+
+  async handleDisplayMethod(e) {
+    await this.setState({ displayMethod: e.target.value });
   }
 
   componentDidMount() {
@@ -411,6 +417,7 @@ export default class SearchSidebar extends Component {
 
     const sortChecked = this.state.sortBy;
     const results = this.state.results;
+    const displayMethod = this.state.displayMethod;
 
     const justArrived = this.state.justArrived;
 
@@ -420,7 +427,7 @@ export default class SearchSidebar extends Component {
           className={this.state.showFilter ? "to-right" : justArrived ? "d-none" : "to-left" }
           id="filter-div"
         >
-          <i class="material-icons md-18 float-right" onClick={this.showFilter} id="btn-close-filter">close</i>
+          <i className="material-icons md-18 float-right" onClick={this.showFilter} id="btn-close-filter">close</i>
           {/* Price */}
           <div className="form-group d-block mt-3">
             <label htmlFor="formControlRange" className="filter-label">Price</label>
@@ -646,8 +653,8 @@ export default class SearchSidebar extends Component {
 
             
             {/* SEARCH BAR */}
-            <div className="row justify-content-center d-inline">
-              <i class="material-icons md-24">search</i>
+            <div className="row justify-content-center d-inline md-force-align">
+              <i className="material-icons md-24">search</i>
               <input
                 type="search"
                 placeholder="Search product..."
@@ -667,13 +674,13 @@ export default class SearchSidebar extends Component {
             <div className="row mt-2 p-3">
                 <div className="mr-auto">
                   <span
-                  className="small text-secondary"
+                  className="small text-secondary md-force-align"
                   id="filter-link"
                   onClick={this.showFilter}
                   aria-controls="filter-div"
                   aria-expanded={this.state.showFilter}
                   >
-                  <span className="pb-1"><i class="material-icons md-18 pr-1">filter_alt</i>{this.state.showFilter ? "Hide Filters" : "Show Filters"}</span>
+                  <span className="pb-1"><i className="material-icons md-18 pr-1">filter_alt</i>{this.state.showFilter ? "Hide Filters" : "Show Filters"}</span>
                   </span>
                 </div>
 
@@ -697,7 +704,7 @@ export default class SearchSidebar extends Component {
                       <ToggleButton
                         type="radio"
                         variant="secondary"
-                        name="radio" float-left mr-auto
+                        name="radio"
                         value="desc"
                         checked={sortChecked == "desc"}
                         onChange={this.handleSortBy}
@@ -723,11 +730,39 @@ export default class SearchSidebar extends Component {
                       <Dropdown.Item onClick={this.handleOrderBy}>Name</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
+
+                  <ButtonGroup 
+                    className="btn-sm md-force-align"
+                    toggle
+                    >
+                      <ToggleButton
+                        type="radio"
+                        variant="light"
+                        name="radio"
+                        value="square"
+                        checked={displayMethod == "square"}
+                        onChange={this.handleDisplayMethod}
+                        className="btn-sm"
+                      >
+                        <i className="material-icons md-18 icon-filter">view_module</i>
+                      </ToggleButton>
+                      <ToggleButton
+                        type="radio"
+                        variant="light"
+                        name="radio"
+                        value="line"
+                        checked={displayMethod == "line"}
+                        onChange={this.handleDisplayMethod}
+                        className="btn-sm"
+                      >
+                        <i className="material-icons md-18 icon-filter">view_list</i>
+                      </ToggleButton>
+                    </ButtonGroup>
                 </div>
             </div>
 
           {this.state.isResultsReady 
-            ? <Results results={results} />
+            ? <Results results={results} display={displayMethod}/>
             : null}
         </div>
       </>
