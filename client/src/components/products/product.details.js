@@ -61,7 +61,6 @@ function ProductDescription() {
 
   const [completeDes, setCompleteDes] = useState('.. More ⇒');
   const loadingScreen = [];
-  let propsImage = {}
   let countstockAll = 0;
   let SizeOption = [];
   let ColorOption = [];
@@ -85,14 +84,14 @@ function ProductDescription() {
       if (product.subproducts && product.subproducts.length > 0) {
         for (let i = 0; i < product.subproducts.length; i++) {
           countstockAll = countstockAll + product.subproducts[i].stock;
-          if (!(SizeOption.find(fruit => fruit.props.value === product.subproducts[i].size))) {
+          if (!(SizeOption.find(item => item.props.value === product.subproducts[i].size))) {
             if (!arr_size_no_rep.includes(product.subproducts[i].size)) {
               arr_size_no_rep.push(product.subproducts[i].size)
               SizeOption.push(<option key={'option-size' + product.subproducts[i].size} value={product.subproducts[i].size}>{product.subproducts[i].size}</option>);
             }
           }
 
-          if (!(ColorOption.find(fruit => fruit.props.value === product.subproducts[i].color.id))) {
+          if (!(ColorOption.find(item => item.props.value === product.subproducts[i].color.id))) {
             if (!arr_color_no_rep.includes(product.subproducts[i].color.id)) {
               arr_color_no_rep.push(product.subproducts[i].color.id)
               ColorOption.push(<option key={'option-color-' + product.subproducts[i].id} value={product.subproducts[i].color.id}>{product.subproducts[i].color.name}</option>);

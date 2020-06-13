@@ -111,8 +111,8 @@ class Panier extends Component {
     const Message = [];
     if (this.state.nombreTotal == 0)
       Message.push(
-        <div className="statutpanier col m-0 p-4">
-          Votre Panier est actuellement vide
+        <div key="empty-cart" className="statutpanier col m-0 p-4">
+          YOur cart is currently empty
         </div>
       );
     const productsInCart = this.state.nombreTotal;
@@ -120,18 +120,17 @@ class Panier extends Component {
       <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
         <div className="row h-100 m-0 p-0">
           <div className="col-md-6 m-0 p-3"><Checkout /></div>
-          <div className="col-md-6 order-first order-lg-last order-md-first order-sm-
-    first productImgBg m-0 p-3">
+          <div className="col-md-6 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
             <ToastContainer />
             <div id="LargeCart" className="LargeCart">
-              <h2>Voir le panier</h2>
+              <h2>See your cart</h2>
               <hr />
               {Message}
               <table >
                 {this.state.productsCart != [] &&
                   this.state.productsCart.map((e) => {
                     return (
-                      <tbody className="bitch">
+                      <tbody key={"tbody" + e.id} className="bitch">
                         <tr>
                           <td rowSpan="2" className="tableborder ImageCart">
                             <img

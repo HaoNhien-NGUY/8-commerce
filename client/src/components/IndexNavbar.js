@@ -189,7 +189,7 @@ class IndexNavbar extends Component {
                 <span>Total : {this.state.prixTotal} €</span>
               </div>
               <a href="/panier">
-                <button className="btn-cart">Voir le panier</button>
+                <button className="btn-cart">Checkout</button>
               </a>
             </div>
           ) : null}
