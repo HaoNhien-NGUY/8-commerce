@@ -2,18 +2,27 @@
 
 namespace App\Controller;
 
+use App\Entity\AddressBilling;
+use App\Entity\AddressShipping;
+use App\Entity\Region;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use DateTime;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use ReallySimpleJWT\Token;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 //Salut Victor
 // require '../../vendor/autoload.php';
@@ -148,6 +157,76 @@ class UserController extends AbstractController
 
         $nbOrder = $userRepository->countOrdersById($request->attributes->get('id'));
         return $this->json(array_merge(["nbOrders" => $nbOrder], $userOrders), 200, []);
+    }
+
+    /**
+     * @Route("/api/user/{id}/address/shipping", name="user_shipping_address", methods="POST")
+     */
+    public function userShippingAddress(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
+    {
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+        $user_id = $request->attributes->get('id');
+
+        $user = $this->getDoctrine()->getRepository(User::class)->find($user_id);
+        if (!isset($user)) return $this->json(['message' => 'user not found'], 400, []);
+
+        if (!isset($req->region_id)) return $this->json(['message' => 'region_id missing'], 400, []);
+        $region = $this->getDoctrine()->getRepository(Region::class)->find($req->region_id);
+        if (!isset($region)) return $this->json(['message' => 'region not found'], 400, []);
+
+        try {
+            $shippingAddress = $serializer->deserialize($jsonContent, AddressShipping::class, 'json', [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['user', 'region']
+            ]);
+            $shippingAddress->setRegion($region);
+            $shippingAddress->setUser($user);
+
+            $error = $validator->validate($shippingAddress);
+            if (count($error) > 0) return $this->json($error, 400);
+
+            $em->persist($shippingAddress);
+            $em->flush();
+
+            return $this->json(['message' => 'Shipping address created', 'address' => $shippingAddress], 201, [], ['groups' => 'user_address']);
+        } catch (NotEncodableValueException $e) {
+            return $this->json(['message' => $e->getMessage()], 400);
+        }
+    }
+
+    /**
+     * @Route("/api/user/{id}/address/billing", name="user_billing_address", methods="POST")
+     */
+    public function userBillingAddress(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
+    {
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+        $user_id = $request->attributes->get('id');
+
+        $user = $this->getDoctrine()->getRepository(User::class)->find($user_id);
+        if (!isset($user)) return $this->json(['message' => 'user not found'], 400, []);
+
+        if (!isset($req->region_id)) return $this->json(['message' => 'region_id missing'], 400, []);
+        $region = $this->getDoctrine()->getRepository(Region::class)->find($req->region_id);
+        if (!isset($region)) return $this->json(['message' => 'region not found'], 400, []);
+
+        try {
+            $billingAddress = $serializer->deserialize($jsonContent, AddressBilling::class, 'json', [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['user', 'region']
+            ]);
+            $billingAddress->setRegion($region);
+            $billingAddress->setUser($user);
+
+            $error = $validator->validate($billingAddress);
+            if (count($error) > 0) return $this->json($error, 400);
+
+            $em->persist($billingAddress);
+            $em->flush();
+
+            return $this->json(['message' => 'Billing address created', 'address' => $billingAddress], 201, [], ['groups' => 'user_address']);
+        } catch (NotEncodableValueException $e) {
+            return $this->json(['message' => $e->getMessage()], 400);
+        }
     }
 
     private function createToken($user)
