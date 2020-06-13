@@ -11,6 +11,8 @@ function ProductDescription() {
   const [lowestPrice, setLowestPrice] = useState([]);
   const [chosenProductSize, setChosenProductSize] = useState('');
   const [chosenProductColor, setChosenProductColor] = useState('');
+  const [HighestPromo, setHighestPromo] = useState('');
+
   const [chosenSubProduct, setChosenSubProduct] = useState();
   const [imageProduct, setImageProduct] = useState();
   const [miniImageProduct, setMiniImageProduct] = useState();
@@ -52,6 +54,9 @@ function ProductDescription() {
           }
         }
       }
+
+      let test = Math.max.apply(Math, resp.data.subproducts.map(o => o.promo));
+      setHighestPromo(parseInt(test))
       setLowestPrice(product_temp['lowest_price'])
     });
 
@@ -116,7 +121,6 @@ function ProductDescription() {
   };
 
   useEffect(() => {
-    console.log('testing the useeffect')
     let obj = { 'img-0': imageDefault }
 
     if (product && product.images) { //[0] = default, à modifier en state
@@ -206,6 +210,8 @@ function ProductDescription() {
   const subproductsAvailable = () => {
     let pathCat = "/search?category=" + Categoryname;
     let pathSub = "/search?subcategory=" + subCategory;
+
+    console.log(HighestPromo)
     return (
       <div className="divDetails">
         <span><a href={pathCat}>{Categoryname}</a> / <a href={pathSub}>{subCategory}</a></span>
@@ -213,8 +219,8 @@ function ProductDescription() {
         <h1>{details.title}</h1>
         <h3 className='prix'>{verifyIfAProductIsChosen() ? chosenSubProduct.promo > 0 ? <><span className="was"><s>{chosenSubProduct.price} €</s></span>
           <span className="now">  {Math.round(chosenSubProduct.price * (chosenSubProduct.promo / 100))} €  </span></>
-          : chosenSubProduct.price + '€' : details.promo > 0 ?
-            <>Starts at <span className="was"><s>{details.price} €</s></span><span className="now">  {Math.round(details.price_promo)} €</span></> : 'Starts at' + details.price + '€'} </h3>
+          : chosenSubProduct.price + '€' : HighestPromo > 0 ?
+            <>Starts at <span className="was"><s>{details.price} €</s></span><span className="now">  {Math.round(details.price * (HighestPromo / 100))} €</span></> : 'Starts at ' + details.price + '€'} </h3>
         <p className='description'>
           {details.description_1}
           <span className='complete'>{details.description_2}</span>

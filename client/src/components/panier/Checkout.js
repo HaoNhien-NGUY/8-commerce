@@ -14,13 +14,26 @@ class Checkout extends React.Component {
             currentStep: 1,
             region: 1,
             country: "France",
-            percent: 0
+            percent: 0,
         }
     }
 
     static propTypes = {
         auth: PropTypes.object.isRequired,
     };
+
+    componentDidUpdate() {
+        if (this.props.auth.user != null) {
+            axios
+                .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
+                .then((res) => {
+                    return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress })
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        }
+    }
 
     handleChange = event => {
         const { name, value } = event.target
@@ -108,7 +121,8 @@ class Checkout extends React.Component {
     }
 
     render() {
-        const { user, isAuthenticated, isLoading } = this.props.auth;
+        const { user } = this.props.auth;
+
         return (
             <>
                 {/* <ProgressBar
@@ -148,9 +162,10 @@ class Checkout extends React.Component {
                         <p>Step {this.state.currentStep} </p>
 
                         <form><Step1
+                            data={this.state}
                             currentStep={this.state.currentStep}
                             handleChange={this.handleChange}
-                            data={user}
+                            user={user}
                         />
                             <Step2
                                 currentStep={this.state.currentStep}
@@ -174,31 +189,41 @@ class Checkout extends React.Component {
 
 function Step1(props) {
 
+    let ShippoingAdressOptions = []
+    if (props.data.shippingAddress != null) {
+        for (let [key, value] of Object.entries(props.data.shippingAddress)) {
+            ShippoingAdressOptions.push(
+                <div key={"address_" + key} className="col-md-12">
+                    <label className="control control-radio w-100 form-check-label" htmlFor={"addresschoice" + key}>
+                        <input className="form-check-input checkbox-style" type="radio" name="addresschoice" id={"addresschoice" + key} value={key} onChange={props.handleChange} />
+                        <div className="control_indicator"></div>
+                        <div className="alert alert-secondary p-0">
+                            <div className="d-flex flex-column">
+                                <div className="pl-3 pt-1">{value.firstname} {value.lastname}</div>
+                                <div className="pl-3 p-0">{value.address}</div>
+                                <div className="pl-3 pb-1">{value.city} {value.zipcode} {value.country} </div>
+                            </div>
+                        </div>
+                    </label>
+                </div >
+            )
+
+        }
+    }
+
     if (props.currentStep !== 1) {
         return null
     }
-
-    if (props.data != null) {
-        axios
-            .get("http://localhost:8000/api/user/" + props.data.id + '/address')
-            .then((res) => {
-                console.log(res.data);
-                // this.setState({ subcategories: res.data, isSubCategoryReady: true });
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-    }
-
     return (
         <>
-            {props.data == null ? <div className="d-flex"><LoginModal /><div className="pt-2 pl-0"> or continue as a Guest</div></div> : null}
-            <div className="form-group col-md-12">
-                <legend>Contact information</legend>
-                <label htmlFor="email">Email</label>
-                <input type="email" className="form-control" id="email" name="email" placeholder="Email" onChange={props.handleChange} required />
-            </div>
-            <legend>Shipping Adress</legend>
+            {props.user != null ? null : <><div className="d-flex"><LoginModal /><div className="pt-2 pl-0"> or continue as a Guest</div></div>
+                <div className="form-group col-md-12">
+                    <legend>Contact information</legend>
+                    <label htmlFor="email">Email</label>
+                    <input type="email" className="form-control" id="email" name="email" placeholder="Email" onChange={props.handleChange} required />
+                </div></>}
+            <legend>Shipping Address</legend>
+            {ShippoingAdressOptions}
             <div className="form-row  col-md-12">
                 <div className="form-group col-md-6">
                     <label htmlFor="inputfirstname">Firstname</label>
@@ -257,7 +282,6 @@ function Step1(props) {
         </>
     );
 }
-
 
 function Step2(props) {
     if (props.currentStep !== 2) {
