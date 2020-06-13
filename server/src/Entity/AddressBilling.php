@@ -6,6 +6,8 @@ use App\Repository\AddressBillingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -77,6 +79,16 @@ class AddressBilling
     public function __construct()
     {
         $this->userOrders = new ArrayCollection();
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('country', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('city', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('postcode', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('address', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('firstname', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('lastname', new Assert\NotBlank());
     }
 
     public function getId(): ?int
