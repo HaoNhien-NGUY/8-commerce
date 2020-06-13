@@ -125,6 +125,14 @@ class UserController extends AbstractController
         return $this->json($user, 200, [], ['groups' => 'user_address']);
     }
 
+    /**
+     * @Route("/api/user/{id}/order/count", name="user_number_orders", methods="GET")
+     */
+    public function userNumberOrders(Request $request)
+    {
+        
+    }
+
     private function createToken($user)
     {
         $userId = ['user' => $user->getId(), 'role' => $user->getRoles()[0]];
