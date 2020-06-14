@@ -23,7 +23,6 @@ const Region = () => {
 
     const deleteRegion = (id) => {
       axios.delete("http://127.0.0.1:8000/api/region/"+id, config).then(res => {
-        console.log(res.data.message)
         receivedData();
         toast.success(res.data.message, { position: 'top-center' });
           
@@ -33,10 +32,10 @@ const Region = () => {
       })
     }
 
-    const receivedData = () => {
-      console.log('receivedData')
-      axios.get("http://127.0.0.1:8000/api/region", config).then(res => {
-        const newPostDataRegions =  res.data.map((region) => 
+  const receivedData = () => {
+    console.log('receivedData')
+    axios.get("http://127.0.0.1:8000/api/region", config).then(res => {
+      const newPostDataRegions =  res.data.map((region) => 
         <tr key={region.id}>
           <td><p className="m-2 align-items-center">{region.id}</p></td>
           <td><p className="m-2">{region.name}</p></td>
@@ -51,27 +50,27 @@ const Region = () => {
       })
     } 
 
-    const onSubmitRegion = (e) => {
-      e.preventDefault();
+  const onSubmitRegion = (e) => {
+    e.preventDefault();
 
-      if (regionName.length === 0) {
-          return toast.error("You need to enter a region", { position: "top-center" });
-      }
+    if (regionName.length === 0) {
+        return toast.error("You need to enter a region", { position: "top-center" });
+    }
 
-      if (regionName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
-          return toast.error("Invalid charactere", { position: "top-center" });
-      } else {
-          const body = {
-              "name": regionName
-          }
-          axios.post("http://127.0.0.1:8000/api/region", body, config).then(res => {
-              toast.success('Region correctly added!', { position: "top-center" });
-              receivedData();
-          }).catch(err => {
-              toast.error('Region already exist!', { position: 'top-center' });
-          });
-          setShowAdd(false);
-      }
+    if (regionName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
+        return toast.error("Invalid charactere", { position: "top-center" });
+    } else {
+        const body = {
+            "name": regionName
+        }
+        axios.post("http://127.0.0.1:8000/api/region", body, config).then(res => {
+            toast.success('Region correctly added!', { position: "top-center" });
+            receivedData();
+        }).catch(err => {
+            toast.error('Region already exist!', { position: 'top-center' });
+        });
+        setShowAdd(false);
+    }
   }
 
   const onSubmitRegionUpdate = (e) => {
@@ -95,14 +94,14 @@ const Region = () => {
         });
         setShowUpdate(false);
     }
-}
+  }
 
   const onChangeRegion = (event) => {
     let res = event.target.value.trim();
     let str = res.toLowerCase();
     let region = str.charAt(0).toUpperCase() + str.slice(1);
     setRegionName(region.replace(/[\s]{2,}/g, " "));
-}
+  }
 
     return (
       <>

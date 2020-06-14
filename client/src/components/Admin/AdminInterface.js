@@ -16,6 +16,7 @@ import Modal from 'react-bootstrap/Modal';
 import SupplierCommand from './TabSupplier/TapSupplier';
 import Shipping from './TabShipping/TabShipping';
 import Region from './TabRegion/TabRegion';
+import Promo from './TabPromo/TabPromo';
 import Color from './Color/Color';
 
 const AdminInterface = () => {
@@ -555,6 +556,7 @@ const AdminInterface = () => {
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Shipping</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">public</i>Region</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">redeem</i>Code Promo</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
@@ -573,6 +575,9 @@ const AdminInterface = () => {
                 </TabPanel>
                 <TabPanel>
                     <Region />
+                </TabPanel>
+                <TabPanel>
+                    <Promo />
                 </TabPanel>
             </Tabs>
         </div>
