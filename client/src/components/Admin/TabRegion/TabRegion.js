@@ -19,7 +19,7 @@ const Region = () => {
     }
     useEffect(() => {
         receivedData();
-    })
+    }, [])
 
     const deleteRegion = (id) => {
       axios.delete("http://127.0.0.1:8000/api/region/"+id, config).then(res => {
@@ -34,12 +34,13 @@ const Region = () => {
     }
 
     const receivedData = () => {
+      console.log('receivedData')
       axios.get("http://127.0.0.1:8000/api/region", config).then(res => {
         const newPostDataRegions =  res.data.map((region) => 
         <tr key={region.id}>
           <td><p className="m-2 align-items-center">{region.id}</p></td>
           <td><p className="m-2">{region.name}</p></td>
-          <td> <button className="btn btn-outline-info m-1" onClick={() => {setRegionId(region.id); setShowUpdate(true)}}> Modify </button></td>
+          <td> <button className="btn btn-outline-info m-1" onClick={() => {setRegionId(region.id); setRegionName(region.name); setShowUpdate(true)}}> Modify </button></td>
           <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteRegion(region.id)}> Delete </button></td>
         </tr>
         )
@@ -140,6 +141,7 @@ const Region = () => {
                 <FormGroup>
                   <Label for="region">Region name</Label>
                   <Input
+                      value={regionName}
                       type="text"
                       name="region"
                       id="region"
