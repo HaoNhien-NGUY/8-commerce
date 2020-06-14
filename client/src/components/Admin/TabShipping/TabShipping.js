@@ -7,21 +7,113 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Shipping() {
+    const [postDataShipp, setPostDataShipp] = useState([]);
+    const [limit, setLimit] = useState(5);
+    const [offset, setOffset] = useState(0);
+    const [pageCount, setPageCount] = useState();
+    const [divShipp, setDivShipp] = useState([]);
+    const [showDetails, setShowDetails] = useState(false);
+
     const config = {
         headers: {
             "Content-type": "application/json"
         }
     };
-// commencer par faire la page create new shipping company, make le lien dans app,js pour a page et creer le component CreateShipping
+
+    const handlePageClick = (e) => {
+        const selectedPage = e.selected;
+        const newOffset = selectedPage * limit;
+        setOffset(newOffset)
+    };
+
+    useEffect(() => {
+        axios.get(`http://127.0.0.1:8000/api/shippingmethod`, config).then(async e => {
+            // await setPageCount(Math.ceil(e.data.nbResults / limit))
+            // console.log(e.data)
+            const newPostDataShipp = e.data.map((shipping) =>
+                <tr key={shipping.id}>
+                    <td><p className="myMargin align-items-center">{shipping.id}</p></td>
+                    <td><p className="myMargin">{shipping.name}</p></td>
+                    <td><button onClick={e => e.preventDefault() + showDetailsShipping(shipping.id)} className="btn btn-outline-dark m-1">View</button></td>
+                    <td><button  className="btn btn-outline-info m-1">Modify</button></td>
+                </tr>
+            )
+            setPostDataShipp(newPostDataShipp);
+        });
+    }, [offset]);
+
+    function showDetailsShipping(id) {
+        axios.get("http://127.0.0.1:8000/api/shippingmethod/" + id, config).then(res => {
+            setDivShipp(res.data.shippingPricings);
+            setShowDetails(true);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+    
     return (
         <>
             <ToastContainer />
             <div className="row justify-content-end mb-2">
                 <button onClick={() => window.location.href = 'admin/create/shipping'} className="btn btn-success m-1">+ New Shipping company</button>
                 {/* <button className="btn btn-success m-1">+ New Supplier</button> */}
-
-
             </div>
+            <div className="row border p-2">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><p className="myMargin align-items-center"> ID </p></th>
+                            <th><p className="myMargin"> Company </p></th>
+                            <th><p className="myMargin" colSpan="3" className="m-1"> Actions </p></th>
+                        </tr>
+                    </thead>
+                    <tbody>{postDataShipp}</tbody>
+                </table>
+            </div>
+            <Modal show={showDetails} onHide={() => setShowDetails(false)}>
+                <Modal.Header closeButton>Order !</Modal.Header>
+                <Modal.Body>
+                    {divShipp.length > 0 &&
+                    divShipp.map( ship => 
+                        <div className="divOrderCart" key={ship.id}>
+                            <table className="productinCart">
+                                <tbody>
+                                    <tr>
+                                        <td className="detailsShip">
+                                            <span><b>ID:</b> {ship.id}</span>
+                                            <span><b>Region:</b> {ship.region.name}</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="tableborder">
+                                        <td className="detailsShip">
+                                            <span><b>Price per Kilo:</b> {ship.pricePerKilo}</span>
+                                            <span><b>Duration:</b> {ship.duration}</span>
+                                            <span><b>Base Price:</b> {ship.basePrice}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    <Button color="dark" className="mt-4" block onClick={() => setShowDetails(false)}>Close</Button>
+                </Modal.Body>
+            </Modal>
+            {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div>
+                    <ReactPaginate
+                        previousLabel={"prev"}
+                        nextLabel={"next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={2}
+                        onPageChange={handlePageClick}
+                        containerClassName={"pagination"}
+                        subContainerClassName={"pages pagination"}
+                        activeClassName={"active"} />
+                </div>
+            </div> */}
         </>
     )
 }
