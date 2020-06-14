@@ -75,20 +75,20 @@ function CreateOrder() {
         let invalids = {};
 
         if (idSupplier == "") {
-            invalids.idsupplier = "PLease select a supplier";
+            invalids.idsupplier = "Please select a supplier";
         }
         if (ourAdress != "") {
             if (ourAdress.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?.@#\]]/)) {
                 invalids.adress = "Invalids charactere";
             }
         } else {
-            invalids.adress = "PLease enter adress";
+            invalids.adress = "Please enter adress";
         }
         if (subProduct == "") {
             invalids.subproduct = "Select subProduct";
         }
         if (quantity.length == 0) {
-            invalids.quantity = "PLease enter quantity";
+            invalids.quantity = "Please enter quantity";
         }
 
         if (Object.keys(invalids).length === 0) {
