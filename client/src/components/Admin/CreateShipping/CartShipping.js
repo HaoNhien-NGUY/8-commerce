@@ -82,7 +82,6 @@ function CartShipping(props) {
                     });
                 }).catch(error => {
                     console.log(error);
-                    toast.error(error.response.data.message, { position: 'top-center' });
                 });
             }
         } else {
@@ -94,7 +93,6 @@ function CartShipping(props) {
     if (props.handleCart.length > 0) {
         return (
             <>
-            <ToastContainer />
                 <div className="container mb-5" key={countProps}>
                     <h2 className="text-center">Company name: {props.name}</h2>
                     {divShipping}

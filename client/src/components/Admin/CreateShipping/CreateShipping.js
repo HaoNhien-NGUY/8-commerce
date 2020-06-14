@@ -87,12 +87,21 @@ function CreateShipping() {
                 "duration": duration,
                 "basePrice": basePrice
             }
-            setCartShip([...cartShip, obj]);
+            let tab = [];
+            cartShip.map( res => {
+                tab.push(res.region);
+            });
+            if (tab.includes(selectRegion)) {
+                toast.error('Region already added !', { position: 'top-center' });
+            } else {
+                setCartShip([...cartShip, obj]);
+            }
         }
     }, [isReady])
 
     return (
         <>
+            <ToastContainer />
             <div className="container">
                 <h1>New Shipping</h1>
                 <div className="row justify-content-end mb-2">
