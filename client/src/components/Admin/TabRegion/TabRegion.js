@@ -133,7 +133,7 @@ const Region = () => {
           </Modal>
           <Modal show={showUpdate} onHide={() => setShowUpdate(false)}>
             <Modal.Header closeButton>
-              Create Region !
+             Update Region !
               </Modal.Header>
             <Modal.Body>
               <Form onSubmit={onSubmitRegionUpdate}>
