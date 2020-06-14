@@ -15,6 +15,7 @@ import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
 import SupplierCommand from './TabSupplier/TapSupplier';
 import Shipping from './TabShipping/TabShipping';
+import Region from './TabRegion/TabRegion';
 import Color from './Color/Color';
 
 const AdminInterface = () => {
@@ -126,7 +127,6 @@ const AdminInterface = () => {
                         <td> <button onClick={e => e.preventDefault() + handleShowCateEdit(category.id, category.name)} className="btn btn-outline-info m-1"> Modify </button></td>
                         <td> <button onClick={() => window.location.href = '/admin/subcategory/' + category.id} className="btn btn-outline-dark m-1"> SubCategories</button></td>
                         <td> <button onClick={async() => { await migrationCategory(category.id); setDeleteCategoryModal(true); setCategoryId(category.id);}} className="btn btn-outline-danger m-1"> Delete </button></td>
-                        {/* <td> <button onClick={() => deleteCategory(category.id)} className="btn btn-outline-danger m-1"> Delete </button></td> */}
                     </tr>
                 )
                 setPostDataCategories(newPostDataCategories)
@@ -554,6 +554,7 @@ const AdminInterface = () => {
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">color_lens</i>Colors</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Shipping</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">public</i>Region</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
@@ -569,6 +570,9 @@ const AdminInterface = () => {
                 </TabPanel>
                 <TabPanel>
                     <Shipping />
+                </TabPanel>
+                <TabPanel>
+                    <Region />
                 </TabPanel>
             </Tabs>
         </div>
