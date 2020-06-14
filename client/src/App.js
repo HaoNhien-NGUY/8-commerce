@@ -34,6 +34,7 @@ import AccessUpdateCategory from './components/Admin/UpdateCategory/AccessUpdate
 import AccessUpdateSubCategory from './components/Admin/UpdateSubCategory/AccessUpdateSubCategoy';
 import AccessCreateOrder from './components/Admin/CreateOrder/AccessCreateOrder';
 import AccessCreateShipping from './components/Admin/CreateShipping/AccessCreateShipping';
+import AccessUpdateShipping from './components/Admin/UpdateShipping/AccessUpdateShipping';
 
 
 class App extends React.Component {
@@ -67,6 +68,7 @@ class App extends React.Component {
                         <Route exact path="/admin/create/image/:idproduct/:idsubproduct" component={CreateImageSubproduct} />
                         <Route exact path="/admin/update/product/:id" component={AccessUpdateProduct} />
                         <Route exact path="/admin/update/category/:id" component={AccessUpdateCategory} />
+                        <Route exact path="/admin/update/shipping/:id" component={AccessUpdateShipping} />
                         <Route path='*' exact={true} component={NotFound} />
                     </Switch>
                 </Router>

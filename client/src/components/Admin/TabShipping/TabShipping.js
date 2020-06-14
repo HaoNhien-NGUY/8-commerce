@@ -35,7 +35,7 @@ function Shipping() {
                     <td><p className="myMargin align-items-center">{shipping.id}</p></td>
                     <td><p className="myMargin">{shipping.name}</p></td>
                     <td><button onClick={e => e.preventDefault() + showDetailsShipping(shipping.id)} className="btn btn-outline-dark m-1">View</button></td>
-                    <td><button  className="btn btn-outline-info m-1">Modify</button></td>
+                    <td><button onClick={() => window.location.href = '/admin/update/shipping/' + shipping.id} className="btn btn-outline-info m-1">Modify</button></td>
                 </tr>
             )
             setPostDataShipp(newPostDataShipp);
@@ -73,7 +73,7 @@ function Shipping() {
             <Modal show={showDetails} onHide={() => setShowDetails(false)}>
                 <Modal.Header closeButton>Order !</Modal.Header>
                 <Modal.Body>
-                    {divShipp.length > 0 &&
+                    {divShipp.length > 0 ?
                     divShipp.map( ship => 
                         <div className="divOrderCart" key={ship.id}>
                             <table className="productinCart">
@@ -94,7 +94,7 @@ function Shipping() {
                                 </tbody>
                             </table>
                         </div>
-                    )}
+                    ) : <h4>No region declared</h4>}
                     <Button color="dark" className="mt-4" block onClick={() => setShowDetails(false)}>Close</Button>
                 </Modal.Body>
             </Modal>
