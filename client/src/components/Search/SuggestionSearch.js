@@ -84,6 +84,8 @@ export default class SuggestionSearch extends Component {
   }
 
   render() {
+    const imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
+
     const show = this.state.show;
 
     const isDataReady = this.state.isDataReady;
@@ -199,7 +201,7 @@ export default class SuggestionSearch extends Component {
                   >
                     <div className="row p-1">
                       <img
-                        src={process.env.REACT_APP_API_LINK + product.images[0]}
+                        src={product.images ? process.env.REACT_APP_API_LINK + product.images[0] : imageDefault}
                         className="sugg-product_img col-4"
                       ></img>
                       <div className="col-8">
