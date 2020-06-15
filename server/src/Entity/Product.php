@@ -85,6 +85,12 @@ class Product
      */
     private $supplier;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"products"})
+     */
+    private $promoted;
+
 
 
     public function __construct()
@@ -243,6 +249,18 @@ class Product
     public function setSupplier(?Supplier $supplier): self
     {
         $this->supplier = $supplier;
+
+        return $this;
+    }
+
+    public function getPromoted(): ?bool
+    {
+        return $this->promoted;
+    }
+
+    public function setPromoted(bool $promoted): self
+    {
+        $this->promoted = $promoted;
 
         return $this;
     }
