@@ -80,6 +80,18 @@ class Panier extends Component {
     }
   }
 
+  myCallback = (dataFromCheckout) => {
+    let inputlist = document.getElementsByName('quantity')
+
+    if (dataFromCheckout === true) {
+      inputlist.forEach(function (element) { element.setAttribute("disabled", "disabled"); })
+    }
+    else {
+      inputlist.forEach(function (element) { element.removeAttribute("disabled"); })
+    }
+  }
+
+
   onsuppress(e) {
     let id = e.id.replace("button_", "")
     let newprice = 0
@@ -121,7 +133,6 @@ class Panier extends Component {
         {this.state.nombreTotal == 0 ? <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
           <div className="row h-100 m-0 p-0">
 
-
             <div className="col-12 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
               <ToastContainer />
               <div id="LargeCart" className="LargeCart">
@@ -155,7 +166,7 @@ class Panier extends Component {
                                 <input
                                   type="number"
                                   id={e.id}
-                                  name="tentacles"
+                                  name="quantity"
                                   defaultValue={e.quantity}
                                   onChange={e => this.handleChange(e.target)}
                                   min="1"
@@ -178,7 +189,8 @@ class Panier extends Component {
         </div>
           : <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
             <div className="row h-100 m-0 p-0">
-              <div className="col-md-6 m-0 p-3"><Checkout /></div>
+              <div className="col-md-6 m-0 p-3"><Checkout callbackFromParent={this.myCallback} price={this.state.prixTotal} />
+              </div>
 
               <div className="col-md-6 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
                 <ToastContainer />
@@ -213,7 +225,7 @@ class Panier extends Component {
                                 <input
                                     type="number"
                                     id={e.id}
-                                    name="tentacles"
+                                    name="quantity"
                                     defaultValue={e.quantity}
                                     onChange={e => this.handleChange(e.target)}
                                     min="1"

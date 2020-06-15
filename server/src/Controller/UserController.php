@@ -8,6 +8,8 @@ use App\Entity\Region;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Repository\UserOrderRepository;
+use App\Repository\UserOrderSubproductRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManager;
@@ -227,6 +229,20 @@ class UserController extends AbstractController
         } catch (NotEncodableValueException $e) {
             return $this->json(['message' => $e->getMessage()], 400);
         }
+    }
+
+    /**
+     * @Route("/api/user/order", name="user_order_details", methods="GET")
+     */
+    public function userOrderDetails(Request $request, UserOrderRepository $userOrderRepository, UserOrderSubproductRepository $userOrderSubproductRepository)
+    {
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+        $trackingNumber = $req->trackingNumber;
+
+        $order = $userOrderRepository->findOneBy(['trackingNumber' => $trackingNumber]);
+
+        return $this->json($order, 200, [], ['groups' => 'user_order_details']);
     }
 
     private function createToken($user)

@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Product
 {
     /**
-     * @Groups({"products","category","subproduct", "supplier_order_details", "supplier_products"})
+     * @Groups({"products","category","subproduct", "supplier_order_details", "supplier_products", "user_order_details"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -25,7 +25,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products","category", "subproduct", "supplier_order_details", "supplier_products"})
+     * @Groups({"products","category", "subproduct", "supplier_order_details", "supplier_products", "user_order_details"})
      */
     private $title;
 
@@ -61,7 +61,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"products","category", "supplier_products"})
+     * @Groups({"products","category", "supplier_products", "user_order_details"})
      */
     private $sex;
 
@@ -84,6 +84,12 @@ class Product
      * @Groups({"products"})
      */
     private $supplier;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"products"})
+     */
+    private $promoted;
 
 
 
@@ -243,6 +249,18 @@ class Product
     public function setSupplier(?Supplier $supplier): self
     {
         $this->supplier = $supplier;
+
+        return $this;
+    }
+
+    public function getPromoted(): ?bool
+    {
+        return $this->promoted;
+    }
+
+    public function setPromoted(bool $promoted): self
+    {
+        $this->promoted = $promoted;
 
         return $this;
     }

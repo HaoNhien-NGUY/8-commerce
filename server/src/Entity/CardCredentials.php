@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\CardCredentialsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,24 +17,34 @@ class CardCredentials
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"user"})
      */
-    private $card_numbers;
+    private $cardNumbers;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user"})
      */
-    private $expiration_date;
+    private $expirationDate;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="cardCredentials")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"user"})
      */
     private $user;
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('cardNumbers', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('expirationDate', new Assert\NotBlank());
+    }
 
     public function getId(): ?int
     {
@@ -40,24 +53,24 @@ class CardCredentials
 
     public function getCardNumbers(): ?int
     {
-        return $this->card_numbers;
+        return $this->cardNumbers;
     }
 
-    public function setCardNumbers(int $card_numbers): self
+    public function setCardNumbers(int $cardNumbers): self
     {
-        $this->card_numbers = $card_numbers;
+        $this->cardNumbers = $cardNumbers;
 
         return $this;
     }
 
     public function getExpirationDate(): ?string
     {
-        return $this->expiration_date;
+        return $this->expirationDate;
     }
 
-    public function setExpirationDate(string $expiration_date): self
+    public function setExpirationDate(string $expirationDate): self
     {
-        $this->expiration_date = $expiration_date;
+        $this->expirationDate = $expirationDate;
 
         return $this;
     }

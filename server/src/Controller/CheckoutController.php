@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CheckoutController extends AbstractController
 {
+    //route to register the order in the db
     /**
      * @Route("/api/checkout", name="checkout")
      */
@@ -41,10 +42,10 @@ class CheckoutController extends AbstractController
         $lowestPrice = 0;
         $lowestKey = false;
         foreach ($shippingPricings as $key => $val) {
-            $method['id'] = $val->getShippingMethod()->getId();
+            $method['pricing_id'] = $val->getId();
             $method['name'] = $val->getShippingMethod()->getName();
             $method['duration'] = $val->getDuration();
-
+            
             $price = 0;
             foreach ($req->subproducts as $value) {
                 $product = $subproductRepository->find($value->subproduct_id);
