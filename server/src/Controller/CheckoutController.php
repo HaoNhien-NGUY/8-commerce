@@ -40,12 +40,12 @@ class CheckoutController extends AbstractController
         $shippingMethods = [];
         $lowestPrice = 0;
         $lowestKey = false;
+        $price = 0;
         foreach ($shippingPricings as $key => $val) {
             $method['id'] = $val->getShippingMethod()->getId();
             $method['name'] = $val->getShippingMethod()->getName();
             $method['duration'] = $val->getDuration();
 
-            $price = 0;
             foreach ($req->subproducts as $value) {
                 $product = $subproductRepository->find($value->subproduct_id);
                 if(!$product) return $this->json(['message' => 'subproduct with id '.$value->subproduct_id.' not found.']);
