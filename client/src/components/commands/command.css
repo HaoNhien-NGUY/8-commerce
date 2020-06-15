@@ -1,0 +1,27 @@
+.formCommand {
+    width: 30%;
+    margin: auto;
+}
+
+.resultCommand {
+    float: right;
+}
+
+.borderBottomC {
+    /* border-bottom: 1px solid lightgray; */
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.intransition {
+    margin-left: 41.5%;
+}
+
+.disabledC {
+    color: rgb(202, 202, 202);
+}
+
+.arrivedC {
+    color: green;
+    margin-left: 97%;
+}

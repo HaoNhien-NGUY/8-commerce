@@ -17,6 +17,8 @@ import {
 import Product from './components/products/product.details';
 import Panier from './components/panier/panier';
 import Home from './components/home/home';
+import Commands from './components/commands/inputCommand';
+import Command from './components/commands/idCommand';
 import AccessAdmin from './components/Admin/AccessAdmin';
 import NotFound from './components/NotFound/NotFound';
 // import AccessCreateCategory from './components/Admin/CreateCategory/AccessCreateCategory';
@@ -51,6 +53,8 @@ class App extends React.Component {
                 <IndexNavbar />
                     <Switch>
                         <Route exact path="/" component={Home} />
+                        <Route exact path="/command" component={Commands} />
+                        <Route exact path="/command/:id" component={Command} />
                         <Route exact path="/panier" component={Panier} />
                         <Route exact path="/product/:id" component={Product} />
                         <Route exact path="/search" component={SearchSidebar} />
