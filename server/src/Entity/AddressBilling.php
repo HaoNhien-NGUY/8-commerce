@@ -26,31 +26,31 @@ class AddressBilling
     /**
      * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="addressBillings")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_order_details"})
      */
     private $region;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_order_details"})
      */
     private $country;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_order_details"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_order_details"})
      */
     private $postcode;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_order_details"})
      */
     private $address;
 
@@ -66,13 +66,13 @@ class AddressBilling
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_order_details"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_address"})
+     * @Groups({"user_address", "user_order_details"})
      */
     private $lastname;
 
