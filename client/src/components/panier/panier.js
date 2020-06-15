@@ -189,7 +189,7 @@ class Panier extends Component {
         </div>
           : <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
             <div className="row h-100 m-0 p-0">
-              <div className="col-md-6 m-0 p-3"><Checkout callbackFromParent={this.myCallback} />
+              <div className="col-md-6 m-0 p-3"><Checkout callbackFromParent={this.myCallback} price={this.state.prixTotal} />
               </div>
 
               <div className="col-md-6 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">

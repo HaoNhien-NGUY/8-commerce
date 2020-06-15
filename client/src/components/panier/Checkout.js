@@ -6,15 +6,20 @@ import PropTypes from 'prop-types';
 import { connect } from "react-redux";
 import "react-step-progress-bar/styles.css";
 import { ProgressBar, Step } from "react-step-progress-bar";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Modal from 'react-bootstrap/Modal';
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+
 
 class Checkout extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            NoShipPrice: props.price,
             currentStep: 1,
             region: 1,
             country: "France",
-            percent: 0,
         }
     }
 
@@ -45,10 +50,19 @@ class Checkout extends React.Component {
     handleSubmit = event => {
         event.preventDefault()
         console.log(this.state)
+
+        this.setState({
+            currentStep: 4
+        })
     }
 
     _next = () => {
         if (this.state.currentStep === 1) {
+            let s = this.state;
+            if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
+                // return toast.error('Plese fill all the required informations', { position: 'top-center' });
+            }
+
             const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
             let hide = true
             this.props.callbackFromParent(hide);
@@ -80,7 +94,21 @@ class Checkout extends React.Component {
                         // console.log(error.response);
                     });
             }
+
         }
+
+        // if (this.state.currentStep == 2) {
+        //     let s = this.state;
+        //     if (s.billing !== 'true') {
+        //         if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
+        //             return toast.error('Plese fill all the required informations', { position: 'top-center' });
+        //     }
+        //     else {
+        //         if (!s.shippingchoice)
+        //             return toast.error('Plese choose a delivery option', { position: 'top-center' });
+        //     }
+        // }
+
         let currentStep = this.state.currentStep
         currentStep = currentStep >= 2 ? 3 : currentStep + 1
         this.setState({
@@ -102,7 +130,7 @@ class Checkout extends React.Component {
 
     previousButton() {
         let currentStep = this.state.currentStep;
-        if (currentStep !== 1) {
+        if (currentStep !== 1 && currentStep !== 4) {
             return (
                 <button
                     className="btn btn-secondary"
@@ -111,6 +139,7 @@ class Checkout extends React.Component {
                 </button>
             )
         }
+
         return null;
     }
 
@@ -125,16 +154,20 @@ class Checkout extends React.Component {
                 </button>
             )
         }
+        if (currentStep == 3) {
+            return (
+                <> <button className="btn btn-success float-right" type="button" onClick={this.handleSubmit}>Pay Now</button>
+                </>
+            )
+        }
+
         return null;
     }
 
     render() {
+
         const { user } = this.props.auth;
-
         const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
-
-        console.log(arrayOfObj)
-
         return (
             <>
                 {/* <ProgressBar
@@ -190,6 +223,12 @@ class Checkout extends React.Component {
                                     handleSubmit={this.handleSubmit}
                                     data={this.state}
                                 />
+                                <Step4
+                                    currentStep={this.state.currentStep}
+                                    handleChange={this.handleChange}
+                                    handleSubmit={this.handleSubmit}
+                                    data={this.state}
+                                />
                                 {this.previousButton()}
                                 {this.nextButton()}
                             </form>  </>
@@ -221,10 +260,8 @@ function Step1(props) {
                     </label>
                 </div >
             )
-
         }
     }
-
     if (props.currentStep !== 1) {
         return null
     }
@@ -234,35 +271,35 @@ function Step1(props) {
                 <div className="form-group col-md-12">
                     <legend>Contact information</legend>
                     <label htmlFor="email">Email</label>
-                    <input type="email" className="form-control" id="email" name="email" placeholder="Email" onChange={props.handleChange} required />
+                    <input type="email" className="form-control" id="email" name="email" placeholder="Email" defaultValue={props.data.email ? props.data.email : null} onChange={props.handleChange} required />
                 </div></>}
             <legend>Shipping Address</legend>
             {ShippoingAdressOptions}
             <div className="form-row  col-md-12">
                 <div className="form-group col-md-6">
                     <label htmlFor="inputfirstname">Firstname</label>
-                    <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" name="firstname" onChange={props.handleChange} />
+                    <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" defaultValue={props.data.firstname ? props.data.firstname : null} name="firstname" onChange={props.handleChange} />
                 </div>
                 <div className="form-group col-md-6">
                     <label htmlFor="inputLastname">Lastname</label>
-                    <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" name='lastname' onChange={props.handleChange} />
+                    <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" defaultValue={props.data.lastname ? props.data.lastname : null} name='lastname' onChange={props.handleChange} />
                 </div>
             </div>
             <div className="form-group  col-md-12">
                 <label htmlFor="inputAddress">Address</label>
-                <input type="text" className="form-control" id="inputAddress" name='adresse' placeholder="Address" onChange={props.handleChange} />
+                <input type="text" className="form-control" id="inputAddress" name='address' placeholder="Address" defaultValue={props.data.address ? props.data.address : null} onChange={props.handleChange} />
             </div>
             <div className="form-row  col-md-12">
                 <div className="form-group col-md-6">
                     <label htmlFor="inputCity">City</label>
-                    <input type="text" className="form-control" id="inputCity" name='city' placeholder="City" value={props.city} onChange={props.handleChange} />
+                    <input type="text" className="form-control" id="inputCity" name='city' placeholder="City" defaultValue={props.data.city ? props.data.city : null} onChange={props.handleChange} />
                 </div>
                 <div className="form-group col-md-4">
                     <label htmlFor="inputZip">Zip code</label>
-                    <input type="text" className="form-control" id="inputZip" name='zip' placeholder="Zipcode" value={props.zip} onChange={props.handleChange} />
+                    <input type="text" className="form-control" id="inputZip" name='zip' defaultValue={props.data.zip ? props.data.zip : null} placeholder="Zipcode" value={props.zip} onChange={props.handleChange} />
                 </div>
             </div>
-            <SlideToggle collapsed
+            <SlideToggle collapsed data={props}
                 render={({ onToggle, setCollapsibleElement }) => (
                     <div className="my-collapsible">
                         <div className="form-row col-md-12">
@@ -275,8 +312,8 @@ function Step1(props) {
                                         <label htmlFor="inputRegion">Region</label>
                                         <select name="region" onChange={props.handleChange} className="custom-select">
                                             <option value='1'>Choose a Region</option>
-                                            <option value="2">Europe</option>
-                                            <option value="3">Africa</option>
+                                            <option value="2" >Europe</option>
+                                            <option value="3" >Africa</option>
                                             <option value="4">Asia</option>
                                             <option value="5">North America</option>
                                             <option value="6">South America</option>
@@ -285,7 +322,7 @@ function Step1(props) {
                                     </div>
                                     <div className="form-group col-md-4">
                                         <label htmlFor="inputZip">Country</label>
-                                        <input type="text" className="form-control" id="inputCountry" placeholder="Country" name='country' value={props.country} onChange={props.handleChange} />
+                                        <input type="text" className="form-control" id="inputCountry" defaultValue={props.data.country ? props.data.country : null} placeholder="Country" name='country' value={props.country} onChange={props.handleChange} />
                                     </div>
                                 </div>
                             </div>
@@ -349,32 +386,33 @@ function Step2(props) {
                                         <div className="form-row  col-md-12">
                                             <div className="form-group col-md-6">
                                                 <label htmlFor="inputfirstname">Firstname</label>
-                                                <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" name="billing_firstname" onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" defaultValue={props.data.billing_firstname ? props.data.billing_firstname : null} name="billing_firstname" onChange={props.handleChange} />
                                             </div>
                                             <div className="form-group col-md-6">
                                                 <label htmlFor="inputLastname">Lastname</label>
-                                                <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" name='billing_lastname' onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" defaultValue={props.data.billing_lastname ? props.data.billing_lastname : null} name='billing_lastname' onChange={props.handleChange} />
                                             </div>
                                         </div>
                                         <div className="form-group  col-md-12">
                                             <label htmlFor="inputAddress">Address</label>
-                                            <input type="text" className="form-control" id="inputAddress" placeholder="Address" name='billing_adresse' placeholder="Address" onChange={props.handleChange} />
+                                            <input type="text" className="form-control" id="inputAddress" placeholder="Address" defaultValue={props.data.billing_address ? props.data.billing_address : null} name='billing_adress' placeholder="Address" onChange={props.handleChange} />
                                         </div>
                                         <div className="form-row  col-md-12">
                                             <div className="form-group col-md-6">
                                                 <label htmlFor="inputCity">City</label>
-                                                <input type="text" className="form-control" id="inputCity" placeholder="City" name='billing_city' value={props.city} onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputCity" placeholder="City" defaultValue={props.data.billing_city ? props.data.billing_city : null} name='billing_city' onChange={props.handleChange} />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="inputZip">Zip code</label>
-                                                <input type="text" className="form-control" id="inputZip" placeholder="Zipcode" name='billing_zip' value={props.zip} onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputZip" placeholder="Zipcode" defaultValue={props.data.billing_zip ? props.data.billing_zip : null} name='billing_zip' value={props.zip} onChange={props.handleChange} />
                                             </div>
                                         </div>
                                         <div className="form-row  col-md-12">
                                             <div className="form-group col-md-6">
                                                 <label htmlFor="inputRegion">Region</label>
-                                                <select name="billing_region" onChange={props.handleChange} className="custom-select">
+                                                <select defaultValue={props.data.billing_region ? props.data.billing_region : null} name="billing_region" onChange={props.handleChange} className="custom-select">
                                                     <option value='1'>Choose a Region</option>
+                                                    <option value='1'>France</option>
                                                     <option value="2">Europe</option>
                                                     <option value="3">Africa</option>
                                                     <option value="4">Asia</option>
@@ -385,7 +423,7 @@ function Step2(props) {
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="inputZip">Country</label>
-                                                <input type="text" className="form-control" id="inputCountry" name='billing_country' value={props.country} onChange={props.handleChange} />
+                                                <input type="text" className="form-control" id="inputCountry" name='billing_country' placeholder="Country" defaultValue={props.data.billing_country ? props.data.billing_country : null} value={props.country} onChange={props.handleChange} />
                                             </div>
                                         </div>
                                     </div>
@@ -413,72 +451,102 @@ function Step3(props) {
     if (props.currentStep !== 3) {
         return null
     }
-    return (
-        <React.Fragment>
-            <>
-                {/* <div className="form-group">
-                    <label className="col-sm-3 control-label" htmlFor="card-holder-name">Name on Card</label>
-                    <div className="col-sm-9">
-                        <input type="text" className="form-control" name="card-holder-name" id="card-holder-name" placeholder="Card Holder's Name" />
+    else {
+
+        let shipping_cost = props.data.shipping_methods[props.data.shippingchoice].price;
+        let totalprice = shipping_cost + props.data.NoShipPrice
+
+
+        return (
+            <React.Fragment>
+                <>
+                    <div className="alert alert-info"><h4>Your final order details:</h4>
+                        <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Order :</span><span>{props.data.NoShipPrice} €</span></div>
+                        <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Shipping :</span><span>{shipping_cost} €</span></div>
+                        <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{totalprice} €</span></div>
+
                     </div>
-                </div>
-                <div className="form-group">
-                    <label className="col-sm-3 control-label" htmlFor="card-number">Card Number</label>
-                    <div className="col-sm-9">
-                        <input type="text" className="form-control" name="card-number" id="card-number" placeholder="Debit/Credit Card Number" />
+                    <div className="form-group">
+                        <label className="col-sm-3 control-label" htmlFor="cardholdername">Name on Card</label>
+                        <div className="col-sm-9">
+                            <input type="text" className="form-control" name="cardholdername" id="cardholdername" placeholder="Card Holder's Name" defaultValue={props.data.cardholdername ? props.data.cardholdername : null} onChange={props.handleChange} />
+                        </div>
                     </div>
-                </div>
-                <div className="form-group">
-                    <label className="col-sm-3 control-label" htmlFor="expiry-month">Expiration Date</label>
-                    <div className="col-sm-9">
-                        <div className="row">
-                            <div className="col-xs-6 pr-05">
-                                <select className="form-control" name="expiry-month" id="expiry-month">
-                                    <option>Month</option>
-                                    <option value="01">Jan (01)</option>
-                                    <option value="02">Feb (02)</option>
-                                    <option value="03">Mar (03)</option>
-                                    <option value="04">Apr (04)</option>
-                                    <option value="05">May (05)</option>
-                                    <option value="06">June (06)</option>
-                                    <option value="07">July (07)</option>
-                                    <option value="08">Aug (08)</option>
-                                    <option value="09">Sep (09)</option>
-                                    <option value="10">Oct (10)</option>
-                                    <option value="11">Nov (11)</option>
-                                    <option value="12">Dec (12)</option>
-                                </select>
-                            </div>
-                            <div className="col-xs-6 pl-05">
-                                <select className="form-control" name="expiry-year">
-                                    <option value="13">2013</option>
-                                    <option value="14">2014</option>
-                                    <option value="15">2015</option>
-                                    <option value="16">2016</option>
-                                    <option value="17">2017</option>
-                                    <option value="18">2018</option>
-                                    <option value="19">2019</option>
-                                    <option value="20">2020</option>
-                                    <option value="21">2021</option>
-                                    <option value="22">2022</option>
-                                    <option value="23">2023</option>
-                                </select>
+                    <div className="form-group">
+                        <label className="col-sm-3 control-label" htmlFor="cardnumber">Card Number</label>
+                        <div className="col-sm-9">
+                            <input type="text" className="form-control" name="cardnumber" id="cardnumber" placeholder="Debit/Credit Card Number" defaultValue={props.data.cardnumber ? props.data.cardnumber : null} onChange={props.handleChange} />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className="col-sm-3 control-label" htmlFor="expirymonth">Expiration Date</label>
+                        <div className="col-sm-9">
+                            <div className="row ml-1">
+                                <div className="col-xs-6 pr-05">
+                                    <select className="form-control" name="expirymonth" id="expirymonth">
+                                        <option>Month</option>
+                                        <option value="01">Jan (01)</option>
+                                        <option value="02">Feb (02)</option>
+                                        <option value="03">Mar (03)</option>
+                                        <option value="04">Apr (04)</option>
+                                        <option value="05">May (05)</option>
+                                        <option value="06">June (06)</option>
+                                        <option value="07">July (07)</option>
+                                        <option value="08">Aug (08)</option>
+                                        <option value="09">Sep (09)</option>
+                                        <option value="10">Oct (10)</option>
+                                        <option value="11">Nov (11)</option>
+                                        <option value="12">Dec (12)</option>
+                                    </select>
+                                </div>
+                                <div className="col-xs-6 pl-05">
+                                    <select className="form-control" name="expiryyear">
+                                        <option value="13">2013</option>
+                                        <option value="14">2014</option>
+                                        <option value="15">2015</option>
+                                        <option value="16">2016</option>
+                                        <option value="17">2017</option>
+                                        <option value="18">2018</option>
+                                        <option value="19">2019</option>
+                                        <option value="20">2020</option>
+                                        <option value="21">2021</option>
+                                        <option value="22">2022</option>
+                                        <option value="23">2023</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="form-group">
-                    <label className="col-sm-3 control-label" htmlFor="cvv">Card CVV</label>
-                    <div className="col-sm-3">
-                        <input type="text" className="form-control" name="cvv" id="cvv" placeholder="Security Code" />
+                    <div className="form-group">
+                        <label className="col-sm-3 control-label" htmlFor="cvv">Card CVV</label>
+                        <div className="col-sm-3">
+                            <input type="text" className="form-control" name="cvv" id="cvv" placeholder="Security Code" defaultValue={props.data.cvv ? props.data.cvv : null} onChange={props.handleChange} />
+                        </div>
                     </div>
-                </div> */}
-                <div className="form-group">
-                    <div className="col-sm-offset-3 col-sm-9">
-                        <button type="button" onClick={props.handleSubmit} className="btn btn-success">Pay Now</button>
-                    </div>
+
+                </>
+            </React.Fragment>
+        );
+    }
+}
+
+
+
+function Step4(props) {
+    if (props.currentStep !== 4) {
+        return null
+    }
+    return (
+        <React.Fragment>
+            <div className="f">
+                <h3>Your order has been successfully registered !</h3>
+                <p>Your order number is: 5633939402A139932</p>
+                <p> An confirmation e-mail has been sent to you with your order details and tracking number. <br />
+               You can track your order status here <a href="http://localhost:4242/">lien ici vers la page de surveillance des commandes</a></p>
+                <div className="form-group mt-4">
+                    <a href="http://localhost:4242/"><button className='btn btn-secondary'>Go back to the store</button></a>
                 </div>
-            </>
+            </div>
         </React.Fragment>
     );
 }
