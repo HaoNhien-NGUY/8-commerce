@@ -25,3 +25,22 @@
     color: green;
     margin-left: 97%;
 }
+
+.bordertable {
+    border: 1px solid rgb(197, 197, 197);
+}
+
+.tablOrder {
+    width: 100%;
+}
+
+.titleTable {
+    width: 30%;
+    padding-top: 5px;
+    background-color: rgb(248, 248, 248);
+}
+
+.errorfound {
+    color: red;;
+    font-weight: bold;
+}

@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-bootstrap/Modal";
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import './command.css';
-import { useRouteMatch } from "react-router-dom";
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import {  useLocation } from "react-router-dom";
 
 function CommandTracking() {
-    let idOrder = useRouteMatch("/command/:id").params.id;
     const [total, setTotal] = useState(false);
+    const [city, setCity] = useState(false);
+    const [country, setCountry] = useState(false);
+    const [lastname, setLastname] = useState(false);
+    const [firstname, setFirstname] = useState(false);
+    const [packaging, setPackaging] = useState(false);
     const [adressLivraison, setAdressLivraison] = useState(false);
-    const [adressFacturation, setAdressFacturation] = useState(false);
     const [divOrderProduct, setDivOrderProduct] = useState([]);
-
     const [isDelivred, setIsDelivred] = useState(false);
 
     const config = {
@@ -21,47 +21,63 @@ function CommandTracking() {
             "Content-type": "application/json"
         }
     }
+
+    function useQuery() {
+        return new URLSearchParams(useLocation().search);
+    }
+    
+    let idOrder = useQuery().get("order");
+
     useEffect(() => {
-        axios.get("http://localhost:8000/api/product/1", config).then(res => {
+        axios.get("http://localhost:8000/api/user/order/" + idOrder, config).then(res => {
+            console.log(res.data);
+            setCity(res.data.shippingAddress.city);
+            setCountry(res.data.shippingAddress.country);
+            setLastname(res.data.shippingAddress.firstname);
+            setFirstname(res.data.shippingAddress.lastname);
+            setAdressLivraison(res.data.shippingAddress.address);
+            setPackaging(res.data.packaging);
+            setTotal(res.data.cost);
+
+            if (Number(res.data.status) == 1) {
+                setIsDelivred(true);
+            }
+
             const newProduct = res.data.subproducts.map(product => 
-                console.log(product)
-                // <div className="divOrderCart" >
-                //     <table className="productinCart">
-                //         <tbody>
-                //             <tr>
-                //                 <td rowSpan="3" className="tableborder paddright">
-                //                     {/* <img className="imgOrder" src={`http://127.0.0.1:8000/api/image/${e.idProduct}/default/1.jpg`}/> */}
-                //                 </td>
-                //                 <td>
-                //                     <span><b>Title:</b> { product.subProductTitle}</span>
-                //                 </td>
-                //             </tr>
-                //             <tr className="tableborder">
-                //                 <td className="detailsproduct">
-                //                     <span><b>ID:</b> {product.idSubProduct}</span>
-                //                     <span><b>Color:</b> {product.subProductColor}</span>
-                //                     <span><b>Size:</b> {product.subProductSize}</span>
-                //                     <span><b>Quantity:</b> {product.quantity}</span>
-                //                     <span><b>Price:</b> {product.price * product.quantity} €</span>
-                //                 </td>
-                //             </tr>
-                //         </tbody>
-                //     </table>
-                // </div>   
+                <div className="divOrderCart pl-3 pr-3" >
+                    <table className="productinCart">
+                        <tbody>
+                            <tr>
+                                <td rowSpan="3" className="tableborder paddright">
+                                    <img className="imgOrder" src={`http://127.0.0.1:8000/api/image/${product.subproduct.product.id}/default/1.jpg`}/>
+                                </td>
+                                <td>
+                                    <span><b>Title:</b> { product.subproduct.product.title}</span>
+                                </td>
+                            </tr>
+                            <tr className="tableborder">
+                                <td className="detailsproduct">
+                                    <span><b>Color:</b> {product.subproduct.color.name}</span>
+                                    <span><b>Size:</b> {product.subproduct.size}</span>
+                                    <span><b>Sex:</b> {product.subproduct.product.sex}</span>
+                                    { product.promo != 0 ? 
+                                        <span><b>Price:</b> <s className="text-danger">{product.price} €</s> - {product.price - (product.price * (product.promo / 100))} €</span>
+                                        :<span><b>Price:</b> {product.price} €</span>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>   
             );
             setDivOrderProduct(newProduct);
         }).catch(error => {
             console.log(error);
         });
-
-        setTotal(1200);
-        setAdressLivraison("123 boulevard victor hugo (Saint-Ouen)");
-        setAdressFacturation("123 boulevard victor hugo (Saint-Ouen)");
-        // setIsDelivred(true);
     }, []);
 
 
-
+console.log(divOrderProduct);
     return (
         <>
             <div className="container mt-5">
@@ -71,9 +87,38 @@ function CommandTracking() {
                 <div className="col-sm-7 border-right pr-4">
                     <h2 className="text-center mb-4">Personal information</h2>
                     <div>
-                        <h5 className="borderBottomC"><b>Total Price:</b> <span className="resultCommand">{total} €</span></h5>
-                        <h5 className="borderBottomC"><b>Billing address:</b> <span className="resultCommand">{adressFacturation}</span></h5>
-                        <h5 className="borderBottomC"><b>Delivery address:</b> <span className="resultCommand">{adressLivraison}</span></h5>
+                        <table className="bordertable tablOrder">
+                            <tbody>
+                                <tr className="bordertable">
+                                    <th className="bordertable titleTable p-2"><h6><b>Firstname:</b></h6></th>
+                                    <td className="text-right p-2"><span>{firstname}</span></td>
+                                </tr>
+                                <tr className="bordertable">
+                                    <th className="bordertable titleTable p-2"><h6><b>Lastname:</b></h6></th>
+                                    <td className="text-right p-2"><span>{lastname}</span></td>
+                                </tr>
+                                <tr className="bordertable">
+                                    <th className="bordertable titleTable p-2"><h6><b>Country:</b></h6></th>
+                                    <td className="text-right p-2"><span>{country}</span></td>
+                                </tr>
+                                <tr className="bordertable">
+                                    <th className="bordertable titleTable p-2"><h6><b>City:</b></h6></th>
+                                    <td className="text-right p-2"><span>{city}</span></td>
+                                </tr>
+                                <tr className="bordertable">
+                                    <th className="bordertable titleTable p-2"><h6><b>Delivery address:</b></h6></th>
+                                    <td className="text-right p-2"><span>{adressLivraison}</span></td>
+                                </tr>
+                                <tr className="bordertable">
+                                    <th className="bordertable titleTable p-2"><h6><b>Packaging:</b></h6></th>
+                                    <td className="text-right p-2"><span>{packaging}</span></td>
+                                </tr>
+                                <tr className="bordertable">
+                                    <th className="bordertable titleTable p-2"><h6><b>Total Price:</b></h6></th>
+                                    <td className="text-right p-2"><span>{total} €</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div className="col-sm-5 pl-4">
@@ -93,7 +138,8 @@ function CommandTracking() {
                     }
                 </div>
             </div>
-            <div className="container">
+            <div className="container mb-5">
+                <h2 className="text-center mb-3">Your articles</h2>
                 {divOrderProduct}
             </div>
         </>
