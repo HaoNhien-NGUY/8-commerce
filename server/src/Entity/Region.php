@@ -23,7 +23,7 @@ class Region
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"shipping", "user_address"})
+     * @Groups({"shipping", "user_address", "user_order_details"})
      */
     private $name;
 
