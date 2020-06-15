@@ -16,11 +16,11 @@ class PromoCodeController extends AbstractController
     /**
      * @Route("/api/promocode", name="get_promocodes", methods="GET")
      */
-    public function index(Request $request, PromoCodeRepository $promoCodeRepository, NormalizerInterface $normalizer)
+    public function index(Request $request, PromoCodeRepository $promoCodeRepository)
     {
         $count = $promoCodeRepository->countTotalResults();
-        $promoCodes = $promoCodeRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
-        return $this->json(['nbResults' => $count, 'data' => $promoCodes], 200, [], ['groups' => 'shipping']);
+        $promoCode = $promoCodeRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
+        return $this->json(['nbResults' => $count, 'data' => $promoCode], 200, []);
     }
 
     /**
