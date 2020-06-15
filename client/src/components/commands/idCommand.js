@@ -172,10 +172,6 @@ function CommandTracking() {
                             <ProgressBar animated now={50} className="rotate90"/>
                         </div>
                     }
-                <div className="mt-5 mb-5">
-                    <h2 className="text-center mb-3">Your articles</h2>
-                    {divOrderProduct}
-                </div>
             </div>
             <div className="container mb-5">
                 <h2 className="text-center mb-3">Your articles</h2>
