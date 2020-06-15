@@ -26,10 +26,11 @@ class ShippingMethodController extends AbstractController
     /**
      * @Route("/api/shippingmethod", name="shippingmethod_index", methods="GET")
      */
-    public function index(ShippingMethodRepository $shippingMethodRepository)
+    public function index(Request $request, ShippingMethodRepository $shippingMethodRepository)
     {
-        $shippingMethod = $shippingMethodRepository->findAll();
-        return $this->json($shippingMethod, 200, [],['groups' => 'shipping']);
+        $count = $shippingMethodRepository->countTotalResults();
+        $shippingMethod = $shippingMethodRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
+        return $this->json(['nbResults' => $count, 'data' => $shippingMethod], 200, [], ['groups' => 'shipping']);
     }
 
     /**
