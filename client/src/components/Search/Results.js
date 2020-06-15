@@ -16,7 +16,6 @@ function Results(props) {
   if (results.length < 1) {
     return <h1>No Results</h1>;
   }
-
   if (display == "square"){
     return (
       <div className="container">

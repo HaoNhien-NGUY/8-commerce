@@ -12,6 +12,7 @@ import axios from "axios";
 import Results from "./Results";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {TransitionGroup, CSSTransition, SwitchTransition} from 'react-transition-group';
 
 export default class SearchSidebar extends Component {
   constructor() {
@@ -88,8 +89,8 @@ export default class SearchSidebar extends Component {
     // this.handleSubmit();
   }
 
-  sliderChangeValue(e) {
-    this.setState({ sliderCurrentValue: e.target.value, isResultsReady: false });
+  async sliderChangeValue(e) {
+    await this.setState({ sliderCurrentValue: e.target.value, isResultsReady: false });
     this.handleSubmit();
   }
 
@@ -226,6 +227,8 @@ export default class SearchSidebar extends Component {
     }
     console.log(jsonRequest);
 
+    this.setState({ isResultsReady: false });
+
     const header = { "Content-Type": "application/json" };
 
     axios
@@ -250,7 +253,8 @@ export default class SearchSidebar extends Component {
   }
 
   async handleDisplayMethod(e) {
-    await this.setState({ displayMethod: e.target.value });
+    await this.setState({ displayMethod: e.target.value, isResultsReady: false });
+    this.handleSubmit();
   }
 
   componentDidMount() {
@@ -780,9 +784,15 @@ export default class SearchSidebar extends Component {
                 </div>
             </div>
 
-          {this.state.isResultsReady 
-            ? <Results results={results} display={displayMethod}/>
-            : null}
+            <CSSTransition
+              in={this.state.isResultsReady}
+              timeout={600}
+              classNames="results"
+              unmountOnExit
+              appear
+            >
+              <Results results={results} display={displayMethod}/>
+            </CSSTransition>
         </div>
       </>
     );
