@@ -19,21 +19,25 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"user"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=180, unique=false,nullable=true)
+     * @Groups({"user"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=180, unique=false,nullable=true)
+     * @Groups({"user"})
      */
     private $lastname;
 
@@ -50,6 +54,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"user"})
      */
     private $created_at;
 
@@ -108,11 +113,6 @@ class User implements UserInterface
      *
      * @see UserInterface
      */
-
-    public function getUsername(): string
-    {
-        return (string) $this->username;
-    }
 
     public function getFirstName(): string
     {
