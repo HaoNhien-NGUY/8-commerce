@@ -232,14 +232,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/order", name="user_order_details", methods="GET")
+     * @Route("/api/user/order/{trackingNb}", name="user_order_details", methods="GET")
      */
     public function userOrderDetails(Request $request, UserOrderRepository $userOrderRepository, UserOrderSubproductRepository $userOrderSubproductRepository)
     {
-        $jsonContent = $request->getContent();
-        $req = json_decode($jsonContent);
-        $trackingNumber = $req->trackingNumber;
-
+        $trackingNumber = $request->attributes->get('trackingNb');
         $order = $userOrderRepository->findOneBy(['trackingNumber' => $trackingNumber]);
 
         return $this->json($order, 200, [], ['groups' => 'user_order_details']);
