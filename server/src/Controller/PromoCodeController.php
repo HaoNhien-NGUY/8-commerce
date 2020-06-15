@@ -56,7 +56,7 @@ class PromoCodeController extends AbstractController
     /**
      * @Route("/api/promocode/{id}", name="promocode_remove", methods="DELETE", requirements={"id":"\d+"})
      */
-    public function region_remove(Request $request, PromoCodeRepository $promoCodeRepository, EntityManagerInterface $em)
+    public function promocode_remove(Request $request, PromoCodeRepository $promoCodeRepository, EntityManagerInterface $em)
     {
         $PromoCode = $promoCodeRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
@@ -76,7 +76,7 @@ class PromoCodeController extends AbstractController
     /**
      * @Route("/api/promocode/{id}", name="promocode_update", methods="PUT",requirements={"id":"\d+"})
      */
-    public function regionUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, PromoCodeRepository $promoCodeRepository)
+    public function promocode_update(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, PromoCodeRepository $promoCodeRepository)
     {
         try {
             $jsonContent = $request->getContent();
