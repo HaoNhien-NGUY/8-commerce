@@ -93,8 +93,8 @@ export default class SearchSidebar extends Component {
     this.handleSubmit();
   }
 
-  handleSexe(e) {
-    this.setState({ sexe: e.target.value, isResultsReady: false });
+  async handleSexe(e) {
+    await this.setState({ sexe: e.target.value, isResultsReady: false });
     this.handleSubmit();
   }
 
