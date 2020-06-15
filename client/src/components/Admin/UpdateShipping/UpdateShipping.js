@@ -70,7 +70,7 @@ function UpdateShipping() {
 
     useEffect(() => {
         axios.get("http://127.0.0.1:8000/api/region", config).then(e => {
-            setAllRegion(e.data);
+            setAllRegion(e.data.data);
         });
     }, []);
     
