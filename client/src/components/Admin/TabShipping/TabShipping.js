@@ -27,17 +27,16 @@ function Shipping() {
     };
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/shippingmethod`, config).then(async e => {
-            // await setPageCount(Math.ceil(e.data.nbResults / limit))
-            // console.log(e.data)
-            const newPostDataShipp = e.data.map((shipping) =>
+        axios.get(`http://127.0.0.1:8000/api/shippingmethod?offset=${offset}&limit=${limit}`, config).then(async e => {
+            await setPageCount(Math.ceil(e.data.nbResults / limit));
+            const newPostDataShipp = e.data.data.map((shipping) =>
                 <tr key={shipping.id}>
                     <td><p className="myMargin align-items-center">{shipping.id}</p></td>
                     <td><p className="myMargin">{shipping.name}</p></td>
                     <td><button onClick={e => e.preventDefault() + showDetailsShipping(shipping.id)} className="btn btn-outline-dark m-1">View</button></td>
                     <td><button onClick={() => window.location.href = '/admin/update/shipping/' + shipping.id} className="btn btn-outline-info m-1">Modify</button></td>
                 </tr>
-            )
+            );
             setPostDataShipp(newPostDataShipp);
         });
     }, [offset]);
@@ -98,7 +97,7 @@ function Shipping() {
                     <Button color="dark" className="mt-4" block onClick={() => setShowDetails(false)}>Close</Button>
                 </Modal.Body>
             </Modal>
-            {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
                     <ReactPaginate
                         previousLabel={"prev"}
@@ -113,7 +112,7 @@ function Shipping() {
                         subContainerClassName={"pages pagination"}
                         activeClassName={"active"} />
                 </div>
-            </div> */}
+            </div>
         </>
     )
 }

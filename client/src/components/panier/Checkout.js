@@ -50,6 +50,8 @@ class Checkout extends React.Component {
     _next = () => {
         if (this.state.currentStep === 1) {
             const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
+            let hide = true
+            this.props.callbackFromParent(hide);
             if (arrayOfObj) {
                 const arrayAPIName = arrayOfObj.map(({ productid: subproduct_id, quantite: quantity, ...rest }) => ({ subproduct_id, quantity, ...rest }));
                 let jsonRequest = {
@@ -87,6 +89,10 @@ class Checkout extends React.Component {
     }
 
     _prev = () => {
+        if (this.state.currentStep == 2) {
+            let hide = false
+            this.props.callbackFromParent(hide);
+        }
         let currentStep = this.state.currentStep
         currentStep = currentStep <= 1 ? 1 : currentStep - 1
         this.setState({
@@ -290,6 +296,9 @@ function Step1(props) {
         </>
     );
 }
+
+
+
 
 function Step2(props) {
     if (props.currentStep !== 2) {

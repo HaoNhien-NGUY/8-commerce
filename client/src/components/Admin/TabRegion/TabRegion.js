@@ -12,6 +12,9 @@ const Region = () => {
     const [showUpdate, setShowUpdate] = useState(false);
     const [regionName, setRegionName] = useState('');
     const [regionId, setRegionId] = useState(0);
+    const [limit, setLimit] = useState(2);
+    const [offset, setOffset] = useState(0);
+    const [pageCount, setPageCount] = useState();
     const config = {
         headers: {
             "Content-type": "application/json"
@@ -19,7 +22,7 @@ const Region = () => {
     }
     useEffect(() => {
         receivedData();
-    }, [])
+    }, [offset])
 
     const deleteRegion = (id) => {
       axios.delete("http://127.0.0.1:8000/api/region/"+id, config).then(res => {
@@ -34,18 +37,21 @@ const Region = () => {
 
   const receivedData = () => {
     console.log('receivedData')
-    axios.get("http://127.0.0.1:8000/api/region", config).then(res => {
-      const newPostDataRegions =  res.data.map((region) => 
+    axios.get(`http://127.0.0.1:8000/api/region?offset=${offset}&limit=${limit}`, config).then(async res => {
+      console.log(res.data)
+      await setPageCount(Math.ceil(res.data.nbResults / limit));
+      const newPostDataRegions = res.data.data.length > 0 ? res.data.data.map((region) => 
         <tr key={region.id}>
           <td><p className="m-2 align-items-center">{region.id}</p></td>
           <td><p className="m-2">{region.name}</p></td>
           <td> <button className="btn btn-outline-info m-1" onClick={() => {setRegionId(region.id); setRegionName(region.name); setShowUpdate(true)}}> Modify </button></td>
           <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteRegion(region.id)}> Delete </button></td>
         </tr>
-        )
+        ) : null 
         setPostDataRegions(newPostDataRegions);
       })
       .catch(error => {
+        console.log(error)
         toast.error('Error !', { position: 'top-center' });
       })
     } 
@@ -102,6 +108,12 @@ const Region = () => {
     let region = str.charAt(0).toUpperCase() + str.slice(1);
     setRegionName(region.replace(/[\s]{2,}/g, " "));
   }
+
+  const handlePageClick = (e) => {
+    const selectedPage = e.selected;
+    const newOffset = selectedPage * limit;
+    setOffset(newOffset)
+  };
 
     return (
       <>
@@ -165,6 +177,22 @@ const Region = () => {
             </thead>
             <tbody>{postDataRegions}</tbody>
         </table>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div>
+            <ReactPaginate
+              previousLabel={"prev"}
+              nextLabel={"next"}
+              breakLabel={"..."}
+              breakClassName={"break-me"}
+              pageCount={pageCount}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={2}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination"}
+              subContainerClassName={"pages pagination"}
+              activeClassName={"active"} />
+          </div>
         </div>
 
       </>

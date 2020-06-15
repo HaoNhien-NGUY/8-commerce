@@ -44,7 +44,7 @@ class CheckoutController extends AbstractController
             $method['id'] = $val->getShippingMethod()->getId();
             $method['name'] = $val->getShippingMethod()->getName();
             $method['duration'] = $val->getDuration();
-
+            
             $price = 0;
             foreach ($req->subproducts as $value) {
                 $product = $subproductRepository->find($value->subproduct_id);

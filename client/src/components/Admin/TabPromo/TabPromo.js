@@ -15,7 +15,9 @@ const Promo = () => {
   const [percentage, setPercentage] = useState(0);
   const [usedLimit, setUsedLimit] = useState(0);
   const [dateEnd, setDateEnd] = useState(null);
-
+  const [limit, setLimit] = useState(2);
+  const [offset, setOffset] = useState(0);
+  const [pageCount, setPageCount] = useState();
   const config = {
     headers: {
         "Content-type": "application/json"
@@ -23,18 +25,20 @@ const Promo = () => {
   }
   useEffect(() => {
     receivedData();
-  }, [])
+  }, [offset]);
+
   const receivedData = () => {
-    axios.get("http://127.0.0.1:8000/api/promocode", config).then(res => {
-      console.log(res.data.promo_codes);
-      const newPostDataPromos =  res.data.promo_codes.map((promo) => 
+    axios.get(`http://127.0.0.1:8000/api/promocode?offset=${offset}&limit=${limit}`, config).then(async res => {
+      console.log(res.data);
+      await setPageCount(Math.ceil(res.data.nbResults / limit));
+      const newPostDataPromos = res.data.data.length > 0 ? res.data.data.map((promo) => 
       <tr key={promo.id}>
         <td><p className="m-2 align-items-center">{promo.id}</p></td>
         <td><p className="m-2">{promo.code}</p></td>
         <td><p className="m-2">{promo.percentage}</p></td>
-        <td><p className="m-2">{promo.dateEnd}</p></td>
+        <td><p className="m-2">{promo.dateEnd !== null ? promo.dateEnd : 'unlimited'}</p></td>
         <td><p className="m-2">{promo.usedTimes}</p></td>
-        <td><p className="m-2">{promo.usedLimit}</p></td>
+        <td><p className="m-2">{promo.usedLimit !== null ? promo.usedLimit : 'unlimited'}</p></td>
         <td> <button className="btn btn-outline-info m-1" onClick={() => 
           {
             setCode(promo.code); 
@@ -47,7 +51,7 @@ const Promo = () => {
         } > Modify </button></td>
         <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteCodePromo(promo.id)}> Delete </button></td>
       </tr>
-      )
+      ) : null 
       setPostDataPromos(newPostDataPromos);
     })
     .catch(error => {
@@ -121,6 +125,11 @@ const Promo = () => {
     }
   }
 
+  const handlePageClick = (e) => {
+    const selectedPage = e.selected;
+    const newOffset = selectedPage * limit;
+    setOffset(newOffset)
+  };
 
   console.log(dateEnd)
   return(
@@ -237,7 +246,22 @@ const Promo = () => {
         <tbody>{postDataPromos}</tbody>
       </table>
     </div>
-
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div>
+        <ReactPaginate
+          previousLabel={"prev"}
+          nextLabel={"next"}
+          breakLabel={"..."}
+          breakClassName={"break-me"}
+          pageCount={pageCount}
+          marginPagesDisplayed={1}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          subContainerClassName={"pages pagination"}
+          activeClassName={"active"} />
+      </div>
+    </div>
     </>
   )
 }
