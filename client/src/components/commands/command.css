@@ -14,8 +14,13 @@
 }
 
 .intransition {
-    margin-left: 41.5%;
+    margin-left: 46.5%;
 }
+
+.intransition2 {
+    float: right;
+}
+
 
 .disabledC {
     color: rgb(202, 202, 202);
