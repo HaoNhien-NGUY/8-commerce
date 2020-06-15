@@ -66,7 +66,7 @@ function Results(props) {
           // console.log(e)
           return (
             <div className="row w-100 product-row" key={e.product_id + '-' + e.id}>
-            <img src={process.env.REACT_APP_API_LINK + e.images[0]} className="col-3 p-3"></img>
+            <img src={e.images ? process.env.REACT_APP_API_LINK + e.images[0] : imageDefault} className="col-3 p-3"></img>
             {/* <img src={process.env.REACT_APP_API_LINK + e.images[1]} className="col-3 p-3"></img> */}
 
             <div className="col-6 mt-auto mb-auto">
