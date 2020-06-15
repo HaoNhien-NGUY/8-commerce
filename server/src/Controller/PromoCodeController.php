@@ -18,9 +18,9 @@ class PromoCodeController extends AbstractController
      */
     public function index(Request $request, PromoCodeRepository $promoCodeRepository, NormalizerInterface $normalizer)
     {
+        $count = $promoCodeRepository->countTotalResults();
         $promoCodes = $promoCodeRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
-
-        return $this->json(['promo_codes' => $promoCodes], 200);
+        return $this->json(['nbResults' => $count, 'data' => $promoCodes], 200, [], ['groups' => 'shipping']);
     }
 
     /**

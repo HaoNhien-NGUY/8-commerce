@@ -19,6 +19,14 @@ class PromoCodeRepository extends ServiceEntityRepository
         parent::__construct($registry, PromoCode::class);
     }
 
+    public function countTotalResults()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     // /**
     //  * @return PromoCode[] Returns an array of PromoCode objects
     //  */
