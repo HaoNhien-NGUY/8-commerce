@@ -46,6 +46,16 @@
 }
 
 .errorfound {
-    color: red;;
+    color: red;
+    ;
     font-weight: bold;
+}
+
+.tablebordertest:not(:last-child) {
+    border-bottom: 1px solid #b9b9b9;
+    margin: 10px 0;
+}
+
+.tablebordertest .paddright {
+    padding: 15px 0;
 }
