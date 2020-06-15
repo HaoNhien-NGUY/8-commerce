@@ -57,12 +57,15 @@ class Checkout extends React.Component {
     }
 
     _next = () => {
+
+        console.log(this.state)
         if (this.state.currentStep === 1) {
             let s = this.state;
-            if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
-                // return toast.error('Plese fill all the required informations', { position: 'top-center' });
+            if (!s.addresschoice) {
+                if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
+                    // return toast.error('Plese fill all the required informations', { position: 'top-center' });
+                }
             }
-
             const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
             let hide = true
             this.props.callbackFromParent(hide);
@@ -97,17 +100,19 @@ class Checkout extends React.Component {
 
         }
 
-        // if (this.state.currentStep == 2) {
-        //     let s = this.state;
-        //     if (s.billing !== 'true') {
-        //         if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
-        //             return toast.error('Plese fill all the required informations', { position: 'top-center' });
-        //     }
-        //     else {
-        //         if (!s.shippingchoice)
-        //             return toast.error('Plese choose a delivery option', { position: 'top-center' });
-        //     }
-        // }
+        if (this.state.currentStep == 2) {
+            let s = this.state;
+            if (!s.billing_addresschoice) {
+                if (s.billing !== 'true') {
+                    if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
+                        return toast.error('Plese fill all the required informations', { position: 'top-center' });
+                }
+                else {
+                    if (!s.shippingchoice)
+                        return toast.error('Plese choose a delivery option', { position: 'top-center' });
+                }
+            }
+        }
 
         let currentStep = this.state.currentStep
         currentStep = currentStep >= 2 ? 3 : currentStep + 1
@@ -341,7 +346,29 @@ function Step2(props) {
     if (props.currentStep !== 2) {
         return null
     }
+
     else {
+        let BillingAdressOptions = []
+        if (props.data.billingAddress != null) {
+            for (let [key, value] of Object.entries(props.data.billingAddress)) {
+                BillingAdressOptions.push(
+                    <div key={"address_" + key} className="col-md-12">
+                        <label className="control control-radio w-100 form-check-label" htmlFor={"billing_addresschoice" + key}>
+                            <input className="form-check-input checkbox-style" type="radio" name="billing_addresschoice" id={"billing_addresschoice" + key} value={key} onChange={props.handleChange} />
+                            <div className="control_indicator"></div>
+                            <div className="alert alert-secondary p-0">
+                                <div className="d-flex flex-column">
+                                    <div className="pl-3 pt-1">{value.firstname} {value.lastname}</div>
+                                    <div className="pl-3 p-0">{value.address}</div>
+                                    <div className="pl-3 pb-1">{value.city} {value.zipcode} {value.country} </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div >
+                )
+            }
+        }
+
         const items = []
         if (props.data.shipping_methods) {
             for (let [key, value] of Object.entries(props.data.shipping_methods)) {
@@ -365,6 +392,7 @@ function Step2(props) {
             return (
                 <>
                     <legend>Billing address</legend>
+                    {BillingAdressOptions}
                     <SlideToggle collapsed irreversible
                         render={({ onToggle, setCollapsibleElement }) => (
                             <div className="my-collapsible">
