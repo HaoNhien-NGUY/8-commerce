@@ -26,8 +26,9 @@ class RegionController extends AbstractController
      */
     public function index(Request $request, RegionRepository $regionRepository)
     {
-        $category = $regionRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
-        return $this->json($category, 200, [],['groups' => 'shipping']);
+        $count = $regionRepository->countTotalResults();
+        $region = $regionRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
+        return $this->json(['nbResults' => $count, 'data' => $region], 200, [], ['groups' => 'shipping']);
     }
 
     /**
