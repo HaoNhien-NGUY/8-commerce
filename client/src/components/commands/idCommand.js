@@ -3,7 +3,7 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import './command.css';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import {  useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function CommandTracking() {
     const [total, setTotal] = useState(false);
@@ -25,7 +25,7 @@ function CommandTracking() {
     function useQuery() {
         return new URLSearchParams(useLocation().search);
     }
-    
+
     let idOrder = useQuery().get("order");
 
     useEffect(() => {
@@ -43,33 +43,31 @@ function CommandTracking() {
                 setIsDelivred(true);
             }
 
-            const newProduct = res.data.subproducts.map(product => 
-                <div className="divOrderCart pl-3 pr-3" >
-                    <table className="productinCart">
-                        <tbody>
-                            <tr>
-                                <td rowSpan="3" className="tableborder paddright">
-                                    <img className="imgOrder" src={`http://127.0.0.1:8000/api/image/${product.subproduct.product.id}/default/1.jpg`}/>
-                                </td>
-                                <td>
-                                    <span><b>Title:</b> { product.subproduct.product.title}</span>
-                                </td>
-                            </tr>
-                            <tr className="tableborder">
-                                <td className="detailsproduct">
-                                    <span><b>Color:</b> {product.subproduct.color.name}</span>
-                                    <span><b>Size:</b> {product.subproduct.size}</span>
-                                    <span><b>Sex:</b> {product.subproduct.product.sex}</span>
-                                    { product.promo != 0 ? 
-                                        <span><b>Price:</b> <s className="text-danger">{product.price} €</s> - {product.price - (product.price * (product.promo / 100))} €</span>
-                                        :<span><b>Price:</b> {product.price} €</span>
-                                    }
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>   
+            const newProduct = res.data.subproducts.map(product =>
+                        <tr className="tablebordertest">
+                            <td className="paddright">
+                                <img className="imgOrder" src={`http://127.0.0.1:8000/api/image/${product.subproduct.product.id}/default/1.jpg`} />
+                            </td>
+                            <td>
+                                <span className="ml-3"><b>Title:</b> {product.subproduct.product.title}</span><br />
+                                <span className="ml-3"><b>Color:</b> {product.subproduct.color.name}</span>
+                            </td>
+                            <td>
+                                <span><b>Size:</b> {product.subproduct.size}</span>
+                            </td>
+                            <td>
+                                <span><b>Sex:</b> {product.subproduct.product.sex}</span>
+                            </td>
+                            <td>
+                                {product.promo ?
+                                    <span><b>Price:</b> {product.price - (product.price * (product.promo / 100))} € - <s className="text-danger">{product.price} €</s></span>
+                                    : <span><b>Price:</b> {product.price} €</span>
+                                }
+                            </td>
+                        </tr>
             );
+
+
             setDivOrderProduct(newProduct);
         }).catch(error => {
             console.log(error);
@@ -77,7 +75,7 @@ function CommandTracking() {
     }, []);
 
 
-console.log(divOrderProduct);
+    console.log(divOrderProduct);
     return (
         <>
             <div className="container mt-5">
@@ -124,23 +122,29 @@ console.log(divOrderProduct);
                 <div className="col-sm-5 pl-4">
                     <h2 className="text-center mb-4">Delivery status</h2>
                     <h5><b>Status:</b><span className="resultCommand">{isDelivred ? 'Delivred' : 'In transition'}</span></h5>
-                    { isDelivred ?
+                    {isDelivred ?
                         <div className="mt-4">
                             <i className="material-icons marg arrivedC">where_to_vote</i>
-                            <ProgressBar striped variant="success" now={100}/>
+                            <ProgressBar striped variant="success" now={100} />
                         </div>
                         : <div className="mt-4">
                             <i className="material-icons marg">where_to_vote</i>
                             <i className="material-icons marg intransition">room</i>
                             <i className="material-icons marg intransition disabledC">room</i>
-                            <ProgressBar animated now={49} className="rotate90"/>
+                            <ProgressBar animated now={49} className="rotate90" />
                         </div>
                     }
                 </div>
             </div>
             <div className="container mb-5">
                 <h2 className="text-center mb-3">Your articles</h2>
-                {divOrderProduct}
+                <div className="divOrderCart pl-3 pr-3" >
+                    <table className="productinCart">
+                        <tbody>
+                            {divOrderProduct}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </>
     )
