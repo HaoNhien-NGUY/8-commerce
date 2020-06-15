@@ -80,7 +80,7 @@ function Results(props) {
             <div className="col-3 mt-auto mb-auto md-force-align">
               { e.promo > 0 ? <p><s className="text-danger">{e.price} €</s> {(e.price)-(e.price * (e.promo/100))} €</p>  : <p>{e.price} €</p>}
               <a href={"/product/" + e.product_id}><button className='btn-cart'>View Product</button></a>
-              { e.stock < 20 && <p className="text-danger mt-1 small"><i className="material-icons md-18">info_outline</i> 3 items left</p> }
+              { e.stock < 20 && <p className="text-danger mt-1 small"><i className="material-icons md-18">info_outline</i> { e.stock } item(s) left</p> }
             </div>
           </div>
           )
