@@ -60,7 +60,7 @@ class ProductController extends AbstractController
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts'],
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts','promoted'],
                 ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
             ]);
             if (!isset($req->subcategory)) return $this->json(['message' => 'subcategory missing'], 400, []);
@@ -73,6 +73,9 @@ class ProductController extends AbstractController
             $supplier = $supplierRepository->findOneBy(['id' => $req->supplier]);
             if (!isset($supplier)) return $this->json(['message' => 'supplier not found'], 400, []);
 
+            if (!isset($req->promoted)) return $this->json(['message' => 'Promoted is missing'], 400, []);
+
+            $product->setPromoted($req->promoted);
             $product->setSupplier($supplier);
             $product->setSubCategory($subCategory);
             $product->setCreatedAt(new DateTime());
@@ -144,7 +147,7 @@ class ProductController extends AbstractController
             if ($product) {
                 try {
                     $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
-                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo'],
+                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo','promoted'],
                         AbstractNormalizer::OBJECT_TO_POPULATE => $product
                     ]);
                 } catch (NotNormalizableValueException $e) {
@@ -158,6 +161,10 @@ class ProductController extends AbstractController
                 if (isset($req->promo)) {
                     $promoNb = $req->promo === 0 ? null : $req->promo;
                     $product->setPromo($promoNb);
+                }
+
+                if (isset($req->promoted)) {
+                    $product->setPromoted($req->promoted);
                 }
 
                 if(isset($req->supplier_id)) {
@@ -309,5 +316,17 @@ class ProductController extends AbstractController
                 'message' => 'Not found'
             ], 404);
         }
+    }
+
+    /**
+     * @Route("/api/product/promoted", name="product_promoted", methods="GET")
+     */
+    public function promotedProduct(ProductRepository $productRepository)
+    {
+        $products = $productRepository->findBy(['promoted' => 1]);
+        if(!$products){
+            return $this->json(['message' => 'No product in promotion'], 404);
+        }
+        return $this->json($products, 200, [], ['groups' => 'products']);
     }
 }
