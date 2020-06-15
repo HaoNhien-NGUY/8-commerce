@@ -24,9 +24,9 @@ class RegionController extends AbstractController
     /**
      * @Route("/api/region", name="region_index", methods="GET")
      */
-    public function index(RegionRepository $regionRepository)
+    public function index(Request $request, RegionRepository $regionRepository)
     {
-        $category = $regionRepository->findAll();
+        $category = $regionRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
         return $this->json($category, 200, [],['groups' => 'shipping']);
     }
 
