@@ -45,10 +45,12 @@ class CheckoutController extends AbstractController
             $method['name'] = $val->getShippingMethod()->getName();
             $method['duration'] = $val->getDuration();
 
+            $price = 0;
             foreach ($req->subproducts as $value) {
                 $product = $subproductRepository->find($value->subproduct_id);
-                $price = $product->getWeight() * $val->getPricePerKilo();
-                $price *= $value->quantity;
+                if(!$product) return $this->json(['message' => 'subproduct with id '.$value->subproduct_id.' not found.']);
+                $currentPrice = $product->getWeight() * $val->getPricePerKilo() * $value->quantity;
+                $price += $currentPrice;
             }
             $method['price'] = $price + $val->getBasePrice();
 
