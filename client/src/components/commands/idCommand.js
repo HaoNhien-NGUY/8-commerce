@@ -81,46 +81,84 @@ function CommandTracking() {
             <div className="container mt-5">
                 <h1>Order number: {idOrder}</h1>
             </div>
-            <div className="container d-flex">
-                <div className="col-sm-7 border-right pr-4">
+            <div className="container">
+                <div className="d-flex">
+                    <div className="col-sm-6 border-right pr-4">
+                        <h2 className="text-center mb-4">Personal information</h2>
+                        <div>
+                            <table className="bordertable tablOrder">
+                                <tbody>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Firstname:</b></h6></th>
+                                        <td className="text-right p-2"><span>{firstname}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Lastname:</b></h6></th>
+                                        <td className="text-right p-2"><span>{lastname}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Country:</b></h6></th>
+                                        <td className="text-right p-2"><span>{country}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>City:</b></h6></th>
+                                        <td className="text-right p-2"><span>{city}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Delivery address:</b></h6></th>
+                                        <td className="text-right p-2"><span>{adressLivraison}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Packaging:</b></h6></th>
+                                        <td className="text-right p-2"><span>{packaging}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Total Price:</b></h6></th>
+                                        <td className="text-right p-2"><span>{total} €</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div className="col-sm-6 pl-4">
                     <h2 className="text-center mb-4">Personal information</h2>
-                    <div>
-                        <table className="bordertable tablOrder">
-                            <tbody>
-                                <tr className="bordertable">
-                                    <th className="bordertable titleTable p-2"><h6><b>Firstname:</b></h6></th>
-                                    <td className="text-right p-2"><span>{firstname}</span></td>
-                                </tr>
-                                <tr className="bordertable">
-                                    <th className="bordertable titleTable p-2"><h6><b>Lastname:</b></h6></th>
-                                    <td className="text-right p-2"><span>{lastname}</span></td>
-                                </tr>
-                                <tr className="bordertable">
-                                    <th className="bordertable titleTable p-2"><h6><b>Country:</b></h6></th>
-                                    <td className="text-right p-2"><span>{country}</span></td>
-                                </tr>
-                                <tr className="bordertable">
-                                    <th className="bordertable titleTable p-2"><h6><b>City:</b></h6></th>
-                                    <td className="text-right p-2"><span>{city}</span></td>
-                                </tr>
-                                <tr className="bordertable">
-                                    <th className="bordertable titleTable p-2"><h6><b>Delivery address:</b></h6></th>
-                                    <td className="text-right p-2"><span>{adressLivraison}</span></td>
-                                </tr>
-                                <tr className="bordertable">
-                                    <th className="bordertable titleTable p-2"><h6><b>Packaging:</b></h6></th>
-                                    <td className="text-right p-2"><span>{packaging}</span></td>
-                                </tr>
-                                <tr className="bordertable">
-                                    <th className="bordertable titleTable p-2"><h6><b>Total Price:</b></h6></th>
-                                    <td className="text-right p-2"><span>{total} €</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div>
+                            <table className="bordertable tablOrder">
+                                <tbody>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Firstname:</b></h6></th>
+                                        <td className="text-right p-2"><span>{firstname}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Lastname:</b></h6></th>
+                                        <td className="text-right p-2"><span>{lastname}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Country:</b></h6></th>
+                                        <td className="text-right p-2"><span>{country}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>City:</b></h6></th>
+                                        <td className="text-right p-2"><span>{city}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Delivery address:</b></h6></th>
+                                        <td className="text-right p-2"><span>{adressLivraison}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Packaging:</b></h6></th>
+                                        <td className="text-right p-2"><span>{packaging}</span></td>
+                                    </tr>
+                                    <tr className="bordertable">
+                                        <th className="bordertable titleTable p-2"><h6><b>Total Price:</b></h6></th>
+                                        <td className="text-right p-2"><span>{total} €</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div className="col-sm-5 pl-4">
-                    <h2 className="text-center mb-4">Delivery status</h2>
+                <h2 className="text-center mb-4 mt-5">Delivery status</h2>
                     <h5><b>Status:</b><span className="resultCommand">{isDelivred ? 'Delivred' : 'In transition'}</span></h5>
                     {isDelivred ?
                         <div className="mt-4">
@@ -130,10 +168,13 @@ function CommandTracking() {
                         : <div className="mt-4">
                             <i className="material-icons marg">where_to_vote</i>
                             <i className="material-icons marg intransition">room</i>
-                            <i className="material-icons marg intransition disabledC">room</i>
-                            <ProgressBar animated now={49} className="rotate90" />
+                            <i className="material-icons marg intransition2 disabledC">room</i>
+                            <ProgressBar animated now={50} className="rotate90"/>
                         </div>
                     }
+                <div className="mt-5 mb-5">
+                    <h2 className="text-center mb-3">Your articles</h2>
+                    {divOrderProduct}
                 </div>
             </div>
             <div className="container mb-5">
