@@ -131,6 +131,18 @@ class CardCredentialsController extends AbstractController
                 $cardCredentials->setExpirationDate($req->expirationDate);
             }
 
+            if(isset($req->ccv)){
+                $cardCredentials->setCcv($req->ccv);
+            }
+
+            if(isset($req->firstname)){
+                $cardCredentials->setFirstname($req->firstname);
+            }
+
+            if(isset($req->lastname)){
+                $cardCredentials->setLastname($req->lastname);
+            }
+
             $em->persist($cardCredentials);
             $em->flush();
 

@@ -38,10 +38,10 @@ class PromoCodeController extends AbstractController
             return $this->json(['message' => 'This promo code already exist'], 400, []);
         } else {
             $PromoCode  = new PromoCode();
-            $PromoCode->setCode($req->code);
+            $PromoCode->setCode(strtoupper($req->code));
             $PromoCode->setPercentage($req->percentage);
             if ($req->dateEnd) {
-                $timestamp = intval($req->dateEnd);
+                $timestamp = intval($req->dateEnd) + 7200;
                 $dateend = new DateTime("@$timestamp");
                 $PromoCode->setDateEnd($dateend);
             }
@@ -97,7 +97,7 @@ class PromoCodeController extends AbstractController
                 }
 
                 if ($req->dateEnd) {
-                    $timestamp = intval($req->dateEnd);
+                    $timestamp = intval($req->dateEnd) + 7200;
                     $dateend = new DateTime("@$timestamp");
                     $promocode->setDateEnd($dateend);
                 } else {

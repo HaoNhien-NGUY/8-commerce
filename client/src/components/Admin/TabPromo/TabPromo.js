@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import ReactPaginate from 'react-paginate';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DatePicker from 'react-date-picker';
 
 const Promo = () => {
   const [postDataPromos, setPostDataPromos] = useState('');
@@ -18,6 +19,8 @@ const Promo = () => {
   const [limit, setLimit] = useState(2);
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState();
+  const [value, onChange] = useState(new Date());
+  const [deleteCodeModal, setDeleteCodeModal] = useState(false);
   const config = {
     headers: {
         "Content-type": "application/json"
@@ -27,6 +30,13 @@ const Promo = () => {
     receivedData();
   }, [offset]);
 
+  useEffect(() => {
+    // dateEnd !== null ? dateEnd.toJSON() : null
+    console.log(value)
+    setDateEnd(value !== null ? parseInt((new Date(value).getTime() / 1000).toFixed(0)) : null);
+    // setDateEnd(value !== null ? value.toJSON() : null);
+  }, [value]);
+
   const receivedData = () => {
     axios.get(`http://127.0.0.1:8000/api/promocode?offset=${offset}&limit=${limit}`, config).then(async res => {
       console.log(res.data);
@@ -34,22 +44,22 @@ const Promo = () => {
       const newPostDataPromos = res.data.data.length > 0 ? res.data.data.map((promo) => 
       <tr key={promo.id}>
         <td><p className="m-2 align-items-center">{promo.id}</p></td>
-        <td><p className="m-2">{promo.code}</p></td>
+        <td><p className="m-2">{promo.code.toUpperCase()}</p></td>
         <td><p className="m-2">{promo.percentage}</p></td>
-        <td><p className="m-2">{promo.dateEnd !== null ? promo.dateEnd : 'unlimited'}</p></td>
+        <td><p className="m-2">{promo.dateEnd !== null ? promo.dateEnd.substr(8,10).slice(0,2) + '/' + promo.dateEnd.substr(5,10).slice(0,2) + '/' + promo.dateEnd.substr(0,10).slice(0,4) : 'no limit'}</p></td>
         <td><p className="m-2">{promo.usedTimes}</p></td>
-        <td><p className="m-2">{promo.usedLimit !== null ? promo.usedLimit : 'unlimited'}</p></td>
+        <td><p className="m-2">{promo.usedLimit !== null ? promo.usedLimit : 'no limit'}</p></td>
         <td> <button className="btn btn-outline-info m-1" onClick={() => 
           {
             setCode(promo.code); 
-            setIdCodePromo(promo.code); 
+            setIdCodePromo(promo.id); 
             setPercentage(promo.percentage);
             setDateEnd(promo.dateEnd);
             setUsedLimit(promo.usedLimit);
             setShowUpdate(true);
           }
         } > Modify </button></td>
-        <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteCodePromo(promo.id)}> Delete </button></td>
+        <td> <button className="btn btn-outline-danger m-1" onClick={() => {setIdCodePromo(promo.id); setCode(promo.code);setDeleteCodeModal(true)}}> Delete </button></td>
       </tr>
       ) : null 
       setPostDataPromos(newPostDataPromos);
@@ -60,8 +70,14 @@ const Promo = () => {
     })
   } 
   
-  const deleteCodePromo = (promoId) => {
-    console.log('will delete id promo:'+promoId+' with axios request')
+  const deleteCodePromo = () => {
+    axios.delete("http://127.0.0.1:8000/api/promocode/"+idCodePromo, config).then(res => {
+      toast.success(res.data.message, {position: 'top-center'})
+      receivedData();
+    }).catch(err => {
+      console.log(err);
+      // toast.error(err.data.response.message, { position: 'top-center' });
+    });
   }
 
   const onSubmitCodePromo = (e) => {
@@ -78,14 +94,18 @@ const Promo = () => {
       return toast.error("percentage need to must be more than 0 and under 100", {position: 'top-center'});
     } else {
         const body = {
-            "code": code
+            "code": code,
+            "percentage": parseInt(percentage),
+            "dateEnd": dateEnd,
+            "usedLimit": usedLimit === 0 ? null : usedLimit
         }
         // Mettre la requete
-        axios.post("http://127.0.0.1:8000", body, config).then(res => {
-            toast.success('Code promo correctly added!', { position: "top-center" });
-            receivedData();
+        axios.post("http://127.0.0.1:8000/api/promocode/create", body, config).then(res => {
+          toast.success('Code promo correctly added!', { position: "top-center" });
+          receivedData();
         }).catch(err => {
-            toast.error(err.data.response.message, { position: 'top-center' });
+          console.log(err);
+          // toast.error(err.data.response.message, { position: 'top-center' });
         });
         setShowAdd(false);
     }
@@ -111,17 +131,20 @@ const Promo = () => {
     if (percentage < 1 || percentage > 100) {
       return toast.error("percentage need to must be more than 0 and under 100", {position: 'top-center'});
     } else {
-        const body = {
-            "code": code
-        }
+      const body = {
+        "code": code,
+        "percentage": parseInt(percentage),
+        "dateEnd": dateEnd,
+        "usedLimit": usedLimit === 0 ? null : usedLimit
+      }
         // Mettre la requete
-        axios.put("http://127.0.0.1:8000/"+idCodePromo, body, config).then(res => {
-            toast.success('Code promo correctly added!', { position: "top-center" });
-            receivedData();
-        }).catch(err => {
-            toast.error(err.data.response.message, { position: 'top-center' });
-        });
-        setShowAdd(false);
+      axios.put("http://127.0.0.1:8000/api/promocode/"+idCodePromo, body, config).then(res => {
+          toast.success('Code promo correctly added!', { position: "top-center" });
+          receivedData();
+      }).catch(err => {
+          toast.error(err.data.response.message, { position: 'top-center' });
+      });
+      setShowAdd(false);
     }
   }
 
@@ -132,6 +155,8 @@ const Promo = () => {
   };
 
   console.log(dateEnd)
+  // console.log(Date.dateEnd !== undefined ? Date.dateEnd.toJSON() : null)
+  // console.log(Date.dateEnd.toJSON())
   return(
     <>
     <ToastContainer />
@@ -160,14 +185,14 @@ const Promo = () => {
               id="percentage"
               onChange={(e) => setPercentage(parseInt(e.target.value))}
             />
-            <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>
-            <Input
-              type="datetime-local"
-              name="dateEnd"
-              id="dateEnd"
-
-              onChange={(e) => setDateEnd(e.target.value)}
-            />
+            <br />
+            <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>  
+            <DatePicker
+              onChange={onChange}
+              value={value}
+            /> 
+            <br />
+            <br />
             <Label for="usedLimit">Limit by count (0 = unlimited)</Label>
             <Input
               type="number"
@@ -207,13 +232,10 @@ const Promo = () => {
               onChange={(e) => setPercentage(parseInt(e.target.value))}
             />
             <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>
-            <Input
-              type="datetime-local"
-              name="dateEnd"
-              id="dateEnd"
+            <DatePicker
+              onChange={onChange}
               value={dateEnd}
-              onChange={(e) => setDateEnd(e.target.value)}
-            />
+            /> 
             <Label for="usedLimit">Limit by count (0 = unlimited)</Label>
             <Input
               type="number"
@@ -229,6 +251,13 @@ const Promo = () => {
         </Form>
       </Modal.Body>
       </Modal>
+      <Modal show={deleteCodeModal} onHide={() => setDeleteCodeModal(false)}>
+          <Modal.Header closeButton>Careful ! Are you sure to want delete the code promo "{code.toUpperCase()}"</Modal.Header>
+        <Modal.Body>
+          <Button color="warning" className="mt-4" onClick={() =>  setDeleteCodeModal(false)} block>No, go back</Button>
+          <Button color="danger" className="mt-4" onClick={() => {deleteCodePromo(); setDeleteCodeModal(false)}} block>Yes, delete {code.toUpperCase()}</Button>
+        </Modal.Body>
+      </Modal>
     </div>
     <div className="row border p-2">
       <table>
@@ -237,7 +266,7 @@ const Promo = () => {
           <th><p className="m-2 align-items-center"> ID </p></th>
           <th><p className="m-2"> Name </p></th>
           <th><p className="m-2"> Percentage </p></th>
-          <th><p className="m-2"> Date end (yy-mm-dd) </p></th>
+          <th><p className="m-2"> Date end (dd/mm/yy) </p></th>
           <th><p className="m-2"> Used time </p></th>
           <th><p className="m-2"> Used limit </p></th>
           <th><p colSpan="3" className="m-1"> Actions </p></th>
