@@ -49,6 +49,7 @@ class CardCredentials
     {
         $metadata->addPropertyConstraint('cardNumbers', new Assert\NotBlank());
         $metadata->addPropertyConstraint('expirationDate', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('ccv', new Assert\NotBlank());
     }
 
     public function getId(): ?int
