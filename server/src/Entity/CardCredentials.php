@@ -22,7 +22,7 @@ class CardCredentials
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @Groups({"user"})
      */
     private $cardNumbers;
