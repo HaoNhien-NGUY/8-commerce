@@ -238,6 +238,7 @@ export default class SearchSidebar extends Component {
         { headers: header }
       )
       .then((res) => {
+        console.log(res.data)
         this.setState({results: res.data, isResultsReady: true});
         // if (this.state.showFilter == true){
         //   this.showFilter()

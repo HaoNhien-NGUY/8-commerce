@@ -22,6 +22,7 @@ const UpdateProduct = () => {
     const [subCategory, setSubCategory] = useState(1);
     const [sex, setSex] = useState('');
     const [status, setStatus] = useState(false);
+    const [promoted, setPromoted] = useState(false);
     const [allCategory, setAllCategory] = useState([]);
     const [subCategories, setSubCategories] = useState(1);
     const token = store.getState().auth.token;
@@ -79,6 +80,7 @@ const UpdateProduct = () => {
                 setSubCategory(res.data.subCategory.id)
                 setSex(res.data.sex);
                 setStatus(res.data.status);
+                setPromoted(res.data.promoted);
                 setSupplier(res.data.supplier.id);
             })
             .catch(error => {
@@ -97,6 +99,7 @@ const UpdateProduct = () => {
                 "promo": parseInt(promo),
                 "sex": sex,
                 "status": status,
+                "promoted": promoted,
                 "supplier_id": supplier
             }
             console.log(body);
@@ -154,6 +157,10 @@ const UpdateProduct = () => {
                 <div className="form-group">
                     <label htmlFor="status">Active</label>
                     <input type="checkbox" className="ml-2" id="status" onChange={() => setStatus(!status)} checked={status} />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="promoted">Promoted</label>
+                    <input type="checkbox" className="ml-2" id="promoted" onChange={() => setPromoted(!promoted)} checked={promoted} />
                 </div>
                 <div className="row divBtnSex">
                     <input type="button" className={`btn btn-ligt mr-5 ${sex == "F" ? "css-man" : ''}`} id="Women" value="Women" onClick={() => setBtnSex("F") + setSex("F")} />
