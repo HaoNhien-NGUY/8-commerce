@@ -59,7 +59,7 @@ const Promo = () => {
             setShowUpdate(true);
           }
         } > Modify </button></td>
-        <td> <button className="btn btn-outline-danger m-1" onClick={() => {setIdCodePromo(promo.id); setCode(promo.code);setDeleteCodeModal(true)}}> Delete </button></td>
+        <td> <button className="btn btn-outline-danger m-1" onClick={() => {setIdCodePromo(promo.id); onChange(promo.dateEnd); setCode(promo.code);setDeleteCodeModal(true)}}> Delete </button></td>
       </tr>
       ) : null 
       setPostDataPromos(newPostDataPromos);
@@ -94,7 +94,7 @@ const Promo = () => {
       return toast.error("percentage need to must be more than 0 and under 100", {position: 'top-center'});
     } else {
         const body = {
-            "code": code,
+            "code": code.toUpperCase(),
             "percentage": parseInt(percentage),
             "dateEnd": dateEnd,
             "usedLimit": usedLimit === 0 ? null : usedLimit
@@ -132,7 +132,7 @@ const Promo = () => {
       return toast.error("percentage need to must be more than 0 and under 100", {position: 'top-center'});
     } else {
       const body = {
-        "code": code,
+        "code": code.toUpperCase(),
         "percentage": parseInt(percentage),
         "dateEnd":  parseInt((new Date(dateEnd).getTime() / 1000).toFixed(0)),
         "usedLimit": usedLimit === 0 ? null : usedLimit
@@ -156,7 +156,8 @@ const Promo = () => {
     setOffset(newOffset)
   };
 
-  console.log(dateEnd)
+  console.log(value)
+  console.log("dateENDDD ", dateEnd)
   console.log('limit '+usedLimit)
   // console.log(Date.dateEnd !== undefined ? Date.dateEnd.toJSON() : null)
   // console.log(Date.dateEnd.toJSON())
@@ -234,11 +235,14 @@ const Promo = () => {
               value={percentage}
               onChange={(e) => setPercentage(parseInt(e.target.value))}
             />
-            <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>
+            <br />
+            <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>  
             <DatePicker
-              onChange={onChange}
+              onChange={setDateEnd}
               value={new Date(dateEnd)}
             /> 
+            <br />
+            <br />
             <Label for="usedLimit">Limit by count (0 = unlimited)</Label>
             <Input
               type="number"
