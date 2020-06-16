@@ -86,7 +86,7 @@ class PromoCodeController extends AbstractController
             if ($promocode) {
 
                 $nameExists = $promoCodeRepository->findOneBy(['code' => $req->code]);
-                if($nameExists) return $this->json(['message' => 'Promo Code name already taken'], 404);
+               // if($nameExists) return $this->json(['message' => 'Promo Code name already taken'], 404);
 
                 if (isset($req->code)) {
                     $promocode->setCode($req->code);

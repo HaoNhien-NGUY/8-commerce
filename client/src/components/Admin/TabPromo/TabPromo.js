@@ -59,7 +59,7 @@ const Promo = () => {
             setShowUpdate(true);
           }
         } > Modify </button></td>
-        <td> <button className="btn btn-outline-danger m-1" onClick={() => {setIdCodePromo(promo.id); setCode(promo.code);setDeleteCodeModal(true)}}> Delete </button></td>
+        <td> <button className="btn btn-outline-danger m-1" onClick={() => {setIdCodePromo(promo.id); onChange(promo.dateEnd); setCode(promo.code);setDeleteCodeModal(true)}}> Delete </button></td>
       </tr>
       ) : null 
       setPostDataPromos(newPostDataPromos);
@@ -191,7 +191,7 @@ const Promo = () => {
             <br />
             <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>  
             <DatePicker
-              onChange={onChange}
+              onChange={setDateEnd}
               value={value}
             /> 
             <br />
@@ -234,11 +234,14 @@ const Promo = () => {
               value={percentage}
               onChange={(e) => setPercentage(parseInt(e.target.value))}
             />
-            <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>
+            <br />
+            <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>  
             <DatePicker
               onChange={onChange}
-              value={new Date(dateEnd)}
+              value={value}
             /> 
+            <br />
+            <br />
             <Label for="usedLimit">Limit by count (0 = unlimited)</Label>
             <Input
               type="number"
