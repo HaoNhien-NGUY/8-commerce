@@ -42,16 +42,19 @@ class CardCredentials
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"user"})
      */
     private $ccv;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user"})
      */
     private $lastname;
 
