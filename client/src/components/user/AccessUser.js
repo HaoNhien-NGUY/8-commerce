@@ -9,7 +9,7 @@ const AccessUser = ({auth}) => {
   if (!auth.authenticated && !auth.isLoading) {
     if (auth.user !== null) {
       return (
-        <User idUser={auth.user.id}/>
+        <User idUser={auth.user.id} emailUser={auth.user.email}/>
       )
     }
     else {

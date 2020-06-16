@@ -13,14 +13,13 @@ function ShowOrder(props) {
 
     useEffect(() => {
         axios.get("http://localhost:8000/api/user/" + props.idUser + "/orders").then(res => {
-                console.log(res.data.userOrders);
                 const newDataHistory = res.data.userOrders.map(e => 
-                        <tr>
+                        <tr key={e.id}>
                             <td className="titleHistory">{e.trackingNumber}</td>
                             <td className="titleHistory">{ e.status != "" ? e.status : " In transition"}</td>
                             <td className="titleHistory">{e.packaging ? e.packaging : " without"}</td>
-                            <td className="titleHistory">{e.cost}</td>
                             <td className="titleHistory"> {getDate(e.createdAt)}</td>
+                            <td className="titleHistory">{e.cost} €</td>
                             <td className="titleHistory text-center">
                                 <button className="btn btn-outline-dark" onClick={() => window.location.href = '/command?order=' + e.trackingNumber}>Show Order</button>
                             </td>
@@ -34,24 +33,28 @@ function ShowOrder(props) {
 
     return (
         <>
-
             <div className="mt-5">
                 <table className="productinCart tableHistory">
                     <thead className="allHistory">
-                        <th colspan="6">
-                            <h3 className="text-center">All Orders</h3>
-                        </th>
+                        <tr>
+                            <th colSpan="6">
+                                <h3 className="text-center p-2 AllOrders">All Orders</h3>
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <th className="titleHistory">TrackingNumber</th>
-                        <th className="titleHistory">Status</th>
-                        <th className="titleHistory">Packaging</th>
-                        <th className="titleHistory">Price</th>
-                        <th className="titleHistory">Date</th>
-                        <th className="titleHistory">Details</th>
-                        {history}
+                        <tr>
+                            <th className="titleHistory h">TrackingNumber</th>
+                            <th className="titleHistory h">Status</th>
+                            <th className="titleHistory h">Packaging</th>
+                            <th className="titleHistory h">Date</th>
+                            <th className="titleHistory h">Price</th>
+                            <th className="titleHistory h">Details</th>
+                        </tr>
+                        {history.length > 0 ? history : null}
                     </tbody>
                 </table>
+                {history.length > 0 ? null : <h1 className="noOrder">No order set</h1>}
             </div>
         </>
     )
