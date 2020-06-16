@@ -82,7 +82,7 @@ function Home() {
                 </div>
             </Parallax>
             <div className='homepageCat'>top products <br /><span>  </span></div>
-            <div className="row justify-content-center">
+            <div className="row justify-content-center m-0 p-0">
                 <SliderPromo />
             </div>
             <div className="row justify-content-around m-0 p-0">
