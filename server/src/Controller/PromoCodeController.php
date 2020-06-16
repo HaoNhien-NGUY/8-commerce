@@ -38,10 +38,10 @@ class PromoCodeController extends AbstractController
             return $this->json(['message' => 'This promo code already exist'], 400, []);
         } else {
             $PromoCode  = new PromoCode();
-            $PromoCode->setCode($req->code);
+            $PromoCode->setCode(strtoupper($req->code));
             $PromoCode->setPercentage($req->percentage);
             if ($req->dateEnd) {
-                $timestamp = intval($req->dateEnd);
+                $timestamp = intval($req->dateEnd) + 7200;
                 $dateend = new DateTime("@$timestamp");
                 $PromoCode->setDateEnd($dateend);
             }
@@ -91,7 +91,7 @@ class PromoCodeController extends AbstractController
                 if (!isset($req->code)) {
                     return $this->json(['message' => 'Promo Code name is undefined'], 404, []);
                 }
-                $promocode->setCode($req->code);
+                $promocode->setCode(strtoupper($req->code));
 
                 if (!isset($req->percentage)) {
                     return $this->json(['message' => 'Promo Code percentage is undefined'], 404, []);
@@ -99,7 +99,7 @@ class PromoCodeController extends AbstractController
                 $promocode->setPercentage($req->percentage);
 
                 if ($req->dateEnd) {
-                    $timestamp = intval($req->dateEnd);
+                    $timestamp = intval($req->dateEnd) + 7200;
                     $dateend = new DateTime("@$timestamp");
                     $promocode->setDateEnd($dateend);
                 } else {

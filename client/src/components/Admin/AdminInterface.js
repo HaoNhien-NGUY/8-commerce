@@ -301,6 +301,7 @@ const AdminInterface = () => {
                       <Modal show={deleteProductModal} onHide={() => setDeleteProductModal(false)}>
                         <Modal.Header closeButton>Careful ! Deleting the Product will delete all of his SubProducts !</Modal.Header>
                         <Modal.Body>
+                          <Button color="warning" className="mt-4" onClick={() =>  setDeleteProductModal(false)} block>No, go back</Button>
                           <Button color="danger" className="mt-4" onClick={() => {deleteProduct(productId); setDeleteProductModal(false)}} block>Yes, delete everything</Button>
                         </Modal.Body>
                     </Modal>
