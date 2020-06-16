@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import $ from 'jquery';
 import axios from 'axios';
-
 import { Parallax } from "react-parallax";
 
 const image1 = "https://i.imgur.com/wtIes8O.jpg";
-
-
 function Home() {
 
     const [products, setProducts] = useState([]);
@@ -22,7 +19,6 @@ function Home() {
             let promos = {}
             let products_temp = resp.data.data
             let unavailable_msg = 'Available Soon...'
-            console.log(products_temp)
             $.each(products_temp, (i, product) => {
                 prices[product.id] = []
                 promos[product.id] = []
@@ -45,18 +41,17 @@ function Home() {
                 const entries = Object.entries(prices)
                 for (const [id, prices_list] of entries) {
                     for (let j = 0; j < products_temp.length; j++) {
-                        if ( products_temp[j].id == id ){
-                            if ( prices_list[0] == unavailable_msg ) {
+                        if (products_temp[j].id == id) {
+                            if (prices_list[0] == unavailable_msg) {
                                 products_temp[j]['lowest_price'] = unavailable_msg
                             } else {
                                 let price = Math.min.apply(Math, prices_list)
-                                // console.log(promo[id])
                                 if (isEmpty(promos[id])) {
-                                    products_temp[j]['lowest_price'] = 'Starts at '+ price +' €'
+                                    products_temp[j]['lowest_price'] = 'Starts at ' + price + ' €'
                                 }
                                 else {
-                                    let promo = (price)-(price * (promos[id]/100))
-                                    products_temp[j]['lowest_price'] = <p>Starts at {promo} € <s className="text-danger">{price} €</s></p>
+                                    let promo = (price) - (price * (promos[id] / 100))
+                                    products_temp[j]['lowest_price'] = <span>Starts at {promo} € <s className="text-danger">{price} €</s></span>
                                 }
                             }
                         }
@@ -82,19 +77,18 @@ function Home() {
             <Parallax bgImage={image1} strength={500}>
                 <div className="HomeJumbotron">
                     <div>We can do anything,
-        <br />Together.</div>
+                    <br />Together.</div>
                 </div>
             </Parallax>
+            <div className='homepageCat'>top products <br /><span>  </span></div>
             <div className="row justify-content-around m-0 p-0">
                 {products.map((e) => {
-                    console.log(products)
                     return (
-                        <div className="col-md-4" key={e.id}>
+                        <div className="col-md-4 m-0 p-0" key={e.id}>
                             <div className='ProductHome'>
                                 <div className='p-4 m-5 bg-gray'>
                                     <span className="HomeArticleTItle">{e.title.length > 50 ? e.title.substr(0, 50) + '...' : e.title}</span>
                                     <p>{e.lowest_price}</p>
-                                    {console.log(e.status)}
                                     {e.images && e.status == true &&
                                         <> <a href={"/product/" + e.id}>
                                             <div className="ProductHomeImgContainer">
@@ -131,8 +125,7 @@ function Home() {
                     )
                 })}
             </div>
-            <div className="row justify-content-center">
-            </div>
+
         </div>
     )
 }

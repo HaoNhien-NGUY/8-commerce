@@ -32,7 +32,7 @@ class Checkout extends React.Component {
             axios
                 .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
                 .then((res) => {
-                    return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress })
+                    return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
                 })
                 .catch((error) => {
                     console.log(error.response);
@@ -49,7 +49,74 @@ class Checkout extends React.Component {
 
     handleSubmit = event => {
         event.preventDefault()
-        console.log(this.state)
+
+        let shippingAddress;
+        if (this.state.addresschoice) {
+            shippingAddress = this.state.addresschoice
+        }
+        else {
+            shippingAddress = {
+                'region_id': this.state.region,
+                'user_id': this.props.auth.user != null ? this.props.auth.user.id : null,
+                'country': this.state.country,
+                'city': this.state.city,
+                'postcode': this.state.zip,
+                'address': this.state.address,
+                'firstname': this.state.firstname,
+                'lastname': this.state.lastname,
+            }
+        }
+
+        let arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
+        arrayOfObj = arrayOfObj.map(({ productid, quantite }) => ({ subproduct_id: productid, quantity: quantite }));
+
+        let billingAddress;
+        if (this.state.billing === 'true') {
+            billingAddress = shippingAddress
+        } else {
+            if (this.state.addresschoice) {
+                billingAddress = this.state.addresschoice
+            }
+            else {
+                billingAddress = {
+                    'region_id': this.state.billing_region,
+                    'user_id': this.props.auth.user != null ? this.props.auth.user.id : null,
+                    'country': this.state.billing_country,
+                    'city': this.state.billing_city,
+                    'postcode': this.state.billing_zip,
+                    'address': this.state.billing_address,
+                    'firstname': this.state.billing_firstname,
+                    'lastname': this.state.billing_lastname,
+                }
+            }
+        }
+
+        let CardDetails;
+        if (this.state.cardchoice) {
+            CardDetails = this.state.cardchoice;
+        }
+        else {
+            CardDetails = {
+                'user_id': this.props.auth.user != null ? this.props.auth.user.id : null,
+                'card_numbers': this.state.cardnumber,
+                'expiration_date': this.state.expirymonth + '/' + this.state.expiryyear,
+                'firstname': this.state.cardfirstname,
+                'lastname': this.state.cardlastname,
+                'cvv': this.state.cvv
+            }
+        }
+
+        let CompleteOrder = {
+            'email': this.state.email,
+            'pricing_id': this.state.shipping_methods[this.state.shippingchoice].pricing_id,
+            'shipping_address': shippingAddress,
+            'billing_address': billingAddress,
+            'card_credentials': CardDetails,
+            'subproducts': arrayOfObj
+        }
+
+
+        console.log(CompleteOrder)
 
         this.setState({
             currentStep: 4
@@ -57,15 +124,14 @@ class Checkout extends React.Component {
     }
 
     _next = () => {
-
         console.log(this.state)
         if (this.state.currentStep === 1) {
             let s = this.state;
-            if (!s.addresschoice) {
-                if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
-                    // return toast.error('Plese fill all the required informations', { position: 'top-center' });
-                }
-            }
+            // if (!s.addresschoice) {
+            //     if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
+            //         return toast.error('Plese fill all the required informations', { position: 'top-center' });
+            //     }
+            // }
             const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
             let hide = true
             this.props.callbackFromParent(hide);
@@ -102,16 +168,31 @@ class Checkout extends React.Component {
 
         if (this.state.currentStep == 2) {
             let s = this.state;
-            if (!s.billing_addresschoice) {
-                if (s.billing !== 'true') {
-                    if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
-                        return toast.error('Plese fill all the required informations', { position: 'top-center' });
-                }
-                else {
-                    if (!s.shippingchoice)
-                        return toast.error('Plese choose a delivery option', { position: 'top-center' });
-                }
-            }
+            // if (!s.billing_addresschoice) {
+            //     if (s.billing !== 'true') {
+            //         if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
+            //             return toast.error('Plese fill all the required informations', { position: 'top-center' });
+            //     }
+            //     else {
+            //         if (!s.shippingchoice)
+            //             return toast.error('Plese choose a delivery option', { position: 'top-center' });
+            //     }
+            // }
+        }
+
+        if (this.state.currentStep == 3) {
+            // if (this.props.auth.user != null) {
+            //     axios
+            //         .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/cardcredentials")
+            //         .then((res) => {
+            //             // return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
+            //         })
+            //         .catch((error) => {
+            //             console.log(error.response);
+            //         });
+            // }
+
+
         }
 
         let currentStep = this.state.currentStep
@@ -339,9 +420,6 @@ function Step1(props) {
     );
 }
 
-
-
-
 function Step2(props) {
     if (props.currentStep !== 2) {
         return null
@@ -495,9 +573,15 @@ function Step3(props) {
 
                     </div>
                     <div className="form-group">
-                        <label className="col-sm-3 control-label" htmlFor="cardholdername">Name on Card</label>
-                        <div className="col-sm-9">
-                            <input type="text" className="form-control" name="cardholdername" id="cardholdername" placeholder="Card Holder's Name" defaultValue={props.data.cardholdername ? props.data.cardholdername : null} onChange={props.handleChange} />
+                        <div className="form-row  col-md-12">
+                            <div className="form-group col-md-6">
+                                <label className="col-sm-3 control-label" htmlFor="cardfirstname">Firstname on Card</label>
+                                <input type="text" className="form-control" name="cardfirstname" id="cardfirstname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardfirstname ? props.data.cardfirstname : null} onChange={props.handleChange} />
+                            </div>
+                            <div className="form-group col-md-6">
+                                <label className="col-sm-3 control-label" htmlFor="cardlastname">Lastname on Card</label>
+                                <input type="text" className="form-control" name="cardlastname" id="cardlastname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardlastname ? props.data.cardlastname : null} onChange={props.handleChange} />
+                            </div>
                         </div>
                     </div>
                     <div className="form-group">
@@ -508,10 +592,12 @@ function Step3(props) {
                     </div>
                     <div className="form-group">
                         <label className="col-sm-3 control-label" htmlFor="expirymonth">Expiration Date</label>
+                        <label className="col-sm-3 control-label" htmlFor="expiryyear"></label>
+
                         <div className="col-sm-9">
                             <div className="row ml-1">
                                 <div className="col-xs-6 pr-05">
-                                    <select className="form-control" name="expirymonth" id="expirymonth">
+                                    <select className="form-control" name="expirymonth" id="expirymonth" onChange={props.handleChange}>
                                         <option>Month</option>
                                         <option value="01">Jan (01)</option>
                                         <option value="02">Feb (02)</option>
@@ -528,18 +614,17 @@ function Step3(props) {
                                     </select>
                                 </div>
                                 <div className="col-xs-6 pl-05">
-                                    <select className="form-control" name="expiryyear">
-                                        <option value="13">2013</option>
-                                        <option value="14">2014</option>
-                                        <option value="15">2015</option>
-                                        <option value="16">2016</option>
-                                        <option value="17">2017</option>
-                                        <option value="18">2018</option>
-                                        <option value="19">2019</option>
+                                    <select className="form-control" name="expiryyear" id="expiryear" onChange={props.handleChange}>
                                         <option value="20">2020</option>
                                         <option value="21">2021</option>
                                         <option value="22">2022</option>
                                         <option value="23">2023</option>
+                                        <option value="24">2024</option>
+                                        <option value="25">2025</option>
+                                        <option value="26">2026</option>
+                                        <option value="27">2027</option>
+                                        <option value="28">2028</option>
+                                        <option value="29">2029</option>
                                     </select>
                                 </div>
                             </div>
@@ -557,8 +642,6 @@ function Step3(props) {
         );
     }
 }
-
-
 
 function Step4(props) {
     if (props.currentStep !== 4) {
