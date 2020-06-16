@@ -34,8 +34,14 @@ class ProductController extends AbstractController
      */
     public function index(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer)
     {
+        $wsh = [];
+        $products = $productRepository->findBy(
+            $request->query->get('promoted') ? ['promoted' => 1] : [],
+            $request->query->get('clicks') ? ['clicks' => 'DESC'] : [],
+            $request->query->get('limit'), 
+            $request->query->get('offset')
+        );
         $count = $productRepository->countResults();
-        $products = $productRepository->findBy([], array('clicks' => 'DESC'), $request->query->get('limit'), $request->query->get('offset'));
         $products = $normalizer->normalize($products, null, ['groups' => 'products']);
         $products = array_map(function ($v) {
             $path = "./images/" . $v['id'] . "/default";
@@ -60,7 +66,7 @@ class ProductController extends AbstractController
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts','promoted'],
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promoted'],
                 ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
             ]);
             if (!isset($req->subcategory)) return $this->json(['message' => 'subcategory missing'], 400, []);
@@ -147,7 +153,7 @@ class ProductController extends AbstractController
             if ($product) {
                 try {
                     $product = $serializer->deserialize($jsonContent, Product::class, 'json', [
-                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo','promoted'],
+                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['subcategory', 'subproducts', 'promo', 'promoted'],
                         AbstractNormalizer::OBJECT_TO_POPULATE => $product
                     ]);
                 } catch (NotNormalizableValueException $e) {
@@ -155,7 +161,7 @@ class ProductController extends AbstractController
                 }
                 if (isset($req->subcategory)) {
                     $subcategory = $this->getDoctrine()->getRepository(SubCategory::class)->find($req->subcategory);
-                    if(!isset($subcategory)) return $this->json(['message' => 'subcategory not found'], 400, []);
+                    if (!isset($subcategory)) return $this->json(['message' => 'subcategory not found'], 400, []);
                     $product->setSubCategory($subcategory);
                 }
                 if (isset($req->promo)) {
@@ -167,9 +173,9 @@ class ProductController extends AbstractController
                     $product->setPromoted($req->promoted);
                 }
 
-                if(isset($req->supplier_id)) {
+                if (isset($req->supplier_id)) {
                     $supplier = $this->getDoctrine()->getRepository(Supplier::class)->find($req->supplier_id);
-                    if(!isset($supplier)) return $this->json(['message' => 'supplier not found'], 400, []);
+                    if (!isset($supplier)) return $this->json(['message' => 'supplier not found'], 400, []);
                     $product->setSupplier($supplier);
                 }
 
@@ -324,7 +330,7 @@ class ProductController extends AbstractController
     public function promotedProduct(ProductRepository $productRepository)
     {
         $products = $productRepository->findBy(['promoted' => 1]);
-        if(!$products){
+        if (!$products) {
             return $this->json(['message' => 'No product in promotion'], 404);
         }
         return $this->json($products, 200, [], ['groups' => 'products']);
