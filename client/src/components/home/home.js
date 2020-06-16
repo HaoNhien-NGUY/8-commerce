@@ -81,10 +81,10 @@ function Home() {
                     <br />Together.</div>
                 </div>
             </Parallax>
+            <div className='homepageCat'>top products <br /><span>  </span></div>
             <div className="row justify-content-center">
                 <SliderPromo />
             </div>
-            <div className='homepageCat'>top products <br /><span>  </span></div>
             <div className="row justify-content-around m-0 p-0">
                 {products.map((e) => {
                     return (
