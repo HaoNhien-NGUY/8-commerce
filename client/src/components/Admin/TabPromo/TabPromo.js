@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-date-picker';
 
 const Promo = () => {
-  const [postDataPromos, setPostDataPromos] = useState('');
+  const [postDataPromos, setPostDataPromos] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [idCodePromo, setIdCodePromo] = useState(0);
@@ -134,15 +134,17 @@ const Promo = () => {
       const body = {
         "code": code,
         "percentage": parseInt(percentage),
-        "dateEnd": dateEnd,
+        "dateEnd":  parseInt((new Date(dateEnd).getTime() / 1000).toFixed(0)),
         "usedLimit": usedLimit === 0 ? null : usedLimit
       }
+      console.log(body);
         // Mettre la requete
       axios.put("http://127.0.0.1:8000/api/promocode/"+idCodePromo, body, config).then(res => {
           toast.success('Code promo correctly added!', { position: "top-center" });
           receivedData();
       }).catch(err => {
-          toast.error(err.data.response.message, { position: 'top-center' });
+        console.log(err)
+          toast.error('erreur', { position: 'top-center' });
       });
       setShowAdd(false);
     }
@@ -155,6 +157,7 @@ const Promo = () => {
   };
 
   console.log(dateEnd)
+  console.log('limit '+usedLimit)
   // console.log(Date.dateEnd !== undefined ? Date.dateEnd.toJSON() : null)
   // console.log(Date.dateEnd.toJSON())
   return(
@@ -234,14 +237,14 @@ const Promo = () => {
             <Label for="dateEnd">Limit by time (don't change if you don't want time limit)</Label>
             <DatePicker
               onChange={onChange}
-              value={dateEnd}
+              value={new Date(dateEnd)}
             /> 
             <Label for="usedLimit">Limit by count (0 = unlimited)</Label>
             <Input
               type="number"
               name="usedLimit"
               id="usedLimit"
-              value={usedLimit}
+              value={usedLimit === null ? 0 : usedLimit}
               onChange={(e) => setUsedLimit(parseInt(e.target.value))}
             />
             <Button color="dark" className="mt-4" block>
