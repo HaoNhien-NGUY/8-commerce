@@ -88,15 +88,13 @@ class PromoCodeController extends AbstractController
                 $nameExists = $promoCodeRepository->findOneBy(['code' => $req->code]);
                 if($nameExists) return $this->json(['message' => 'Promo Code name already taken'], 404);
 
-                if (!isset($req->code)) {
-                    return $this->json(['message' => 'Promo Code name is undefined'], 404, []);
+                if (isset($req->code)) {
+                    $promocode->setCode($req->code);
                 }
-                $promocode->setCode($req->code);
 
-                if (!isset($req->percentage)) {
-                    return $this->json(['message' => 'Promo Code percentage is undefined'], 404, []);
+                if (isset($req->percentage)) {
+                    $promocode->setPercentage($req->percentage);
                 }
-                $promocode->setPercentage($req->percentage);
 
                 if ($req->dateEnd) {
                     $timestamp = intval($req->dateEnd);
@@ -106,10 +104,9 @@ class PromoCodeController extends AbstractController
                     $promocode->setDateEnd(null);
                 }
 
-                if (!isset($req->usedTimes)) {
-                    return $this->json(['message' => 'Promo Code used times is undefined'], 404, []);
+                if (isset($req->usedTimes)) {
+                    $promocode->setUsedTimes($req->usedTimes);
                 }
-                $promocode->setUsedTimes($req->usedTimes);
 
                 if ($req->usedLimit) $promocode->setUsedLimit($req->usedLimit);
                 else $promocode->setUsedLimit(null);
