@@ -9,3 +9,20 @@
     cursor: pointer;
     background-color: white;
 }
+
+.tableHistory {
+    border: 1px solid #b9b9b9;
+}
+
+.allHistory {
+    background-color: #b9b9b9;
+}
+
+.titleHistory {
+    padding: 8px 15px 8px 5px;
+    border: 1px solid #b9b9b9 !important;
+}
+
+.showHistory {
+    cursor: pointer;
+}

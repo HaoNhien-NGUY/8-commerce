@@ -24,19 +24,19 @@ function UserHome(props) {
         switch (query) {
             case "history":
                 console.log("history");
-                setComponent(<History />);
+                setComponent(<History idUser={props.idUser}/>);
                 break;
             case "card":
                 console.log("card");
-                setComponent(<Card />);
+                setComponent(<Card idUser={props.idUser}/>);
                 break;
             case "billing":
                 console.log("billing");
-                setComponent(<BillingAddress />);
+                setComponent(<BillingAddress idUser={props.idUser}/>);
                 break;
             case "shipping":
                 console.log("shipping");
-                setComponent(<ShippingAddress />);
+                setComponent(<ShippingAddress idUser={props.idUser}/>);
                 break;
             default:
                 console.log("history(error)");
