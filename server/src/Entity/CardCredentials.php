@@ -40,6 +40,11 @@ class CardCredentials
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $ccv;
+
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('cardNumbers', new Assert\NotBlank());
@@ -83,6 +88,18 @@ class CardCredentials
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCcv(): ?int
+    {
+        return $this->ccv;
+    }
+
+    public function setCcv(?int $ccv): self
+    {
+        $this->ccv = $ccv;
 
         return $this;
     }
