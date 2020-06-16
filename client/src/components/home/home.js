@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import $ from 'jquery';
 import axios from 'axios';
+import SliderPromo from './sliderPromo'
 
 import { Parallax } from "react-parallax";
 
@@ -16,7 +17,7 @@ function Home() {
     let nbrArctPop = 6;
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/product?limit=' + nbrArctPop).then(resp => {
+        axios.get('http://127.0.0.1:8000/api/product?clicks=true&limit=' + nbrArctPop).then(resp => {
             //Display Lowest Price Image
             let prices = {}
             let promos = {}
@@ -85,6 +86,9 @@ function Home() {
         <br />Together.</div>
                 </div>
             </Parallax>
+            <div className="row justify-content-center">
+                <SliderPromo />
+            </div>
             <div className="row justify-content-around m-0 p-0">
                 {products.map((e) => {
                     console.log(products)
@@ -130,8 +134,6 @@ function Home() {
                         </div>
                     )
                 })}
-            </div>
-            <div className="row justify-content-center">
             </div>
         </div>
     )

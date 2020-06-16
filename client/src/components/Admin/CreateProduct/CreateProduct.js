@@ -13,6 +13,7 @@ function CreateProduct() {
     const [formControl, setFormControl] = useState({"subcategory": 1, "supplier": 1});
     const [isReady, setIsReady] = useState(false);
     const [statusState, setStatusState] = useState(true);
+    const [promotedState, setPromotedState] = useState(false);
     const [isInvalid, setIsInvalid] = useState(false);
     const [subcategories, setSubCategories] = useState([]);
     const [supplier, setSupplier] = useState([]);
@@ -125,7 +126,7 @@ function CreateProduct() {
             } else {
                 let str = formControl.title.toLowerCase();
                 let title = str.charAt(0).toUpperCase() + str.slice(1);
-                setFormControl({ ...formControl, 'title': title, 'sex': btnSex , 'status': statusState  });
+                setFormControl({ ...formControl, 'title': title, 'sex': btnSex , 'status': statusState, "promoted": promotedState });
             }
         } else {
             invalids.title = "Please enter a Title";
@@ -236,6 +237,10 @@ function CreateProduct() {
                 <div className="form-group">
                     <label htmlFor="status">Active</label>
                     <input type="checkbox" className="ml-2" id="status" onChange={() => setStatusState(!statusState)} checked={statusState}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="promoted">Promoted</label>
+                    <input type="checkbox" className="ml-2" id="promoted" onChange={() => setPromotedState(!promotedState)} checked={promotedState}/>
                 </div>
                 <div className="row divBtnSex">
                     <input type="button" className={`btn btn-ligt mr-5 ${btnSex == "F" ? "css-man" : ''}` + (isInvalid.sex ? ' is-invalid' : '')} id="Women" value="Women" onClick={() => setBtnSex("F")}/>
