@@ -45,11 +45,23 @@ class CardCredentials
      */
     private $ccv;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $firstname;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $lastname;
+
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('cardNumbers', new Assert\NotBlank());
         $metadata->addPropertyConstraint('expirationDate', new Assert\NotBlank());
         $metadata->addPropertyConstraint('ccv', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('firstname', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('lastname', new Assert\NotBlank());
     }
 
     public function getId(): ?int
@@ -101,6 +113,30 @@ class CardCredentials
     public function setCcv(?int $ccv): self
     {
         $this->ccv = $ccv;
+
+        return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): self
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): self
+    {
+        $this->lastname = $lastname;
 
         return $this;
     }
