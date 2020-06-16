@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-function Address() {
+function ShippingAddress() {
+
     return (
         <>
-            <h1>Address</h1>
+            <h1>ShippingAddress</h1>
         </>
     )
 }
 
-export default Address;
+export default ShippingAddress;

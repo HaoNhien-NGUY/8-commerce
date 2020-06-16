@@ -3,7 +3,8 @@ import axios from "axios";
 import Card from './Card/Card';
 import Error from './Error404';
 import History from './History/History';
-import Address from './Address/Address';
+import BillingAddress from './Address/Billing/BillingAddress';
+import ShippingAddress from './Address/Shipping/ShippingAddress';
 import Modal from "react-bootstrap/Modal";
 import "react-toastify/dist/ReactToastify.css";
 import {  useLocation } from "react-router-dom";
@@ -29,9 +30,13 @@ function UserHome(props) {
                 console.log("card");
                 setComponent(<Card />);
                 break;
-            case "address":
-                console.log("address");
-                setComponent(<Address />);
+            case "billing":
+                console.log("billing");
+                setComponent(<BillingAddress />);
+                break;
+            case "shipping":
+                console.log("shipping");
+                setComponent(<ShippingAddress />);
                 break;
             default:
                 console.log("history(error)");
@@ -43,9 +48,10 @@ function UserHome(props) {
         <>  
             <div className="mt-5 d-flex">
                 <div className="col-sm-3 pt-5">
-                    <h3 className="listUser">Order History</h3>
-                    <h3 className="listUser">Shipping Address</h3>
-                    <h3 className="listUser">Bank card</h3>
+                    <a href="/user?content=history"><h3 className="listUser">Order History</h3></a>
+                    <a href="/user?content=shipping"><h3 className="listUser">Shipping Address</h3></a>
+                    <a href="/user?content=billing"><h3 className="listUser">Billing Address</h3></a>
+                    <a href="/user?content=card"><h3 className="listUser">Bank card</h3></a>
                 </div>
                 <div className="col-sm-9">
                     {component}
