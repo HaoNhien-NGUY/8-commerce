@@ -2,27 +2,71 @@
     margin: -1px;
     padding: 15px;
     border: 1px solid black;
-    background-color: rgb(238, 238, 238);
+    background-color: rgb(243, 243, 243);
 }
-
+    
 .listUser:hover {
+    color: black;
     cursor: pointer;
     background-color: white;
 }
 
+.lasCHild {
+    border-radius: 0 0 10px 0;
+}
+
+.authUser {
+    margin: -1px;
+    padding: 15px;
+    border: 1px solid black;
+    color: rgb(255, 255, 255); 
+    border-radius: 0 10px 0 0;
+    background-color:rgb(53, 76, 107);
+}
+
+.StyleActive {
+    color: black;
+    background-color: white !important;
+}
+
+.a-none {
+    color: black;
+    text-transform: uppercase;
+    text-decoration: none !important;
+}
+
 .tableHistory {
-    border: 1px solid #b9b9b9;
+    border: 1px solid rgb(53, 76, 107);
 }
 
 .allHistory {
-    background-color: #b9b9b9;
+    background-color: rgb(53, 76, 107);
+    color: white;
 }
 
 .titleHistory {
     padding: 8px 15px 8px 5px;
-    border: 1px solid #b9b9b9 !important;
+    border: 1px solid rgb(53, 76, 107) !important;
 }
 
 .showHistory {
     cursor: pointer;
+}
+
+.AllOrders {
+    font-family: "Lato";
+    text-transform: uppercase;
+    font-weight: bold;
+}
+ 
+.h {
+    background-color: rgb(243, 243, 243);
+}
+
+.noOrder {
+    color: rgb(221, 190, 15);
+    transform: rotate(330deg);
+    position: absolute;
+    margin: 7%;
+    font-size: 109px;
 }
