@@ -20,14 +20,31 @@
   --content-background-color: #ffffff;
 }
 
+.awssld__next:focus {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.awssld__prev:focus {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
+
 .awssld__bullets {
   display: none;
+}
+
+.awssld__timer {
+  background-color: transparent;
 }
 
 /* STYLE */
 #slider {
   overflow-x: hidden;
   margin: 20px 0;
+  padding: 0;
 }
 
 .slider-bg {

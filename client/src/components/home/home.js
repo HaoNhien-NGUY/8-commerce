@@ -86,7 +86,7 @@ function Home() {
         <br />Together.</div>
                 </div>
             </Parallax>
-            <div className="row justify-content-center">
+            <div className="row justify-content-center m-0 p-0">
                 <SliderPromo />
             </div>
             <div className="row justify-content-around m-0 p-0">

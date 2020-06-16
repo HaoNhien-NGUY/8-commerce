@@ -4,6 +4,8 @@ import AwesomeSlider from 'react-awesome-slider';
 import 'react-awesome-slider/dist/styles.css';
 import './sliderPromo.css';
 
+import withAutoplay from 'react-awesome-slider/dist/autoplay';
+import 'react-awesome-slider/dist/styles.css';
 
 export default function SliderPromo() {
   const [index, setIndex] = useState(0);
@@ -37,26 +39,32 @@ export default function SliderPromo() {
   let imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
 
   const SliderData = data.map(product => {
-    return (<div className="slider-bg text-center m-auto row p-3">
-          <div className="col-2"></div>
-          <div className="col-4">
-            <img src={product.images && product.images[0] ? process.env.REACT_APP_API_LINK + product.images[0]  : imageDefault} className="img-div p-3"/>
-          </div>
-          <div className="col-4 text-left">
-            <h1 className="">{product.title}</h1>
-            <p>{product.description}</p>
-            <a href={"/product/" + product.id}><button className='btn-cart'>View Product</button></a>
-          </div>
-          <div className="col-2"></div>
-          <img src={product.images && product.images[0] ? process.env.REACT_APP_API_LINK + product.images[0]  : imageDefault} className="slider-bg blur-bg"/>
+    return (<div className="slider-bg text-center m-auto row m-0 p-0">
+      <div className="col-2"></div>
+      <div className="col-4">
+        <img src={product.images && product.images[0] ? process.env.REACT_APP_API_LINK + product.images[0]  : imageDefault} className="img-div p-3"/>
+      </div>
+      <div className="col-4 text-left">
+        <h1 className="">{product.title}</h1>
+        <p>{product.description}</p>
+        <a href={"/product/" + product.id}><button className='btn-cart'>View Product</button></a>
+      </div>
+      <div className="col-2 p-0"></div>
     </div>
   )})
+  const AutoplaySlider = withAutoplay(AwesomeSlider);
 
   return (
     <div className='container-fluid' id="slider">
-      <AwesomeSlider>
-        {SliderData}
-      </AwesomeSlider>
+        {data.length > 0 && 
+          <AutoplaySlider
+            play={true}
+            cancelOnInteraction={false} // should stop playing on user interaction
+            interval={6000}
+          >
+            {SliderData}
+          </AutoplaySlider>
+        }
     </div>
   )
 }
