@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import './command.css';
 import {  useLocation } from "react-router-dom";
@@ -12,7 +13,6 @@ function EnterCommand() {
     const [isInvalid, setIsInvalid] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [orderDefined, setOrderDefined] = useState(false);
-    const [notFound, setNotFound] = useState([]);
 
     function useQuery() {
         return new URLSearchParams(useLocation().search);
@@ -29,7 +29,7 @@ function EnterCommand() {
         let res = event.target.value.trim();
         let invalids = {};
 
-        if (res != "" && !Number(res)) {
+        if (res != "" && res.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]/)) {
             invalids.error = "Your order must be only numbers"
         }
         if (Object.keys(invalids).length === 0) {
@@ -45,8 +45,8 @@ function EnterCommand() {
         let invalids = {};
 
         if (idCommand != "") {
-            if (!Number(idCommand)) {
-                invalids.error = "Your order must be only numbers"
+            if (idCommand.match(/[\\'"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]/)) {
+                invalids.error = "Invalids characteres";
             }
         } else {
             invalids.error = "Enter your order number"
@@ -63,8 +63,15 @@ function EnterCommand() {
     useEffect(() => {
         if (isReady) {
             setIsReady(false);
-
-            // axios
+            axios.get("http://localhost:8000/api/user/order/" + idCommand, config).then(res => {
+                if (res.data == null) {
+                    toast.error("Command not found: " + idCommand, { position: 'top-center' });
+                } else {
+                    window.location.href = "command?order=" + idCommand;
+                }
+            }).catch(err => {
+                console.log(err);
+            });
         }
     }, [isReady]);
 
@@ -73,7 +80,7 @@ function EnterCommand() {
             axios.get("http://localhost:8000/api/user/order/" + query.get("order"), config).then(res => {
                 if (res.data == null) {
                     setOrderDefined(false);
-                    setNotFound("Command not found");
+                    toast.error("Command not found: " + idCommand, { position: 'top-center' });
                 } else {
                     setOrderDefined(true);
                 }
@@ -90,8 +97,8 @@ function EnterCommand() {
     } else {
         return (
             <>
+                <ToastContainer />
                 <div className="container">
-                    { notFound ? <h1 className="errorfound">{notFound}: {query.get("order")}</h1> : null }
                     <div className="formCommand">
                     <h1>Order Tracking <i className="material-icons md-36 marg">track_changes</i></h1>
                         <Form onSubmit={onSubmit}>
