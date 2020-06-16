@@ -16,6 +16,8 @@ use App\Repository\SubproductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
@@ -28,7 +30,7 @@ class CheckoutController extends AbstractController
     /**
      * @Route("/api/checkout", name="checkout", methods="POST")
      */
-    public function checkoutIndex(Request $request, SubproductRepository $subproductRepository, EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator)
+    public function checkoutIndex(Request $request, SubproductRepository $subproductRepository, EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator, MailerInterface $mailer)
     {
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
@@ -179,6 +181,14 @@ class CheckoutController extends AbstractController
         $em->persist($orderSubproducts);
         $em->persist($order);
         $em->flush();
+
+        $SendEmailTo = (new Email())
+        ->from('8.commerce.clothing@gmail.com')
+        ->to($email)
+        ->subject('Track your order')
+        ->html("WSH FREROT, ici ton suivi de commande <a href='http://" . $_SERVER['SERVER_NAME'] . "/email_act/{$tracking_number}'>Click here to track your order</a>");
+
+        $mailer->send($SendEmailTo);
 
         return $this->json(['message' => 'order created', 'tracking number' => $tracking_number], 200, []);
 
