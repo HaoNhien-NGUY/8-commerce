@@ -63,8 +63,11 @@ class CheckoutController extends AbstractController
         if (isset($req->user_id)) {
             $user = $this->getDoctrine()->getRepository(User::class)->find($req->user_id);
             if (!$user) return $this->json(["message" => "user not found."], 400);
+            $email = $user->getEmail();
         } else if (!isset($req->email)) {
             return $this->json(["message" => "email is missing."], 400);
+        } else {
+            $email = $req->email;
         }
 
         $order = new UserOrder();
