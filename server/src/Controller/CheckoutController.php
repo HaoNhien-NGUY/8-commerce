@@ -186,7 +186,7 @@ class CheckoutController extends AbstractController
         ->from('8.commerce.clothing@gmail.com')
         ->to($email)
         ->subject('Track your order')
-        ->html("WSH FREROT, ici ton suivi de commande <a href='http://" . $_SERVER['SERVER_NAME'] . "/email_act/{$tracking_number}'>Click here to track your order</a>");
+        ->html("Thank you for your order! Here is your tracking link: <a href='http://" . $_SERVER['SERVER_NAME'] . "/command?order={$tracking_number}'>Click here to track your order</a>");
 
         $mailer->send($SendEmailTo);
 
