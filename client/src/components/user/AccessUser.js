@@ -1,0 +1,39 @@
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from "prop-types";
+import { Spinner } from 'react-bootstrap'
+import User from './User';
+
+const AccessUser = ({auth}) => {
+  
+  if (!auth.authenticated && !auth.isLoading) {
+    if (auth.user !== null) {
+      return (
+        <User />
+      )
+    }
+    else {
+      return (<div id='error403'> <h2> Error page 403 access forbiden </h2></div>)
+    }
+  }
+  else {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div>
+          <Spinner style={{ top: '33%', margin: '0', position: 'absolute' }} className="" animation="grow" />
+        </div>
+      </div>
+    )
+  }
+
+}
+
+AccessUser.propTypes = {
+    auth: PropTypes.object.isRequired
+  };
+
+const mapStateToProps = state => ({
+    auth: state.auth,
+})
+
+export default connect(mapStateToProps)(AccessUser)
