@@ -33,8 +33,8 @@ function CommandTracking() {
                 setIsDelivred(true);
             }
 
-            const newProduct = res.data.subproducts.map(product =>
-                <tr className="tablebordertest">
+            const newProduct = res.data.subproducts.map((product, index) =>
+                <tr className="tablebordertest" key={index}>
                     <td className="paddright">
                         <img className="imgOrder" src={`http://127.0.0.1:8000/api/image/${product.subproduct.product.id}/default/1.jpg`} />
                     </td>
