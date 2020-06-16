@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import Modal from "react-bootstrap/Modal";
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
-import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
 import './command.css';
-import {  useLocation } from "react-router-dom";
+import axios from "axios";
 import IdCommand from './idCommand';
+import Modal from "react-bootstrap/Modal";
+import "react-toastify/dist/ReactToastify.css";
+import {  useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 function EnterCommand() {
     const [idCommand, setIdCommand] = useState([]);

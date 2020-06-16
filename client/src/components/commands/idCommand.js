@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import './command.css';
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
-import './command.css';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 function CommandTracking() {
     const [divOrderProduct, setDivOrderProduct] = useState([]);

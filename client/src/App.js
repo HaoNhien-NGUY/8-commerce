@@ -20,6 +20,7 @@ import Home from './components/home/home';
 import Commands from './components/commands/inputCommand';
 import Command from './components/commands/idCommand';
 import AccessAdmin from './components/Admin/AccessAdmin';
+import AccessUser from './components/user/AccessUser';
 import NotFound from './components/NotFound/NotFound';
 // import AccessCreateCategory from './components/Admin/CreateCategory/AccessCreateCategory';
 // import AccessCreateSubCategory from './components/Admin/CreateCategorySub/AccessCreateSubCategory';
@@ -58,6 +59,7 @@ class App extends React.Component {
                         <Route exact path="/panier" component={Panier} />
                         <Route exact path="/product/:id" component={Product} />
                         <Route exact path="/search" component={SearchSidebar} />
+                        <Route exact path="/user" component={AccessUser} />
                         <Route exact path="/admin" component={AccessAdmin} />
                         <Route exact path="/admin/order"component={AccessCreateOrder} />
                         <Route exact path="/admin/subcategory/:id"component={AccessSubCategoryInterface} />
