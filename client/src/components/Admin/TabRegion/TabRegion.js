@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Region = () => {
-    const [postDataRegions, setPostDataRegions] = useState(''); 
+    const [postDataRegions, setPostDataRegions] = useState([]); 
     const [showAdd, setShowAdd] = useState(false);
     const [showUpdate, setShowUpdate] = useState(false);
     const [regionName, setRegionName] = useState('');
@@ -44,8 +44,8 @@ const Region = () => {
         <tr key={region.id}>
           <td><p className="m-2 align-items-center">{region.id}</p></td>
           <td><p className="m-2">{region.name}</p></td>
-          <td> <button className="btn btn-outline-info m-1" onClick={() => {setRegionId(region.id); setRegionName(region.name); setShowUpdate(true)}}> Modify </button></td>
-          <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteRegion(region.id)}> Delete </button></td>
+          <td><button className="btn btn-outline-info m-1" onClick={() => {setRegionId(region.id); setRegionName(region.name); setShowUpdate(true)}}>Modify</button></td>
+          {/* <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteRegion(region.id)}> Delete </button></td> */}
         </tr>
         ) : null 
         setPostDataRegions(newPostDataRegions);
@@ -175,7 +175,7 @@ const Region = () => {
                 <th><p colSpan="3" className="m-1"> Actions </p></th>
                 </tr>
             </thead>
-            <tbody>{postDataRegions}</tbody>
+        <tbody>{postDataRegions}</tbody>
         </table>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>

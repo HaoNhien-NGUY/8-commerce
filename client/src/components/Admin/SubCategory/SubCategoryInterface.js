@@ -7,6 +7,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouteMatch } from "react-router-dom";
+import ReactPaginate from 'react-paginate';
 import store from '../../../store';
 import {
     Button, Form, FormGroup, Label, Input, Alert
@@ -27,6 +28,10 @@ const SubCategoryInterface = () => {
     const [subCategoryId, setSubCategoryId] = useState(0);
     const [allMigrationSubCategory, setAllMigrationSubCategory] = useState([]);
     const [subCategoryMigrateSelected, setSubCategoryMigrateSelected] = useState(0);
+    const [limit, setLimit] = useState(2);
+    const [offset, setOffset] = useState(0);
+    const [pageCount, setPageCount] = useState();
+
     let id = useRouteMatch("/admin/subcategory/:id").params.id;
 
     const token = store.getState().auth.token
@@ -44,13 +49,26 @@ const SubCategoryInterface = () => {
 
     useEffect(() => {
         receivedSubCategories();
-    }, [])
+    }, [offset])
 
     const receivedSubCategories = () => {
         axios.get("http://localhost:8000/api/category/" + id, config)
-        .then(res => {
+        .then(async res => {
             setNameCategory(res.data.name)
-            setSubCategories(res.data.subCategories);
+            if(res.data.subCategories)
+            {
+                await setPageCount(Math.ceil(res.data.subCategories.length / limit))
+                let arrSubCategories = [];
+                let nbr;
+                for (let i = 0; i !== limit; i++) {
+                    if (res.data.subCategories[offset + i]) arrSubCategories.push(res.data.subCategories[offset + i]);
+                    console.log(arrSubCategories);
+                }
+                setSubCategories(arrSubCategories);
+               // setSubCategories(res.data.subCategories);
+            } else {
+                setPageCount(0)
+            }
         })
         .catch(error => {
             toast.error('Error !', { position: 'top-center' });
@@ -82,6 +100,14 @@ const SubCategoryInterface = () => {
         let category = str.charAt(0).toUpperCase() + str.slice(1);
         setName(category.replace(/[\s]{2,}/g, " "))
     }
+
+    const handlePageClick = (e) => {
+
+        const selectedPage = e.selected;
+        const newOffset = selectedPage * limit;
+        setOffset(newOffset)
+    };
+
     function onSubmit(e) {
         e.preventDefault();
         if (name.length === 0) {
@@ -266,6 +292,25 @@ const SubCategoryInterface = () => {
                         <Button color="danger" className="mt-4" onClick={() => {deleteSubCategory(subCategoryId); setDeleteSubCategoryModal(false)}} block>No, delete everything</Button>
                       </Modal.Body>
                     </Modal>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div>
+                    {pageCount > 0 &&
+                        <ReactPaginate
+                            previousLabel={"prev"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={2}
+                            onPageChange={handlePageClick}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"} />
+                    }
+
+                </div>
             </div>
         </div>
 
