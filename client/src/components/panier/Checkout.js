@@ -65,6 +65,13 @@ class Checkout extends React.Component {
 
     handleSubmit = event => {
         event.preventDefault()
+        let s = this.state;
+
+        if (!s.cardchoice) {
+            if (!s.cardfirstname || !s.cardlastname || !s.cardnumber || !s.expirymonth || !s.expiryyear)
+                return toast.error('Plese fill all the required informations', { position: 'top-center' });
+        }
+
         let shippingAddress;
         if (this.state.addresschoice) {
             shippingAddress = this.state.shippingAddress[this.state.addresschoice].id
@@ -122,6 +129,7 @@ class Checkout extends React.Component {
 
         let jsonRequest = {
             'email': this.state.email,
+            "promo_code": this.state.promocode,
             'user_id': this.props.auth.user != null ? this.props.auth.user.id : null,
             'packaging': this.state.packaging != null ? "true" : "false",
             'pricing_id': this.state.shipping_methods[this.state.shippingchoice].pricing_id,
@@ -147,17 +155,16 @@ class Checkout extends React.Component {
                 console.log(error.response);
             });
 
-        // sessionStorage.removeItem("panier")
     }
 
     _next = () => {
         if (this.state.currentStep === 1) {
             let s = this.state;
-            // if (!s.addresschoice) {
-            //     if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
-            //         return toast.error('Plese fill all the required informations', { position: 'top-center' });
-            //     }
-            // }
+            if (!s.addresschoice) {
+                if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
+                    return toast.error('Plese fill all the required informations', { position: 'top-center' });
+                }
+            }
             const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
             let hide = true
             this.props.callbackFromParent(hide);
@@ -186,14 +193,33 @@ class Checkout extends React.Component {
                         this.setState({ "shortestKey": shortestKey })
                     })
                     .catch((error) => {
-                        // console.log(error.response);
+                        console.log(error);
                     });
             }
-
         }
 
         if (this.state.currentStep == 2) {
             let s = this.state;
+            if (this.state.promocode) {
+                let jsonRequest = {
+                    'promocode': this.state.promocode,
+                }
+                axios
+                    .post(
+                        "http://localhost:8000/api/promocode",
+                        jsonRequest,
+                        { headers: { "Content-Type": "application/json" } }
+                    )
+                    .then((res) => {
+                        this.setState({ promocode_details: res.data });
+                        console.log(this.state)
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+
+
             if (this.props.auth.user != null) {
 
                 console.log(this.props.auth.user.id)
@@ -207,29 +233,19 @@ class Checkout extends React.Component {
                     });
             }
 
-            // if (!s.billing_addresschoice) {
-            //     if (s.billing !== 'true') {
-            //         if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
-            //             return toast.error('Plese fill all the required informations', { position: 'top-center' });
-            //     }
-            //     else {
-            //         if (!s.shippingchoice)
-            //             return toast.error('Plese choose a delivery option', { position: 'top-center' });
-            //     }
-            // }
+            if (!s.billing_addresschoice) {
+                if (s.billing !== 'true') {
+                    if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
+                        return toast.error('Plese fill all the required informations', { position: 'top-center' });
+                }
+                else {
+                    if (!s.shippingchoice)
+                        return toast.error('Plese choose a delivery option', { position: 'top-center' });
+                }
+            }
         }
 
         if (this.state.currentStep == 3) {
-            // if (this.props.auth.user != null) {
-            //     axios
-            //         .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/cardcredentials")
-            //         .then((res) => {
-            //             // return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
-            //         })
-            //         .catch((error) => {
-            //             console.log(error.response);
-            //         });
-            // }
 
 
         }
@@ -292,17 +308,6 @@ class Checkout extends React.Component {
     render() {
 
         const { user } = this.props.auth;
-
-        // if (this.props.auth.user != null) {
-        //     axios
-        //         .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
-        //         .then((res) => {
-        //             if (this.state.cards) { this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email }) }
-        //         })
-        //         .catch((error) => {
-        //             console.log(error.response);
-        //         });
-        // }
 
         const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
         return (
@@ -536,6 +541,15 @@ function Step2(props) {
             }
             return (
                 <>
+                    <legend>Promo Code</legend>
+                    <div className="form-row col-md-12">
+                        <div className="form-row  col-md-12">
+                            <h5> <label className="form-row" htmlFor="promocode">Promocode ?</label></h5>
+                        </div>
+                        <div className="custom-control custom-radio custom-control-inline">
+                            <input type="text" className="form-control" id="promocode" name="promocode" placeholder="Promocode" defaultValue={props.data.promocode ? props.data.promocode : null} onChange={props.handleChange} />
+                        </div>
+                    </div>
                     <legend>Billing address</legend>
                     {BillingAdressOptions}
                     <SlideToggle collapsed irreversible
@@ -626,6 +640,7 @@ function Step3(props) {
     }
     else {
         let CardsOptions = []
+
         if (props.data.cards != null) {
             for (let [key, value] of Object.entries(props.data.cards)) {
                 CardsOptions.push(
@@ -647,12 +662,21 @@ function Step3(props) {
         }
         let shipping_cost = props.data.shipping_methods[props.data.shippingchoice].price;
         let totalprice = shipping_cost + props.data.NoShipPrice
+        let Promo = []
+        if (props.data.promocode_details) {
+            console.log(props.data.promocode_details.percentage)
+            console.log(props.data.promocode_details.percentage / 100)
+            Promo.push(<div className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {totalprice * (props.data.promocode_details.percentage / 100)} €</span></div>)
+            totalprice = totalprice - totalprice * (props.data.promocode_details.percentage / 100)
+
+        }
         return (
             <React.Fragment>
                 <>
                     <div className="alert alert-info"><h4>Your final order details:</h4>
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Order :</span><span>{props.data.NoShipPrice} €</span></div>
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Shipping :</span><span>{shipping_cost} €</span></div>
+                        {Promo}
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{totalprice} €</span></div>
 
                     </div>
