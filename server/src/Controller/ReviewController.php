@@ -55,7 +55,7 @@ class ReviewController extends AbstractController
 
         try{
             $review = $serializer->deserialize($jsonContent, Review::class, 'json', [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['user', 'product','review','deleted'],
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['user', 'product','review'],
                 ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
             ]);
         } catch (NotNormalizableValueException $e) {
@@ -86,7 +86,6 @@ class ReviewController extends AbstractController
 
         $error = $validator->validate($review);
         if (count($error) > 0) return $this->json($error, 400);
-        $review->setDeleted(0);
         $review->setCreatedAt(new DateTime());
         $review->setUser($user);
         $review->setProduct($product);
@@ -139,12 +138,12 @@ class ReviewController extends AbstractController
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $review = $reviewRepository->findOneBy(['id' => $request->attributes->get('id')]);
-            
+           
             if ($review) {
 
                 try {
                     $review = $serializer->deserialize($jsonContent, Review::class, 'json', [
-                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['product', 'user','deleted','review'],
+                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['product', 'user','review'],
                         AbstractNormalizer::OBJECT_TO_POPULATE => $review
                     ]);
                 } catch (NotNormalizableValueException $e) {
@@ -175,16 +174,12 @@ class ReviewController extends AbstractController
                     $review->setReview($findReview);
                 }
 
-                if (isset($req->deleted)) {
-                    $review->setDeleted($req->deleted);
-                }
-
                 $error = $validator->validate($review);
                 if (count($error) > 0) return $this->json($error, 400);
                 $em->persist($review);
                 $em->flush();
 
-                return $this->json($review, 200, [], ['groups' => 'review']);
+                return $this->json(['message' => 'Review successfully updated','review' => $review], 200, [], ['groups' => 'review']);
             } else {
                 return $this->json(['message' => 'Review not found'], 404, []);
             }

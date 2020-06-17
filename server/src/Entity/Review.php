@@ -59,12 +59,6 @@ class Review
     private $createdAt;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"review"})
-     */
-    private $deleted;
-
-    /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"review"})
      */
@@ -159,18 +153,6 @@ class Review
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getDeleted(): ?bool
-    {
-        return $this->deleted;
-    }
-
-    public function setDeleted(bool $deleted): self
-    {
-        $this->deleted = $deleted;
 
         return $this;
     }
