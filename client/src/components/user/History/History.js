@@ -14,7 +14,7 @@ function ShowOrder(props) {
                 const newDataHistory = res.data.userOrders.map(e => 
                         <tr key={e.id}>
                             <td className="titleHistory">{e.trackingNumber}</td>
-                            <td className="titleHistory">{ e.status != "" ? e.status : " In transition"}</td>
+                            <td className="titleHistory">{ e.status != "" ? "Delivered" : " In transition"}</td>
                             <td className="titleHistory">{e.packaging ? e.packaging : " without"}</td>
                             <td className="titleHistory"> {getDate(e.createdAt)}</td>
                             <td className="titleHistory">{e.cost} €</td>
