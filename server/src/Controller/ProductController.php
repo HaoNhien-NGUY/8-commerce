@@ -38,7 +38,7 @@ class ProductController extends AbstractController
         $products = $productRepository->findBy(
             $request->query->get('promoted') ? ['promoted' => 1] : [],
             $request->query->get('clicks') ? ['clicks' => 'DESC'] : [],
-            $request->query->get('limit'), 
+            $request->query->get('limit'),
             $request->query->get('offset')
         );
         $count = $productRepository->countResults();
@@ -51,6 +51,20 @@ class ProductController extends AbstractController
             $imgArray = array_map(function ($img) use ($v) {
                 return "/api/image/" . $v['id'] . "/default/$img";
             }, $imgArray);
+
+            $i = 0;
+            foreach ($v["subproducts"] as $subproduct) {
+                $price = $subproduct["promo"] ? $subproduct["price"] - ($subproduct["price"] * ($subproduct["promo"] / 100)) : $subproduct["price"];
+                if ($i == 0) {
+                    $v["basePrice"] = $subproduct["price"];
+                    $v["price"] = $price;
+                    $v["promo"] = $subproduct["promo"];
+                } else if ($price < $v["price"]) {
+                    $v["basePrice"] = $subproduct["price"];
+                    $v["price"] = $price;
+                    $v["promo"] = $subproduct["promo"];
+                }
+            }
             return array_merge($v, ["images" => array_values($imgArray)]);
         }, $products);
 
