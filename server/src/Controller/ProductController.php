@@ -59,6 +59,7 @@ class ProductController extends AbstractController
                     $v["basePrice"] = $subproduct["price"];
                     $v["price"] = $price;
                     $v["promo"] = $subproduct["promo"];
+                    $i++;
                 } else if ($price < $v["price"]) {
                     $v["basePrice"] = $subproduct["price"];
                     $v["price"] = $price;
