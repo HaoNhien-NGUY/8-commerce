@@ -421,7 +421,7 @@ function Step1(props) {
                 render={({ onToggle, setCollapsibleElement }) => (
                     <div className="my-collapsible">
                         <div className="form-row col-md-12">
-                            <button type="button" className="btn tn-primary" onClick={onToggle} >New address +</button>
+                            <label htmlFor="newaddress"> <input type="radio" name="addresschoice" id="newaddress" className="hide" onClick={onToggle} />New address +</label>
                         </div>
                         <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
                             <div className="my-collapsible__content-inner">
@@ -556,19 +556,20 @@ function Step2(props) {
                             <div className="my-collapsible">
                                 <div className="form-row col-md-12">
                                     <div className="form-row col-md-12">
-                                        <h5>Is your billing address the same as your shipping adress?</h5>
-                                    </div>
-                                    <div className="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline1" name="billing" value='true' className="custom-control-input" onChange={props.handleChange} />
-                                        <label className="custom-control-label" htmlFor="customRadioInline1">Yes</label>
-                                    </div>
-                                    <div className="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline2" name="billing" value='false' className="custom-control-input" onChange={props.handleChange} onClick={onToggle} />
-                                        <label className="custom-control-label" htmlFor="customRadioInline2">No</label>
+                                        <label htmlFor="newbilling"> <input type="radio" name="billing_addresschoice" id="newbilling" className="hide" onClick={onToggle} />Billing elsewhere ?</label>
                                     </div>
                                 </div>
                                 <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
                                     <div className="my-collapsible__content-inner">
+                                        <label htmlFor="newbilling">   Is your billing address the same as your shipping adress? </label><br />
+                                        <div className="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" id="customRadioInline1" name="billing" value='true' className="custom-control-input" onChange={props.handleChange} />
+                                            <label className="custom-control-label" htmlFor="customRadioInline1">Yes</label>
+                                        </div>
+                                        <div className="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" id="customRadioInline2" name="billing" value='false' className="custom-control-input" onChange={props.handleChange} />
+                                            <label className="custom-control-label" htmlFor="customRadioInline2">No</label>
+                                        </div>
                                         <div className="form-row  col-md-12">
                                             <div className="form-group col-md-6">
                                                 <label htmlFor="inputfirstname">Firstname</label>
@@ -677,7 +678,6 @@ function Step3(props) {
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Shipping :</span><span>{shipping_cost} €</span></div>
                         {Promo}
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{totalprice} €</span></div>
-
                     </div>
                     <legend>Card Details</legend>
                     {CardsOptions}
@@ -685,7 +685,7 @@ function Step3(props) {
                         render={({ onToggle, setCollapsibleElement }) => (
                             <div className="my-collapsible">
                                 <div className="form-row col-md-12">
-                                    <button type="button" className="btn tn-primary" onClick={onToggle} >New Card +</button>
+                                    <label htmlFor="newcard"> <input type="radio" name="cardchoice" id="newcard" className="hide" onClick={onToggle} />New Card +</label>
                                 </div>
                                 <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
                                     <div className="my-collapsible__content-inner">
