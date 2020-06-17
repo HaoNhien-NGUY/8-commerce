@@ -250,19 +250,10 @@ class ProductController extends AbstractController
                 return "/api/image/" . $v['product_id'] . "/default/$img";
             }, $imgArray);
 
-            $i = 0;
-            foreach ($v["subproducts"] as $subproduct) {
-                $price = $subproduct["promo"] ? $subproduct["price"] - ($subproduct["price"] * ($subproduct["promo"] / 100)) : $subproduct["price"];
-                if ($i == 0) {
-                    $v["basePrice"] = $subproduct["price"];
-                    $v["price"] = $price;
-                    $v["promo"] = $subproduct["promo"];
-                } else if ($price < $v["price"]) {
-                    $v["basePrice"] = $subproduct["price"];
-                    $v["price"] = $price;
-                    $v["promo"] = $subproduct["promo"];
-                }
-            }
+            $price = $v["promo"] ? $v["price"] - ($v["price"] * ($v["promo"] / 100)) : $v["price"];
+            $v["basePrice"] = $v["price"];
+            $v["price"] = $price;
+
             return array_merge($v, ["images" => array_values($imgArray)]);
         }, $products);
 
@@ -292,21 +283,13 @@ class ProductController extends AbstractController
                 return "/api/image/" . $v['product_id'] . "/default/$img";
             }, $imgArray);
 
-            $i = 0;
-            foreach ($v["subproducts"] as $subproduct) {
-                $price = $subproduct["promo"] ? $subproduct["price"] - ($subproduct["price"] * ($subproduct["promo"] / 100)) : $subproduct["price"];
-                if ($i == 0) {
-                    $v["basePrice"] = $subproduct["price"];
-                    $v["price"] = $price;
-                    $v["promo"] = $subproduct["promo"];
-                } else if ($price < $v["price"]) {
-                    $v["basePrice"] = $subproduct["price"];
-                    $v["price"] = $price;
-                    $v["promo"] = $subproduct["promo"];
-                }
-            }
+            $price = $v["promo"] ? $v["price"] - ($v["price"] * ($v["promo"] / 100)) : $v["price"];
+            $v["basePrice"] = $v["price"];
+            $v["price"] = $price;
+
             return array_merge($v, ["images" => array_values($imgArray)]);
         }, $products);
+
         return $this->json($products, 200);
     }
 
