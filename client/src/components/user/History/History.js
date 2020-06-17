@@ -4,8 +4,6 @@ import React, { useState, useEffect } from "react";
 function ShowOrder(props) {
     const [history, setHistory] = useState([]);
 
-    let date = new Date("2020-06-15T18:01:59+02:00");
-
     function getDate(date) {
         let d = new  Date(date);
         return d.getDate() + "/" + (d.getMonth()+1) + "/" +  d.getFullYear();
