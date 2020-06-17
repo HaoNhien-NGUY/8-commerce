@@ -71,3 +71,72 @@
     margin: 7%;
     font-size: 109px;
 }
+
+/* ------ CSS USER-CARDS  ----- */
+.cards {
+    margin-right: 15% !important;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 310px;
+    height: 150px;
+    color: white;
+    background: linear-gradient(to bottom right, #0a234b, #011638);
+    display: grid;
+}
+
+.titleCard {
+    font-weight: bold;
+}
+
+.logocb {
+    float: right;
+    width: 100px;
+}
+
+.YourCards {
+    border: 1px solid rgb(175, 175, 175);
+}
+
+.TitleCards {
+    background-color: #e7dfc6;
+    text-transform: uppercase;
+    text-align: center;
+    border-bottom: 1px solid rgb(175, 175, 175);
+    margin-bottom: 0px !important;
+}
+
+.divCard {
+    padding: 20px;
+    margin: -1px;
+    border-bottom: 1px solid rgb(175, 175, 175);
+}
+
+.cardDelete {
+    width: 150px;
+    height: 50px;
+}
+
+.colorblack {
+    background-color: black;
+    width: 61px;
+    height: 16px;
+    position: absolute;
+    margin-left: -18px;
+    margin-top: -12px;
+    border-radius: 35px 35px 0px 0px;
+}
+
+.pccv {
+    color: white;
+    background: #0a234b;
+    border-radius: 50%;
+    width: fit-content;
+    padding: 20px;
+    box-shadow: -10px 5px 2px black;
+}
+
+.spanccv {
+    background-color: rgb(209, 209, 209);
+    color: black;
+}
