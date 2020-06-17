@@ -43,6 +43,19 @@ class CardCredentialsController extends AbstractController
     }
 
     /**
+     * @Route("/api/cardcredentials/user/{id}", name="cardcredentialsbyuser_details", methods="GET", requirements={"id":"\d+"})
+     */
+    public function cardCredentialsByUser(Request $request, CardCredentialsRepository $cardCredentialsRepository)
+    {
+        $cardCredentials = $cardCredentialsRepository->findOneBy(['user_id' => $request->attributes->get('id')]);
+        if ($cardCredentials) {
+            return $this->json($cardCredentials, 200, [], ['groups' => 'user']);
+        } else {
+            return $this->json(['message' => 'not found'], 404, []);
+        }
+    }
+
+    /**
      * @Route("/api/cardcredentials/{id}", name="cardcredentials_details", methods="GET", requirements={"id":"\d+"})
      */
     public function cardCredentialsDetails(Request $request, CardCredentialsRepository $cardCredentialsRepository)
