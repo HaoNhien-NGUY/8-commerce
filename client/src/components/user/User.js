@@ -50,15 +50,25 @@ function UserHome(props) {
 
     return (
         <>  
-            <div className="mt-5 d-flex">
             <ToastContainer />
+            <div className="mt-5 d-flex container">
                 <div className="col-sm-3 pt-5">
-                    <a href="/user?content=history"><h3 className="listUser">Order History</h3></a>
-                    <a href="/user?content=shipping"><h3 className="listUser">Shipping Address</h3></a>
-                    <a href="/user?content=billing"><h3 className="listUser">Billing Address</h3></a>
-                    <a href="/user?content=card"><h3 className="listUser">Bank card</h3></a>
+                    <h5 className="authUser">{props.emailUser}</h5>
+                    <a className="a-none" href="/user?content=history">
+                        <h5 className={"listUser " + (query == "history" ? "StyleActive" : "")}>Order History</h5>
+                    </a>
+                    <a className="a-none" href="/user?content=shipping">
+                        <h5 className={"listUser " + (query == "shipping" ? "StyleActive" : "")}>Shipping Address</h5>
+                    </a>
+                    <a className="a-none" href="/user?content=billing">
+                        <h5 className={"listUser " + (query == "billing" ? "StyleActive" : "")}>Billing Address</h5>
+                    </a>
+                    <a className="a-none" href="/user?content=card">
+                        <h5 className={"listUser lasCHild " + (query == "card" ? "StyleActive" : "")}>Bank card</h5>
+                    </a>
                 </div>
                 <div className="col-sm-9">
+
                     {component}
                 </div>
             </div>
