@@ -238,11 +238,10 @@ class Checkout extends React.Component {
                     if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
                         return toast.error('Plese fill all the required informations', { position: 'top-center' });
                 }
-                else {
-                    if (!s.shippingchoice)
-                        return toast.error('Plese choose a delivery option', { position: 'top-center' });
-                }
             }
+
+            if (!s.shippingchoice)
+                return toast.error('Plese choose a delivery option', { position: 'top-center' });
         }
 
         if (this.state.currentStep == 3) {
@@ -682,70 +681,85 @@ function Step3(props) {
                     </div>
                     <legend>Card Details</legend>
                     {CardsOptions}
-                    <div className="form-group">
-                        <div className="form-row  col-md-12">
-                            <div className="form-group col-md-6">
-                                <label className="col-sm-3 control-label" htmlFor="cardfirstname">Firstname</label>
-                                <input type="text" className="form-control" name="cardfirstname" id="cardfirstname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardfirstname ? props.data.cardfirstname : null} onChange={props.handleChange} />
-                            </div>
-                            <div className="form-group col-md-6">
-                                <label className="col-sm-3 control-label" htmlFor="cardlastname">Lastname</label>
-                                <input type="text" className="form-control" name="cardlastname" id="cardlastname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardlastname ? props.data.cardlastname : null} onChange={props.handleChange} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-3 control-label" htmlFor="cardnumber">Card Number</label>
-                        <div className="col-sm-9">
-                            <input type="text" className="form-control" name="cardnumber" id="cardnumber" placeholder="Debit/Credit Card Number" defaultValue={props.data.cardnumber ? props.data.cardnumber : null} onChange={props.handleChange} />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-3 control-label" htmlFor="expirymonth">Expiration Date</label>
-                        <label className="col-sm-3 control-label" htmlFor="expiryyear"></label>
+                    <SlideToggle collapsed irreversible
+                        render={({ onToggle, setCollapsibleElement }) => (
+                            <div className="my-collapsible">
+                                <div className="form-row col-md-12">
+                                    <button type="button" className="btn tn-primary" onClick={onToggle} >New Card +</button>
+                                </div>
+                                <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
+                                    <div className="my-collapsible__content-inner">
+                                        <div className="form-group">
+                                            <div className="form-row  col-md-12">
+                                                <div className="form-group col-md-6">
+                                                    <label className="col-sm-3 control-label" htmlFor="cardfirstname">Firstname</label>
+                                                    <input type="text" className="form-control" name="cardfirstname" id="cardfirstname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardfirstname ? props.data.cardfirstname : null} onChange={props.handleChange} />
+                                                </div>
+                                                <div className="form-group col-md-6">
+                                                    <label className="col-sm-3 control-label" htmlFor="cardlastname">Lastname</label>
+                                                    <input type="text" className="form-control" name="cardlastname" id="cardlastname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardlastname ? props.data.cardlastname : null} onChange={props.handleChange} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-3 control-label" htmlFor="cardnumber">Card Number</label>
+                                            <div className="col-sm-9">
+                                                <input type="text" className="form-control" name="cardnumber" id="cardnumber" placeholder="Debit/Credit Card Number" defaultValue={props.data.cardnumber ? props.data.cardnumber : null} onChange={props.handleChange} />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-3 control-label" htmlFor="expirymonth">Expiration Date</label>
+                                            <label className="col-sm-3 control-label" htmlFor="expiryyear"></label>
 
-                        <div className="col-sm-9">
-                            <div className="row ml-1">
-                                <div className="col-xs-6 pr-05">
-                                    <select className="form-control" name="expirymonth" id="expirymonth" onChange={props.handleChange}>
-                                        <option>Month</option>
-                                        <option value="01">Jan (01)</option>
-                                        <option value="02">Feb (02)</option>
-                                        <option value="03">Mar (03)</option>
-                                        <option value="04">Apr (04)</option>
-                                        <option value="05">May (05)</option>
-                                        <option value="06">June (06)</option>
-                                        <option value="07">July (07)</option>
-                                        <option value="08">Aug (08)</option>
-                                        <option value="09">Sep (09)</option>
-                                        <option value="10">Oct (10)</option>
-                                        <option value="11">Nov (11)</option>
-                                        <option value="12">Dec (12)</option>
-                                    </select>
-                                </div>
-                                <div className="col-xs-6 pl-05">
-                                    <select className="form-control" name="expiryyear" id="expiryear" onChange={props.handleChange}>
-                                        <option value="20">2020</option>
-                                        <option value="21">2021</option>
-                                        <option value="22">2022</option>
-                                        <option value="23">2023</option>
-                                        <option value="24">2024</option>
-                                        <option value="25">2025</option>
-                                        <option value="26">2026</option>
-                                        <option value="27">2027</option>
-                                        <option value="28">2028</option>
-                                        <option value="29">2029</option>
-                                    </select>
+                                            <div className="col-sm-9">
+                                                <div className="row ml-1">
+                                                    <div className="col-xs-6 pr-05">
+                                                        <select className="form-control" name="expirymonth" id="expirymonth" onChange={props.handleChange}>
+                                                            <option>Month</option>
+                                                            <option value="01">Jan (01)</option>
+                                                            <option value="02">Feb (02)</option>
+                                                            <option value="03">Mar (03)</option>
+                                                            <option value="04">Apr (04)</option>
+                                                            <option value="05">May (05)</option>
+                                                            <option value="06">June (06)</option>
+                                                            <option value="07">July (07)</option>
+                                                            <option value="08">Aug (08)</option>
+                                                            <option value="09">Sep (09)</option>
+                                                            <option value="10">Oct (10)</option>
+                                                            <option value="11">Nov (11)</option>
+                                                            <option value="12">Dec (12)</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="col-xs-6 pl-05">
+                                                        <select className="form-control" name="expiryyear" id="expiryear" onChange={props.handleChange}>
+                                                            <option value="20">2020</option>
+                                                            <option value="21">2021</option>
+                                                            <option value="22">2022</option>
+                                                            <option value="23">2023</option>
+                                                            <option value="24">2024</option>
+                                                            <option value="25">2025</option>
+                                                            <option value="26">2026</option>
+                                                            <option value="27">2027</option>
+                                                            <option value="28">2028</option>
+                                                            <option value="29">2029</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label className="col-sm-3 control-label" htmlFor="ccv">Card ccv</label>
+                                            <div className="col-sm-3">
+                                                <input type="text" className="form-control" name="ccv" id="ccv" placeholder="Security Code" defaultValue={props.data.ccv ? props.data.ccv : null} onChange={props.handleChange} />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-3 control-label" htmlFor="ccv">Card ccv</label>
-                        <div className="col-sm-3">
-                            <input type="text" className="form-control" name="ccv" id="ccv" placeholder="Security Code" defaultValue={props.data.ccv ? props.data.ccv : null} onChange={props.handleChange} />
-                        </div>
-                    </div>
+                        )}
+                    />
+
+
 
                 </>
             </React.Fragment>
