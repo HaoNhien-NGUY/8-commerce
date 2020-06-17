@@ -74,7 +74,7 @@
 
 /* ------ CSS USER-CARDS  ----- */
 .cards {
-    margin-right: 15% !important;
+    /* margin-right: 15% !important; */
     margin: 10px;
     padding: 10px;
     border-radius: 5px;
@@ -129,14 +129,45 @@
 
 .pccv {
     color: white;
-    background: #0a234b;
+    background: #011638;
     border-radius: 50%;
     width: fit-content;
     padding: 20px;
     box-shadow: -10px 5px 2px black;
+    border: 1px solid white;
 }
 
 .spanccv {
     background-color: rgb(209, 209, 209);
+    box-shadow: 0px 0px 5px rgb(209, 209, 209);
     color: black;
+}
+
+.cryptogramme {
+    margin-bottom: 0;
+    text-decoration: underline;
+}
+
+.addcard {
+    /* float: right; */
+    width: 20%;
+    padding: 11px !important;
+}
+
+.inputCard {
+    width: 100px !important;
+    margin-right: 5%;
+}
+
+.slash {
+    margin-left: -15px;
+    margin-right: 8px;
+}
+
+.sizemin {
+    font-size: 13px;
+}
+
+.positionCrypto {
+    float: right;
 }
