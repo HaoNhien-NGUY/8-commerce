@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AddressBilling;
 use App\Entity\AddressShipping;
 use App\Entity\CardCredentials;
+use App\Entity\PromoCode;
 use App\Entity\Region;
 use App\Entity\ShippingPricing;
 use App\Entity\User;
@@ -79,17 +80,33 @@ class CheckoutController extends AbstractController
             $product = $subproductRepository->find($value->subproduct_id);
             if (!$product) return $this->json(['message' => 'subproduct with id ' . $value->subproduct_id . ' not found.'], 400);
             $orderSubproducts = new UserOrderSubproduct();
-            $orderSubproducts->setSubproduct($product);
-            $orderSubproducts->setPrice($product->getPrice());
-            $orderSubproducts->setPromo($product->getPromo());
-            $orderSubproducts->setUserOrder($order);
+            $orderSubproducts->setSubproduct($product)
+                ->setPrice($product->getPrice())
+                ->setPromo($product->getPromo())
+                ->setUserOrder($order);
             $em->persist($orderSubproducts);
 
             $currentPrice = $product->getWeight() * $pricing->getPricePerKilo() * $value->quantity;
-            $currentPrice += $product->getPrice();
+            $basePrice = $product->getPrice();
+            $promo = $product->getPromo();
+            $productPrice = $promo ? $basePrice - ($basePrice * ($product->getPromo() / 100)) : $basePrice;
+            $currentPrice += $productPrice * $value->quantity;
             $price += $currentPrice;
         }
         $price += $pricing->getBasePrice();
+
+        if (isset($req->promo_code)) {
+            $promoCode = $this->getDoctrine()->getRepository(PromoCode::class)->findOneBy(['code' => $req->promo_code]);
+            if (!$promoCode) return $this->json(['message' => 'Promo Code doesn\'t exist.'], 404);
+            if ($promoCode->getDateEnd() < new \DateTime() && !$promoCode->getUsedLimit()) return $this->json(['message' => 'Promo Code has expired.'], 404);
+            if ($promoCode->getUsedLimit()) {
+                if ($promoCode->getUsedLimit() <= $promoCode->getUsedTimes()) return $this->json(['message' => 'Promo Code has been used to its limit.'], 404);
+                if ($promoCode->getDateEnd() < new \DateTime() && $promoCode->getDateEnd()) return $this->json(['message' => 'Promo Code has expired.'], 404);
+            }
+            $order->setPromoCode($promoCode);
+            $price = $price - ($price * ($promoCode->getPercentage() / 100));
+        }
+
         $order->setCost($price);
 
         do {
@@ -162,19 +179,19 @@ class CheckoutController extends AbstractController
         }
 
         if (isset($user)) {
-            $user->addCardCredential($cardCredentials);
-            $user->addAddressShipping($shippingAddress);
-            $user->addAddressBilling($billingAddress);
-            $user->addUserOrder($order);
+            $user->addCardCredential($cardCredentials)
+                ->addAddressShipping($shippingAddress)
+                ->addAddressBilling($billingAddress)
+                ->addUserOrder($order);
             $em->persist($cardCredentials);
             $em->persist($user);
         }
 
-        $order->setAddressShipping($shippingAddress);
-        $order->setAddressBilling($billingAddress);
-        $order->setStatus(false);
-        $order->setPackaging($req->packaging);
-        $order->setCreatedAt(new \DateTime());
+        $order->setAddressShipping($shippingAddress)
+            ->setAddressBilling($billingAddress)
+            ->setStatus(false)
+            ->setPackaging($req->packaging)
+            ->setCreatedAt(new \DateTime());
 
         $em->persist($shippingAddress);
         $em->persist($billingAddress);
@@ -183,16 +200,16 @@ class CheckoutController extends AbstractController
         $em->flush();
 
         $SendEmailTo = (new Email())
-        ->from('8.commerce.clothing@gmail.com')
-        ->to($email)
-        ->subject('Track your order')
-        ->html("Thank you for your order! Here is your tracking link: <br><br><a href='http://localhost:4242/command?order={$tracking_number}'>Click here to track your order</a>");
+            ->from('8.commerce.clothing@gmail.com')
+            ->to($email)
+            ->subject('Track your order')
+            ->html("Thank you for your order! Here is your tracking link: <br><br><a href='http://localhost:4242/command?order={$tracking_number}'>Click here to track your order</a>");
 
         $mailer->send($SendEmailTo);
 
         return $this->json(['message' => 'order created', 'trackingnumber' => $tracking_number], 200, []);
 
-        //at the start we check the token, if the user is logged we'll fetch the user from the database
+        //at the start / with a "middleware" we check the token, if the user is logged we'll fetch the user from the database
         //find(token->user)
         //else 
     }

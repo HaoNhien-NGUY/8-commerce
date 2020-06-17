@@ -83,6 +83,11 @@ class UserOrder
      */
     private $userOrderSubproducts;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=PromoCode::class)
+     */
+    private $promoCode;
+
 
     public function __construct()
     {
@@ -223,6 +228,18 @@ class UserOrder
                 $userOrderSubproduct->setUserOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPromoCode(): ?PromoCode
+    {
+        return $this->promoCode;
+    }
+
+    public function setPromoCode(?PromoCode $promoCode): self
+    {
+        $this->promoCode = $promoCode;
 
         return $this;
     }
