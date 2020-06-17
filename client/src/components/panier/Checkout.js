@@ -26,6 +26,21 @@ class Checkout extends React.Component {
     };
 
 
+    componentDidMount() {
+        if (this.props.auth.user != null) {
+            if (!this.state.shippingAddress && !this.state.billingAddress) {
+                axios
+                    .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
+                    .then((res) => {
+                        return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
+                    })
+                    .catch((error) => {
+                    });
+            }
+        }
+
+    }
+
     componentDidUpdate() {
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
@@ -73,7 +88,7 @@ class Checkout extends React.Component {
         if (this.state.billing === 'true') {
             billingAddress = shippingAddress
         } else {
-            if (this.state.addresschoice) {
+            if (this.state.billing_addresschoice) {
                 billingAddress = this.state.billingAddress[this.state.billing_addresschoice].id
             }
             else {
@@ -107,6 +122,7 @@ class Checkout extends React.Component {
 
         let jsonRequest = {
             'email': this.state.email,
+            'user_id': this.props.auth.user != null ? this.props.auth.user.id : null,
             'packaging': this.state.packaging != null ? "true" : "false",
             'pricing_id': this.state.shipping_methods[this.state.shippingchoice].pricing_id,
             'shipping_address': shippingAddress,
@@ -725,7 +741,7 @@ function Step4(props) {
                 <p> An confirmation e-mail has been sent to you with your order details and tracking number. <br />
                You can track your order status here <a href={"http://localhost:4242/command?order=" + props.data.trackingnumber}>here</a></p>
                 <div className="form-group mt-4">
-                    <a href="http://localhost:4242/"><button className='btn btn-secondary'>Go back to the store</button></a>
+                    <a href="http://localhost:4242/"><button className='btn btn-secondary' onClick={sessionStorage.removeItem("panier")}>Go back to the store</button></a>
                 </div>
             </div>
         </React.Fragment>
