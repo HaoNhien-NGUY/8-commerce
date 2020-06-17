@@ -86,7 +86,7 @@ class IndexNavbar extends Component {
         <Router>
           <NavItem>
             <Nav.Link href="#" id="profileLogo">
-              <img src={profileLogo} />
+              <img src={profileLogo} onClick={() => window.location.href = "/user?content=history"} title="Profil" />
             </Nav.Link>
           </NavItem>
           <NavItem>
