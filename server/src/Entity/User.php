@@ -157,6 +157,8 @@ class User implements UserInterface
 
         return $this;
     }
+    
+    public function getUsername() {}
 
     /**
      * @see UserInterface
