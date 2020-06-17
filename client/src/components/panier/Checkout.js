@@ -11,7 +11,6 @@ import "react-toastify/dist/ReactToastify.css";
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 
-
 class Checkout extends React.Component {
     constructor(props) {
         super(props)
@@ -22,22 +21,24 @@ class Checkout extends React.Component {
             country: "France",
         }
     }
-
     static propTypes = {
         auth: PropTypes.object.isRequired,
     };
 
+
     componentDidUpdate() {
         if (this.props.auth.user != null) {
-            axios
-                .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
-                .then((res) => {
-                    return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
+            if (!this.state.shippingAddress && !this.state.billingAddress) {
+                axios
+                    .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
+                    .then((res) => {
+                        return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
+                    })
+                    .catch((error) => {
+                    });
+            }
         }
+
     }
 
     handleChange = event => {
@@ -49,10 +50,9 @@ class Checkout extends React.Component {
 
     handleSubmit = event => {
         event.preventDefault()
-
         let shippingAddress;
         if (this.state.addresschoice) {
-            shippingAddress = this.state.addresschoice
+            shippingAddress = this.state.shippingAddress[this.state.addresschoice].id
         }
         else {
             shippingAddress = {
@@ -69,13 +69,12 @@ class Checkout extends React.Component {
 
         let arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
         arrayOfObj = arrayOfObj.map(({ productid, quantite }) => ({ subproduct_id: productid, quantity: quantite }));
-
         let billingAddress;
         if (this.state.billing === 'true') {
             billingAddress = shippingAddress
         } else {
             if (this.state.addresschoice) {
-                billingAddress = this.state.addresschoice
+                billingAddress = this.state.billingAddress[this.state.billing_addresschoice].id
             }
             else {
                 billingAddress = {
@@ -93,7 +92,7 @@ class Checkout extends React.Component {
 
         let CardDetails;
         if (this.state.cardchoice) {
-            CardDetails = this.state.cardchoice;
+            CardDetails = this.state.cards[this.state.cardchoice].id;
         }
         else {
             CardDetails = {
@@ -102,12 +101,13 @@ class Checkout extends React.Component {
                 'expiration_date': this.state.expirymonth + '/' + this.state.expiryyear,
                 'firstname': this.state.cardfirstname,
                 'lastname': this.state.cardlastname,
-                'cvv': this.state.cvv
+                'ccv': parseInt(this.state.ccv)
             }
         }
 
-        let CompleteOrder = {
+        let jsonRequest = {
             'email': this.state.email,
+            'packaging': this.state.packaging != null ? "true" : "false",
             'pricing_id': this.state.shipping_methods[this.state.shippingchoice].pricing_id,
             'shipping_address': shippingAddress,
             'billing_address': billingAddress,
@@ -115,16 +115,26 @@ class Checkout extends React.Component {
             'subproducts': arrayOfObj
         }
 
+        console.log(jsonRequest)
+        const header = { "Content-Type": "application/json" };
+        axios
+            .post(
+                "http://localhost:8000/api/checkout",
+                jsonRequest,
+                { headers: header }
+            )
+            .then((res) => {
+                this.setState({ currentStep: 4, trackingnumber: res.data.trackingnumber })
+                console.log(this.state)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
 
-        console.log(CompleteOrder)
-
-        this.setState({
-            currentStep: 4
-        })
+        // sessionStorage.removeItem("panier")
     }
 
     _next = () => {
-        console.log(this.state)
         if (this.state.currentStep === 1) {
             let s = this.state;
             // if (!s.addresschoice) {
@@ -168,6 +178,19 @@ class Checkout extends React.Component {
 
         if (this.state.currentStep == 2) {
             let s = this.state;
+            if (this.props.auth.user != null) {
+
+                console.log(this.props.auth.user.id)
+                axios
+                    .get("http://localhost:8000/api/cardcredentials/user/" + this.props.auth.user.id)
+                    .then((res) => {
+                        return this.setState({ cards: res.data })
+                    })
+                    .catch((error) => {
+                        console.log(error.response);
+                    });
+            }
+
             // if (!s.billing_addresschoice) {
             //     if (s.billing !== 'true') {
             //         if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
@@ -253,6 +276,18 @@ class Checkout extends React.Component {
     render() {
 
         const { user } = this.props.auth;
+
+        // if (this.props.auth.user != null) {
+        //     axios
+        //         .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
+        //         .then((res) => {
+        //             if (this.state.cards) { this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email }) }
+        //         })
+        //         .catch((error) => {
+        //             console.log(error.response);
+        //         });
+        // }
+
         const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
         return (
             <>
@@ -329,6 +364,7 @@ class Checkout extends React.Component {
 
 function Step1(props) {
     let ShippoingAdressOptions = []
+
     if (props.data.shippingAddress != null) {
         for (let [key, value] of Object.entries(props.data.shippingAddress)) {
             ShippoingAdressOptions.push(
@@ -361,61 +397,75 @@ function Step1(props) {
                 </div></>}
             <legend>Shipping Address</legend>
             {ShippoingAdressOptions}
-            <div className="form-row  col-md-12">
-                <div className="form-group col-md-6">
-                    <label htmlFor="inputfirstname">Firstname</label>
-                    <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" defaultValue={props.data.firstname ? props.data.firstname : null} name="firstname" onChange={props.handleChange} />
-                </div>
-                <div className="form-group col-md-6">
-                    <label htmlFor="inputLastname">Lastname</label>
-                    <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" defaultValue={props.data.lastname ? props.data.lastname : null} name='lastname' onChange={props.handleChange} />
-                </div>
-            </div>
-            <div className="form-group  col-md-12">
-                <label htmlFor="inputAddress">Address</label>
-                <input type="text" className="form-control" id="inputAddress" name='address' placeholder="Address" defaultValue={props.data.address ? props.data.address : null} onChange={props.handleChange} />
-            </div>
-            <div className="form-row  col-md-12">
-                <div className="form-group col-md-6">
-                    <label htmlFor="inputCity">City</label>
-                    <input type="text" className="form-control" id="inputCity" name='city' placeholder="City" defaultValue={props.data.city ? props.data.city : null} onChange={props.handleChange} />
-                </div>
-                <div className="form-group col-md-4">
-                    <label htmlFor="inputZip">Zip code</label>
-                    <input type="text" className="form-control" id="inputZip" name='zip' defaultValue={props.data.zip ? props.data.zip : null} placeholder="Zipcode" value={props.zip} onChange={props.handleChange} />
-                </div>
-            </div>
-            <SlideToggle collapsed data={props}
+            <SlideToggle collapsed irreversible
                 render={({ onToggle, setCollapsibleElement }) => (
                     <div className="my-collapsible">
                         <div className="form-row col-md-12">
-                            Shipping Outside of France ? <input type="checkbox" className="mt-2 ml-3" onClick={onToggle} />
+                            <button type="button" className="btn tn-primary" onClick={onToggle} >New address +</button>
                         </div>
                         <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
                             <div className="my-collapsible__content-inner">
                                 <div className="form-row  col-md-12">
                                     <div className="form-group col-md-6">
-                                        <label htmlFor="inputRegion">Region</label>
-                                        <select name="region" onChange={props.handleChange} className="custom-select">
-                                            <option value='1'>Choose a Region</option>
-                                            <option value="2" >Europe</option>
-                                            <option value="3" >Africa</option>
-                                            <option value="4">Asia</option>
-                                            <option value="5">North America</option>
-                                            <option value="6">South America</option>
-                                            <option value="7">Oceania</option>
-                                        </select>
+                                        <label htmlFor="inputfirstname">Firstname</label>
+                                        <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" defaultValue={props.data.firstname ? props.data.firstname : null} name="firstname" onChange={props.handleChange} />
+                                    </div>
+                                    <div className="form-group col-md-6">
+                                        <label htmlFor="inputLastname">Lastname</label>
+                                        <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" defaultValue={props.data.lastname ? props.data.lastname : null} name='lastname' onChange={props.handleChange} />
+                                    </div>
+                                </div>
+                                <div className="form-group  col-md-12">
+                                    <label htmlFor="inputAddress">Address</label>
+                                    <input type="text" className="form-control" id="inputAddress" name='address' placeholder="Address" defaultValue={props.data.address ? props.data.address : null} onChange={props.handleChange} />
+                                </div>
+                                <div className="form-row  col-md-12">
+                                    <div className="form-group col-md-6">
+                                        <label htmlFor="inputCity">City</label>
+                                        <input type="text" className="form-control" id="inputCity" name='city' placeholder="City" defaultValue={props.data.city ? props.data.city : null} onChange={props.handleChange} />
                                     </div>
                                     <div className="form-group col-md-4">
-                                        <label htmlFor="inputZip">Country</label>
-                                        <input type="text" className="form-control" id="inputCountry" defaultValue={props.data.country ? props.data.country : null} placeholder="Country" name='country' value={props.country} onChange={props.handleChange} />
+                                        <label htmlFor="inputZip">Zip code</label>
+                                        <input type="text" className="form-control" id="inputZip" name='zip' defaultValue={props.data.zip ? props.data.zip : null} placeholder="Zipcode" value={props.zip} onChange={props.handleChange} />
                                     </div>
                                 </div>
                             </div>
+                            <SlideToggle collapsed data={props}
+                                render={({ onToggle, setCollapsibleElement }) => (
+                                    <div className="my-collapsible">
+                                        <div className="form-row col-md-12">
+                                            Shipping Outside of France ? <input type="checkbox" className="mt-2 ml-3" onClick={onToggle} />
+                                        </div>
+                                        <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
+                                            <div className="my-collapsible__content-inner">
+                                                <div className="form-row  col-md-12">
+                                                    <div className="form-group col-md-6">
+                                                        <label htmlFor="inputRegion">Region</label>
+                                                        <select name="region" onChange={props.handleChange} className="custom-select">
+                                                            <option value='1'>Choose a Region</option>
+                                                            <option value="2" >Europe</option>
+                                                            <option value="3" >Africa</option>
+                                                            <option value="4">Asia</option>
+                                                            <option value="5">North America</option>
+                                                            <option value="6">South America</option>
+                                                            <option value="7">Oceania</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="form-group col-md-4">
+                                                        <label htmlFor="inputZip">Country</label>
+                                                        <input type="text" className="form-control" id="inputCountry" defaultValue={props.data.country ? props.data.country : null} placeholder="Country" name='country' value={props.country} onChange={props.handleChange} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            />
                         </div>
                     </div>
                 )}
             />
+
         </>
     );
 }
@@ -426,6 +476,7 @@ function Step2(props) {
     }
 
     else {
+
         let BillingAdressOptions = []
         if (props.data.billingAddress != null) {
             for (let [key, value] of Object.entries(props.data.billingAddress)) {
@@ -558,11 +609,28 @@ function Step3(props) {
         return null
     }
     else {
-
+        let CardsOptions = []
+        if (props.data.cards != null) {
+            for (let [key, value] of Object.entries(props.data.cards)) {
+                CardsOptions.push(
+                    <div key={"card_" + key} className="col-md-12">
+                        <label className="control control-radio w-100 form-check-label" htmlFor={"cardchoice" + key}>
+                            <input className="form-check-input checkbox-style" type="radio" name="cardchoice" id={"cardchoice" + key} value={key} onChange={props.handleChange} />
+                            <div className="control_indicator"></div>
+                            <div className="alert alert-secondary p-0">
+                                <div className="d-flex flex-column">
+                                    <div className="pl-3 pt-1">Name : {value.firstname} {value.lastname}</div>
+                                    <div className="pl-3 p-0">Card Num. : {value.cardNumbers}</div>
+                                    <div className="pl-3 pb-1">Exp. Date : {value.expirationDate}</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div >
+                )
+            }
+        }
         let shipping_cost = props.data.shipping_methods[props.data.shippingchoice].price;
         let totalprice = shipping_cost + props.data.NoShipPrice
-
-
         return (
             <React.Fragment>
                 <>
@@ -572,14 +640,16 @@ function Step3(props) {
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{totalprice} €</span></div>
 
                     </div>
+                    <legend>Card Details</legend>
+                    {CardsOptions}
                     <div className="form-group">
                         <div className="form-row  col-md-12">
                             <div className="form-group col-md-6">
-                                <label className="col-sm-3 control-label" htmlFor="cardfirstname">Firstname on Card</label>
+                                <label className="col-sm-3 control-label" htmlFor="cardfirstname">Firstname</label>
                                 <input type="text" className="form-control" name="cardfirstname" id="cardfirstname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardfirstname ? props.data.cardfirstname : null} onChange={props.handleChange} />
                             </div>
                             <div className="form-group col-md-6">
-                                <label className="col-sm-3 control-label" htmlFor="cardlastname">Lastname on Card</label>
+                                <label className="col-sm-3 control-label" htmlFor="cardlastname">Lastname</label>
                                 <input type="text" className="form-control" name="cardlastname" id="cardlastname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardlastname ? props.data.cardlastname : null} onChange={props.handleChange} />
                             </div>
                         </div>
@@ -631,9 +701,9 @@ function Step3(props) {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="col-sm-3 control-label" htmlFor="cvv">Card CVV</label>
+                        <label className="col-sm-3 control-label" htmlFor="ccv">Card ccv</label>
                         <div className="col-sm-3">
-                            <input type="text" className="form-control" name="cvv" id="cvv" placeholder="Security Code" defaultValue={props.data.cvv ? props.data.cvv : null} onChange={props.handleChange} />
+                            <input type="text" className="form-control" name="ccv" id="ccv" placeholder="Security Code" defaultValue={props.data.ccv ? props.data.ccv : null} onChange={props.handleChange} />
                         </div>
                     </div>
 
@@ -651,9 +721,9 @@ function Step4(props) {
         <React.Fragment>
             <div className="f">
                 <h3>Your order has been successfully registered !</h3>
-                <p>Your order number is: 5633939402A139932</p>
+                <p>Your order number is: {props.data.trackingnumber}</p>
                 <p> An confirmation e-mail has been sent to you with your order details and tracking number. <br />
-               You can track your order status here <a href="http://localhost:4242/">lien ici vers la page de surveillance des commandes</a></p>
+               You can track your order status here <a href={"http://localhost:4242/command?order=" + props.data.trackingnumber}>here</a></p>
                 <div className="form-group mt-4">
                     <a href="http://localhost:4242/"><button className='btn btn-secondary'>Go back to the store</button></a>
                 </div>

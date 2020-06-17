@@ -190,7 +190,7 @@ class CheckoutController extends AbstractController
 
         $mailer->send($SendEmailTo);
 
-        return $this->json(['message' => 'order created', 'tracking number' => $tracking_number], 200, []);
+        return $this->json(['message' => 'order created', 'trackingnumber' => $tracking_number], 200, []);
 
         //at the start we check the token, if the user is logged we'll fetch the user from the database
         //find(token->user)
