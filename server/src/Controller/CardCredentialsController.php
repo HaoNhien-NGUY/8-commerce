@@ -47,7 +47,7 @@ class CardCredentialsController extends AbstractController
      */
     public function cardCredentialsByUser(Request $request, CardCredentialsRepository $cardCredentialsRepository)
     {
-        $cardCredentials = $cardCredentialsRepository->findOneBy(['user_id' => $request->attributes->get('id')]);
+        $cardCredentials = $cardCredentialsRepository->findOneBy(['user' => $request->attributes->get('id')]);
         if ($cardCredentials) {
             return $this->json($cardCredentials, 200, [], ['groups' => 'user']);
         } else {
