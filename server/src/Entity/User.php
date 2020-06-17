@@ -19,25 +19,25 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"user"})
+     * @Groups({"user","review"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user"})
+     * @Groups({"user","review"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=180, unique=false,nullable=true)
-     * @Groups({"user"})
+     * @Groups({"user","review"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=180, unique=false,nullable=true)
-     * @Groups({"user"})
+     * @Groups({"user","review"})
      */
     private $lastname;
 
@@ -83,12 +83,18 @@ class User implements UserInterface
      */
     private $userOrders;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Review::class, mappedBy="user")
+     */
+    private $reviews;
+
     public function __construct()
     {
         $this->cardCredentials = new ArrayCollection();
         $this->addressShippings = new ArrayCollection();
         $this->addressBillings = new ArrayCollection();
         $this->userOrders = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -320,6 +326,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($userOrder->getUser() === $this) {
                 $userOrder->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Review[]
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getUser() === $this) {
+                $review->setUser(null);
             }
         }
 
