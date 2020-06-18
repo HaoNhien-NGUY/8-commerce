@@ -26,7 +26,7 @@ class RestrictedRegion
     private $method;
 
     /**
-     * @ORM\OneToOne(targetEntity=Region::class, inversedBy="restrictedRegion", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Region::class, inversedBy="restrictedRegion")
      * @ORM\JoinColumn(nullable=false)
      */
     private $region;
