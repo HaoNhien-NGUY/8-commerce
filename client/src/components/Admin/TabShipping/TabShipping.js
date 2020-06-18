@@ -19,12 +19,16 @@ function Shipping() {
             "Content-type": "application/json"
         }
     };
-
+    
     const handlePageClick = (e) => {
         const selectedPage = e.selected;
         const newOffset = selectedPage * limit;
         setOffset(newOffset)
     };
+
+    useEffect(() => {
+        if (pageCount < offset) setOffset(0);
+      }, [pageCount, offset]);
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/shippingmethod?offset=${offset}&limit=${limit}`, config).then(async e => {
@@ -99,6 +103,7 @@ function Shipping() {
             </Modal>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
+                {pageCount > 0 &&
                     <ReactPaginate
                         previousLabel={"prev"}
                         nextLabel={"next"}
@@ -110,7 +115,7 @@ function Shipping() {
                         onPageChange={handlePageClick}
                         containerClassName={"pagination"}
                         subContainerClassName={"pages pagination"}
-                        activeClassName={"active"} />
+                        activeClassName={"active"} />}
                 </div>
             </div>
         </>

@@ -22,7 +22,11 @@ const Region = () => {
     }
     useEffect(() => {
         receivedData();
-    }, [offset])
+    }, [offset]);
+
+    useEffect(() => {
+      if (pageCount < offset) setOffset(0);
+    }, [pageCount, offset]);
 
     const deleteRegion = (id) => {
       axios.delete("http://127.0.0.1:8000/api/region/"+id, config).then(res => {
@@ -180,6 +184,7 @@ const Region = () => {
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div>
+          {pageCount > 0 &&
             <ReactPaginate
               previousLabel={"prev"}
               nextLabel={"next"}
@@ -191,7 +196,7 @@ const Region = () => {
               onPageChange={handlePageClick}
               containerClassName={"pagination"}
               subContainerClassName={"pages pagination"}
-              activeClassName={"active"} />
+              activeClassName={"active"} />}
           </div>
         </div>
 

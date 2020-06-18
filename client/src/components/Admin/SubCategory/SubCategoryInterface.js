@@ -49,7 +49,11 @@ const SubCategoryInterface = () => {
 
     useEffect(() => {
         receivedSubCategories();
-    }, [offset])
+    }, [offset]);
+
+    useEffect(() => {
+        if (pageCount < offset) setOffset(0);
+      }, [pageCount, offset]);
 
     const receivedSubCategories = () => {
         axios.get("http://localhost:8000/api/category/" + id, config)
@@ -307,9 +311,7 @@ const SubCategoryInterface = () => {
                             onPageChange={handlePageClick}
                             containerClassName={"pagination"}
                             subContainerClassName={"pages pagination"}
-                            activeClassName={"active"} />
-                    }
-
+                            activeClassName={"active"} />}
                 </div>
             </div>
         </div>
