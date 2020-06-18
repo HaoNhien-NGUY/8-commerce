@@ -28,6 +28,7 @@
     "react-scripts": "3.4.1",
     "react-slide-toggle": "^0.2.7",
     "react-step-progress-bar": "^1.0.3",
+    "react-string-replace": "^0.4.4",
     "react-tabs": "^3.1.1",
     "react-toastify": "^6.0.5",
     "react-transition-group": "^4.4.1",

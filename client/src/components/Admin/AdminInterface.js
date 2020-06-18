@@ -546,14 +546,6 @@ const AdminInterface = () => {
         )
     }
 
-    const AllColors = () => {
-        return (
-            <>
-                <Color />
-            </>
-        )
-    }
-
     return (
         <div className="container adminTable">
             <ToastContainer />
@@ -577,7 +569,7 @@ const AdminInterface = () => {
                     {AllCategories()}
                 </TabPanel>
                 <TabPanel>
-                    {AllColors()}
+                    <Color />
                 </TabPanel>
                 <TabPanel>
                     <SupplierCommand />

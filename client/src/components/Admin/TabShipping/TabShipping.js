@@ -56,7 +56,6 @@ function Shipping() {
     
     return (
         <>
-            <ToastContainer />
             <div className="row justify-content-end mb-2">
                 <button onClick={() => window.location.href = 'admin/create/shipping'} className="btn btn-success m-1">+ New Shipping company</button>
                 {/* <button className="btn btn-success m-1">+ New Supplier</button> */}
