@@ -115,89 +115,6 @@ const Region = () => {
     };
 
     return (
-<<<<<<< HEAD
-        <>
-            <ToastContainer />
-            <div className="row justify-content-end mb-2">
-                <button onClick={() => setShowAdd(true)} className="btn btn-success m-1">
-                    + New Region
-          </button>
-                <Modal show={showAdd} onHide={() => setShowAdd(false)}>
-                    <Modal.Header closeButton>
-                        Create Region !
-              </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={onSubmitRegion}>
-                            <FormGroup>
-                                <Label for="region">Region name</Label>
-                                <Input
-                                    type="text"
-                                    name="region"
-                                    id="region"
-                                    onChange={onChangeRegion}
-                                />
-                                <Button color="dark" className="mt-4" block>
-                                    Submit
-                  </Button>
-                            </FormGroup>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-                <Modal show={showUpdate} onHide={() => setShowUpdate(false)}>
-                    <Modal.Header closeButton>
-                        Update Region !
-              </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={onSubmitRegionUpdate}>
-                            <FormGroup>
-                                <Label for="region">Region name</Label>
-                                <Input
-                                    value={regionName}
-                                    type="text"
-                                    name="region"
-                                    id="region"
-                                    onChange={onChangeRegion}
-                                />
-                                <Button color="dark" className="mt-4" block>
-                                    Submit
-                  </Button>
-                            </FormGroup>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-            </div>
-            <div className="row border p-2">
-                <table>
-                    <thead>
-                        <tr>
-                            <th><p className="m-2 align-items-center"> ID </p></th>
-                            <th><p className="m-2"> Name </p></th>
-                            <th><p colSpan="3" className="m-1"> Actions </p></th>
-                        </tr>
-                    </thead>
-                    <tbody>{postDataRegions}</tbody>
-                </table>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div>
-                    {pageCount > 0 &&
-                        <ReactPaginate
-                            previousLabel={"prev"}
-                            nextLabel={"next"}
-                            breakLabel={"..."}
-                            breakClassName={"break-me"}
-                            pageCount={pageCount}
-                            marginPagesDisplayed={1}
-                            pageRangeDisplayed={2}
-                            onPageChange={handlePageClick}
-                            containerClassName={"pagination"}
-                            subContainerClassName={"pages pagination"}
-                            activeClassName={"active"} />}
-                </div>
-            </div>
-
-        </>
-=======
         <>
             <div className="row justify-content-end mb-2">
                 <button onClick={() => setShowAdd(true)} className="btn btn-success m-1">
@@ -213,7 +130,7 @@ const Region = () => {
                                     type="text"
                                     name="region"
                                     id="region"
-                                    onChange={onChangeRegion}/>
+                                    onChange={onChangeRegion} />
                                 <Button color="dark" className="mt-4" block>Submit</Button>
                             </FormGroup>
                         </Form>
@@ -230,7 +147,7 @@ const Region = () => {
                                     type="text"
                                     name="region"
                                     id="region"
-                                    onChange={onChangeRegion}/>
+                                    onChange={onChangeRegion} />
                                 <Button color="dark" className="mt-4" block>Submit</Button>
                             </FormGroup>
                         </Form>
@@ -267,7 +184,6 @@ const Region = () => {
                 </div>
             </div>
         </>
->>>>>>> debug
     )
 }
 
