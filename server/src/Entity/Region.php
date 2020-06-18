@@ -17,13 +17,13 @@ class Region
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"shipping", "user_address"})
+     * @Groups({"shipping", "user_address", "restricted_regions"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"shipping", "user_address", "user_order_details"})
+     * @Groups({"shipping", "user_address", "user_order_details", "restricted_regions"})
      */
     private $name;
 
@@ -41,6 +41,12 @@ class Region
      * @ORM\OneToMany(targetEntity=AddressBilling::class, mappedBy="region")
      */
     private $addressBillings;
+
+    /**
+     * @ORM\OneToOne(targetEntity=RestrictedRegion::class, mappedBy="region", cascade={"persist", "remove"})
+     * @Groups({"restricted_regions"})
+     */
+    private $restrictedRegion;
 
     public function __construct()
     {
@@ -154,6 +160,23 @@ class Region
             if ($addressBilling->getRegion() === $this) {
                 $addressBilling->setRegion(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getRestrictedRegion(): ?RestrictedRegion
+    {
+        return $this->restrictedRegion;
+    }
+
+    public function setRestrictedRegion(RestrictedRegion $restrictedRegion): self
+    {
+        $this->restrictedRegion = $restrictedRegion;
+
+        // set the owning side of the relation if necessary
+        if ($restrictedRegion->getRegion() !== $this) {
+            $restrictedRegion->setRegion($this);
         }
 
         return $this;
