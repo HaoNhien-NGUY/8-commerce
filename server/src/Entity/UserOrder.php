@@ -43,12 +43,6 @@ class UserOrder
     private $trackingNumber;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"user_address", "user_orders", "user_order_details"})
-     */
-    private $packaging;
-
-    /**
      * @ORM\Column(type="datetime")
      * @Groups({"user_address", "user_orders", "user_order_details"})
      */
@@ -88,6 +82,11 @@ class UserOrder
      */
     private $promoCode;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Packaging::class)
+     */
+    private $packaging;
+
 
     public function __construct()
     {
@@ -125,18 +124,6 @@ class UserOrder
     public function setTrackingNumber(string $trackingNumber): self
     {
         $this->trackingNumber = $trackingNumber;
-
-        return $this;
-    }
-
-    public function getPackaging(): ?bool
-    {
-        return $this->packaging;
-    }
-
-    public function setPackaging(bool $packaging): self
-    {
-        $this->packaging = $packaging;
 
         return $this;
     }
@@ -240,6 +227,18 @@ class UserOrder
     public function setPromoCode(?PromoCode $promoCode): self
     {
         $this->promoCode = $promoCode;
+
+        return $this;
+    }
+
+    public function getPackaging(): ?Packaging
+    {
+        return $this->packaging;
+    }
+
+    public function setPackaging(?Packaging $packaging): self
+    {
+        $this->packaging = $packaging;
 
         return $this;
     }

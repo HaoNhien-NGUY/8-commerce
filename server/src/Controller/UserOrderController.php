@@ -51,9 +51,9 @@ class UserOrderController extends AbstractController
         if(!isset($req->addressShipping)){
             return $this->json(['message' => 'Address shipping is undefined'],400);
         }
-        if(!isset($req->packaging)){
-            return $this->json(['message' => 'Packaging is undefined'],400);
-        }
+        // if(!isset($req->packaging)){
+        //     return $this->json(['message' => 'Packaging is undefined'],400);
+        // }
 
         
         $addressBilling = $addressBillingRepository->findOneBy(['id' => $req->addressBilling]);
@@ -77,7 +77,7 @@ class UserOrderController extends AbstractController
         $error = $validator->validate($userOrder);
         if (count($error) > 0) return $this->json($error, 400);
         
-        $userOrder->setPackaging($req->packaging);
+        // $userOrder->setPackaging($req->packaging);
         $userOrder->setAddressBilling($addressBilling);
         $userOrder->setAddressShipping($addressShipping);
         $userOrder->setCreatedAt(new DateTime());
