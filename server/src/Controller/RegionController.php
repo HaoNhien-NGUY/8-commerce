@@ -32,6 +32,16 @@ class RegionController extends AbstractController
     }
 
     /**
+     * @Route("/api/allowedregions", name="allowed_regions", methods="GET")
+     */
+    public function allowedRegions(Request $request, RegionRepository $regionRepository)
+    {
+        $region = $regionRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
+        // dd($region);
+        return $this->json($region, 200, [], ['groups' => 'restricted_regions']);
+    }
+
+    /**
      * @Route("/api/region", name="region_create", methods="POST")
      */
     public function region_create(Request $request ,RegionRepository $regionRepository,EntityManagerInterface $em)
