@@ -7,7 +7,7 @@ import BillingAddress from './Address/Billing/BillingAddress';
 import ShippingAddress from './Address/Shipping/ShippingAddress';
 import Modal from "react-bootstrap/Modal";
 import "react-toastify/dist/ReactToastify.css";
-import {  useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
@@ -40,7 +40,7 @@ function UserHome(props) {
                 break;
             case "shipping":
                 console.log("shipping");
-                setComponent(<ShippingAddress idUser={props.idUser} config={config}/>);
+                setComponent(<ShippingAddress idUser={props.idUser} config={config} />);
                 break;
             default:
                 console.log("history(error)");
@@ -49,26 +49,19 @@ function UserHome(props) {
     }, [query]);
 
     return (
-        <>  
+        <>
             <ToastContainer />
             <div className="mt-5 d-flex container">
                 <div className="col-sm-3 pt-5">
-                    <h5 className="authUser">{props.emailUser}</h5>
-                    <a className="a-none" href="/user?content=history">
-                        <h5 className={"listUser " + (query == "history" ? "StyleActive" : "")}>Order History</h5>
-                    </a>
-                    <a className="a-none" href="/user?content=shipping">
-                        <h5 className={"listUser " + (query == "shipping" ? "StyleActive" : "")}>Shipping Address</h5>
-                    </a>
-                    <a className="a-none" href="/user?content=billing">
-                        <h5 className={"listUser " + (query == "billing" ? "StyleActive" : "")}>Billing Address</h5>
-                    </a>
-                    <a className="a-none" href="/user?content=card">
-                        <h5 className={"listUser lasCHild " + (query == "card" ? "StyleActive" : "")}>Bank card</h5>
-                    </a>
+                    <ul className="list-group">
+                        <li className={"list-group-item list-group-item-action list-group-item-secondary"}>{props.emailUser}</li>
+                        <li className={"list-group-item list-group-item-action" + (query == "history" ? " active" : "")}> <a className="a-none" href="/user?content=history">Order History</a></li>
+                        <li className={"list-group-item list-group-item-action" + (query == "shipping" ? " active" : "")}> <a className="a-none" href="/user?content=shipping">Shipping Address</a></li>
+                        <li className={"list-group-item list-group-item-action" + (query == "billing" ? " active" : "")}><a className="a-none" href="/user?content=billing">Billing Address</a></li>
+                        <li className={"list-group-item list-group-item-action" + (query == "card" ? " active" : "")}><a className="a-none" href="/user?content=card">Bank card</a></li>
+                    </ul>
                 </div>
                 <div className="col-sm-9">
-
                     {component}
                 </div>
             </div>
