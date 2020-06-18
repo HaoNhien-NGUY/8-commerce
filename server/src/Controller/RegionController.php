@@ -8,9 +8,11 @@ use App\Repository\SubproductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Image;
 use App\Entity\Region;
+use App\Entity\RestrictedRegion;
 use App\Repository\RegionRepository;
 
 use App\Repository\CategoryRepository;
+use App\Repository\RestrictedRegionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,31 +44,72 @@ class RegionController extends AbstractController
     }
 
     /**
+     * @Route("/api/restrictedregion", name="restricted_region_create", methods="POST")
+     */
+    public function restricted_region_create(Request $request, RestrictedRegionRepository $restrictedRegionRepository, RegionRepository $regionRepository, EntityManagerInterface $em)
+    {
+        $req = json_decode($request->getContent());
+
+        $find = $restrictedRegionRepository->findOneBy(['region' => $req->id]);
+        $region = $regionRepository->findOneBy(['id' => $req->id]);
+
+        if ($find) {
+            return $this->json(['message' => 'This restriction is already in place'], 400, []);
+        } else if ($region) {
+            $restrictedRegion  = new RestrictedRegion();
+            $restrictedRegion->setRegion($region);
+            $em->persist($restrictedRegion);
+            $em->flush();
+            return $this->json(['message' => 'Restriction correctly added'], 200);
+        } else {
+            return $this->json(['message' => 'This region does not exist'], 404, []);
+        }
+    }
+
+    /**
+     * @Route("/api/restrictedregion/{id}", name="restrictedregion_remove", methods="DELETE", requirements={"id":"\d+"})
+     */
+    public function restricted_region_remove(Request $request, RestrictedRegionRepository $restrictedRegionRepository, EntityManagerInterface $em)
+    {
+        $region = $restrictedRegionRepository->findOneBy(['region' => $request->attributes->get('id')]);
+
+        if ($region) {
+            $em->remove($region);
+            $em->flush();
+
+            return $this->json([
+                'message' => 'Resctriction lifted'
+            ], 200);
+        } else {
+            return $this->json(['message' => 'Region not found'], 404, []);
+        }
+    }
+
+    /**
      * @Route("/api/region", name="region_create", methods="POST")
      */
-    public function region_create(Request $request ,RegionRepository $regionRepository,EntityManagerInterface $em)
-    { 
+    public function region_create(Request $request, RegionRepository $regionRepository, EntityManagerInterface $em)
+    {
         $req = json_decode($request->getContent());
-        
+
         $find = $regionRepository->findOneBy(['name' => $req->name]);
 
-        if($find){
+        if ($find) {
             return $this->json(['message' => 'This region already exist'], 400, []);
-        }
-        else{
+        } else {
             $region  = new Region();
             $region->setName($req->name);
             $em->persist($region);
             $em->flush();
-            return $this->json(['message'=>'Region successfully created',$region], 200);
+            return $this->json(['message' => 'Region successfully created', $region], 200);
         }
     }
 
     /**
      * @Route("/api/region/{id}", name="region_remove", methods="DELETE", requirements={"id":"\d+"})
      */
-    public function region_remove(Request $request ,RegionRepository $regionRepository,EntityManagerInterface $em)
-    { 
+    public function region_remove(Request $request, RegionRepository $regionRepository, EntityManagerInterface $em)
+    {
         $region = $regionRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($region) {
@@ -104,7 +147,7 @@ class RegionController extends AbstractController
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $region = $regionRepository->findOneBy(['id' => $request->attributes->get('id')]);
-            
+
             if ($region) {
                 if (!isset($req->name)) {
                     return $this->json(['message' => 'name is undefined'], 404, []);
