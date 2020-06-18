@@ -58,6 +58,7 @@ const AdminInterface = () => {
             "Content-type": "application/json"
         }
     }
+    
     useEffect(() => {
         if (token) {
             config.headers['x-auth-token'] = token
@@ -69,12 +70,13 @@ const AdminInterface = () => {
     }, [offset, products])
 
     useEffect(() => {
-        if (pageCountCategories < offsetCategories) setOffsetCategories(0);
-      }, [pageCountCategories, offsetCategories]);
+        console.log(postDataCategories)
+        if (postDataCategories && postDataCategories.length === 0) setOffsetCategories(offsetCategories - limitCategories);
+      }, [postDataCategories]);
 
     useEffect(() => {
-        if (pageCountCategories < offsetCategories) setOffset(0);
-      }, [pageCount, offset]);
+        if (postData && postData.length === 0) setOffset(offset - limit);
+      }, [postData]);
 
     useEffect(() => {
         receivedDataCategories()

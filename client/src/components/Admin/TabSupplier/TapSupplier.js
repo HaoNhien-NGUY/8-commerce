@@ -32,8 +32,8 @@ function Suppliers() {
     }, []);
 
     useEffect(() => {
-        if (pageCount < offset) setOffset(0);
-      }, [pageCount, offset]);
+        if (postDataOrder === null) setOffset(offset - limit);
+      }, [postDataOrder])
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/supplier/order?offset=${offset}&limit=${limit}`, config).then(async e => {

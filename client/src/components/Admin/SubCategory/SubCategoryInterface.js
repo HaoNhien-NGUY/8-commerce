@@ -52,8 +52,8 @@ const SubCategoryInterface = () => {
     }, [offset]);
 
     useEffect(() => {
-        if (pageCount < offset) setOffset(0);
-      }, [pageCount, offset]);
+        setOffset(0);
+      }, [pageCount]);
 
     const receivedSubCategories = () => {
         axios.get("http://localhost:8000/api/category/" + id, config)

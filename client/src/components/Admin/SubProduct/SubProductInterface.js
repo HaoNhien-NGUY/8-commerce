@@ -50,6 +50,10 @@ const SubProductInterface = () => {
         receivedData();
     }, [offset])
     
+    useEffect(() => {
+        setOffset(0);
+      }, [pageCount]);
+      
     const receivedData = () => {
         axios.get("http://localhost:8000/api/product/" + id, config)
             .then(async res => {
