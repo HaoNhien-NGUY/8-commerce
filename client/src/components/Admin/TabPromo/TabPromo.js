@@ -6,6 +6,7 @@ import ReactPaginate from 'react-paginate';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-date-picker';
+import { post } from 'jquery';
 
 const Promo = () => {
   const [postDataPromos, setPostDataPromos] = useState([]);
@@ -31,8 +32,8 @@ const Promo = () => {
   }, [offset]);
 
   useEffect(() => {
-    if (pageCount < offset) setOffset(0);
-  }, [pageCount, offset]);
+    if (postDataPromos === null) setOffset(offset - limit);
+  }, [postDataPromos])
 
   useEffect(() => {
     setDateEnd(value !== null ? parseInt((new Date(value).getTime() / 1000).toFixed(0)) : null);

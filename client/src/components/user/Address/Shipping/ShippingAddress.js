@@ -49,7 +49,7 @@ function ShippingAddress({idUser, config}) {
             toast.success(res.data.message, {position: 'top-center'})
           }).catch(err => {
             console.log(err)
-            toast.error(err.data.message, {position: 'top-center'})
+            toast.error(err.response.data.message, {position: 'top-center'})
           })
     }
 

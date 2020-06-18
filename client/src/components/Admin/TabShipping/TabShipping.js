@@ -25,10 +25,10 @@ function Shipping() {
         const newOffset = selectedPage * limit;
         setOffset(newOffset)
     };
-
+    
     useEffect(() => {
-        if (pageCount < offset) setOffset(0);
-      }, [pageCount, offset]);
+        if (postDataShipp === null) setOffset(offset - limit);
+      }, [postDataShipp])
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/shippingmethod?offset=${offset}&limit=${limit}`, config).then(async e => {
@@ -105,17 +105,17 @@ function Shipping() {
                 <div>
                 {pageCount > 0 &&
                     <ReactPaginate
-                        previousLabel={"prev"}
-                        nextLabel={"next"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        pageCount={pageCount}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={2}
-                        onPageChange={handlePageClick}
-                        containerClassName={"pagination"}
-                        subContainerClassName={"pages pagination"}
-                        activeClassName={"active"} />}
+                    previousLabel={"prev"}
+                    nextLabel={"next"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={1}
+                    pageRangeDisplayed={2}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination"}
+                    subContainerClassName={"pages pagination"}
+                    activeClassName={"active"} />}
                 </div>
             </div>
         </>

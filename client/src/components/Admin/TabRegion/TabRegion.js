@@ -25,14 +25,13 @@ const Region = () => {
     }, [offset]);
 
     useEffect(() => {
-      if (pageCount < offset) setOffset(0);
-    }, [pageCount, offset]);
+      if (postDataRegions === null) setOffset(offset - limit);
+    }, [postDataRegions])
 
     const deleteRegion = (id) => {
       axios.delete("http://127.0.0.1:8000/api/region/"+id, config).then(res => {
         receivedData();
         toast.success(res.data.message, { position: 'top-center' });
-          
       })
       .catch(error => {
           toast.error('Error !', { position: 'top-center' });
@@ -185,7 +184,7 @@ const Region = () => {
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div>
           {pageCount > 0 &&
-            <ReactPaginate
+              <ReactPaginate
               previousLabel={"prev"}
               nextLabel={"next"}
               breakLabel={"..."}
