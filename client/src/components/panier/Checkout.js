@@ -777,7 +777,7 @@ function Step4(props) {
                 <h3>Your order has been successfully registered !</h3>
                 <p>Your order number is: {props.data.trackingnumber}</p>
                 <p> An confirmation e-mail has been sent to you with your order details and tracking number. <br />
-               You can track your order status here <a href={"http://localhost:4242/command?order=" + props.data.trackingnumber}>here</a></p>
+               You can track your order status <a href={"http://localhost:4242/command?order=" + props.data.trackingnumber}>here</a></p>
                 <div className="form-group mt-4">
                     <a href="http://localhost:4242/"><button className='btn btn-secondary' onClick={sessionStorage.removeItem("panier")}>Go back to the store</button></a>
                 </div>
