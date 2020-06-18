@@ -5,49 +5,43 @@ function ShowOrder(props) {
     const [history, setHistory] = useState([]);
 
     function getDate(date) {
-        let d = new  Date(date);
-        return d.getDate() + "/" + (d.getMonth()+1) + "/" +  d.getFullYear();
+        let d = new Date(date);
+        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
     }
 
     useEffect(() => {
         axios.get("http://localhost:8000/api/user/" + props.idUser + "/orders").then(res => {
-                const newDataHistory = res.data.userOrders.map(e => 
-                        <tr key={e.id}>
-                            <td className="titleHistory">{e.trackingNumber}</td>
-                            <td className="titleHistory">{ e.status != "" ? "Delivered" : " In transition"}</td>
-                            <td className="titleHistory">{e.packaging ? e.packaging : " without"}</td>
-                            <td className="titleHistory"> {getDate(e.createdAt)}</td>
-                            <td className="titleHistory">{e.cost} €</td>
-                            <td className="titleHistory text-center">
-                                <button className="btn btn-outline-dark" onClick={() => window.location.href = '/command?order=' + e.trackingNumber}>Show Order</button>
-                            </td>
-                        </tr>
-                    )
-                setHistory(newDataHistory);
-            }).catch(err => {
-                console.log(err);
-            });
+            const newDataHistory = res.data.userOrders.map(e =>
+                <tr key={e.id}>
+                    <td scope="row" className=""><p className=" ml=3 mt-3 mb-3 align-items-center">{e.trackingNumber}</p></td>
+                    <td className="text-nowrap"><p className=" m-3 align-items-center">{e.status != "" ? "Delivered" : " In transition"}</p></td>
+                    <td className=""><p className=" mr-3align-items-center">{e.packaging ? e.packaging : " without"}</p></td>
+                    <td className=""><p className=" m-3 align-items-center">{getDate(e.createdAt)}</p></td>
+                    <td className="text-nowrap"><p className=" m-3 align-items-center">{e.cost} €</p></td>
+                    <td className="text-nowrap">
+                        <p className=" mt-3 mb-3 mr-3 align-items-center">    <button className="btn btn-outline-secondary m-0" onClick={() => window.location.href = '/command?order=' + e.trackingNumber}>Show Order</button></p>
+                    </td>
+                </tr >
+            )
+            setHistory(newDataHistory);
+        }).catch(err => {
+            console.log(err);
+        });
     }, []);
 
     return (
         <>
-            <div className="mt-5">
-                <table className="productinCart tableHistory">
-                    <thead className="allHistory">
-                        <tr>
-                            <th colSpan="6">
-                                <h3 className="text-center p-2 AllOrders">All Orders</h3>
-                            </th>
-                        </tr>
-                    </thead>
+            <h1>Order History</h1>
+            <div className="mt-5 row border p-2">
+                <table className="">
                     <tbody>
-                        <tr>
-                            <th className="titleHistory h">TrackingNumber</th>
-                            <th className="titleHistory h">Status</th>
-                            <th className="titleHistory h">Packaging</th>
-                            <th className="titleHistory h">Date</th>
-                            <th className="titleHistory h">Price</th>
-                            <th className="titleHistory h">Details</th>
+                        <tr className="">
+                            <th className="">TrackingNumber</th>
+                            <th className="">Status</th>
+                            <th className="">Packaging</th>
+                            <th className="">Date</th>
+                            <th className="">Price</th>
+                            <th className="">Details</th>
                         </tr>
                         {history.length > 0 ? history : null}
                     </tbody>
