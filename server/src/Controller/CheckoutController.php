@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AddressBilling;
 use App\Entity\AddressShipping;
 use App\Entity\CardCredentials;
+use App\Entity\Packaging;
 use App\Entity\PromoCode;
 use App\Entity\Region;
 use App\Entity\ShippingPricing;
@@ -42,7 +43,6 @@ class CheckoutController extends AbstractController
         if (!isset($req->card_credentials)) $errorMsg['violations'][] = 'card_credentials missing';
         if (!isset($req->subproducts)) $errorMsg['violations'][] = 'subproducts missing';
         if (!isset($req->pricing_id)) $errorMsg['violations'][] = 'pricing_id missing';
-        if (!isset($req->packaging)) $errorMsg['violations'][] = 'packaging missing';
 
         $pricing = $this->getDoctrine()->getRepository(ShippingPricing::class)->find($req->pricing_id);
         if (!$pricing) $errorMsg['violations'][] = 'Shipping pricing not found';
@@ -178,6 +178,11 @@ class CheckoutController extends AbstractController
             }
         }
 
+        if(isset($req->packaging_id)) {
+            $packaging = $this->getDoctrine()->getRepository(Packaging::class)->find($req->packaging_id);
+            $order->setPackaging($packaging);
+        }
+
         if (isset($user)) {
             $user->addCardCredential($cardCredentials)
                 ->addAddressShipping($shippingAddress)
@@ -190,7 +195,6 @@ class CheckoutController extends AbstractController
         $order->setAddressShipping($shippingAddress)
             ->setAddressBilling($billingAddress)
             ->setStatus(false)
-            ->setPackaging($req->packaging)
             ->setCreatedAt(new \DateTime());
 
         $em->persist($shippingAddress);
