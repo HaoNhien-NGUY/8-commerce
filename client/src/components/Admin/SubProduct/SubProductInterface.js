@@ -24,7 +24,7 @@ const SubProductInterface = () => {
     const [colorId, setColorId] = useState('default');
     const [colors, setColors] = useState([]);
 
-    const [limit, setLimit] = useState(2);
+    const [limit, setLimit] = useState(5);
     const [offset, setOffset] = useState(0);
     const [pageCount, setPageCount] = useState();
     const [postData, setPostData] = useState();

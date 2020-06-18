@@ -12,7 +12,7 @@ const Region = () => {
     const [showUpdate, setShowUpdate] = useState(false);
     const [regionName, setRegionName] = useState('');
     const [regionId, setRegionId] = useState(0);
-    const [limit, setLimit] = useState(2);
+    const [limit, setLimit] = useState(5);
     const [offset, setOffset] = useState(0);
     const [pageCount, setPageCount] = useState();
     const config = {
