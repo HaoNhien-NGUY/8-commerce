@@ -280,6 +280,5 @@ return (
         </div>
     </>
 )
-}
 
 export default Promo;
