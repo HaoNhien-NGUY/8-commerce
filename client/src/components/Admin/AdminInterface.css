@@ -23,6 +23,10 @@
 
 .viewsub {white-space: nowrap;}
 
+.tabtitles {
+    width: 192px;
+}
+
 @media (max-width: 768px) {
     .tabtitles {
         font-size: 1em!important;

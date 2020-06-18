@@ -41,7 +41,7 @@ class PackagingController extends AbstractController
     public function packagingCreate(Request $request, SerializerInterface $serializer)
     {
         $jsonContent = $request->getContent();
-        $packaging = $serializer->deserialize($jsonContent, Product::class, 'json');
+        $packaging = $serializer->deserialize($jsonContent, Packaging::class, 'json');
 
         return $this->json(["message" => "created", "packaging" => $packaging], 201);
     }
