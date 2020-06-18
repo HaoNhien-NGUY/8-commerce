@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import {  useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
+import { Spinner } from 'react-bootstrap'
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 function EnterCommand() {
@@ -13,6 +14,7 @@ function EnterCommand() {
     const [isInvalid, setIsInvalid] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [orderDefined, setOrderDefined] = useState(false);
+    const [orderLoading, setOrderLoading] = useState(true);
 
     function useQuery() {
         return new URLSearchParams(useLocation().search);
@@ -84,13 +86,24 @@ function EnterCommand() {
                 } else {
                     setOrderDefined(true);
                 }
+                setOrderLoading(false);
             }).catch(err => {
                 console.log(err);
             });
         }
     }, []);
     
-    if (query.get("order") && orderDefined) {
+    if(orderLoading)
+    {
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div>
+              <Spinner style={{ top: '33%', margin: '0', position: 'absolute' }} className="" animation="grow" />
+            </div>
+          </div>
+        )
+    }
+    else if (query.get("order") && orderDefined) {
         return (
             <IdCommand />
         )
