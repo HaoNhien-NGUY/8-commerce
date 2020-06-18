@@ -27,7 +27,6 @@ const Promo = () => {
             "Content-type": "application/json"
         }
     }
-}
 
 useEffect(() => {
     receivedData();
@@ -280,5 +279,6 @@ return (
         </div>
     </>
 )
+}
 
 export default Promo;
