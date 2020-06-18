@@ -16,7 +16,7 @@ const Promo = () => {
   const [percentage, setPercentage] = useState(0);
   const [usedLimit, setUsedLimit] = useState(0);
   const [dateEnd, setDateEnd] = useState(null);
-  const [limit, setLimit] = useState(2);
+  const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState();
   const [value, onChange] = useState(new Date());

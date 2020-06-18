@@ -28,7 +28,7 @@ const SubCategoryInterface = () => {
     const [subCategoryId, setSubCategoryId] = useState(0);
     const [allMigrationSubCategory, setAllMigrationSubCategory] = useState([]);
     const [subCategoryMigrateSelected, setSubCategoryMigrateSelected] = useState(0);
-    const [limit, setLimit] = useState(2);
+    const [limit, setLimit] = useState(5);
     const [offset, setOffset] = useState(0);
     const [pageCount, setPageCount] = useState();
 
