@@ -32,6 +32,10 @@ function Suppliers() {
     }, []);
 
     useEffect(() => {
+        if (pageCount < offset) setOffset(0);
+      }, [pageCount, offset]);
+
+    useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/supplier/order?offset=${offset}&limit=${limit}`, config).then(async e => {
             await setPageCount(Math.ceil(e.data.nbResults / limit));
             const newPostDataOrder = e.data.data.map((order) =>
@@ -200,6 +204,7 @@ function Suppliers() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
+                {pageCount > 0 &&
                     <ReactPaginate
                         previousLabel={"prev"}
                         nextLabel={"next"}
@@ -211,7 +216,7 @@ function Suppliers() {
                         onPageChange={handlePageClick}
                         containerClassName={"pagination"}
                         subContainerClassName={"pages pagination"}
-                        activeClassName={"active"} />
+                        activeClassName={"active"} />}
                 </div>
             </div>
         </>

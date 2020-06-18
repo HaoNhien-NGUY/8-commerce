@@ -31,15 +31,15 @@ const Promo = () => {
   }, [offset]);
 
   useEffect(() => {
-    // dateEnd !== null ? dateEnd.toJSON() : null
-    console.log(value)
+    if (pageCount < offset) setOffset(0);
+  }, [pageCount, offset]);
+
+  useEffect(() => {
     setDateEnd(value !== null ? parseInt((new Date(value).getTime() / 1000).toFixed(0)) : null);
-    // setDateEnd(value !== null ? value.toJSON() : null);
   }, [value]);
 
   const receivedData = () => {
     axios.get(`http://127.0.0.1:8000/api/promocode?offset=${offset}&limit=${limit}`, config).then(async res => {
-      console.log(res.data);
       await setPageCount(Math.ceil(res.data.nbResults / limit));
       const newPostDataPromos = res.data.data.length > 0 ? res.data.data.map((promo) => 
       <tr key={promo.id}>
@@ -156,11 +156,6 @@ const Promo = () => {
     setOffset(newOffset)
   };
 
-  console.log(value)
-  console.log("dateENDDD ", dateEnd)
-  console.log('limit '+usedLimit)
-  // console.log(Date.dateEnd !== undefined ? Date.dateEnd.toJSON() : null)
-  // console.log(Date.dateEnd.toJSON())
   return(
     <>
     <ToastContainer />
@@ -284,6 +279,7 @@ const Promo = () => {
     </div>
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div>
+      {pageCount > 0 &&
         <ReactPaginate
           previousLabel={"prev"}
           nextLabel={"next"}
@@ -295,7 +291,7 @@ const Promo = () => {
           onPageChange={handlePageClick}
           containerClassName={"pagination"}
           subContainerClassName={"pages pagination"}
-          activeClassName={"active"} />
+          activeClassName={"active"} />}
       </div>
     </div>
     </>

@@ -69,6 +69,14 @@ const AdminInterface = () => {
     }, [offset, products])
 
     useEffect(() => {
+        if (pageCountCategories < offsetCategories) setOffsetCategories(0);
+      }, [pageCountCategories, offsetCategories]);
+
+    useEffect(() => {
+        if (pageCountCategories < offsetCategories) setOffset(0);
+      }, [pageCount, offset]);
+
+    useEffect(() => {
         receivedDataCategories()
 		}, [offsetCategories, categories])
 		
@@ -136,6 +144,7 @@ const AdminInterface = () => {
                 toast.error('Error !', { position: 'top-center' });
             })
     }
+
     const handlePageClickCategories = (e) => {
         const selectedPage = e.selected;
         const newOffset = selectedPage * limitCategories;
@@ -267,6 +276,7 @@ const AdminInterface = () => {
                 </Modal>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <div>
+                  {pageCount > 0 &&
                       <ReactPaginate
                           previousLabel={"prev"}
                           nextLabel={"next"}
@@ -278,7 +288,7 @@ const AdminInterface = () => {
                           onPageChange={handlePageClick}
                           containerClassName={"pagination"}
                           subContainerClassName={"pages pagination"}
-                          activeClassName={"active"} />
+                          activeClassName={"active"} />}
                       {/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
                       <Modal show={showImage} onHide={handleImage}>
                           <Modal.Header closeButton>Download Image !</Modal.Header>
@@ -517,18 +527,19 @@ const AdminInterface = () => {
                         <Button color="danger" className="mt-4" onClick={() => {deleteCategory(categoryId); setDeleteCategoryModal(false)}} block>No, delete everything</Button>
                       </Modal.Body>
                     </Modal>
-                    <ReactPaginate
-                        previousLabel={"prev"}
-                        nextLabel={"next"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        pageCount={pageCountCategories}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={2}
-                        onPageChange={handlePageClickCategories}
-                        containerClassName={"pagination"}
-                        subContainerClassName={"pages pagination"}
-                        activeClassName={"active"} />
+                    { pageCountCategories > 0 &&
+                        <ReactPaginate
+                            previousLabel={"prev"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            pageCount={pageCountCategories}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={2}
+                            onPageChange={handlePageClickCategories}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"} />}
                     </div>
                 </div>
             </>
@@ -555,7 +566,7 @@ const AdminInterface = () => {
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">collections</i>Categories</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">color_lens</i>Colors</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Shipping</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">flight</i>Shipping</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">public</i>Region</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">redeem</i>Code Promo</h3></Tab>
                 </TabList>
