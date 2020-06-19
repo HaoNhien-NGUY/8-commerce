@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 
-function CreatePackaging({ config, closeModal }) {
+function CreatePackaging({ config, closeModal, receivedData }) {
     const [packaginName, setPackagingName] = useState("");
     const [spending, setSpending] = useState([]);
     const [price, setPrice] = useState([]);
@@ -82,6 +82,7 @@ function CreatePackaging({ config, closeModal }) {
             axios.post("http://127.0.0.1:8000/api/packaging", body, config).then(res => {
                 toast.success(res.data.message, { position: "top-center" });
                 closeModal();
+                receivedData();
             }).catch(err => {
                 console.log(err);
             });
