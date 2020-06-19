@@ -75,6 +75,12 @@ class Review
      */
     private $reviews;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"review"})
+     */
+    private $verified;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -208,6 +214,18 @@ class Review
                 $review->setReview(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getVerified(): ?bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): self
+    {
+        $this->verified = $verified;
 
         return $this;
     }
