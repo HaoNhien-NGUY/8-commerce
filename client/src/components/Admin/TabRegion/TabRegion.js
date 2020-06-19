@@ -15,6 +15,7 @@ const Region = () => {
     const [limit, setLimit] = useState(5);
     const [offset, setOffset] = useState(0);
     const [pageCount, setPageCount] = useState();
+    const [restriction, setRestriction] = useState(false);
     const config = {
         headers: {
             "Content-type": "application/json"
@@ -38,7 +39,6 @@ const Region = () => {
     }
 
     const receivedData = () => {
-        console.log('receivedData')
         axios.get(`http://127.0.0.1:8000/api/region?offset=${offset}&limit=${limit}`, config).then(async res => {
             console.log(res.data)
             await setPageCount(Math.ceil(res.data.nbResults / limit));
@@ -46,9 +46,11 @@ const Region = () => {
                 <tr key={region.id}>
                     <td><p className="m-2 align-items-center">{region.id}</p></td>
                     <td><p className="m-2">{region.name}</p></td>
-                    <td><button className="btn btn-outline-info m-1" onClick={() => { setRegionId(region.id); setRegionName(region.name); setShowUpdate(true) }}>Modify</button></td>
+                    {console.log(region)}
+                    <td><p className="m-2">{region.restricted ? 'Yes' : 'No'}</p></td>
+                    <td><button className="btn btn-outline-info m-1" onClick={() => { setRegionId(region.id); setRegionName(region.name); setRestriction(region.restricted); setShowUpdate(true) }}>Modify</button></td>
                     {/* <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteRegion(region.id)}> Delete </button></td> */}
-                </tr>
+                </tr>,              
             ) : null
             setPostDataRegions(newPostDataRegions);
         }).catch(error => {
@@ -59,7 +61,7 @@ const Region = () => {
 
     const onSubmitRegion = (e) => {
         e.preventDefault();
-
+        console.log('restriction ', restriction )
         if (regionName.length === 0) {
             return toast.error("You need to enter a region", { position: "top-center" });
         }
@@ -67,8 +69,10 @@ const Region = () => {
             return toast.error("Invalid charactere", { position: "top-center" });
         } else {
             const body = {
-                "name": regionName
+                "name": regionName,
+                "restricted": restriction
             }
+            console.log(body)
             axios.post("http://127.0.0.1:8000/api/region", body, config).then(res => {
                 toast.success('Region correctly added!', { position: "top-center" });
                 receivedData();
@@ -89,7 +93,8 @@ const Region = () => {
             return toast.error("Invalid character", { position: "top-center" });
         } else {
             const body = {
-                "name": regionName
+                "name": regionName,
+                "restricted": restriction
             }
             axios.put("http://127.0.0.1:8000/api/region/" + regionId, body, config).then(res => {
                 toast.success('Region correctly updated!', { position: "top-center" });
@@ -131,6 +136,8 @@ const Region = () => {
                                     name="region"
                                     id="region"
                                     onChange={onChangeRegion} />
+                                <Label for="restrict" className='mt-2'>Restrict region</Label>
+                                <Input type="checkbox" label="restrict" className='mt-3 ml-1' onChange={() => setRestriction(!restriction)} checked={restriction} />
                                 <Button color="dark" className="mt-4" block>Submit</Button>
                             </FormGroup>
                         </Form>
@@ -148,6 +155,8 @@ const Region = () => {
                                     name="region"
                                     id="region"
                                     onChange={onChangeRegion} />
+                                <Label for="restrict" className='mt-2'>Restrict region</Label>
+                                <Input type="checkbox" label="restrict" className='mt-3 ml-1' onChange={() => setRestriction(!restriction)} checked={restriction} />
                                 <Button color="dark" className="mt-4" block>Submit</Button>
                             </FormGroup>
                         </Form>
@@ -160,6 +169,7 @@ const Region = () => {
                         <tr>
                             <th><p className="m-2 align-items-center"> ID </p></th>
                             <th><p className="m-2"> Name </p></th>
+                            <th><p colSpan="3" className="m-1"> Restricted</p></th>
                             <th><p colSpan="3" className="m-1"> Actions </p></th>
                         </tr>
                     </thead>

@@ -99,7 +99,9 @@ class RegionController extends AbstractController
         } else {
             $region  = new Region();
             $region->setName($req->name);
-            $region->setRestricted(false);
+            if (isset($req->restricted)) {
+                $region->setRestricted($req->restricted);
+            }
             $em->persist($region);
             $em->flush();
             return $this->json(['message' => 'Region successfully created', $region], 200);
