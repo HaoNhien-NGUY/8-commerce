@@ -10,9 +10,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+/* eslint-disable */
 
-
-// ShowShippingAddress
 class Checkout extends React.Component {
     constructor(props) {
         super(props)
@@ -42,6 +41,12 @@ class Checkout extends React.Component {
             }
         }
 
+        axios.get("http://localhost:8000/api/region")
+            .then((res) => {
+                return this.setState({ regions: res.data.data })
+            })
+            .catch((error) => {
+            });
     }
 
     componentDidUpdate() {
@@ -89,16 +94,11 @@ class Checkout extends React.Component {
         this.setState({
             [name]: value
         })
-
-        console.log(name, value)
-        console.log(this.state.showstatus)
-
     }
 
     handleSubmit = event => {
         event.preventDefault()
         let s = this.state;
-        console.log(s)
         if (!s.cardchoice) {
             return toast.error('Please fill all the required informations', { position: 'top-center' });
         } else {
@@ -179,7 +179,6 @@ class Checkout extends React.Component {
             'subproducts': arrayOfObj
         }
 
-        console.log(jsonRequest)
         const header = { "Content-Type": "application/json" };
         axios
             .post(
@@ -189,24 +188,19 @@ class Checkout extends React.Component {
             )
             .then((res) => {
                 this.setState({ currentStep: 4, trackingnumber: res.data.trackingnumber })
-                console.log(this.state)
             })
             .catch((error) => {
-                console.log(error.response);
             });
     }
 
     _next = () => {
-        console.log(this.state.showstatus)
         if (this.state.currentStep === 1) {
             let s = this.state;
-            console.log(s)
             if (!s.addresschoice) {
                 return toast.error('Please fill all the required informations', { position: 'top-center' });
             } else {
                 if (s.addresschoice === "NewShippingAddress") {
                     if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
-                        console.log('bitch')
                         return toast.error('Please fill all the required informations', { position: 'top-center' });
                     }
                 }
@@ -239,7 +233,6 @@ class Checkout extends React.Component {
                         this.setState({ "shortestKey": shortestKey })
                     })
                     .catch((error) => {
-                        console.log(error);
                     });
             }
         }
@@ -271,23 +264,18 @@ class Checkout extends React.Component {
                     )
                     .then((res) => {
                         this.setState({ promocode_details: res.data });
-                        console.log(this.state)
                     })
                     .catch((error) => {
-                        console.log(error);
                     });
             }
 
             if (this.props.auth.user != null) {
-
-                console.log(this.props.auth.user.id)
                 axios
                     .get("http://localhost:8000/api/cardcredentials/user/" + this.props.auth.user.id)
                     .then((res) => {
                         return this.setState({ cards: res.data })
                     })
                     .catch((error) => {
-                        console.log(error.response);
                     });
             }
         }
@@ -350,6 +338,16 @@ class Checkout extends React.Component {
     render() {
         const { user } = this.props.auth;
         const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
+
+
+        if (this.state.regions) {
+            console.log(this.state.regions)
+        }
+
+
+
+
+
         return (
             <>
                 <React.Fragment>
@@ -396,6 +394,8 @@ class Checkout extends React.Component {
 
 function Step1(props) {
     let ShippoingAdressOptions = []
+
+
 
     if (props.data.shippingAddress != null) {
         for (let [key, value] of Object.entries(props.data.shippingAddress)) {
@@ -493,7 +493,6 @@ function Step2(props) {
         return null
     }
     else {
-        console.log(props.data.showthings)
         let BillingAdressOptions = []
         if (props.data.billingAddress != null) {
             for (let [key, value] of Object.entries(props.data.billingAddress)) {
@@ -637,8 +636,6 @@ function Step3(props) {
         return null
     }
     else {
-
-        console.log(props.showstatus)
         let CardsOptions = []
         if (props.data.cards != null) {
             for (let [key, value] of Object.entries(props.data.cards)) {
@@ -663,8 +660,6 @@ function Step3(props) {
         let totalprice = shipping_cost + props.data.NoShipPrice
         let Promo = []
         if (props.data.promocode_details) {
-            console.log(props.data.promocode_details.percentage)
-            console.log(props.data.promocode_details.percentage / 100)
             Promo.push(<div className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {totalprice * (props.data.promocode_details.percentage / 100)} €</span></div>)
             totalprice = totalprice - totalprice * (props.data.promocode_details.percentage / 100)
         }
