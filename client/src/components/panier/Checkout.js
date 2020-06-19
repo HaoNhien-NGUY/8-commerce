@@ -72,8 +72,6 @@ class Checkout extends React.Component {
             }
         }
 
-
-
         if (name == "addresschoice") { if (value != "NewShippingAddress") { this.setState({ showstatus: false }) } else { this.setState({ showstatus: true }) } }
         if (name == 'billing_addresschoice') {
             if (value == 'true') {
@@ -121,7 +119,6 @@ class Checkout extends React.Component {
         }
 
     }
-
 
     handleSubmit = event => {
         event.preventDefault()
@@ -198,13 +195,15 @@ class Checkout extends React.Component {
             'email': this.state.email,
             "promo_code": this.state.promocode,
             'user_id': this.props.auth.user != null ? this.props.auth.user.id : null,
-            'packaging': this.state.packaging != null ? "true" : "false",
+            'packaging_id': this.state.packagingchoice != null ? this.state.packagingchoice : null,
             'pricing_id': this.state.shipping_methods[this.state.shippingchoice].pricing_id,
             'shipping_address': shippingAddress,
             'billing_address': billingAddress,
             'card_credentials': CardDetails,
             'subproducts': arrayOfObj
         }
+
+        console.log(this.state)
 
         const header = { "Content-Type": "application/json" };
         axios
@@ -279,22 +278,14 @@ class Checkout extends React.Component {
                 }
             }
 
-            // if (this.state.promocode) {
-            //     let jsonRequest = {
-            //         'promocode': this.state.promocode,
-            //     }
-            //     axios
-            //         .post(
-            //             "http://localhost:8000/api/promocode",
-            //             jsonRequest,
-            //             { headers: { "Content-Type": "application/json" } }
-            //         )
-            //         .then((res) => {
-            //             this.setState({ promocode_details: res.data });
-            //         })
-            //         .catch((error) => {
-            //         });
-            // }
+            axios
+                .get("http://localhost:8000/api/packaging/available?spending=" + this.state.NoShipPrice)
+                .then((res) => {
+                    console.log(res.data)
+                    return this.setState({ packagingAvailable: res.data })
+                })
+                .catch((error) => {
+                });
 
             if (this.props.auth.user != null) {
                 axios
@@ -554,10 +545,12 @@ function Step2(props) {
                                 <div className="col-md-12 d-flex">
                                     <div className="col-md-6 m-0 p-0">
                                         <h5>{key === props.data.lowestPriceKey ? "Our best" : key === props.data.longestKey ? "Our greenest" : key === props.data.shortestKey ? "Our fastest" : "Another"} option :</h5>
-                                        <div className="bd-highlight text-nowrap">Carrier: {value.name}</div></div>
-                                    <div className="col-md-6">       <div className="bd-highlight text-nowrap">Delivery: {value.duration} days</div>
-                                        <div className="bd-highlight text-nowrap">Price: {value.price} €</div></div>
-
+                                        <div className="bd-highlight text-nowrap">Carrier: {value.name}</div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="bd-highlight text-nowrap">Delivery: {value.duration} days</div>
+                                        <div className="bd-highlight text-nowrap">Price: {value.price} €</div>
+                                    </div>
                                 </div>
                             </div>
                         </label>
@@ -566,24 +559,17 @@ function Step2(props) {
             }
 
             let Promo_status = []
-
             if (props.data.promocode_details) {
-                if (props.data.promocode_details == 'error') {
+                if (!props.data.promocode_details.percentage) {
                     Promo_status.push(<small id="promo_status" key="promo_status" className="form-text text-danger">Promocode is unvalid</small>)
 
                 } else {
                     Promo_status.push(<small id="promo_status" key="promo_status" className="form-text text-success">Congrats ! Your promocode worked</small>)
                 }
             }
-
             return (
                 <>
                     <legend><label className="form-row" htmlFor="promocode">Promo Code</label></legend>
-                    {/* <div className="form-row col-md-12">
-                        <div className="custom-control custom-radio custom-control-inline">
-                            <input type="text" className="form-control" id="promocode" name="promocode" placeholder="Promocode" defaultValue={props.data.promocode ? props.data.promocode : null} onChange={props.handleChange} />
-                        </div>
-                    </div> */}
                     <label className="pt-1 col-5 " htmlFor="promocode">Have a promocode ?</label><div className="col-6">
                         <div className=" form-check-inline"><input type="promocode" className="form-control" id="promocode" name="promocode" placeholder="promocode" onChange={props.handleChange} /><button className="btn btn-primary" onClick={props.promo} >Check</button></div>
                         {Promo_status}
@@ -699,8 +685,19 @@ function Step3(props) {
         let totalprice = shipping_cost + props.data.NoShipPrice
         let Promo = []
         if (props.data.promocode_details) {
-            Promo.push(<div className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {totalprice * (props.data.promocode_details.percentage / 100)} €</span></div>)
+            Promo.push(<div ley="promo" className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {totalprice * (props.data.promocode_details.percentage / 100)} €</span></div>)
             totalprice = totalprice - totalprice * (props.data.promocode_details.percentage / 100)
+        }
+
+        let Packagings = []
+        if (props.data.packagingAvailable) {
+            props.data.packagingAvailable.map((e) => {
+                Packagings.push(
+                    <label key={'pack' + e.name} className="control control-radio w-100 form-check-label" htmlFor={e.name}>
+                        <input className="form-check-input checkbox-style" type="radio" name="packagingchoice" id={e.name} value={e.id} onChange={props.handleChange} />
+                        <div className="control_indicator"></div> {e.name}
+                    </label>)
+            })
         }
         return (
             <React.Fragment>
@@ -710,18 +707,16 @@ function Step3(props) {
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Shipping :</span><span>{shipping_cost} €</span></div>
                         {Promo}
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{totalprice} €</span></div>
-
                     </div>
+                    {Packagings ? <div><legend>Limited Time Offers</legend>
+                        <p>Get a free packaging for a limited time only !</p>{Packagings}</div> : null}
                     <legend>Card Details</legend>
                     {CardsOptions}
-
                     <div className={props.showstatus == false ? "form-row col-md-12 mb-0 hiding transition" : "transition form-row col-md-12 mb-2 show"}>
                         <label className="col-sm-4 mt-2 control-label" htmlFor="confirmccv">Enter CVV</label> <div className="col-sm-6 ">
                             <input type="text" className="form-control" id="confirmccv" name="confirmccv" placeholder="Confirm CCV" defaultValue={props.data.confirmccv ? props.data.confirmccv : null} onChange={props.handleChange} />
                         </div>
                     </div>
-
-
                     <div className="alert alert-secondary">
                         <div className="form-row col-md-12">
                             <label className="control control-radio w-100 form-check-label" htmlFor="cardchoice">
@@ -729,7 +724,6 @@ function Step3(props) {
                                 <div className="control_indicator"></div> New Card +
                                         </label>
                         </div>
-
                         <div className={props.data.showthings != "ShowNewCard" ? "form-row  col-md-12 hiding" : "form-row  col-md-12 show"} >
                             <div className="form-group">
                                 <div className="form-row  col-md-12">
@@ -752,7 +746,6 @@ function Step3(props) {
                             <div className="form-group col-sm-12">
                                 <label className="col-sm-11 control-label" htmlFor="expirymonth">Expiration Date</label>
                                 <label className="col-sm-1 control-label" htmlFor="expiryyear"></label>
-
                                 <div className="col-sm-12">
                                     <div className="row ml-1">
                                         <div className="col-xs-6 pr-05">
@@ -797,93 +790,6 @@ function Step3(props) {
                             </div>
                         </div>
                     </div>
-
-
-                    {/* 
-                    <SlideToggle collapsed irreversible
-                        render={({ onToggle, setCollapsibleElement }) => (
-                            <div className="my-collapsible">
-                                <div className="alert alert-secondary">
-                                    <div className="form-row col-md-12">
-                                        <label className="control control-radio w-100 form-check-label" htmlFor="cardchoice">
-                                            <input className="form-check-input checkbox-style" onClick={onToggle} type="radio" name="cardchoice" id="cardchoice" value="NewCard" onChange={props.handleChange} />
-                                            <div className="control_indicator"></div> New Card +
-                                </label>
-                                    </div>
-                                    <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
-                                        <div className="my-collapsible__content-inner">
-                                            <div className="form-row  col-md-12">
-                                                <div className="form-group">
-                                                    <div className="form-row  col-md-12">
-                                                        <div className="form-group col-md-6">
-                                                            <label className="col-sm-3 control-label" htmlFor="cardfirstname">Firstname</label>
-                                                            <input type="text" className="form-control" name="cardfirstname" id="cardfirstname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardfirstname ? props.data.cardfirstname : null} onChange={props.handleChange} />
-                                                        </div>
-                                                        <div className="form-group col-md-6">
-                                                            <label className="col-sm-3 control-label" htmlFor="cardlastname">Lastname</label>
-                                                            <input type="text" className="form-control" name="cardlastname" id="cardlastname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardlastname ? props.data.cardlastname : null} onChange={props.handleChange} />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group col-sm-12">
-                                                    <div className="col-sm-12">
-                                                        <label className="control-label" htmlFor="cardnumber">Card Number</label>
-                                                        <input type="text" className="form-control" name="cardnumber" id="cardnumber" maxLength="16" placeholder="Debit/Credit Card Number" defaultValue={props.data.cardnumber ? props.data.cardnumber : null} onChange={props.handleChange} />
-                                                    </div>
-                                                </div>
-                                                <div className="form-group col-sm-12">
-                                                    <label className="col-sm-11 control-label" htmlFor="expirymonth">Expiration Date</label>
-                                                    <label className="col-sm-1 control-label" htmlFor="expiryyear"></label>
-
-                                                    <div className="col-sm-12">
-                                                        <div className="row ml-1">
-                                                            <div className="col-xs-6 pr-05">
-                                                                <select className="form-control" name="expirymonth" id="expirymonth" onChange={props.handleChange}>
-                                                                    <option>Month</option>
-                                                                    <option value="01">Jan (01)</option>
-                                                                    <option value="02">Feb (02)</option>
-                                                                    <option value="03">Mar (03)</option>
-                                                                    <option value="04">Apr (04)</option>
-                                                                    <option value="05">May (05)</option>
-                                                                    <option value="06">June (06)</option>
-                                                                    <option value="07">July (07)</option>
-                                                                    <option value="08">Aug (08)</option>
-                                                                    <option value="09">Sep (09)</option>
-                                                                    <option value="10">Oct (10)</option>
-                                                                    <option value="11">Nov (11)</option>
-                                                                    <option value="12">Dec (12)</option>
-                                                                </select>
-                                                            </div>
-                                                            <div className="col-xs-6 pl-05">
-                                                                <select className="form-control" name="expiryyear" id="expiryear" onChange={props.handleChange}>
-                                                                    <option value="20">2020</option>
-                                                                    <option value="21">2021</option>
-                                                                    <option value="22">2022</option>
-                                                                    <option value="23">2023</option>
-                                                                    <option value="24">2024</option>
-                                                                    <option value="25">2025</option>
-                                                                    <option value="26">2026</option>
-                                                                    <option value="27">2027</option>
-                                                                    <option value="28">2028</option>
-                                                                    <option value="29">2029</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label className="col-sm-12 control-label" htmlFor="ccv">Card ccv</label>
-                                                    <div className="col-sm-12">
-                                                        <input type="text" className="form-control" name="ccv" id="ccv" placeholder="Security Code" maxLength="3" defaultValue={props.data.ccv ? props.data.ccv : null} onChange={props.handleChange} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    />*/}
                 </>
             </React.Fragment >
         );
