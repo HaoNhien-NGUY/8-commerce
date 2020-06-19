@@ -84,10 +84,6 @@ class Checkout extends React.Component {
                 this.setState({ showstatus: true, showthings: "" })
             }
         }
-
-
-        console.log(value)
-
         this.setState({
             [name]: value
         })
@@ -180,19 +176,19 @@ class Checkout extends React.Component {
 
         console.log(jsonRequest)
         const header = { "Content-Type": "application/json" };
-        // axios
-        //     .post(
-        //         "http://localhost:8000/api/checkout",
-        //         jsonRequest,
-        //         { headers: header }
-        //     )
-        //     .then((res) => {
-        //         this.setState({ currentStep: 4, trackingnumber: res.data.trackingnumber })
-        //         console.log(this.state)
-        //     })
-        //     .catch((error) => {
-        //         console.log(error.response);
-        //     });
+        axios
+            .post(
+                "http://localhost:8000/api/checkout",
+                jsonRequest,
+                { headers: header }
+            )
+            .then((res) => {
+                this.setState({ currentStep: 4, trackingnumber: res.data.trackingnumber })
+                console.log(this.state)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
     }
 
     _next = () => {
@@ -297,7 +293,6 @@ class Checkout extends React.Component {
             currentStep: currentStep,
             showstatus: false,
             showthings: '',
-
         })
     }
 
@@ -324,7 +319,6 @@ class Checkout extends React.Component {
                 </button>
             )
         }
-
         return null;
     }
 
@@ -345,16 +339,11 @@ class Checkout extends React.Component {
                 </>
             )
         }
-
         return null;
     }
 
-
-
     render() {
-
         const { user } = this.props.auth;
-
         const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
         return (
             <>
@@ -399,8 +388,6 @@ class Checkout extends React.Component {
         );
     }
 }
-
-
 
 function Step1(props) {
     let ShippoingAdressOptions = []
@@ -501,7 +488,6 @@ function Step2(props) {
         return null
     }
     else {
-
         console.log(props.data.showthings)
         let BillingAdressOptions = []
         if (props.data.billingAddress != null) {
@@ -551,15 +537,12 @@ function Step2(props) {
                     <div className="form-row col-md-12">
                         <div className="custom-control custom-radio custom-control-inline">
                             <input type="text" className="form-control" id="promocode" name="promocode" placeholder="Promocode" defaultValue={props.data.promocode ? props.data.promocode : null} onChange={props.handleChange} />
-
                         </div>
                     </div>
-
                     <legend className="pt-4">Shipping Method</legend>
                     <div key="shipping_method_ewe" className="row m-0 p-0">
                         {items}
                     </div>
-
                     <legend>Billing address</legend>
                     <div className="form-row col-md-12">
                         <div className="form-row col-md-12">
