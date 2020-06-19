@@ -27,7 +27,6 @@ class Checkout extends React.Component {
         auth: PropTypes.object.isRequired,
     };
 
-
     componentDidMount() {
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
@@ -95,6 +94,36 @@ class Checkout extends React.Component {
             [name]: value
         })
     }
+
+    checkpromo = event => {
+        event.preventDefault();
+        const { name, value } = event.target;
+        console.log(document.getElementById('promocode').value)
+
+        if (this.state.promocode) {
+            let jsonRequest = {
+                'promocode': this.state.promocode,
+            }
+            axios
+                .post(
+                    "http://localhost:8000/api/promocode",
+                    jsonRequest,
+                    { headers: { "Content-Type": "application/json" } }
+                )
+                .then((res) => {
+                    this.setState({ promocode_details: res.data });
+                    console.log(this.state)
+                })
+                .catch((error) => {
+
+                    if (error) { console.log(error) } else {
+                        console.log("yo")
+                    }
+                });
+        }
+
+    }
+
 
     handleSubmit = event => {
         event.preventDefault()
@@ -252,22 +281,22 @@ class Checkout extends React.Component {
                 }
             }
 
-            if (this.state.promocode) {
-                let jsonRequest = {
-                    'promocode': this.state.promocode,
-                }
-                axios
-                    .post(
-                        "http://localhost:8000/api/promocode",
-                        jsonRequest,
-                        { headers: { "Content-Type": "application/json" } }
-                    )
-                    .then((res) => {
-                        this.setState({ promocode_details: res.data });
-                    })
-                    .catch((error) => {
-                    });
-            }
+            // if (this.state.promocode) {
+            //     let jsonRequest = {
+            //         'promocode': this.state.promocode,
+            //     }
+            //     axios
+            //         .post(
+            //             "http://localhost:8000/api/promocode",
+            //             jsonRequest,
+            //             { headers: { "Content-Type": "application/json" } }
+            //         )
+            //         .then((res) => {
+            //             this.setState({ promocode_details: res.data });
+            //         })
+            //         .catch((error) => {
+            //         });
+            // }
 
             if (this.props.auth.user != null) {
                 axios
@@ -341,15 +370,11 @@ class Checkout extends React.Component {
 
         let regions = []
         if (this.state.regions) {
-            console.log(this.state.regions)
-
             this.state.regions.map((e) => {
-                console.log(e)
                 if (e.restricted != true)
                     regions.push(<option key={"region" + e.name} value={e.id}>{e.name}</option>)
                 else
                     regions.push(<option key={"region" + e.name} disabled>{e.name} - Unavailable</option>)
-
             })
         }
         else {
@@ -378,6 +403,7 @@ class Checkout extends React.Component {
                                     data={this.state}
                                     handleShow={this.handleShow}
                                     regions={regions}
+                                    promo={this.checkpromo}
                                 />
                                 <Step3
                                     currentStep={this.state.currentStep}
@@ -387,6 +413,8 @@ class Checkout extends React.Component {
                                     data={this.state}
                                     handleShow={this.handleShow}
                                     regions={regions}
+                                    promo={this.checkpromo}
+
                                 />
                                 <Step4
                                     currentStep={this.state.currentStep}
@@ -406,9 +434,6 @@ class Checkout extends React.Component {
 
 function Step1(props) {
     let ShippoingAdressOptions = []
-
-
-
     if (props.data.shippingAddress != null) {
         for (let [key, value] of Object.entries(props.data.shippingAddress)) {
             ShippoingAdressOptions.push(
@@ -544,10 +569,14 @@ function Step2(props) {
             return (
                 <>
                     <legend><label className="form-row" htmlFor="promocode">Promo Code</label></legend>
-                    <div className="form-row col-md-12">
+                    {/* <div className="form-row col-md-12">
                         <div className="custom-control custom-radio custom-control-inline">
                             <input type="text" className="form-control" id="promocode" name="promocode" placeholder="Promocode" defaultValue={props.data.promocode ? props.data.promocode : null} onChange={props.handleChange} />
                         </div>
+                    </div> */}
+                    <label className="pt-1 col-5 " htmlFor="promocode">Have a promocode ?</label><div className="col-6">
+                        <div className=" form-check-inline"><input type="promocode" className="form-control" id="promocode" name="promocode" placeholder="promocode" onChange={props.handleChange} /><button className="btn btn-primary" onClick={props.promo} >Check</button></div>
+                        <div id="promocheck"></div>
                     </div>
                     <legend className="pt-4">Shipping Method</legend>
                     <div key="shipping_method_ewe" className="row m-0 p-0">
