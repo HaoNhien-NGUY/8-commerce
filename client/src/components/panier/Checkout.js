@@ -699,6 +699,9 @@ function Step3(props) {
                     </label>)
             })
         }
+        else {
+            Packagings = false
+        }
         return (
             <React.Fragment>
                 <>
@@ -708,9 +711,10 @@ function Step3(props) {
                         {Promo}
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{totalprice} €</span></div>
                     </div>
-                    {Packagings ? <div><legend>Limited Time Offers</legend>
+                    {Packagings != false ? <div><legend>Limited Time Offers</legend>
                         <p>Get a free packaging for a limited time only !</p>{Packagings}</div> : null}
-                    <legend>Card Details</legend>
+
+                    <legend className="mt-1">Card Details</legend>
                     {CardsOptions}
                     <div className={props.showstatus == false ? "form-row col-md-12 mb-0 hiding transition" : "transition form-row col-md-12 mb-2 show"}>
                         <label className="col-sm-4 mt-2 control-label" htmlFor="confirmccv">Enter CVV</label> <div className="col-sm-6 ">
