@@ -51,8 +51,8 @@ function Home() {
                                     products_temp[j]['lowest_price'] = 'Starts at ' + price + ' €'
                                 }
                                 else {
-                                    let promo = (price) - (price * (promos[id] / 100))
-                                    products_temp[j]['lowest_price'] = <span>Starts at {promo} € <s className="text-danger">{price} €</s></span>
+                                    //let promo = (price) - (price * (promos[id] / 100))
+                                    products_temp[j]['lowest_price'] = <span>Starts at {products_temp[j].price} € <s className="text-danger">{products_temp[j].basePrice} €</s></span>
                                 }
                             }
                         }

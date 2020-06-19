@@ -31,7 +31,7 @@ function Results(props) {
                     <span className="HomeArticleTItle">{e.title.length < 26
                             ? e.title
                             : e.title.substr(0, 26).trim() + "..."}</span>
-                    { e.promo > 0 ? <p><s className="text-danger">{e.price} €</s> {(e.price)-(e.price * (e.promo/100))} €</p>  : <p>{e.price} €</p>}
+                    { e.promo > 0 ? <p>{e.price} € <s className="text-danger">{e.basePrice} €</s></p>  : <p>{e.price} €</p>}
                     
                     <a href={"/product/" + e.product_id}>
                       <div className="ProductHomeImgContainer">
@@ -77,7 +77,8 @@ function Results(props) {
             </div>
 
             <div className="col-3 mt-auto mb-auto md-force-align">
-              { e.promo > 0 ? <p><s className="text-danger">{e.price} €</s> {(e.price)-(e.price * (e.promo/100))} €</p>  : <p>{e.price} €</p>}
+              {console.log(e)}
+              { e.promo > 0 ? <p>{e.price} € <s className="text-danger">{ e.basePrice } €</s></p>  : <p>{e.price} €</p>}
               <a href={"/product/" + e.product_id}><button className='btn-cart'>View Product</button></a>
               { e.stock < 20 && <p className="text-danger mt-1 small"><i className="material-icons md-18">info_outline</i> {e.stock} item(s) left</p> }
             </div>
