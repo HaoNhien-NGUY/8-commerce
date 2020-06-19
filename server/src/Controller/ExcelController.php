@@ -16,9 +16,17 @@ class ExcelController extends AbstractController
      */
     public function ExcelCreate(EntityManagerInterface $em)
     {
+        $styleArray = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000'],
+                ],
+            ],
+        ];
         $index = 0;
         $spreadsheet = new Spreadsheet();
-
+    
         $tables = array_values(array_diff($em->getConnection()->getSchemaManager()->listTableNames(),["migration_versions"]));
         $entities = array_map(function($entity){
             $entities = explode('_',$entity);
@@ -63,13 +71,16 @@ class ExcelController extends AbstractController
                         $result = implode(',',$result);
                     }
                     $spreadsheet->getActiveSheet()->setCellValue($pos.$num,$result);
+                 
+                    $spreadsheet->getActiveSheet()->getStyle($pos.($num-1).':'.$pos.$num)->applyFromArray($styleArray);
+
                     $num++;
                 }
                 $spreadsheet->getActiveSheet()->getColumnDimension($pos)->setAutoSize(true);
             }
             $index++;
         }
-        
+      
         $writer = new Xlsx($spreadsheet);
         $name = 'database.xlsx';
         $temp_file = tempnam(sys_get_temp_dir(), $name);
