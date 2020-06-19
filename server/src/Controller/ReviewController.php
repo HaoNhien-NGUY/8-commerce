@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Review;
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\ProductRepository;
@@ -82,7 +83,9 @@ class ReviewController extends AbstractController
             return $this->json(['message' => 'Product not found'],404);
         }
        
-    
+        if($this->getDoctrine()->getRepository(User::class)->findUserProductById($user->getId(), $product->getId())) {
+            $review->setVerified(true);
+        } else $review->setVerified(false);
 
         $error = $validator->validate($review);
         if (count($error) > 0) return $this->json($error, 400);
