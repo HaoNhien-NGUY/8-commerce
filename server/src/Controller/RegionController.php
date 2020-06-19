@@ -99,6 +99,7 @@ class RegionController extends AbstractController
         } else {
             $region  = new Region();
             $region->setName($req->name);
+            $region->setRestricted(false);
             $em->persist($region);
             $em->flush();
             return $this->json(['message' => 'Region successfully created', $region], 200);
@@ -153,6 +154,11 @@ class RegionController extends AbstractController
                     return $this->json(['message' => 'name is undefined'], 404, []);
                 }
                 $region->setName($req->name);
+
+                if (!isset($req->restricted)) {
+                    return $this->json(['message' => 'restricted is undefined'], 404, []);
+                }
+                $region->setRestricted($req->restricted);
 
                 $error = $validator->validate($region);
                 if (count($error) > 0) return $this->json($error, 400);
