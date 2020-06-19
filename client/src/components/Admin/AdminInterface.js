@@ -549,12 +549,34 @@ const AdminInterface = () => {
         )
     }
 
+    function getPDF() {
+        axios({
+            url: 'http://127.0.0.1:8000/api/excel',
+            method: 'GET',
+            responseType: 'blob'
+        }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'database.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
+
     return (
         <div className="container adminTable">
             <ToastContainer />
-            <h1 className="mb-5">
-                <i className="material-icons md-36 marg">speed</i> ADMIN - Dashboard
-            </h1>
+            <div className="d-flex justify-content-between">
+                <h1 className="mb-5">
+                    <i className="material-icons md-36 marg">speed</i> ADMIN - Dashboard
+                </h1>
+                <p className="float-right mt-3">
+                    Get the database 
+                    <span className="getpdf" onClick={getPDF}><i className="material-icons md-45 marg ml-2 down">save_alt</i></span>
+                </p>
+            </div>
             <Tabs forceRenderTabPanel={true}>
                 <TabList className="tabsHolder" style={{ paddingLeft: 0 }}>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">source</i>Products</h3></Tab>
