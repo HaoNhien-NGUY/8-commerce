@@ -56,18 +56,20 @@ class Checkout extends React.Component {
                     });
             }
         }
-
     }
 
     handleChange = event => {
-        const { name, value } = event.target
+        const { name, value } = event.target;
+        if (name == 'confirmcvv') { this.setState({ showstatus: true }) }
+
         if (name == "cardchoice") {
             if (value != "NewCard") { this.setState({ showstatus: true, showthings: "" }) } else {
                 this.setState({ showstatus: false, showthings: "ShowNewCard" })
             }
-        } else {
-            this.setState({ showstatus: false })
         }
+
+
+
         if (name == "addresschoice") { if (value != "NewShippingAddress") { this.setState({ showstatus: false }) } else { this.setState({ showstatus: true }) } }
         if (name == 'billing_addresschoice') {
             if (value == 'true') {
@@ -87,6 +89,9 @@ class Checkout extends React.Component {
         this.setState({
             [name]: value
         })
+
+        console.log(name, value)
+        console.log(this.state.showstatus)
 
     }
 
@@ -615,7 +620,7 @@ function Step2(props) {
                             </div>
                         </div>
                     </div>
-                    <br /><br /><br />
+                    <br />
                 </>
             )
         }
