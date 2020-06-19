@@ -57,10 +57,10 @@ function Packaging() {
             <div className="row justify-content-end mb-2">
                 <button onClick={() => setShow(true)} className="btn btn-success m-1">+ New Packaging</button>
                 <Modal show={show} onHide={() => setShow(false)}>
-                    <CreatePackaging config={config} closeModal={closeModal} />
+                    <CreatePackaging config={config} closeModal={closeModal} receivedData={receivedData} />
                 </Modal>
                 <Modal show={showUpdate} onHide={() => setShowUpdate(false)}>
-                    <UpdatePackaging config={config} closeModal={closeModalUpdate} idPack={idPack}/>
+                    <UpdatePackaging config={config} closeModal={closeModalUpdate} idPack={idPack} receivedData={receivedData}/>
                 </Modal>
             </div>
             <div className="row border p-2">
