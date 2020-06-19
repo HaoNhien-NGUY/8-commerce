@@ -18,11 +18,11 @@ function ShowOrder(props) {
             const newDataHistory = res.data.userOrders.map(e =>
                 <tr key={e.id}>
                     <td scope="row" className=""><p className=" ml=3 mt-3 mb-3 align-items-center">{e.trackingNumber}</p></td>
-                    <td className=""><p className=" mr-4 mt-3 mb-3 ml-1 align-items-center">{e.status != "" ? "Delivered" : " In transition"}</p></td>
-                    <td className=""><p className=" mr-4 mt-3 mb-3 ml-1 align-items-center">{e.packaging ? e.packaging : " without"}</p></td>
-                    <td className=""><p className=" mr-4 mt-3 mb-3 ml-1 align-items-center">{getDate(e.createdAt)}</p></td>
-                    <td className=""><p className=" mr-4 mt-3 mb-3 ml-1 align-items-center">{e.cost} €</p></td>
-                    <td className="">
+                    <td><p className=" mr-4 mt-3 mb-3 ml-1 align-items-center">{e.status != "" ? "Delivered" : " In transition"}</p></td>
+                    <td><p className=" mr-4 mt-3 mb-3 ml-1 align-items-center">{e.packaging ? e.packaging : " without"}</p></td>
+                    <td><p className=" mr-4 mt-3 mb-3 ml-1 align-items-center">{getDate(e.createdAt)}</p></td>
+                    <td><p className=" mr-4 mt-3 mb-3 ml-1 align-items-center">{e.cost} €</p></td>
+                    <td>
                         <p className=" mt-3 mb-3 mr-3 align-items-center">
                             <button className="btn btn-outline-secondary m-0" onClick={() => window.location.href = '/command?order=' + e.trackingNumber}>
                                 Show Order
@@ -31,7 +31,7 @@ function ShowOrder(props) {
                     </td>
                     <td className="text-nowrap">
                         <p className=" mt-3 mb-3 mr-3 align-items-center">
-                            <button className="btn btn-outline-secondary m-0" onClick={() => {getInvoice(e.id)}}>Get Invoice</button>
+                            <button className="btn btn-outline-secondary m-0" onClick={() => { getInvoice(e.id) }}>Get Invoice</button>
                         </p>
                     </td>
                 </tr>
