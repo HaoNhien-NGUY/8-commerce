@@ -209,7 +209,8 @@ export default class SuggestionSearch extends Component {
                           ? product.title
                           : product.title.substr(0, 22) + "..."}
                           <br/>
-                          <span className="sugg-product_price">{product.price+" €"}</span>
+                          
+                        {product.promo > 0 ? <span className="sugg-product_price">{ product.price }€ <s className="text-danger">{ product.basePrice}€  </s> </span> : <span className="sugg-product_price">{ product.price }€  </span>} 
                       </div>
                     </div>
                   </a>
