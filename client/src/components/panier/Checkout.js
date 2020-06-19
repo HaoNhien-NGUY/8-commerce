@@ -115,10 +115,8 @@ class Checkout extends React.Component {
                     console.log(this.state)
                 })
                 .catch((error) => {
+                    this.setState({ promocode_details: false });
 
-                    if (error) { console.log(error) } else {
-                        console.log("yo")
-                    }
                 });
         }
 
@@ -566,6 +564,18 @@ function Step2(props) {
                     </div >
                 )
             }
+
+            let Promo_status = []
+
+            if (props.data.promocode_details) {
+                if (props.data.promocode_details == 'error') {
+                    Promo_status.push(<small id="promo_status" key="promo_status" className="form-text text-danger">Promocode is unvalid</small>)
+
+                } else {
+                    Promo_status.push(<small id="promo_status" key="promo_status" className="form-text text-success">Congrats ! Your promocode worked</small>)
+                }
+            }
+
             return (
                 <>
                     <legend><label className="form-row" htmlFor="promocode">Promo Code</label></legend>
@@ -576,7 +586,7 @@ function Step2(props) {
                     </div> */}
                     <label className="pt-1 col-5 " htmlFor="promocode">Have a promocode ?</label><div className="col-6">
                         <div className=" form-check-inline"><input type="promocode" className="form-control" id="promocode" name="promocode" placeholder="promocode" onChange={props.handleChange} /><button className="btn btn-primary" onClick={props.promo} >Check</button></div>
-                        <div id="promocheck"></div>
+                        {Promo_status}
                     </div>
                     <legend className="pt-4">Shipping Method</legend>
                     <div key="shipping_method_ewe" className="row m-0 p-0">
