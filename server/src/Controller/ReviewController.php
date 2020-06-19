@@ -83,7 +83,7 @@ class ReviewController extends AbstractController
             return $this->json(['message' => 'Product not found'],404);
         }
        
-        if($this->getDoctrine()->getRepository(User::class)->findUserProductById($user->getId(), $product->getId())) {
+        if($userRepository->findUserProductById($user->getId(), $product->getId())) {
             $review->setVerified(true);
         } else $review->setVerified(false);
 
