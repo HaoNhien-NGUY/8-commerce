@@ -81,7 +81,7 @@ const AdminInterface = () => {
 
     useEffect(() => {
         receivedDataCategories()
-    }, [offsetCategories, categories])
+    }, [offsetCategories, categories]) 
 
     const handleClose = () => setDeleteCategoryModal(false);
 
