@@ -5,6 +5,11 @@ import { useRouteMatch } from "react-router-dom";
 import ReactImageMagnify from "react-image-magnify";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./products.css";
+
+import ReviewPart from './product.reviews';
+import PersonalizedSugg from './product.sugg';
+import Footer from '../footer/Footer';
 
 function ProductDescription() {
   const [product, setProduct] = useState([]);
@@ -515,10 +520,14 @@ function ProductDescription() {
           </div>
         </div>
         <div className="row m-0 p-0">
-          <div className="col-sm-12 sndrow">
-            <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />{" "}
-            <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />{" "}
-            <br /> <br /> <br />
+          <div className="col-sm-12">
+            <ReviewPart id={id}/>
+          </div>
+          <div className="col-sm-12">
+            <PersonalizedSugg />
+          </div>
+          <div className="col-sm-12">
+            <Footer />
           </div>
         </div>
       </div>
