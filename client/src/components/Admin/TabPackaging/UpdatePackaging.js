@@ -7,14 +7,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
-    // useEffect(() => {
-    //     axios.get(`http://127.0.0.1:8000/api/packaging/${idPack}`, config).then(async res => {
-    //         console.log(res);
-    //     }).catch(error => {
-    //         console.log(error);
-    //     })
-    // }, []);
-
     const [packaginName, setPackagingName] = useState("");
     const [spending, setSpending] = useState([]);
     const [price, setPrice] = useState([]);
@@ -24,6 +16,18 @@ function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
     const [dateEnd, setDateEnd] = useState(new Date());
     const [isInvalid, setIsInvalid] = useState(false);
     const [isReady, setIsReady] = useState(false);
+
+    useEffect(() => {
+        axios.get(`http://127.0.0.1:8000/api/packaging/${idPack}`, config).then(async res => {
+            setPackagingName(res.data.name);
+            setPrice(res.data.price);
+            setSpending(res.data.minSpending);
+            onChange(new Date(res.data.startsAt));
+            onChange2(new Date(res.data.endsAt));
+        }).catch(error => {
+            console.log(error);
+        });
+    }, []);
     
     function onChangeName(event) {
         let res = event.target.value.trim();
@@ -35,16 +39,8 @@ function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
     function onSubmit(e) {
         e.preventDefault();
         let invalids = {};
-        let month = value.getMonth() + 1;
-        let month2 = value2.getMonth() + 1;
-        if (value.getMonth() + 1 < 10) {
-            month = "0" + (value.getMonth() + 1);
-        }
-        if (value2.getMonth() + 1 < 10) {
-            month2 = "0" + (value2.getMonth() + 1);
-        }
-        let dateStart = month + "/" + value.getDate() + "/" + value.getFullYear();
-        let dateEnd = month2 + "/" + value2.getDate() + "/" + value2.getFullYear();
+        let dateStartAt = "";
+        let dateEndAt = "";
 
         if (packaginName !== "") {
             if (packaginName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
@@ -61,13 +57,34 @@ function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
         }
         if (value === null) {
             invalids.value = "Enter date start valid";
+        } else {
+            let month = value.getMonth() + 1;
+            let now = new Date();
+            if (value.getMonth() + 1 < 10) {
+                if ((value.getMonth() + 1) < (now.getMonth() + 1)) {
+                    invalids.value = "Enter date start valid";
+                } else {   
+                    month = "0" + (value.getMonth() + 1);
+                    dateStartAt = month + "/" + value.getDate() + "/" + value.getFullYear();
+                }
+            }
         }
         if (value2 === null) {
             invalids.value2 = "Enter date end valid";
+        } else {
+            let month2 = value2.getMonth() + 1;
+            let now = new Date();
+            if (value2.getMonth() + 1 < 10) {
+                if ((value2.getMonth() + 1) < (now.getMonth() + 1)) {
+                    invalids.value2 = "Enter date end valid";
+                } else {
+                    month2 = "0" + (value2.getMonth() + 1);
+                    dateEndAt = month2 + "/" + value2.getDate() + "/" + value2.getFullYear();
+                }
+            } 
         }
-
-        setDateStart(dateStart);
-        setDateEnd(dateEnd);
+        setDateStart(dateStartAt);
+        setDateEnd(dateEndAt);
 
         if (Object.keys(invalids).length === 0) {
             setIsInvalid(invalids);
@@ -109,7 +126,7 @@ function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
                             type="text"
                             name="Name"
                             id="Name"
-                            // value={packaginName}
+                            value={packaginName}
                             className={(isInvalid.name ? 'is-invalid' : '')}
                             onChange={onChangeName} />
                         <div className="invalid-feedback">{isInvalid.name}</div>
@@ -119,6 +136,7 @@ function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
                             type="number"
                             name="spending"
                             id="spending"
+                            value={spending}
                             className={(isInvalid.spending ? 'is-invalid' : '')}
                             onChange={(e) => setSpending(parseInt(e.target.value))} />
                         <div className="invalid-feedback">{isInvalid.spending}</div>
@@ -128,6 +146,7 @@ function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
                             type="number"
                             name="price"
                             id="price"
+                            value={price}
                             className={(isInvalid.price ? 'is-invalid' : '')}
                             onChange={(e) => setPrice(parseInt(e.target.value))} />
                         <div className="invalid-feedback">{isInvalid.price}</div>
