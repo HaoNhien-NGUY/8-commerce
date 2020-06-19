@@ -10,8 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PackagingController extends AbstractController
 {
@@ -38,12 +40,26 @@ class PackagingController extends AbstractController
     /**
      * @Route("/api/packaging", name="packaging_create", methods="POST")
      */
-    public function packagingCreate(Request $request, SerializerInterface $serializer)
+    public function packagingCreate(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
-        $jsonContent = $request->getContent();
-        $packaging = $serializer->deserialize($jsonContent, Packaging::class, 'json');
+        try {
+            $jsonContent = $request->getContent();
+            try {
+                $packaging = $serializer->deserialize($jsonContent, Packaging::class, 'json');
+            } catch (NotNormalizableValueException $e) {
+                return $this->json(['message' => $e->getPrevious()->getMessage()], 400);
+            }
 
-        return $this->json(["message" => "created", "packaging" => $packaging], 201);
+            $error = $validator->validate($packaging);
+            if (count($error) > 0) return $this->json($error, 400);
+
+            $em->persist($packaging);
+            $em->flush();
+
+            return $this->json(["message" => "created", "packaging" => $packaging], 201);
+        } catch (NotEncodableValueException $e) {
+            return $this->json(['message' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -51,23 +67,24 @@ class PackagingController extends AbstractController
      */
     public function packagingUpdate(Request $request, SerializerInterface $serializer, PackagingRepository $packagingRepository, EntityManagerInterface $em)
     {
-        $jsonContent = $request->getContent();
-
-        $packaging = $packagingRepository->find($request->attributes->get('id'));
-        if(!$packaging) return $this->json(["message" => "not found"], 404);
-
         try {
-            $packaging = $serializer->deserialize($jsonContent, Packaging::class, 'json', [
-                AbstractNormalizer::OBJECT_TO_POPULATE => $packaging
-            ]);
+            $jsonContent = $request->getContent();
+            $packaging = $packagingRepository->find($request->attributes->get('id'));
+            if (!$packaging) return $this->json(["message" => "not found"], 404);
+
+            try {
+                $packaging = $serializer->deserialize($jsonContent, Packaging::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $packaging]);
+            } catch (NotEncodableValueException $e) {
+                return $this->json(['message' => $e->getMessage()], 400, []);
+            }
+
+            $em->persist($packaging);
+            $em->flush();
+
+            return $this->json(["message" => "updated", "packaging" => $packaging], 200);
         } catch (NotEncodableValueException $e) {
-            return $this->json(['message' => $e->getMessage()], 400, []);
+            return $this->json(['message' => $e->getMessage()], 400);
         }
-
-        $em->persist($packaging);
-        $em->flush();
-
-        return $this->json(["message" => "updated", "packaging" => $packaging], 200);
     }
 
     /**
@@ -77,12 +94,11 @@ class PackagingController extends AbstractController
     {
         $packaging = $packagingRepository->find($request->attributes->get('id'));
 
-        if(!$packaging) return $this->json(["message" => "not found"], 404);
+        if (!$packaging) return $this->json(["message" => "not found"], 404);
 
         $em->remove($packaging);
         $em->flush();
 
         return $this->json(["message" => "deleted.", "packaging" => $packaging], 200);
     }
-    
 }
