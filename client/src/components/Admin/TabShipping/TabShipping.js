@@ -25,10 +25,10 @@ function Shipping() {
         const newOffset = selectedPage * limit;
         setOffset(newOffset)
     };
-
+    
     useEffect(() => {
-        if (pageCount < offset) setOffset(0);
-      }, [pageCount, offset]);
+        if (postDataShipp === null) setOffset(offset - limit);
+      }, [postDataShipp])
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/shippingmethod?offset=${offset}&limit=${limit}`, config).then(async e => {
@@ -56,7 +56,6 @@ function Shipping() {
     
     return (
         <>
-            <ToastContainer />
             <div className="row justify-content-end mb-2">
                 <button onClick={() => window.location.href = 'admin/create/shipping'} className="btn btn-success m-1">+ New Shipping company</button>
                 {/* <button className="btn btn-success m-1">+ New Supplier</button> */}
@@ -105,17 +104,17 @@ function Shipping() {
                 <div>
                 {pageCount > 0 &&
                     <ReactPaginate
-                        previousLabel={"prev"}
-                        nextLabel={"next"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        pageCount={pageCount}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={2}
-                        onPageChange={handlePageClick}
-                        containerClassName={"pagination"}
-                        subContainerClassName={"pages pagination"}
-                        activeClassName={"active"} />}
+                    previousLabel={"prev"}
+                    nextLabel={"next"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={1}
+                    pageRangeDisplayed={2}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination"}
+                    subContainerClassName={"pages pagination"}
+                    activeClassName={"active"} />}
                 </div>
             </div>
         </>

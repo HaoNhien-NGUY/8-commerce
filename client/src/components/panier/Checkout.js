@@ -67,13 +67,14 @@ class Checkout extends React.Component {
         event.preventDefault()
         let s = this.state;
 
+        console.log(s)
         if (!s.cardchoice) {
             if (!s.cardfirstname || !s.cardlastname || !s.cardnumber || !s.expirymonth || !s.expiryyear)
-                return toast.error('Plese fill all the required informations', { position: 'top-center' });
+                return toast.error('Please fill all the required informations', { position: 'top-center' });
         }
 
         let shippingAddress;
-        if (this.state.addresschoice) {
+        if (this.state.addresschoice !== "NewShippingAddress") {
             shippingAddress = this.state.shippingAddress[this.state.addresschoice].id
         }
         else {
@@ -92,10 +93,10 @@ class Checkout extends React.Component {
         let arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
         arrayOfObj = arrayOfObj.map(({ productid, quantite }) => ({ subproduct_id: productid, quantity: quantite }));
         let billingAddress;
-        if (this.state.billing === 'true') {
+        if (this.state.billing_addresschoice === 'true') {
             billingAddress = shippingAddress
         } else {
-            if (this.state.billing_addresschoice) {
+            if (this.state.billing_addresschoice !== "NewBillingAddress") {
                 billingAddress = this.state.billingAddress[this.state.billing_addresschoice].id
             }
             else {
@@ -113,12 +114,12 @@ class Checkout extends React.Component {
         }
 
         let CardDetails;
-        if (this.state.cardchoice) {
+        if (this.state.cardchoice !== "NewCard") {
             CardDetails = this.state.cards[this.state.cardchoice].id;
         }
         else {
             CardDetails = {
-                'user_id': this.props.auth.user != null ? this.props.auth.user.id : null,
+                'user_id': this.props.auth.user !== null ? this.props.auth.user.id : null,
                 'card_numbers': this.state.cardnumber,
                 'expiration_date': this.state.expirymonth + '/' + this.state.expiryyear,
                 'firstname': this.state.cardfirstname,
@@ -158,12 +159,17 @@ class Checkout extends React.Component {
     }
 
     _next = () => {
+
         if (this.state.currentStep === 1) {
             let s = this.state;
+            console.log(s)
             if (!s.addresschoice) {
-                if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
-                    return toast.error('Plese fill all the required informations', { position: 'top-center' });
+                if (s.addresschoice == "NewShippingAddress") {
+                    if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
+                        return toast.error('Please fill all the required informations', { position: 'top-center' });
+                    }
                 }
+                return toast.error('Please fill all the required informations', { position: 'top-center' });
             }
             const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
             let hide = true
@@ -200,6 +206,16 @@ class Checkout extends React.Component {
 
         if (this.state.currentStep == 2) {
             let s = this.state;
+            if (!s.shippingchoice)
+                return toast.error('Please choose a delivery option', { position: 'top-center' });
+
+            if (!s.billing_addresschoice) {
+                if (s.billing !== 'true') {
+                    if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
+                        return toast.error('Please fill all the required informations', { position: 'top-center' });
+                }
+            }
+
             if (this.state.promocode) {
                 let jsonRequest = {
                     'promocode': this.state.promocode,
@@ -219,7 +235,6 @@ class Checkout extends React.Component {
                     });
             }
 
-
             if (this.props.auth.user != null) {
 
                 console.log(this.props.auth.user.id)
@@ -232,21 +247,6 @@ class Checkout extends React.Component {
                         console.log(error.response);
                     });
             }
-
-            if (!s.billing_addresschoice) {
-                if (s.billing !== 'true') {
-                    if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
-                        return toast.error('Plese fill all the required informations', { position: 'top-center' });
-                }
-            }
-
-            if (!s.shippingchoice)
-                return toast.error('Plese choose a delivery option', { position: 'top-center' });
-        }
-
-        if (this.state.currentStep == 3) {
-
-
         }
 
         let currentStep = this.state.currentStep
@@ -420,67 +420,72 @@ function Step1(props) {
             <SlideToggle collapsed irreversible
                 render={({ onToggle, setCollapsibleElement }) => (
                     <div className="my-collapsible">
-                        <div className="form-row col-md-12">
-                            <button type="button" className="btn tn-primary" onClick={onToggle} >New address +</button>
-                        </div>
-                        <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
-                            <div className="my-collapsible__content-inner">
-                                <div className="form-row  col-md-12">
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="inputfirstname">Firstname</label>
-                                        <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" defaultValue={props.data.firstname ? props.data.firstname : null} name="firstname" onChange={props.handleChange} />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="inputLastname">Lastname</label>
-                                        <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" defaultValue={props.data.lastname ? props.data.lastname : null} name='lastname' onChange={props.handleChange} />
-                                    </div>
-                                </div>
-                                <div className="form-group  col-md-12">
-                                    <label htmlFor="inputAddress">Address</label>
-                                    <input type="text" className="form-control" id="inputAddress" name='address' placeholder="Address" defaultValue={props.data.address ? props.data.address : null} onChange={props.handleChange} />
-                                </div>
-                                <div className="form-row  col-md-12">
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="inputCity">City</label>
-                                        <input type="text" className="form-control" id="inputCity" name='city' placeholder="City" defaultValue={props.data.city ? props.data.city : null} onChange={props.handleChange} />
-                                    </div>
-                                    <div className="form-group col-md-4">
-                                        <label htmlFor="inputZip">Zip code</label>
-                                        <input type="text" className="form-control" id="inputZip" name='zip' defaultValue={props.data.zip ? props.data.zip : null} placeholder="Zipcode" value={props.zip} onChange={props.handleChange} />
-                                    </div>
-                                </div>
+                        <div className="alert alert-secondary">
+                            <div className="form-row col-md-12">
+                                <label className="control control-radio w-100 form-check-label" htmlFor="addresschoice">
+                                    <input className="form-check-input checkbox-style" onClick={onToggle} type="radio" name="addresschoice" id="addresschoice" value="NewShippingAddress" onChange={props.handleChange} />
+                                    <div className="control_indicator"></div> New Address +
+                                </label>
                             </div>
-                            <SlideToggle collapsed data={props}
-                                render={({ onToggle, setCollapsibleElement }) => (
-                                    <div className="my-collapsible">
-                                        <div className="form-row col-md-12">
-                                            Shipping Outside of France ? <input type="checkbox" className="mt-2 ml-3" onClick={onToggle} />
+                            <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
+                                <div className="my-collapsible__content-inner">
+                                    <div className="form-row  col-md-12">
+                                        <div className="form-group col-md-6">
+                                            <label htmlFor="inputfirstname">Firstname</label>
+                                            <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" defaultValue={props.data.firstname ? props.data.firstname : null} name="firstname" onChange={props.handleChange} />
                                         </div>
-                                        <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
-                                            <div className="my-collapsible__content-inner">
-                                                <div className="form-row  col-md-12">
-                                                    <div className="form-group col-md-6">
-                                                        <label htmlFor="inputRegion">Region</label>
-                                                        <select name="region" onChange={props.handleChange} className="custom-select">
-                                                            <option value='1'>Choose a Region</option>
-                                                            <option value="2" >Europe</option>
-                                                            <option value="3" >Africa</option>
-                                                            <option value="4">Asia</option>
-                                                            <option value="5">North America</option>
-                                                            <option value="6">South America</option>
-                                                            <option value="7">Oceania</option>
-                                                        </select>
-                                                    </div>
-                                                    <div className="form-group col-md-4">
-                                                        <label htmlFor="inputZip">Country</label>
-                                                        <input type="text" className="form-control" id="inputCountry" defaultValue={props.data.country ? props.data.country : null} placeholder="Country" name='country' value={props.country} onChange={props.handleChange} />
+                                        <div className="form-group col-md-6">
+                                            <label htmlFor="inputLastname">Lastname</label>
+                                            <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" defaultValue={props.data.lastname ? props.data.lastname : null} name='lastname' onChange={props.handleChange} />
+                                        </div>
+                                    </div>
+                                    <div className="form-group  col-md-12">
+                                        <label htmlFor="inputAddress">Address</label>
+                                        <input type="text" className="form-control" id="inputAddress" name='address' placeholder="Address" defaultValue={props.data.address ? props.data.address : null} onChange={props.handleChange} />
+                                    </div>
+                                    <div className="form-row  col-md-12">
+                                        <div className="form-group col-md-6">
+                                            <label htmlFor="inputCity">City</label>
+                                            <input type="text" className="form-control" id="inputCity" name='city' placeholder="City" defaultValue={props.data.city ? props.data.city : null} onChange={props.handleChange} />
+                                        </div>
+                                        <div className="form-group col-md-4">
+                                            <label htmlFor="inputZip">Zip code</label>
+                                            <input type="text" className="form-control" id="inputZip" name='zip' defaultValue={props.data.zip ? props.data.zip : null} placeholder="Zipcode" value={props.zip} onChange={props.handleChange} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <SlideToggle collapsed data={props}
+                                    render={({ onToggle, setCollapsibleElement }) => (
+                                        <div className="my-collapsible">
+                                            <div className="form-row col-md-12">
+                                                Shipping Outside of France ? <input type="checkbox" className="mt-2 ml-3" onClick={onToggle} />
+                                            </div>
+                                            <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
+                                                <div className="my-collapsible__content-inner">
+                                                    <div className="form-row  col-md-12">
+                                                        <div className="form-group col-md-6">
+                                                            <label htmlFor="inputRegion">Region</label>
+                                                            <select name="region" onChange={props.handleChange} className="custom-select">
+                                                                <option value='1'>Choose a Region</option>
+                                                                <option value="2" >Europe</option>
+                                                                <option value="3" >Africa</option>
+                                                                <option value="4">Asia</option>
+                                                                <option value="5">North America</option>
+                                                                <option value="6">South America</option>
+                                                                <option value="7">Oceania</option>
+                                                            </select>
+                                                        </div>
+                                                        <div className="form-group col-md-4">
+                                                            <label htmlFor="inputZip">Country</label>
+                                                            <input type="text" className="form-control" id="inputCountry" defaultValue={props.data.country ? props.data.country : null} placeholder="Country" name='country' value={props.country} onChange={props.handleChange} />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
-                            />
+                                    )}
+                                />
+                            </div>
                         </div>
                     </div>
                 )}
@@ -494,9 +499,7 @@ function Step2(props) {
     if (props.currentStep !== 2) {
         return null
     }
-
     else {
-
         let BillingAdressOptions = []
         if (props.data.billingAddress != null) {
             for (let [key, value] of Object.entries(props.data.billingAddress)) {
@@ -517,21 +520,22 @@ function Step2(props) {
                 )
             }
         }
-
         const items = []
         if (props.data.shipping_methods) {
             for (let [key, value] of Object.entries(props.data.shipping_methods)) {
                 items.push(
-                    <div key={"choice_" + key} className={key != props.data.lowestPriceKey ? "col-md-12 order-1" : "col-md-12"}>
+                    <div key={"choice_" + key} className={key != props.data.lowestPriceKey ? "col-md-12 m-0 p-0 order-1" : "m-0 p-0 col-md-12"}>
                         <label className="control control-radio w-100 form-check-label" htmlFor={"shippingchoice" + key}>
                             <input className="form-check-input checkbox-style" type="radio" name="shippingchoice" id={"shippingchoice" + key} value={key} onChange={props.handleChange} />
                             <div className="control_indicator"></div>
                             <div className={key == props.data.lowestPriceKey ? "alert alert-primary" : key == props.data.longestKey ? "alert-success alert" : key == props.data.shortestKey ? "alert alert-warning" : "alert alert-secondary"} >
-                                <h5>{key == props.data.lowestPriceKey ? "Our best" : key == props.data.longestKey ? "Our greenest" : key == props.data.shortestKey ? "Our fastest" : "Another"} option :</h5>
-                                <div className="d-flex justify-content-between">
-                                    <div className="p-2 bd-highlight">Carrier: {value.name}</div>
-                                    <div className="p-2 bd-highlight">Delivery: {value.duration} to {value.duration + 5} days</div>
-                                    <div className="p-2 bd-highlight">Price: {value.price} €</div>
+                                <div className="col-md-12 d-flex">
+                                    <div className="col-md-6 m-0 p-0">
+                                        <h5>{key == props.data.lowestPriceKey ? "Our best" : key == props.data.longestKey ? "Our greenest" : key == props.data.shortestKey ? "Our fastest" : "Another"} option :</h5>
+                                        <div className="bd-highlight text-nowrap">Carrier: {value.name}</div></div>
+                                    <div className="col-md-6">       <div className="bd-highlight text-nowrap">Delivery: {value.duration} days</div>
+                                        <div className="bd-highlight text-nowrap">Price: {value.price} €</div></div>
+
                                 </div>
                             </div>
                         </label>
@@ -540,17 +544,13 @@ function Step2(props) {
             }
             return (
                 <>
-                    <legend>Promo Code</legend>
+                    <legend><label className="form-row" htmlFor="promocode">Promo Code</label></legend>
                     <div className="form-row col-md-12">
-                        <div className="form-row  col-md-12">
-                            <h5> <label className="form-row" htmlFor="promocode">Promocode ?</label></h5>
-                        </div>
                         <div className="custom-control custom-radio custom-control-inline">
                             <input type="text" className="form-control" id="promocode" name="promocode" placeholder="Promocode" defaultValue={props.data.promocode ? props.data.promocode : null} onChange={props.handleChange} />
                         </div>
                     </div>
                     <legend>Billing address</legend>
-                    {BillingAdressOptions}
                     <SlideToggle collapsed irreversible
                         render={({ onToggle, setCollapsibleElement }) => (
                             <div className="my-collapsible">
@@ -559,73 +559,106 @@ function Step2(props) {
                                         <h5>Is your billing address the same as your shipping adress?</h5>
                                     </div>
                                     <div className="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline1" name="billing" value='true' className="custom-control-input" onChange={props.handleChange} />
+                                        <input type="radio" id="customRadioInline1" name="billing_addresschoice" value='true' className="custom-control-input" onChange={props.handleChange} />
                                         <label className="custom-control-label" htmlFor="customRadioInline1">Yes</label>
                                     </div>
                                     <div className="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline2" name="billing" value='false' className="custom-control-input" onChange={props.handleChange} onClick={onToggle} />
+                                        <input type="radio" id="customRadioInline2" name="billing_addresschoice" className="custom-control-input" onChange={props.handleChange} onClick={onToggle} />
                                         <label className="custom-control-label" htmlFor="customRadioInline2">No</label>
                                     </div>
                                 </div>
                                 <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
                                     <div className="my-collapsible__content-inner">
                                         <div className="form-row  col-md-12">
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="inputfirstname">Firstname</label>
-                                                <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" defaultValue={props.data.billing_firstname ? props.data.billing_firstname : null} name="billing_firstname" onChange={props.handleChange} />
-                                            </div>
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="inputLastname">Lastname</label>
-                                                <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" defaultValue={props.data.billing_lastname ? props.data.billing_lastname : null} name='billing_lastname' onChange={props.handleChange} />
-                                            </div>
+                                            {BillingAdressOptions}
+                                            <SlideToggle collapsed irreversible
+                                                render={({ onToggle, setCollapsibleElement }) => (
+                                                    <div className="my-collapsible w-100">
+                                                        <div className="alert w-100 alert-secondary">
+                                                            <div className="form-row col-md-12">
+                                                                <label className="control control-radio w-100 form-check-label" htmlFor="billing_addresschoice">
+                                                                    <input className="form-check-input checkbox-style" onClick={onToggle} type="radio" name="billing_addresschoice" id="billing_addresschoice" value="NewBillingAddress" onChange={props.handleChange} />
+                                                                    <div className="control_indicator"></div> New Address +
+                                                                </label>
+                                                            </div>
+                                                            <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
+                                                                <div className="my-collapsible__content-inner">
+                                                                    <div className="form-row  col-md-12">
+                                                                        <div className="form-group col-md-6">
+                                                                            <label htmlFor="inputfirstname">Firstname</label>
+                                                                            <input type="text" className="form-control" id="inputfirstname" placeholder="Firstname" defaultValue={props.data.billing_firstname ? props.data.billing_firstname : null} name="billing_firstname" onChange={props.handleChange} />
+                                                                        </div>
+                                                                        <div className="form-group col-md-6">
+                                                                            <label htmlFor="inputLastname">Lastname</label>
+                                                                            <input type="text" className="form-control" id="inputLastname" placeholder="Lastname" defaultValue={props.data.billing_lastname ? props.data.billing_lastname : null} name='billing_lastname' onChange={props.handleChange} />
+                                                                        </div>
+
+                                                                        <div className="form-group  col-md-12">
+                                                                            <label htmlFor="inputAddress">Address</label>
+                                                                            <input type="text" className="form-control" id="inputAddress" placeholder="Address" defaultValue={props.data.billing_address ? props.data.billing_address : null} name='billing_adress' placeholder="Address" onChange={props.handleChange} />
+                                                                        </div>
+                                                                        <div className="form-row  col-md-12">
+                                                                            <div className="form-group col-md-6">
+                                                                                <label htmlFor="inputCity">City</label>
+                                                                                <input type="text" className="form-control" id="inputCity" placeholder="City" defaultValue={props.data.billing_city ? props.data.billing_city : null} name='billing_city' onChange={props.handleChange} />
+                                                                            </div>
+                                                                            <div className="form-group col-md-4">
+                                                                                <label htmlFor="inputZip">Zip code</label>
+                                                                                <input type="text" className="form-control" id="inputZip" placeholder="Zipcode" defaultValue={props.data.billing_zip ? props.data.billing_zip : null} name='billing_zip' value={props.zip} onChange={props.handleChange} />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="form-row  col-md-12">
+                                                                            <div className="form-group col-md-6">
+                                                                                <label htmlFor="inputRegion">Region</label>
+                                                                                <select defaultValue={props.data.billing_region ? props.data.billing_region : null} name="billing_region" onChange={props.handleChange} className="custom-select">
+                                                                                    <option value='1'>Choose a Region</option>
+                                                                                    <option value='1'>France</option>
+                                                                                    <option value="2">Europe</option>
+                                                                                    <option value="3">Africa</option>
+                                                                                    <option value="4">Asia</option>
+                                                                                    <option value="5">North America</option>
+                                                                                    <option value="6">South America</option>
+                                                                                    <option value="7">Oceania</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div className="form-group col-md-4">
+                                                                                <label htmlFor="inputZip">Country</label>
+                                                                                <input type="text" className="form-control" id="inputCountry" name='billing_country' placeholder="Country" defaultValue={props.data.billing_country ? props.data.billing_country : null} value={props.country} onChange={props.handleChange} />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            />
+
+
+
+
+
+
+
+
+
+
+
                                         </div>
-                                        <div className="form-group  col-md-12">
-                                            <label htmlFor="inputAddress">Address</label>
-                                            <input type="text" className="form-control" id="inputAddress" placeholder="Address" defaultValue={props.data.billing_address ? props.data.billing_address : null} name='billing_adress' placeholder="Address" onChange={props.handleChange} />
-                                        </div>
-                                        <div className="form-row  col-md-12">
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="inputCity">City</label>
-                                                <input type="text" className="form-control" id="inputCity" placeholder="City" defaultValue={props.data.billing_city ? props.data.billing_city : null} name='billing_city' onChange={props.handleChange} />
-                                            </div>
-                                            <div className="form-group col-md-4">
-                                                <label htmlFor="inputZip">Zip code</label>
-                                                <input type="text" className="form-control" id="inputZip" placeholder="Zipcode" defaultValue={props.data.billing_zip ? props.data.billing_zip : null} name='billing_zip' value={props.zip} onChange={props.handleChange} />
-                                            </div>
-                                        </div>
-                                        <div className="form-row  col-md-12">
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="inputRegion">Region</label>
-                                                <select defaultValue={props.data.billing_region ? props.data.billing_region : null} name="billing_region" onChange={props.handleChange} className="custom-select">
-                                                    <option value='1'>Choose a Region</option>
-                                                    <option value='1'>France</option>
-                                                    <option value="2">Europe</option>
-                                                    <option value="3">Africa</option>
-                                                    <option value="4">Asia</option>
-                                                    <option value="5">North America</option>
-                                                    <option value="6">South America</option>
-                                                    <option value="7">Oceania</option>
-                                                </select>
-                                            </div>
-                                            <div className="form-group col-md-4">
-                                                <label htmlFor="inputZip">Country</label>
-                                                <input type="text" className="form-control" id="inputCountry" name='billing_country' placeholder="Country" defaultValue={props.data.billing_country ? props.data.billing_country : null} value={props.country} onChange={props.handleChange} />
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         )}
                     />
                     <legend className="pt-4">Shipping Method</legend>
-                    <div key="shipping_method_ewe" className="row">
+                    <div key="shipping_method_ewe" className="row m-0 p-0">
                         {items}
                     </div>
                 </>
             )
         }
         else {
-
             return (
                 <>Sorry, we are currently not Shipping to your destination</>
             )
@@ -639,7 +672,6 @@ function Step3(props) {
     }
     else {
         let CardsOptions = []
-
         if (props.data.cards != null) {
             for (let [key, value] of Object.entries(props.data.cards)) {
                 CardsOptions.push(
@@ -667,7 +699,6 @@ function Step3(props) {
             console.log(props.data.promocode_details.percentage / 100)
             Promo.push(<div className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {totalprice * (props.data.promocode_details.percentage / 100)} €</span></div>)
             totalprice = totalprice - totalprice * (props.data.promocode_details.percentage / 100)
-
         }
         return (
             <React.Fragment>
@@ -681,76 +712,84 @@ function Step3(props) {
                     </div>
                     <legend>Card Details</legend>
                     {CardsOptions}
+
                     <SlideToggle collapsed irreversible
                         render={({ onToggle, setCollapsibleElement }) => (
                             <div className="my-collapsible">
-                                <div className="form-row col-md-12">
-                                    <button type="button" className="btn tn-primary" onClick={onToggle} >New Card +</button>
-                                </div>
-                                <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
-                                    <div className="my-collapsible__content-inner">
-                                        <div className="form-group">
+                                <div className="alert alert-secondary">
+                                    <div className="form-row col-md-12">
+                                        <label className="control control-radio w-100 form-check-label" htmlFor="cardchoice">
+                                            <input className="form-check-input checkbox-style" onClick={onToggle} type="radio" name="cardchoice" id="cardchoice" value="NewCard" onChange={props.handleChange} />
+                                            <div className="control_indicator"></div> New Card +
+                                </label>
+                                    </div>
+                                    <div className="my-collapsible__content  pt-3 " ref={setCollapsibleElement}>
+                                        <div className="my-collapsible__content-inner">
                                             <div className="form-row  col-md-12">
-                                                <div className="form-group col-md-6">
-                                                    <label className="col-sm-3 control-label" htmlFor="cardfirstname">Firstname</label>
-                                                    <input type="text" className="form-control" name="cardfirstname" id="cardfirstname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardfirstname ? props.data.cardfirstname : null} onChange={props.handleChange} />
+                                                <div className="form-group">
+                                                    <div className="form-row  col-md-12">
+                                                        <div className="form-group col-md-6">
+                                                            <label className="col-sm-3 control-label" htmlFor="cardfirstname">Firstname</label>
+                                                            <input type="text" className="form-control" name="cardfirstname" id="cardfirstname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardfirstname ? props.data.cardfirstname : null} onChange={props.handleChange} />
+                                                        </div>
+                                                        <div className="form-group col-md-6">
+                                                            <label className="col-sm-3 control-label" htmlFor="cardlastname">Lastname</label>
+                                                            <input type="text" className="form-control" name="cardlastname" id="cardlastname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardlastname ? props.data.cardlastname : null} onChange={props.handleChange} />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="form-group col-md-6">
-                                                    <label className="col-sm-3 control-label" htmlFor="cardlastname">Lastname</label>
-                                                    <input type="text" className="form-control" name="cardlastname" id="cardlastname" placeholder="Card Holder's Firsname" defaultValue={props.data.cardlastname ? props.data.cardlastname : null} onChange={props.handleChange} />
+                                                <div className="form-group col-sm-12">
+                                                    <div className="col-sm-12">
+                                                        <label className="control-label" htmlFor="cardnumber">Card Number</label>
+                                                        <input type="text" className="form-control" name="cardnumber" id="cardnumber" maxLength="16" placeholder="Debit/Credit Card Number" defaultValue={props.data.cardnumber ? props.data.cardnumber : null} onChange={props.handleChange} />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label" htmlFor="cardnumber">Card Number</label>
-                                            <div className="col-sm-9">
-                                                <input type="text" className="form-control" name="cardnumber" id="cardnumber" placeholder="Debit/Credit Card Number" defaultValue={props.data.cardnumber ? props.data.cardnumber : null} onChange={props.handleChange} />
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label" htmlFor="expirymonth">Expiration Date</label>
-                                            <label className="col-sm-3 control-label" htmlFor="expiryyear"></label>
+                                                <div className="form-group col-sm-12">
+                                                    <label className="col-sm-11 control-label" htmlFor="expirymonth">Expiration Date</label>
+                                                    <label className="col-sm-1 control-label" htmlFor="expiryyear"></label>
 
-                                            <div className="col-sm-9">
-                                                <div className="row ml-1">
-                                                    <div className="col-xs-6 pr-05">
-                                                        <select className="form-control" name="expirymonth" id="expirymonth" onChange={props.handleChange}>
-                                                            <option>Month</option>
-                                                            <option value="01">Jan (01)</option>
-                                                            <option value="02">Feb (02)</option>
-                                                            <option value="03">Mar (03)</option>
-                                                            <option value="04">Apr (04)</option>
-                                                            <option value="05">May (05)</option>
-                                                            <option value="06">June (06)</option>
-                                                            <option value="07">July (07)</option>
-                                                            <option value="08">Aug (08)</option>
-                                                            <option value="09">Sep (09)</option>
-                                                            <option value="10">Oct (10)</option>
-                                                            <option value="11">Nov (11)</option>
-                                                            <option value="12">Dec (12)</option>
-                                                        </select>
-                                                    </div>
-                                                    <div className="col-xs-6 pl-05">
-                                                        <select className="form-control" name="expiryyear" id="expiryear" onChange={props.handleChange}>
-                                                            <option value="20">2020</option>
-                                                            <option value="21">2021</option>
-                                                            <option value="22">2022</option>
-                                                            <option value="23">2023</option>
-                                                            <option value="24">2024</option>
-                                                            <option value="25">2025</option>
-                                                            <option value="26">2026</option>
-                                                            <option value="27">2027</option>
-                                                            <option value="28">2028</option>
-                                                            <option value="29">2029</option>
-                                                        </select>
+                                                    <div className="col-sm-12">
+                                                        <div className="row ml-1">
+                                                            <div className="col-xs-6 pr-05">
+                                                                <select className="form-control" name="expirymonth" id="expirymonth" onChange={props.handleChange}>
+                                                                    <option>Month</option>
+                                                                    <option value="01">Jan (01)</option>
+                                                                    <option value="02">Feb (02)</option>
+                                                                    <option value="03">Mar (03)</option>
+                                                                    <option value="04">Apr (04)</option>
+                                                                    <option value="05">May (05)</option>
+                                                                    <option value="06">June (06)</option>
+                                                                    <option value="07">July (07)</option>
+                                                                    <option value="08">Aug (08)</option>
+                                                                    <option value="09">Sep (09)</option>
+                                                                    <option value="10">Oct (10)</option>
+                                                                    <option value="11">Nov (11)</option>
+                                                                    <option value="12">Dec (12)</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="col-xs-6 pl-05">
+                                                                <select className="form-control" name="expiryyear" id="expiryear" onChange={props.handleChange}>
+                                                                    <option value="20">2020</option>
+                                                                    <option value="21">2021</option>
+                                                                    <option value="22">2022</option>
+                                                                    <option value="23">2023</option>
+                                                                    <option value="24">2024</option>
+                                                                    <option value="25">2025</option>
+                                                                    <option value="26">2026</option>
+                                                                    <option value="27">2027</option>
+                                                                    <option value="28">2028</option>
+                                                                    <option value="29">2029</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="col-sm-3 control-label" htmlFor="ccv">Card ccv</label>
-                                            <div className="col-sm-3">
-                                                <input type="text" className="form-control" name="ccv" id="ccv" placeholder="Security Code" defaultValue={props.data.ccv ? props.data.ccv : null} onChange={props.handleChange} />
+                                                <div className="form-group">
+                                                    <label className="col-sm-12 control-label" htmlFor="ccv">Card ccv</label>
+                                                    <div className="col-sm-12">
+                                                        <input type="text" className="form-control" name="ccv" id="ccv" placeholder="Security Code" maxLength="3" defaultValue={props.data.ccv ? props.data.ccv : null} onChange={props.handleChange} />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -758,9 +797,6 @@ function Step3(props) {
                             </div>
                         )}
                     />
-
-
-
                 </>
             </React.Fragment>
         );

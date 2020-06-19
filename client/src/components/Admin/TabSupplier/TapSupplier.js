@@ -32,8 +32,8 @@ function Suppliers() {
     }, []);
 
     useEffect(() => {
-        if (pageCount < offset) setOffset(0);
-      }, [pageCount, offset]);
+        if (postDataOrder === null) setOffset(offset - limit);
+      }, [postDataOrder])
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/supplier/order?offset=${offset}&limit=${limit}`, config).then(async e => {
@@ -129,7 +129,6 @@ function Suppliers() {
     
     return (
         <>
-            <ToastContainer />
             <div className="row justify-content-end mb-2">
                 <button onClick={() => window.location.href = 'admin/order'} className="btn btn-success m-1">+ New Order</button>
                 <button onClick={() => setShow(true)} className="btn btn-success m-1">+ New Supplier</button>

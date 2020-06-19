@@ -18,6 +18,7 @@ import Shipping from './TabShipping/TabShipping';
 import Region from './TabRegion/TabRegion';
 import Promo from './TabPromo/TabPromo';
 import Color from './Color/Color';
+import Packaging from './TabPackaging/TabPackaging';
 
 const AdminInterface = () => {
     const [products, setProducts] = useState([]);
@@ -58,6 +59,7 @@ const AdminInterface = () => {
             "Content-type": "application/json"
         }
     }
+    
     useEffect(() => {
         if (token) {
             config.headers['x-auth-token'] = token
@@ -69,12 +71,13 @@ const AdminInterface = () => {
     }, [offset, products])
 
     useEffect(() => {
-        if (pageCountCategories < offsetCategories) setOffsetCategories(0);
-      }, [pageCountCategories, offsetCategories]);
+        console.log(postDataCategories)
+        if (postDataCategories && postDataCategories.length === 0) setOffsetCategories(offsetCategories - limitCategories);
+      }, [postDataCategories]);
 
     useEffect(() => {
-        if (pageCountCategories < offsetCategories) setOffset(0);
-      }, [pageCount, offset]);
+        if (postData && postData.length === 0) setOffset(offset - limit);
+      }, [postData]);
 
     useEffect(() => {
         receivedDataCategories()
@@ -546,14 +549,6 @@ const AdminInterface = () => {
         )
     }
 
-    const AllColors = () => {
-        return (
-            <>
-                <Color />
-            </>
-        )
-    }
-
     return (
         <div className="container adminTable">
             <ToastContainer />
@@ -568,7 +563,8 @@ const AdminInterface = () => {
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">flight</i>Shipping</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">public</i>Region</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">redeem</i>Code Promo</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">money_off</i>Code Promo</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">redeem</i>Packaging</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
@@ -577,7 +573,7 @@ const AdminInterface = () => {
                     {AllCategories()}
                 </TabPanel>
                 <TabPanel>
-                    {AllColors()}
+                    <Color />
                 </TabPanel>
                 <TabPanel>
                     <SupplierCommand />
@@ -590,6 +586,9 @@ const AdminInterface = () => {
                 </TabPanel>
                 <TabPanel>
                     <Promo />
+                </TabPanel>
+                <TabPanel>
+                    <Packaging />
                 </TabPanel>
             </Tabs>
         </div>
