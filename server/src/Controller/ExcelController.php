@@ -25,7 +25,6 @@ class ExcelController extends AbstractController
             return implode(array_map('ucfirst', $entities));
         },$tables);
 
-
         foreach($entities as  $entity){
             
             $columns = array_keys($em->getConnection()->getSchemaManager()->listTableColumns($tables[$index]));
@@ -43,19 +42,19 @@ class ExcelController extends AbstractController
                 $ascii = ord($alphabet);
                 $ascii  = $ascii + $i;
                 $pos = chr($ascii);
-
+                
                 $spreadsheet->getActiveSheet()->setCellValue($pos.'1',$columns[$i]);
-
+                
                 $name = explode('_',$columns[$i]);
                 $name = implode(array_map('ucfirst', $name));
-        
+                
                 $function = 'get'.$name;
-    
+                
                 $num = 2;
                 foreach( $findItems as $item ){
                     if(substr($columns[$i],-3) == '_id'  ){
                         $function = str_replace('Id','',$function);
-       
+                        
                         $result = $item->$function() ? $item->$function()->getId() : null;
                     }else{
                         $result = $item->$function();
@@ -66,6 +65,7 @@ class ExcelController extends AbstractController
                     $spreadsheet->getActiveSheet()->setCellValue($pos.$num,$result);
                     $num++;
                 }
+                $spreadsheet->getActiveSheet()->getColumnDimension($pos)->setAutoSize(true);
             }
             $index++;
         }
