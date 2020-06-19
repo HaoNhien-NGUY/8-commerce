@@ -65,3 +65,18 @@
     padding: 20px;
     border-radius: 4px;
 }
+
+.print {
+    font-size: 40px !important;
+    color: rgb(197, 197, 197);
+}
+
+.print:hover {
+    cursor: pointer;
+    color: black;
+}
+
+.btnCloseFacture {
+    float: right;
+    width: 100%;
+}
