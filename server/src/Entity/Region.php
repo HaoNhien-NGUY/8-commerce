@@ -50,6 +50,7 @@ class Region
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"shipping"})
      */
     private $restricted;
 
