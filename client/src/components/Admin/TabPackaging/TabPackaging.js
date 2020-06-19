@@ -6,10 +6,13 @@ import ReactPaginate from 'react-paginate';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CreatePackaging from './CreatePackaging';
+import UpdatePackaging from './UpdatePackaging';
 
 function Packaging() {
     const [show, setShow] = useState(false);
+    const [showUpdate, setShowUpdate] = useState(false);
     const [postDataPack, setPostDataPack] = useState(false);
+    const [idPack, setPackId] = useState(false);
 
     const config = {
         headers: {
@@ -28,6 +31,11 @@ function Packaging() {
                 <tr key={pack.id}>
                     <td><p className="m-2 align-items-center">{pack.id}</p></td>
                     <td><p className="m-2">{pack.name.toUpperCase()}</p></td>
+                    <td><p className="m-2">{pack.startsAt.substr(8, 10).slice(0, 2) + '/' + pack.startsAt.substr(5, 10).slice(0, 2) + '/' + pack.startsAt.substr(0, 10).slice(0, 4)}</p></td>
+                    <td><p className="m-2">{pack.endsAt.substr(8, 10).slice(0, 2) + '/' + pack.endsAt.substr(5, 10).slice(0, 2) + '/' + pack.endsAt.substr(0, 10).slice(0, 4)}</p></td>
+                    <td><p className="m-2">{pack.minSpending}</p></td>
+                    <td><p className="m-2">{pack.price}</p></td>
+                    <td> <button className="btn btn-outline-info m-1" onClick={() => { setPackId(pack.id); setShowUpdate(true)}}>Modify</button></td>
                 </tr>
             ) : null
             setPostDataPack(newPostData);
@@ -40,6 +48,9 @@ function Packaging() {
     function closeModal() {
         setShow(false);
     }
+    function closeModalUpdate() {
+        setShowUpdate(false);
+    }
 
     return (
         <>
@@ -48,6 +59,9 @@ function Packaging() {
                 <Modal show={show} onHide={() => setShow(false)}>
                     <CreatePackaging config={config} closeModal={closeModal} />
                 </Modal>
+                <Modal show={showUpdate} onHide={() => setShowUpdate(false)}>
+                    <UpdatePackaging config={config} closeModal={closeModalUpdate} idPack={idPack}/>
+                </Modal>
             </div>
             <div className="row border p-2">
                 <table>
@@ -55,7 +69,7 @@ function Packaging() {
                         <tr>
                             <th><p className="m-2 align-items-center">ID</p></th>
                             <th><p className="m-2">Name</p></th>
-                            <th><p className="m-2">Date end</p></th>
+                            <th><p className="m-2">Date Start</p></th>
                             <th><p className="m-2">Date end</p></th>
                             <th><p className="m-2">Spending</p></th>
                             <th><p className="m-2">Price</p></th>
