@@ -104,6 +104,8 @@ const Promo = () => {
             }
             // Mettre la requete
             axios.post("http://127.0.0.1:8000/api/promocode/create", body, config).then(res => {
+                console.log(body)
+                console.log("dedede")
                 toast.success('Code promo correctly added!', { position: "top-center" });
                 receivedData();
             }).catch(err => {

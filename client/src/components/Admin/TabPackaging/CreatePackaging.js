@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-date-picker';
+import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 function CreatePackaging({ config, closeModal }) {
     const [packaginName, setPackagingName] = useState("");
@@ -17,14 +17,6 @@ function CreatePackaging({ config, closeModal }) {
     const [isInvalid, setIsInvalid] = useState(false);
     const [isReady, setIsReady] = useState(false);
 
-    useEffect(() => {
-        setDateStart(value !== null ? parseInt((new Date(value).getTime() / 1000).toFixed(0)) : null);
-    }, [value]);
-
-    useEffect(() => {
-        setDateEnd(value2 !== null ? parseInt((new Date(value2).getTime() / 1000).toFixed(0)) : null);
-    }, [value2]);
-
     function onChangeName(event) {
         let res = event.target.value.trim();
         let str = res.toLowerCase();
@@ -35,6 +27,16 @@ function CreatePackaging({ config, closeModal }) {
     function onSubmit(e) {
         e.preventDefault();
         let invalids = {};
+        let month = value.getMonth() + 1;
+        let month2 = value2.getMonth() + 1;
+        if (value.getMonth() + 1 < 10) {
+            month = "0" + (value.getMonth() + 1);
+        }
+        if (value2.getMonth() + 1 < 10) {
+            month2 = "0" + (value2.getMonth() + 1);
+        }
+        let dateStart = month + "/" + value.getDate() + "/" + value.getFullYear();
+        let dateEnd = month2 + "/" + value2.getDate() + "/" + value2.getFullYear();
 
         if (packaginName !== "") {
             if (packaginName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
@@ -55,6 +57,9 @@ function CreatePackaging({ config, closeModal }) {
         if (value2 === null) {
             invalids.value2 = "Enter date end valid";
         }
+
+        setDateStart(dateStart);
+        setDateEnd(dateEnd);
 
         if (Object.keys(invalids).length === 0) {
             setIsInvalid(invalids);
