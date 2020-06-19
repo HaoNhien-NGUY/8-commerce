@@ -27,6 +27,20 @@
     width: 192px;
 }
 
+.getpdf {
+    text-decoration: underline;
+    /* color: rgb(0, 0, 170); */
+}
+
+.getpdf:hover {
+    cursor: pointer;
+    color: rgb(0, 0, 255);
+}
+
+.down {
+    top: 3px;
+}
+
 @media (max-width: 768px) {
     .tabtitles {
         font-size: 1em!important;
