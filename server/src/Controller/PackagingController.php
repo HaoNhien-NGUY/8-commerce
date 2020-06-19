@@ -23,11 +23,12 @@ class PackagingController extends AbstractController
     public function packagingIndex(PackagingRepository $packagingRepository)
     {
         $packaging = $packagingRepository->findAll();
+        if(!$packaging) return $this->json(["message" => "packaging not found"], 404);
         return $this->json($packaging, 200);
     }
 
     /**
-     * @Route("/api/packaging/{id}", name="packaging_details", methods="GET")
+     * @Route("/api/packaging/{id}", name="packaging_details", methods="GET", requirements={"id":"\d+"})
      */
     public function packagingDetails(Request $request, PackagingRepository $packagingRepository)
     {
