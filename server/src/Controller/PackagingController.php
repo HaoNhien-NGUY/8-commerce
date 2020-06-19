@@ -27,6 +27,15 @@ class PackagingController extends AbstractController
     }
 
     /**
+     * @Route("/api/packaging/{id}", name="packaging_details", methods="GET")
+     */
+    public function packagingDetails(Request $request, PackagingRepository $packagingRepository)
+    {
+        $packaging = $packagingRepository->find($request->attributes->get('id'));
+        return $this->json($packaging, 200);
+    }
+
+    /**
      * @Route("/api/packaging/available", name="packaging_available", methods="GET")
      */
     public function packagingAvailable(Request $request, PackagingRepository $packagingRepository)
