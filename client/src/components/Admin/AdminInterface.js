@@ -59,7 +59,7 @@ const AdminInterface = () => {
             "Content-type": "application/json"
         }
     }
-    
+
     useEffect(() => {
         if (token) {
             config.headers['x-auth-token'] = token
@@ -73,42 +73,41 @@ const AdminInterface = () => {
     useEffect(() => {
         console.log(postDataCategories)
         if (postDataCategories && postDataCategories.length === 0) setOffsetCategories(offsetCategories - limitCategories);
-      }, [postDataCategories]);
+    }, [postDataCategories]);
 
     useEffect(() => {
         if (postData && postData.length === 0) setOffset(offset - limit);
-      }, [postData]);
+    }, [postData]);
 
     useEffect(() => {
         receivedDataCategories()
-		}, [offsetCategories, categories])
-		
-		const handleClose = () => setDeleteCategoryModal(false);
+    }, [offsetCategories, categories])
+
+    const handleClose = () => setDeleteCategoryModal(false);
 
     const receivedData = () => {
-        axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`, config)
-            .then(async res => {
-                await setPageCount(Math.ceil(res.data.nbResults / limit))
-                const newPostData = res.data.data.map((product) =>
-                    <tr key={product.id}>
-                        <td><p className="m-2 align-items-center">{product.id}</p></td>
-                        <td><p className="m-2">{product.title.length > 15 ? product.title.substr(0, 15) + '...' : product.title}</p></td>
-                        <td><p className="m-2">{product.subCategory.name.length > 15 ? product.subCategory.name.substr(0, 15) + "..." : product.subCategory.name}</p></td>
-                        <td><p className="m-2">{product.status ? 'Active' : 'Inactive'}</p></td>
-                        <td><p className="m-2">{product.sex}</p></td>
-                        <td>
-                            <button onClick={e => e.preventDefault() + handleShowImage(product.id)} className="btn add btn-outline-success m-1">Add Image</button>
-                            <button onClick={() => window.location.href = 'admin/update/product/' + product.id} className="btn modify btn-outline-info m-1">Modify</button>
-                            <button onClick={() => window.location.href = 'admin/subproduct/' + product.id} className="btn btn-outline-dark m-1"><span className="viewsub">SubProducts</span></button>
-                            <button onClick={() => {setDeleteProductModal(true); setProductId(product.id);}} className="btn delete btn-outline-danger m-1">Delete</button>
-                        </td>
-                    </tr>
-                )
-                setPostData(newPostData)
-            })
-            .catch(error => {
-                toast.error('Error !', { position: 'top-center' });
-            })
+        axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`, config).then(async res => {
+            await setPageCount(Math.ceil(res.data.nbResults / limit))
+            const newPostData = res.data.data.map((product) =>
+                <tr key={product.id}>
+                    <td><p className="m-2 align-items-center">{product.id}</p></td>
+                    <td><p className="m-2">{product.title.length > 15 ? product.title.substr(0, 15) + '...' : product.title}</p></td>
+                    <td><p className="m-2">{product.subCategory.name.length > 15 ? product.subCategory.name.substr(0, 15) + "..." : product.subCategory.name}</p></td>
+                    <td><p className="m-2">{product.status ? 'Active' : 'Inactive'}</p></td>
+                    <td><p className="m-2">{product.sex}</p></td>
+                    <td>
+                        <button onClick={e => e.preventDefault() + handleShowImage(product.id)} className="btn add btn-outline-success m-1">Add Image</button>
+                        <button onClick={() => window.location.href = 'admin/update/product/' + product.id} className="btn modify btn-outline-info m-1">Modify</button>
+                        <button onClick={() => window.location.href = 'admin/subproduct/' + product.id} className="btn btn-outline-dark m-1"><span className="viewsub">SubProducts</span></button>
+                        <button onClick={() => { setDeleteProductModal(true); setProductId(product.id); }} className="btn delete btn-outline-danger m-1">Delete</button>
+                    </td>
+                </tr>
+            )
+            setPostData(newPostData)
+        })
+        .catch(error => {
+            toast.error('Error !', { position: 'top-center' });
+        })
     }
 
     const handlePageClick = (e) => {
@@ -118,34 +117,32 @@ const AdminInterface = () => {
     };
 
     const deleteProduct = (id) => {
-        axios.delete("http://localhost:8000/api/product/" + id, config)
-            .then(res => {
-                receivedData()
-                toast.success(res.data.message, { position: "top-center" });
-            })
-            .catch(error => {
-                toast.error('Error !', { position: 'top-center' });
-            });
+        axios.delete("http://localhost:8000/api/product/" + id, config).then(res => {
+            receivedData()
+            toast.success(res.data.message, { position: "top-center" });
+        })
+        .catch(error => {
+            toast.error('Error !', { position: 'top-center' });
+        });
     }
 
     const receivedDataCategories = () => {
-        axios.get(`http://127.0.0.1:8000/api/category?offset=${offsetCategories}&limit=${limitCategories}`, config)
-            .then(async res => {
-                await setPageCountCategories(Math.ceil(res.data.nbResults / limitCategories))
-                const newPostDataCategories = res.data.data.map((category) =>
-                    <tr key={category.id}>
-                        <td><p className="m-2 align-items-center">{category.id}</p></td>
-                        <td><p className="m-2">{category.name}</p></td>
-                        <td> <button onClick={e => e.preventDefault() + handleShowCateEdit(category.id, category.name)} className="btn btn-outline-info m-1"> Modify </button></td>
-                        <td> <button onClick={() => window.location.href = '/admin/subcategory/' + category.id} className="btn btn-outline-dark m-1"> SubCategories</button></td>
-                        <td> <button onClick={async() => { await migrationCategory(category.id); setDeleteCategoryModal(true); setCategoryId(category.id);}} className="btn btn-outline-danger m-1"> Delete </button></td>
-                    </tr>
-                )
-                setPostDataCategories(newPostDataCategories)
-            })
-            .catch(error => {
-                toast.error('Error !', { position: 'top-center' });
-            })
+        axios.get(`http://127.0.0.1:8000/api/category?offset=${offsetCategories}&limit=${limitCategories}`, config).then(async res => {
+            await setPageCountCategories(Math.ceil(res.data.nbResults / limitCategories))
+            const newPostDataCategories = res.data.data.map((category) =>
+                <tr key={category.id}>
+                    <td><p className="m-2 align-items-center">{category.id}</p></td>
+                    <td><p className="m-2">{category.name}</p></td>
+                    <td> <button onClick={e => e.preventDefault() + handleShowCateEdit(category.id, category.name)} className="btn btn-outline-info m-1"> Modify </button></td>
+                    <td> <button onClick={() => window.location.href = '/admin/subcategory/' + category.id} className="btn btn-outline-dark m-1"> SubCategories</button></td>
+                    <td> <button onClick={async () => { await migrationCategory(category.id); setDeleteCategoryModal(true); setCategoryId(category.id); }} className="btn btn-outline-danger m-1"> Delete </button></td>
+                </tr>
+            )
+            setPostDataCategories(newPostDataCategories)
+        })
+        .catch(error => {
+            toast.error('Error !', { position: 'top-center' });
+        })
     }
 
     const handlePageClickCategories = (e) => {
@@ -155,14 +152,13 @@ const AdminInterface = () => {
     };
 
     const deleteCategory = (id) => {
-        axios.delete("http://localhost:8000/api/category/" + id, config)
-            .then(res => {
-                receivedDataCategories();
-                toast.success(res.data.message, { position: "top-center" });
-            })
-            .catch(error => {
-                toast.error('Error !', { position: 'top-center' });
-            });
+        axios.delete("http://localhost:8000/api/category/" + id, config).then(res => {
+            receivedDataCategories();
+            toast.success(res.data.message, { position: "top-center" });
+        })
+        .catch(error => {
+            toast.error('Error !', { position: 'top-center' });
+        });
     }
 
     const redirectCreate = (data) => {
@@ -195,14 +191,13 @@ const AdminInterface = () => {
         const bodyFormData = new FormData();
         bodyFormData.append('image', picture[0]);
         bodyFormData.append('color', 'default');
-        axios.post('http://localhost:8000/api/image/' + imageId, bodyFormData, config)
-            .then(response => {
-                setPicture([]);
-                setShowImage(false);
-                toast.success("Image correctly added !", { position: "top-center" });
-            }).catch((error) => {
-                toast.error("Error !", { position: "top-center" });
-            })
+        axios.post('http://localhost:8000/api/image/' + imageId, bodyFormData, config).then(response => {
+            setPicture([]);
+            setShowImage(false);
+            toast.success("Image correctly added !", { position: "top-center" });
+        }).catch((error) => {
+            toast.error("Error !", { position: "top-center" });
+        })
     }
 
     const handleCloseCateEdit = () => setShowCateEdit(false);
@@ -270,56 +265,54 @@ const AdminInterface = () => {
                                     name="cateEdit"
                                     id="cateEdit"
                                     placeholder={oldCateEditName}
-                                    onChange={onChangeCateEdit}
-                                />
+                                    onChange={onChangeCateEdit} />
                                 <Button color="dark" className="mt-4" block>Update</Button>
                             </FormGroup>
                         </Form>
                     </Modal.Body>
                 </Modal>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <div>
-                  {pageCount > 0 &&
-                      <ReactPaginate
-                          previousLabel={"prev"}
-                          nextLabel={"next"}
-                          breakLabel={"..."}
-                          breakClassName={"break-me"}
-                          pageCount={pageCount}
-                          marginPagesDisplayed={1}
-                          pageRangeDisplayed={2}
-                          onPageChange={handlePageClick}
-                          containerClassName={"pagination"}
-                          subContainerClassName={"pages pagination"}
-                          activeClassName={"active"} />}
-                      {/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
-                      <Modal show={showImage} onHide={handleImage}>
-                          <Modal.Header closeButton>Download Image !</Modal.Header>
-                          <Modal.Body>
-                              <Form onSubmit={onSubmitImage}>
-                                  <FormGroup>
-                                      <Label for="image">Image</Label>
-                                      <Input
-                                          multiple="multiple"
-                                          type="file"
-                                          name="image"
-                                          id="image"
-                                          onChange={onChangeImage}
-                                      />
-                                      <Button color="dark" className="mt-4" block>Submit</Button>
-                                  </FormGroup>
-                              </Form>
-                          </Modal.Body>
-                      </Modal>
-                      <Modal show={deleteProductModal} onHide={() => setDeleteProductModal(false)}>
-                        <Modal.Header closeButton>Careful ! Deleting the Product will delete all of his SubProducts !</Modal.Header>
-                        <Modal.Body>
-                          <Button color="warning" className="mt-4" onClick={() =>  setDeleteProductModal(false)} block>No, go back</Button>
-                          <Button color="danger" className="mt-4" onClick={() => {deleteProduct(productId); setDeleteProductModal(false)}} block>Yes, delete everything</Button>
-                        </Modal.Body>
-                    </Modal>
+                    <div>
+                        {pageCount > 0 &&
+                            <ReactPaginate
+                                previousLabel={"prev"}
+                                nextLabel={"next"}
+                                breakLabel={"..."}
+                                breakClassName={"break-me"}
+                                pageCount={pageCount}
+                                marginPagesDisplayed={1}
+                                pageRangeDisplayed={2}
+                                onPageChange={handlePageClick}
+                                containerClassName={"pagination"}
+                                subContainerClassName={"pages pagination"}
+                                activeClassName={"active"} />}
+                        {/* --------------------- MODAL FOR IMAGE ------------------------------------ */}
+                        <Modal show={showImage} onHide={handleImage}>
+                            <Modal.Header closeButton>Download Image !</Modal.Header>
+                            <Modal.Body>
+                                <Form onSubmit={onSubmitImage}>
+                                    <FormGroup>
+                                        <Label for="image">Image</Label>
+                                        <Input
+                                            multiple="multiple"
+                                            type="file"
+                                            name="image"
+                                            id="image"
+                                            onChange={onChangeImage} />
+                                        <Button color="dark" className="mt-4" block>Submit</Button>
+                                    </FormGroup>
+                                </Form>
+                            </Modal.Body>
+                        </Modal>
+                        <Modal show={deleteProductModal} onHide={() => setDeleteProductModal(false)}>
+                            <Modal.Header closeButton>Careful ! Deleting the Product will delete all of his SubProducts !</Modal.Header>
+                            <Modal.Body>
+                                <Button color="warning" className="mt-4" onClick={() => setDeleteProductModal(false)} block>No, go back</Button>
+                                <Button color="danger" className="mt-4" onClick={() => { deleteProduct(productId); setDeleteProductModal(false) }} block>Yes, delete everything</Button>
+                            </Modal.Body>
+                        </Modal>
+                    </div>
                 </div>
-              </div>
             </>
         )
     }
@@ -337,7 +330,6 @@ const AdminInterface = () => {
         if (categoryName.length === 0) {
             return toast.error("You need to enter a category", { position: "top-center" });
         }
-
         if (categoryName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
             return toast.error("Invalid charactere", { position: "top-center" });
         } else {
@@ -374,11 +366,10 @@ const AdminInterface = () => {
     function onSubmitSubCate(e) {
         e.preventDefault();
         let invalids = {};
-        
+
         if (!categorySelected) {
             invalids.category = "Select category";
         }
-
         if (subCategoryName && subCategoryName.length > 0) {
             if (subCategoryName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
                 invalids.subCategory = "Charactere invalid";
@@ -399,62 +390,56 @@ const AdminInterface = () => {
         if (isReady) {
             setIsReady(false);
             const body = [];
-            axios.post("http://127.0.0.1:8000/api/subcategory/create/" + categorySelected + "/" + subCategoryName, body, config)
-                .then(res => {
-                    toast.success('SubCategory correctly added!', { position: 'top-center' });
-                    setShowSubCate(false)
-                }).catch(err => {
-                    toast.error('SubCategory already exist!', { position: 'top-center' });
-                });
+            axios.post("http://127.0.0.1:8000/api/subcategory/create/" + categorySelected + "/" + subCategoryName, body, config).then(res => {
+                toast.success('SubCategory correctly added!', { position: 'top-center' });
+                setShowSubCate(false)
+            }).catch(err => {
+                toast.error('SubCategory already exist!', { position: 'top-center' });
+            });
         }
     }, [isReady]);
 
     function handleSelect(event) {
         setCategorySelected(event.target.value);
     }
-  const handleSelectMigration = (event) => {
-      setCategoryMigrateSelected(event.target.value);
-  }
-  const migrationCategory = async (idCategory) => {
-    const optionCategoryMigration = [];
-  
-    await axios.get("http://127.0.0.1:8000/api/category", config).then(e => {
-      let migration = categoryMigrateSelected
-        e.data.data.map((category) => category.id !== idCategory ? optionCategoryMigration.push(<option key={category.id} value={category.id}>{category.name}</option>) && migration === 0 ? migration = category.id : null : null )
-        setCategoryMigrateSelected(migration)
-    }).catch(err => {
-      toast.error('Error to get category!', { position: 'top-center' });
-    });
+    const handleSelectMigration = (event) => {
+        setCategoryMigrateSelected(event.target.value);
+    }
+    const migrationCategory = async (idCategory) => {
+        const optionCategoryMigration = [];
 
-    setAllMigrationCategory(optionCategoryMigration);
-  }
-  const migrateCategory = (idTakeMigration, idToMigrate) => {
-    let body = {
-      "newcategory": parseInt(idTakeMigration),
-      "oldcategory": idToMigrate
-    };
-    console.log(body);
-    axios.put("http://127.0.0.1:8000/api/category/migrate", body, config).then(res => {
-      toast.success(res.message, { position: 'top-center' });
-      deleteCategory(idToMigrate);
-    }).catch(err => {
-      console.log(JSON.stringify(err))
-      console.log(err.response.data)
-      //Message Error 404 : err.response.data.message
-      toast.error(err.response.data.message, { position: 'top-center' });
-    });
-  }
+        await axios.get("http://127.0.0.1:8000/api/category", config).then(e => {
+            let migration = categoryMigrateSelected
+            e.data.data.map((category) => category.id !== idCategory ? optionCategoryMigration.push(<option key={category.id} value={category.id}>{category.name}</option>) && migration === 0 ? migration = category.id : null : null)
+            setCategoryMigrateSelected(migration)
+        }).catch(err => {
+            toast.error('Error to get category!', { position: 'top-center' });
+        });
+        setAllMigrationCategory(optionCategoryMigration);
+    }
+    const migrateCategory = (idTakeMigration, idToMigrate) => {
+        let body = {
+            "newcategory": parseInt(idTakeMigration),
+            "oldcategory": idToMigrate
+        };
+        console.log(body);
+        axios.put("http://127.0.0.1:8000/api/category/migrate", body, config).then(res => {
+            toast.success(res.message, { position: 'top-center' });
+            deleteCategory(idToMigrate);
+        }).catch(err => {
+            console.log(JSON.stringify(err))
+            console.log(err.response.data)
+            toast.error(err.response.data.message, { position: 'top-center' });
+        });
+    }
+
     const AllCategories = () => {
         return (
             <>
                 <div className="row justify-content-end mb-2">
-                    <button onClick={() => setShowCate(true)} className="btn btn-success m-1">
-                        + New Category
-                    </button>
+                    <button onClick={() => setShowCate(true)} className="btn btn-success m-1">+ New Category</button>
                     <Modal show={showCate} onHide={() => setShowCate(false)}>
-                        <Modal.Header closeButton>
-                            Create category !
-                            </Modal.Header>
+                        <Modal.Header closeButton>Create category !</Modal.Header>
                         <Modal.Body>
                             <Form onSubmit={onSubmitCate}>
                                 <FormGroup>
@@ -463,22 +448,15 @@ const AdminInterface = () => {
                                         type="text"
                                         name="category"
                                         id="category"
-                                        onChange={onChangeCate}
-                                    />
-                                    <Button color="dark" className="mt-4" block>
-                                        Submit
-                                        </Button>
+                                        onChange={onChangeCate}/>
+                                    <Button color="dark" className="mt-4" block>Submit</Button>
                                 </FormGroup>
                             </Form>
                         </Modal.Body>
                     </Modal>
-                    <button onClick={() => setShowSubCate(true)} className="btn btn-success m-1">
-                        + New SubCategory
-                    </button>
+                    <button onClick={() => setShowSubCate(true)} className="btn btn-success m-1"> + New SubCategory</button>
                     <Modal show={showSubCate} onHide={() => setShowSubCate(false)}>
-                        <Modal.Header closeButton>
-                            Create SubCategory !
-                            </Modal.Header>
+                        <Modal.Header closeButton>Create SubCategory !</Modal.Header>
                         <Modal.Body>
                             <Form onSubmit={onSubmitSubCate}>
                                 <FormGroup>
@@ -493,56 +471,52 @@ const AdminInterface = () => {
                                         name="category"
                                         id="category"
                                         className={(isInvalid.subCategory ? 'is-invalid' : 'inputeStyle')}
-                                        onChange={onChangeSubCate}
-                                    />
+                                        onChange={onChangeSubCate} />
                                     <div className="invalid-feedback">{isInvalid.subCategory}</div>
-                                    <Button color="dark" className="mt-4" block>
-                                        Submit
-                                    </Button>
+                                    <Button color="dark" className="mt-4" block>Submit</Button>
                                 </FormGroup>
                             </Form>
                         </Modal.Body>
                     </Modal>
                 </div>
                 <div className="row border p-2">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th><p className="m-2 align-items-center"> ID </p></th>
-                        <th><p className="m-2"> Name </p></th>
-                        <th><p colSpan="3" className="m-1"> Actions </p></th>
-                      </tr>
-                    </thead>
-                    <tbody>{postDataCategories}</tbody>
-                  </table>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><p className="m-2 align-items-center"> ID </p></th>
+                                <th><p className="m-2"> Name </p></th>
+                                <th><p colSpan="3" className="m-1"> Actions </p></th>
+                            </tr>
+                        </thead>
+                        <tbody>{postDataCategories}</tbody>
+                    </table>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    
                     <div>
-                    <Modal show={deleteCategoryModal} size="lg" onHide={handleClose}>
-                      <Modal.Header closeButton>Careful ! Deleting a category will delete all SubCategories and all Products !</Modal.Header>
-                      <Modal.Body>
-                        <h4>I want to keep my SubCategories and migrate them to</h4>
-                        <select className="form-control form-control-lg" onChange={handleSelectMigration}>
-                          {allMigrationCategory}
-                        </select>
-                        <Button color="info" className="mt-4" onClick={() => migrateCategory(categoryMigrateSelected, categoryId)} block>Yes, migrate on this Category !</Button>
-                        <Button color="danger" className="mt-4" onClick={() => {deleteCategory(categoryId); setDeleteCategoryModal(false)}} block>No, delete everything</Button>
-                      </Modal.Body>
-                    </Modal>
-                    { pageCountCategories > 0 &&
-                        <ReactPaginate
-                            previousLabel={"prev"}
-                            nextLabel={"next"}
-                            breakLabel={"..."}
-                            breakClassName={"break-me"}
-                            pageCount={pageCountCategories}
-                            marginPagesDisplayed={1}
-                            pageRangeDisplayed={2}
-                            onPageChange={handlePageClickCategories}
-                            containerClassName={"pagination"}
-                            subContainerClassName={"pages pagination"}
-                            activeClassName={"active"} />}
+                        <Modal show={deleteCategoryModal} size="lg" onHide={handleClose}>
+                            <Modal.Header closeButton>Careful ! Deleting a category will delete all SubCategories and all Products !</Modal.Header>
+                            <Modal.Body>
+                                <h4>I want to keep my SubCategories and migrate them to</h4>
+                                <select className="form-control form-control-lg" onChange={handleSelectMigration}>
+                                    {allMigrationCategory}
+                                </select>
+                                <Button color="info" className="mt-4" onClick={() => migrateCategory(categoryMigrateSelected, categoryId)} block>Yes, migrate on this Category !</Button>
+                                <Button color="danger" className="mt-4" onClick={() => { deleteCategory(categoryId); setDeleteCategoryModal(false) }} block>No, delete everything</Button>
+                            </Modal.Body>
+                        </Modal>
+                        {pageCountCategories > 0 &&
+                            <ReactPaginate
+                                previousLabel={"prev"}
+                                nextLabel={"next"}
+                                breakLabel={"..."}
+                                breakClassName={"break-me"}
+                                pageCount={pageCountCategories}
+                                marginPagesDisplayed={1}
+                                pageRangeDisplayed={2}
+                                onPageChange={handlePageClickCategories}
+                                containerClassName={"pagination"}
+                                subContainerClassName={"pages pagination"}
+                                activeClassName={"active"} />}
                     </div>
                 </div>
             </>
@@ -550,11 +524,10 @@ const AdminInterface = () => {
     }
 
     function getPDF() {
-        axios({
-            url: 'http://127.0.0.1:8000/api/excel',
-            method: 'GET',
+        const headers = {
             responseType: 'blob'
-        }).then((response) => {
+        }
+        axios.get("http://127.0.0.1:8000/api/excel", headers).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -562,7 +535,7 @@ const AdminInterface = () => {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        });
+        })
     }
 
     return (
@@ -573,7 +546,7 @@ const AdminInterface = () => {
                     <i className="material-icons md-36 marg">speed</i> ADMIN - Dashboard
                 </h1>
                 <p className="float-right mt-3">
-                    Get the database 
+                    Get the database
                     <span className="getpdf" onClick={getPDF}><i className="material-icons md-45 marg ml-2 down">save_alt</i></span>
                 </p>
             </div>
