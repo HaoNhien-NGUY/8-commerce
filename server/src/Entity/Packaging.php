@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PackagingRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,21 +15,25 @@ class Packaging
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("user_order_details")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("user_order_details")
      */
     private $name;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups("user_order_details")
      */
     private $startsAt;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups("user_order_details")
      */
     private $endsAt;
 

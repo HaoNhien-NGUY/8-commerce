@@ -88,7 +88,7 @@ class PackagingController extends AbstractController
     }
 
     /**
-     * @Route("/api/packaging/{id}", name="packaging_update", methods="DELETE")
+     * @Route("/api/packaging/{id}", name="packaging_delete", methods="DELETE")
      */
     public function packagingDelete(Request $request, SerializerInterface $serializer, PackagingRepository $packagingRepository, EntityManagerInterface $em)
     {
