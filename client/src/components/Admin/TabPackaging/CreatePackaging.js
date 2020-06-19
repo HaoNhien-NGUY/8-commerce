@@ -27,16 +27,8 @@ function CreatePackaging({ config, closeModal, receivedData }) {
     function onSubmit(e) {
         e.preventDefault();
         let invalids = {};
-        let month = value.getMonth() + 1;
-        let month2 = value2.getMonth() + 1;
-        if (value.getMonth() + 1 < 10) {
-            month = "0" + (value.getMonth() + 1);
-        }
-        if (value2.getMonth() + 1 < 10) {
-            month2 = "0" + (value2.getMonth() + 1);
-        }
-        let dateStart = month + "/" + value.getDate() + "/" + value.getFullYear();
-        let dateEnd = month2 + "/" + value2.getDate() + "/" + value2.getFullYear();
+        let dateStartAt = "";
+        let dateEndAt = "";
 
         if (packaginName !== "") {
             if (packaginName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?,.@#\]]|\d+/)) {
@@ -53,13 +45,34 @@ function CreatePackaging({ config, closeModal, receivedData }) {
         }
         if (value === null) {
             invalids.value = "Enter date start valid";
+        } else {
+            let month = value.getMonth() + 1;
+            let now = new Date();
+            if (value.getMonth() + 1 < 10) {
+                if ((value.getMonth() + 1) < (now.getMonth() + 1)) {
+                    invalids.value = "Enter date start valid";
+                } else {   
+                    month = "0" + (value.getMonth() + 1);
+                    dateStartAt = month + "/" + value.getDate() + "/" + value.getFullYear();
+                }
+            }
         }
         if (value2 === null) {
             invalids.value2 = "Enter date end valid";
+        } else {
+            let month2 = value2.getMonth() + 1;
+            let now = new Date();
+            if (value2.getMonth() + 1 < 10) {
+                if ((value2.getMonth() + 1) < (now.getMonth() + 1)) {
+                    invalids.value2 = "Enter date end valid";
+                } else {
+                    month2 = "0" + (value2.getMonth() + 1);
+                    dateEndAt = month2 + "/" + value2.getDate() + "/" + value2.getFullYear();
+                }
+            } 
         }
-
-        setDateStart(dateStart);
-        setDateEnd(dateEnd);
+        setDateStart(dateStartAt);
+        setDateEnd(dateEndAt);
 
         if (Object.keys(invalids).length === 0) {
             setIsInvalid(invalids);
