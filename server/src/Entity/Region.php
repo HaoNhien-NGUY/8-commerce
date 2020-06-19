@@ -48,6 +48,11 @@ class Region
      */
     private $restrictedRegion;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $restricted;
+
     public function __construct()
     {
         $this->shippingPricings = new ArrayCollection();
@@ -178,6 +183,18 @@ class Region
         if ($restrictedRegion->getRegion() !== $this) {
             $restrictedRegion->setRegion($this);
         }
+
+        return $this;
+    }
+
+    public function getRestricted(): ?bool
+    {
+        return $this->restricted;
+    }
+
+    public function setRestricted(bool $restricted): self
+    {
+        $this->restricted = $restricted;
 
         return $this;
     }
