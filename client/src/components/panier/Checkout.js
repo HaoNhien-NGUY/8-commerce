@@ -339,13 +339,22 @@ class Checkout extends React.Component {
         const { user } = this.props.auth;
         const arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
 
-
+        let regions = []
         if (this.state.regions) {
             console.log(this.state.regions)
+
+            this.state.regions.map((e) => {
+                console.log(e)
+                if (e.restricted != true)
+                    regions.push(<option key={"region" + e.name} value={e.id}>{e.name}</option>)
+                else
+                    regions.push(<option key={"region" + e.name} disabled>{e.name} - Unavailable</option>)
+
+            })
         }
-
-
-
+        else {
+            regions = "Impossible to ship currently"
+        }
 
 
         return (
@@ -359,6 +368,7 @@ class Checkout extends React.Component {
                                 handleChange={this.handleChange}
                                 handleShow={this.handleShow}
                                 showstatus={this.state.showstatus}
+                                regions={regions}
                                 user={user}
                             />
                                 <Step2
@@ -367,6 +377,7 @@ class Checkout extends React.Component {
                                     showstatus={this.state.showstatus}
                                     data={this.state}
                                     handleShow={this.handleShow}
+                                    regions={regions}
                                 />
                                 <Step3
                                     currentStep={this.state.currentStep}
@@ -375,6 +386,7 @@ class Checkout extends React.Component {
                                     handleSubmit={this.handleSubmit}
                                     data={this.state}
                                     handleShow={this.handleShow}
+                                    regions={regions}
                                 />
                                 <Step4
                                     currentStep={this.state.currentStep}
@@ -468,13 +480,7 @@ function Step1(props) {
                             <label htmlFor="inputRegion">Region</label>
                             <select name="region" onChange={props.handleChange} className="custom-select">
                                 <option value='1'>Choose a Region</option>
-                                <option value="1" >France</option>
-                                <option value="2" >Europe</option>
-                                <option value="3" >Africa</option>
-                                <option value="4">Asia</option>
-                                <option value="5">North America</option>
-                                <option value="6">South America</option>
-                                <option value="7">Oceania</option>
+                                {props.regions}
                             </select>
                         </div>
                         <div className="form-group col-md-4">
@@ -601,13 +607,7 @@ function Step2(props) {
                                             <label htmlFor="inputRegion">Region</label>
                                             <select defaultValue={props.data.billing_region ? props.data.billing_region : null} name="billing_region" onChange={props.handleChange} className="custom-select">
                                                 <option value='1'>Choose a Region</option>
-                                                <option value='1'>France</option>
-                                                <option value="2">Europe</option>
-                                                <option value="3">Africa</option>
-                                                <option value="4">Asia</option>
-                                                <option value="5">North America</option>
-                                                <option value="6">South America</option>
-                                                <option value="7">Oceania</option>
+                                                {props.regions}
                                             </select>
                                         </div>
                                         <div className="form-group col-md-4">
