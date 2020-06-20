@@ -154,7 +154,7 @@ export default class SearchSidebar extends Component {
     this.setState({ category: e.target.value });
 
     await axios
-      .get("http://localhost:8000/api/category/")
+      .get(process.env.REACT_APP_API_LINK + "/api/category/")
       .then(async (res) => {
         console.log(res.data.data);
         await this.setState({ categories: res.data.data, subcategory: null, isCategoryReady: true });
@@ -233,7 +233,7 @@ export default class SearchSidebar extends Component {
 
     axios
       .post(
-        "http://localhost:8000/api/product/filter?offset=0&limit=10",
+        process.env.REACT_APP_API_LINK + "/api/product/filter?offset=0&limit=10",
         jsonRequest,
         { headers: header }
       )
@@ -265,7 +265,7 @@ export default class SearchSidebar extends Component {
       this.defaultValueSexe(paramsURL[1])
 
       axios
-        .get("http://localhost:8000/api/subcategory/")
+        .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
         .then((res) => {
           console.log(res.data);
           this.setState({ subcategories: res.data, isSubCategoryReady: true });
@@ -275,7 +275,7 @@ export default class SearchSidebar extends Component {
         });
   
       axios
-        .get("http://localhost:8000/api/category/")
+        .get(process.env.REACT_APP_API_LINK + "/api/category/")
         .then((res) => {
           console.log(res.data.data);
           this.setState({ categories: res.data.data, isCategoryReady: true });
@@ -289,7 +289,7 @@ export default class SearchSidebar extends Component {
       this.defaultValueName(paramsURL[1])
 
       axios
-        .get("http://localhost:8000/api/subcategory/")
+        .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
         .then((res) => {
           console.log(res.data);
           this.setState({ subcategories: res.data, isSubCategoryReady: true });
@@ -299,7 +299,7 @@ export default class SearchSidebar extends Component {
         });
   
       axios
-        .get("http://localhost:8000/api/category/")
+        .get(process.env.REACT_APP_API_LINK + "/api/category/")
         .then((res) => {
           console.log(res.data.data);
           this.setState({ categories: res.data.data, isCategoryReady: true });
@@ -319,7 +319,7 @@ export default class SearchSidebar extends Component {
       this.defaultValueCategory(paramsURL[1])
       
       axios
-      .get("http://localhost:8000/api/category/")
+      .get(process.env.REACT_APP_API_LINK + "/api/category/")
       .then(async (res) => {
         console.log(res.data.data);
         await this.setState({ categories: res.data.data, isCategoryReady: true });
@@ -336,7 +336,7 @@ export default class SearchSidebar extends Component {
     }
     else {
       axios
-        .get("http://localhost:8000/api/subcategory/")
+        .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
         .then((res) => {
           console.log(res.data);
           this.setState({ subcategories: res.data, isSubCategoryReady: true });
@@ -346,7 +346,7 @@ export default class SearchSidebar extends Component {
         });
   
       axios
-        .get("http://localhost:8000/api/category/")
+        .get(process.env.REACT_APP_API_LINK + "/api/category/")
         .then((res) => {
           console.log(res.data.data);
           this.setState({ categories: res.data.data, isCategoryReady: true });
@@ -360,7 +360,7 @@ export default class SearchSidebar extends Component {
 
 
     axios
-      .get("http://localhost:8000/api/color/")
+      .get(process.env.REACT_APP_API_LINK + "/api/color/")
       .then((res) => {
         console.log(res.data);
         this.setState({ colors: res.data, isColorsReady: true });
@@ -376,7 +376,7 @@ export default class SearchSidebar extends Component {
     this.setState({ subcategory: value });
 
     await axios
-      .get("http://localhost:8000/api/subcategory/")
+      .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
       .then( (res) => {
         console.log(res.data);
 
@@ -396,7 +396,7 @@ export default class SearchSidebar extends Component {
       });
 
     axios
-      .get("http://localhost:8000/api/category/")
+      .get(process.env.REACT_APP_API_LINK + "/api/category/")
       .then(async (res) => {
         console.log(res.data.data);
         await this.setState({ categories: res.data.data, isCategoryReady: true });

@@ -45,7 +45,7 @@ const Promo = () => {
     }, [value]);
 
     const receivedData = () => {
-        axios.get(`http://127.0.0.1:8000/api/promocode?offset=${offset}&limit=${limit}`, config).then(async res => {
+        axios.get(process.env.REACT_APP_API_LINK + `/api/promocode?offset=${offset}&limit=${limit}`, config).then(async res => {
             await setPageCount(Math.ceil(res.data.nbResults / limit));
             const newPostDataPromos = res.data.data.length > 0 ? res.data.data.map((promo) =>
                 <tr key={promo.id}>
@@ -75,7 +75,7 @@ const Promo = () => {
     }
 
     const deleteCodePromo = () => {
-        axios.delete("http://127.0.0.1:8000/api/promocode/" + idCodePromo, config).then(res => {
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/promocode/" + idCodePromo, config).then(res => {
             toast.success(res.data.message, { position: 'top-center' })
             receivedData();
         }).catch(err => {
@@ -103,7 +103,7 @@ const Promo = () => {
                 "usedLimit": usedLimit === 0 ? null : usedLimit
             }
             // Mettre la requete
-            axios.post("http://127.0.0.1:8000/api/promocode/create", body, config).then(res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/promocode/create", body, config).then(res => {
                 console.log(body)
                 console.log("dedede")
                 toast.success('Code promo correctly added!', { position: "top-center" });
@@ -143,7 +143,7 @@ const Promo = () => {
             }
             console.log(body);
             // Mettre la requete
-            axios.put("http://127.0.0.1:8000/api/promocode/" + idCodePromo, body, config).then(res => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/promocode/" + idCodePromo, body, config).then(res => {
                 toast.success('Code promo correctly added!', { position: "top-center" });
                 receivedData();
             }).catch(err => {

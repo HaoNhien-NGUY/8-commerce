@@ -43,7 +43,7 @@ const CreateImage = () => {
         bodyFormData.append('image',picture[0]);
         bodyFormData.append('color', 'default');
         axios
-        .post('http://localhost:8000/api/product/'+idproduct+'/image', bodyFormData, config)
+        .post(process.env.REACT_APP_API_LINK + '/api/product/'+idproduct+'/image', bodyFormData, config)
         .then(response => {
           setPicture([]);
           console.log(response);

@@ -30,7 +30,7 @@ const Region = () => {
     }, [postDataRegions])
 
     const deleteRegion = (id) => {
-        axios.delete("http://127.0.0.1:8000/api/region/" + id, config).then(res => {
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/region/" + id, config).then(res => {
             receivedData();
             toast.success(res.data.message, { position: 'top-center' });
         }).catch(error => {
@@ -39,7 +39,7 @@ const Region = () => {
     }
 
     const receivedData = () => {
-        axios.get(`http://127.0.0.1:8000/api/region?offset=${offset}&limit=${limit}`, config).then(async res => {
+        axios.get(process.env.REACT_APP_API_LINK + `/api/region?offset=${offset}&limit=${limit}`, config).then(async res => {
             console.log(res.data)
             await setPageCount(Math.ceil(res.data.nbResults / limit));
             const newPostDataRegions = res.data.data.length > 0 ? res.data.data.map((region) =>
@@ -73,7 +73,7 @@ const Region = () => {
                 "restricted": restriction
             }
             console.log(body)
-            axios.post("http://127.0.0.1:8000/api/region", body, config).then(res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/region", body, config).then(res => {
                 toast.success('Region correctly added!', { position: "top-center" });
                 receivedData();
             }).catch(err => {
@@ -96,7 +96,7 @@ const Region = () => {
                 "name": regionName,
                 "restricted": restriction
             }
-            axios.put("http://127.0.0.1:8000/api/region/" + regionId, body, config).then(res => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/region/" + regionId, body, config).then(res => {
                 toast.success('Region correctly updated!', { position: "top-center" });
                 receivedData();
             }).catch(err => {

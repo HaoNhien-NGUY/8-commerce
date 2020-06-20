@@ -31,7 +31,7 @@ class Checkout extends React.Component {
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
                 axios
-                    .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
+                    .get(process.env.REACT_APP_API_LINK + "/api/user/" + this.props.auth.user.id + "/address")
                     .then((res) => {
                         return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
                     })
@@ -40,7 +40,7 @@ class Checkout extends React.Component {
             }
         }
 
-        axios.get("http://localhost:8000/api/region")
+        axios.get(process.env.REACT_APP_API_LINK + "/api/region")
             .then((res) => {
                 return this.setState({ regions: res.data.data })
             })
@@ -52,7 +52,7 @@ class Checkout extends React.Component {
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
                 axios
-                    .get("http://localhost:8000/api/user/" + this.props.auth.user.id + "/address")
+                    .get(process.env.REACT_APP_API_LINK + "/api/user/" + this.props.auth.user.id + "/address")
                     .then((res) => {
                         return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
                     })
@@ -104,7 +104,7 @@ class Checkout extends React.Component {
             }
             axios
                 .post(
-                    "http://localhost:8000/api/promocode",
+                    process.env.REACT_APP_API_LINK + "/api/promocode",
                     jsonRequest,
                     { headers: { "Content-Type": "application/json" } }
                 )
@@ -208,7 +208,7 @@ class Checkout extends React.Component {
         const header = { "Content-Type": "application/json" };
         axios
             .post(
-                "http://localhost:8000/api/checkout",
+                process.env.REACT_APP_API_LINK + "/api/checkout",
                 jsonRequest,
                 { headers: header }
             )
@@ -243,7 +243,7 @@ class Checkout extends React.Component {
                 const header = { "Content-Type": "application/json" };
                 axios
                     .post(
-                        "http://localhost:8000/api/checkout/shipping",
+                        process.env.REACT_APP_API_LINK + "/api/checkout/shipping",
                         jsonRequest,
                         { headers: header }
                     )
@@ -279,7 +279,7 @@ class Checkout extends React.Component {
             }
 
             axios
-                .get("http://localhost:8000/api/packaging/available?spending=" + this.state.NoShipPrice)
+                .get(process.env.REACT_APP_API_LINK + "/api/packaging/available?spending=" + this.state.NoShipPrice)
                 .then((res) => {
                     console.log(res.data)
                     return this.setState({ packagingAvailable: res.data })
@@ -289,7 +289,7 @@ class Checkout extends React.Component {
 
             if (this.props.auth.user != null) {
                 axios
-                    .get("http://localhost:8000/api/cardcredentials/user/" + this.props.auth.user.id)
+                    .get(process.env.REACT_APP_API_LINK + "/api/cardcredentials/user/" + this.props.auth.user.id)
                     .then((res) => {
                         return this.setState({ cards: res.data })
                     })
@@ -810,9 +810,9 @@ function Step4(props) {
                 <h3>Your order has been successfully registered !</h3>
                 <p>Your order number is: {props.data.trackingnumber}</p>
                 <p> An confirmation e-mail has been sent to you with your order details and tracking number. <br />
-               You can track your order status <a href={"http://localhost:4242/command?order=" + props.data.trackingnumber}>here</a></p>
+               You can track your order status <a href={"/command?order=" + props.data.trackingnumber}>here</a></p>
                 <div className="form-group mt-4">
-                    <a href="http://localhost:4242/"><button className='btn btn-secondary' onClick={sessionStorage.removeItem("panier")}>Go back to the store</button></a>
+                    <a href="/"><button className='btn btn-secondary' onClick={sessionStorage.removeItem("panier")}>Go back to the store</button></a>
                 </div>
             </div>
         </React.Fragment>

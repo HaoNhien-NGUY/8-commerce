@@ -40,9 +40,9 @@ allColors.map(color => {
             const body = {
                 "name": colorCreate
             }
-            axios.post("http://127.0.0.1:8000/api/color/" + colorCreate, body, config).then(res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/color/" + colorCreate, body, config).then(res => {
                 toast.success('Color '+ colorCreate +' correctly added!', { position: "top-center" });
-                axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
+                axios.get(process.env.REACT_APP_API_LINK + "/api/color", config).then(e => {
                     setAllColors(e.data);
                 });
                 document.getElementById('newColor').value=''

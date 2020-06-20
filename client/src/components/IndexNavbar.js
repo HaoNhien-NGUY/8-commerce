@@ -37,14 +37,14 @@ class IndexNavbar extends Component {
     if (panier) {
       panier.map((e) => {
         axios
-          .get("http://127.0.0.1:8000/api/subproduct/" + e.productid, {})
+          .get(process.env.REACT_APP_API_LINK + "/api/subproduct/" + e.productid, {})
           .then((data) => {
             let somme = data.data.price * e.quantite;
             this.setState({ prixTotal: this.state.prixTotal + somme });
             this.setState({ nombreTotal: this.state.nombreTotal + e.quantite });
             axios
               .get(
-                "http://127.0.0.1:8000/api/product/" + data.data.product.id,
+                process.env.REACT_APP_API_LINK + "/api/product/" + data.data.product.id,
                 {}
               )
               .then((product) => {
@@ -165,7 +165,7 @@ class IndexNavbar extends Component {
                         <>
                           <tr>
                             <td rowSpan="2" className="tableborder imgcontainer">
-                              <img src={"http://127.0.0.1:8000" + e.image} />
+                              <img src={process.env.REACT_APP_API_LINK + "" + e.image} />
                             </td>
                             <td>
                               <a href={"/product/" + e.product.id}>

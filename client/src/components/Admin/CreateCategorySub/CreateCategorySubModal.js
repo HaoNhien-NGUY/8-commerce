@@ -30,7 +30,7 @@ function CreateCategorySubModal() {
   }, [token]);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/category", config).then((e) => {
+    axios.get(process.env.REACT_APP_API_LINK + "/api/category", config).then((e) => {
       setAllCategory(e.data.data);
     });
   }, []);
@@ -90,7 +90,7 @@ function CreateCategorySubModal() {
       const body = JSON.stringify({ ...formControl });
       axios
         .post(
-          "http://127.0.0.1:8000/api/subcategory/create/" +
+          process.env.REACT_APP_API_LINK + "/api/subcategory/create/" +
             categorySelected +
             "/" +
             formControl.subCategory,

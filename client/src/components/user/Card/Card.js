@@ -21,7 +21,7 @@ function Card(props) {
     useEffect(() => {
         if (readyDelete) {
             setReadyDelete(false);
-            axios.delete("http://localhost:8000/api/cardcredentials/" + idCard).then(res => {
+            axios.delete(process.env.REACT_APP_API_LINK + "/api/cardcredentials/" + idCard).then(res => {
                 toast.success(res.data.message, { position: "top-center" });
                 setIdCard([]);
                 getCard();
@@ -38,7 +38,7 @@ function Card(props) {
     }
 
     const getCard = () => {
-        axios.get("http://localhost:8000/api/cardcredentials/user/" + props.idUser).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/cardcredentials/user/" + props.idUser).then(res => {
             const newDataCards = res.data.map(e =>
                 <div className="divCard row m-3" key={e.id}>
                     <div className="card-wrap ">

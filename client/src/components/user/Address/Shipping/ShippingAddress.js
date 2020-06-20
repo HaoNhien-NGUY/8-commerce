@@ -19,7 +19,7 @@ function ShippingAddress({idUser, config}) {
     }, [showAdd, showUpdate])
 
     const shippingAddressData = () => {
-        axios.get("http://localhost:8000/api/user/"+idUser+"/address", config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/user/"+idUser+"/address", config).then(res => {
             console.log(res.data)
             console.log(res.data.shippingAddress)
             let dataToGive = res.data.shippingAddress.length > 0 ? res.data.shippingAddress.map((data, index) => 
@@ -44,7 +44,7 @@ function ShippingAddress({idUser, config}) {
 
     const deleteAddress = (id) => {
         console.log(id);
-        axios.delete("http://localhost:8000/api/addressshipping/"+id, config).then(res => {
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/addressshipping/"+id, config).then(res => {
             shippingAddressData();
             toast.success(res.data.message, {position: 'top-center'})
           }).catch(err => {

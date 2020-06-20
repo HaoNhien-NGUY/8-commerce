@@ -31,7 +31,7 @@ const UpdateProduct = () => {
     }
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/category/"+idCategory, config)
+        axios.get(process.env.REACT_APP_API_LINK + "/api/category/"+idCategory, config)
         .then(res => {
                 setName(res.data.name);
         })
@@ -47,7 +47,7 @@ const UpdateProduct = () => {
                 "name": name,
             }
             console.log(body);
-            axios.put("http://localhost:8000/api/category/"+idCategory, body, config ).then( e => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/category/"+idCategory, body, config ).then( e => {
                 toast.success('Category correctly updated!', { position: "top-center"})
             }).catch( err => {
                 toast.error('Error !', {position: 'top-center'});

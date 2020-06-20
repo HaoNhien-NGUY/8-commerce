@@ -32,7 +32,7 @@ function UpdateSubCategory() {
     }, [token]);
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/category/" + id, config)
+        axios.get(process.env.REACT_APP_API_LINK + "/api/category/" + id, config)
             .then(res => {
                 $.each(res.data.subCategories, (index, category) => {
                     if (category.id === parseInt(idSubCategory)) {
@@ -55,7 +55,7 @@ function UpdateSubCategory() {
                 "name": name
             }
             console.log(body);
-            axios.put("http://127.0.0.1:8000/api/subcategory/" + idSubCategory, body, config).then(e => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/subcategory/" + idSubCategory, body, config).then(e => {
                 toast.success('Product correctly updated!', { position: "top-center" })
             }).catch(err => {
                 toast.error('Error !', { position: 'top-center' });

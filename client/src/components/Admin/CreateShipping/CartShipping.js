@@ -61,7 +61,7 @@ function CartShipping(props) {
                 setIsInvalid(invalids);
             } else {
                 setIsInvalid(invalids);
-                axios.post("http://127.0.0.1:8000/api/shippingmethod", objName, config).then(res => {
+                axios.post(process.env.REACT_APP_API_LINK + "/api/shippingmethod", objName, config).then(res => {
                     let count = 0;
                     props.handleCart.map(pricing => {
                         const body = {
@@ -71,7 +71,7 @@ function CartShipping(props) {
                                 "shippingMethod" : res.data[0].id,
                                 "region" : pricing.region
                             };
-                        axios.post("http://127.0.0.1:8000/api/shippingpricing", body, config).then(res => {
+                        axios.post(process.env.REACT_APP_API_LINK + "/api/shippingpricing", body, config).then(res => {
                             console.log(res)
                             count++;
                             if (count == props.handleCart.length) {
