@@ -31,7 +31,7 @@ function Shipping() {
       }, [postDataShipp])
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/shippingmethod?offset=${offset}&limit=${limit}`, config).then(async e => {
+        axios.get(process.env.REACT_APP_API_LINK + `/api/shippingmethod?offset=${offset}&limit=${limit}`, config).then(async e => {
             await setPageCount(Math.ceil(e.data.nbResults / limit));
             const newPostDataShipp = e.data.data.map((shipping) =>
                 <tr key={shipping.id}>
@@ -46,7 +46,7 @@ function Shipping() {
     }, [offset]);
 
     function showDetailsShipping(id) {
-        axios.get("http://127.0.0.1:8000/api/shippingmethod/" + id, config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/shippingmethod/" + id, config).then(res => {
             setDivShipp(res.data.shippingPricings);
             setShowDetails(true);
         }).catch(error => {

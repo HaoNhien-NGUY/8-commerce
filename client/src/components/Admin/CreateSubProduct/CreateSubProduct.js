@@ -45,9 +45,9 @@ function CreateSubProduct() {
     }, [token]);
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/product/" + id, config)
+        axios.get(process.env.REACT_APP_API_LINK + "/api/product/" + id, config)
             .then(res => {
-                axios.get("http://127.0.0.1:8000/api/color", config).then(allColors => {
+                axios.get(process.env.REACT_APP_API_LINK + "/api/color", config).then(allColors => {
                     let optionColors = [];
                     allColors.data.map(colorMap => {
                         optionColors.push(<option key={colorMap.id} value={colorMap.id}>{colorMap.name}</option>)
@@ -74,7 +74,7 @@ function CreateSubProduct() {
                 "stock": parseInt(stock)
             }
             console.log(body);
-            axios.post("http://127.0.0.1:8000/api/subproduct", body, config).then(e => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/subproduct", body, config).then(e => {
                 toast.success('Product correctly added!', { position: "top-center" })
             }).catch(err => {
                 toast.error(err.data, { position: 'top-center' });

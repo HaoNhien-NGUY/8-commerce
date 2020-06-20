@@ -14,7 +14,7 @@ function ShowOrder(props) {
     }
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/user/" + props.idUser + "/orders").then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/user/" + props.idUser + "/orders").then(res => {
             const newDataHistory = res.data.userOrders.map(e =>
                 <tr key={e.id}>
                     <td scope="row" className=""><p className=" ml=3 mt-3 mb-3 align-items-center">{e.trackingNumber}</p></td>

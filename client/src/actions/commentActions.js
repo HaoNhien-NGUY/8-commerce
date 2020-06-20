@@ -13,7 +13,7 @@ export const addComment = ({ date, content, creator, post }) => dispatch => {
     //request info
     const body = JSON.stringify({ post, date, content, creator })
 
-    axios.post('http://127.0.0.1:8000/api/comments/', body, config)
+    axios.post(process.env.REACT_APP_API_LINK + '/api/comments/', body, config)
         .then(res =>
             dispatch({
                 type: ADD_COMMENT,
@@ -34,7 +34,7 @@ export const getPostComments = post => dispatch => {
     //request info
     const body = JSON.stringify({ post })
 
-    axios.post('http://127.0.0.1:8000/api/comments/post', body, config)
+    axios.post(process.env.REACT_APP_API_LINK + '/api/comments/post', body, config)
         .then(res =>
             dispatch({
                 type: GET_COMMENTS,
@@ -53,7 +53,7 @@ export const setCommentsLoading = () => {
 
 // no need to have = (title) => because there's only one
 export const deleteComment = id => dispatch => {
-    axios.delete(`http://127.0.0.1:8000/api/comments/${id}`)
+    axios.delete(process.env.REACT_APP_API_LINK + `/api/comments/${id}`)
         .then(res =>
             dispatch({
                 type: DELETE_COMMENT,

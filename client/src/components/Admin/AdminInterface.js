@@ -86,7 +86,7 @@ const AdminInterface = () => {
     const handleClose = () => setDeleteCategoryModal(false);
 
     const receivedData = () => {
-        axios.get(`http://localhost:8000/api/product?offset=${offset}&limit=${limit}`, config).then(async res => {
+        axios.get(process.env.REACT_APP_API_LINK + `/api/product?offset=${offset}&limit=${limit}`, config).then(async res => {
             await setPageCount(Math.ceil(res.data.nbResults / limit))
             const newPostData = res.data.data.map((product) =>
                 <tr key={product.id}>
@@ -117,7 +117,7 @@ const AdminInterface = () => {
     };
 
     const deleteProduct = (id) => {
-        axios.delete("http://localhost:8000/api/product/" + id, config).then(res => {
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/product/" + id, config).then(res => {
             receivedData()
             toast.success(res.data.message, { position: "top-center" });
         })
@@ -127,7 +127,7 @@ const AdminInterface = () => {
     }
 
     const receivedDataCategories = () => {
-        axios.get(`http://127.0.0.1:8000/api/category?offset=${offsetCategories}&limit=${limitCategories}`, config).then(async res => {
+        axios.get(process.env.REACT_APP_API_LINK + `/api/category?offset=${offsetCategories}&limit=${limitCategories}`, config).then(async res => {
             await setPageCountCategories(Math.ceil(res.data.nbResults / limitCategories))
             const newPostDataCategories = res.data.data.map((category) =>
                 <tr key={category.id}>
@@ -152,7 +152,7 @@ const AdminInterface = () => {
     };
 
     const deleteCategory = (id) => {
-        axios.delete("http://localhost:8000/api/category/" + id, config).then(res => {
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/category/" + id, config).then(res => {
             receivedDataCategories();
             toast.success(res.data.message, { position: "top-center" });
         })
@@ -191,7 +191,7 @@ const AdminInterface = () => {
         const bodyFormData = new FormData();
         bodyFormData.append('image', picture[0]);
         bodyFormData.append('color', 'default');
-        axios.post('http://localhost:8000/api/image/' + imageId, bodyFormData, config).then(response => {
+        axios.post(process.env.REACT_APP_API_LINK + '/api/image/' + imageId, bodyFormData, config).then(response => {
             setPicture([]);
             setShowImage(false);
             toast.success("Image correctly added !", { position: "top-center" });
@@ -223,7 +223,7 @@ const AdminInterface = () => {
             const body = {
                 "name": categoryNameEdit,
             }
-            axios.put("http://localhost:8000/api/category/" + cateEditId, body, config).then(e => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/category/" + cateEditId, body, config).then(e => {
                 toast.success('Category correctly updated!', { position: "top-center" });
                 setShowCateEdit(false);
             }).catch(err => {
@@ -336,7 +336,7 @@ const AdminInterface = () => {
             const body = {
                 "name": categoryName
             }
-            axios.post("http://127.0.0.1:8000/api/category/create/" + categoryName, body, config).then(res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/category/create/" + categoryName, body, config).then(res => {
                 toast.success('Category correctly added!', { position: "top-center" });
                 receivedDataCategories();
             }).catch(err => {
@@ -347,7 +347,7 @@ const AdminInterface = () => {
     }
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/category", config).then(e => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/category", config).then(e => {
             setAllCategory(e.data.data);
         });
     }, [postDataCategories]);
@@ -390,7 +390,7 @@ const AdminInterface = () => {
         if (isReady) {
             setIsReady(false);
             const body = [];
-            axios.post("http://127.0.0.1:8000/api/subcategory/create/" + categorySelected + "/" + subCategoryName, body, config).then(res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/subcategory/create/" + categorySelected + "/" + subCategoryName, body, config).then(res => {
                 toast.success('SubCategory correctly added!', { position: 'top-center' });
                 setShowSubCate(false)
             }).catch(err => {
@@ -408,7 +408,7 @@ const AdminInterface = () => {
     const migrationCategory = async (idCategory) => {
         const optionCategoryMigration = [];
 
-        await axios.get("http://127.0.0.1:8000/api/category", config).then(e => {
+        await axios.get(process.env.REACT_APP_API_LINK + "/api/category", config).then(e => {
             let migration = categoryMigrateSelected
             e.data.data.map((category) => category.id !== idCategory ? optionCategoryMigration.push(<option key={category.id} value={category.id}>{category.name}</option>) && migration === 0 ? migration = category.id : null : null)
             setCategoryMigrateSelected(migration)
@@ -423,7 +423,7 @@ const AdminInterface = () => {
             "oldcategory": idToMigrate
         };
         console.log(body);
-        axios.put("http://127.0.0.1:8000/api/category/migrate", body, config).then(res => {
+        axios.put(process.env.REACT_APP_API_LINK + "/api/category/migrate", body, config).then(res => {
             toast.success(res.message, { position: 'top-center' });
             deleteCategory(idToMigrate);
         }).catch(err => {
@@ -527,7 +527,7 @@ const AdminInterface = () => {
         const headers = {
             responseType: 'blob'
         }
-        axios.get("http://127.0.0.1:8000/api/excel", headers).then(response => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/excel", headers).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;

@@ -49,9 +49,9 @@ function UpdateSubProduct() {
     }, [token]);
     
     useEffect(() => {
-        axios.get("http://localhost:8000/api/product/"+id, config)
+        axios.get(process.env.REACT_APP_API_LINK + "/api/product/"+id, config)
         .then(async res => {
-            await axios.get("http://127.0.0.1:8000/api/color", config).then( allColors => {
+            await axios.get(process.env.REACT_APP_API_LINK + "/api/color", config).then( allColors => {
                 $.each(res.data.subproducts, (index, subproduct) => {
                     if(subproduct.id === parseInt(idSubproduct))
                     {
@@ -95,7 +95,7 @@ function UpdateSubProduct() {
                 "stock": parseInt(stock)
             }
             console.log(body);
-            axios.put("http://127.0.0.1:8000/api/subproduct/"+idSubproduct, body, config).then( e => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/subproduct/"+idSubproduct, body, config).then( e => {
                 toast.success('Product correctly updated!', { position: "top-center"});
             }).catch( err => {
                 toast.error('Error !', {position: 'top-center'});

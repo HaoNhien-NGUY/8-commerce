@@ -22,14 +22,14 @@ class Panier extends Component {
     if (panier) {
       panier.map((e) => {
         axios
-          .get("http://127.0.0.1:8000/api/subproduct/" + e.productid, {})
+          .get(process.env.REACT_APP_API_LINK + "/api/subproduct/" + e.productid, {})
           .then((data) => {
             let somme = data.data.price * e.quantite;
             this.setState({ prixTotal: this.state.prixTotal + somme });
             this.setState({ nombreTotal: this.state.nombreTotal + e.quantite });
             axios
               .get(
-                "http://127.0.0.1:8000/api/product/" + data.data.product.id,
+                process.env.REACT_APP_API_LINK + "/api/product/" + data.data.product.id,
                 {}
               )
               .then((product) => {
@@ -102,7 +102,7 @@ class Panier extends Component {
   //   }
   //   axios
   //     .post(
-  //       "http://localhost:8000/api/promocode",
+  //       process.env.REACT_APP_API_LINK + "/api/promocode",
   //       jsonRequest,
   //       { headers: { "Content-Type": "application/json" } }
   //     )
@@ -175,7 +175,7 @@ class Panier extends Component {
                             <td rowSpan="2" className="tableborder ImageCart">
                               <img
                                 className=""
-                                src={"http://127.0.0.1:8000" + e.image}
+                                src={process.env.REACT_APP_API_LINK + "" + e.image}
                               />
                             </td>
                             <td className="productcarttitle">
@@ -234,7 +234,7 @@ class Panier extends Component {
                               <td rowSpan="2" className="tableborder ImageCart">
                                 <img
                                   className=""
-                                  src={"http://127.0.0.1:8000" + e.image}
+                                  src={process.env.REACT_APP_API_LINK + "" + e.image}
                                 />
                               </td>
                               <td className="productcarttitle">

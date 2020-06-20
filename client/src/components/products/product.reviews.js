@@ -40,7 +40,7 @@ function ReviewPart({id, auth}) {
   useEffect (() => {
     axios
     .get(
-        "http://localhost:8000/api/review/product/"+id_product
+        process.env.REACT_APP_API_LINK + "/api/review/product/"+id_product
         )
       .then((res) => {
         setReviews(res.data);
@@ -163,7 +163,7 @@ function handleSubmit(e) {
       }
 
       axios
-        .post('http://localhost:8000/api/review', body, config)
+        .post(process.env.REACT_APP_API_LINK + '/api/review', body, config)
           .then( e => {
             toast.success('Review correctly added!', { position: "top-center"});
             setShowForm(false);
@@ -222,7 +222,7 @@ function handleSubmit(e) {
 
   function DeleteReview() {
     axios
-      .delete('http://localhost:8000/api/review/'+reviewToDelete)
+      .delete(process.env.REACT_APP_API_LINK + '/api/review/'+reviewToDelete)
         .then( e => {
           toast.success('Review correctly deleted!', { position: "top-center"});
           setReviewToDelete(null)
@@ -269,7 +269,7 @@ function handleSubmit(e) {
     }
 
     axios
-      .post('http://localhost:8000/api/review', body, config)
+      .post(process.env.REACT_APP_API_LINK + '/api/review', body, config)
         .then( e => {
           toast.success('Review correctly added!', { position: "top-center"});
           setShowReplyForm(false)

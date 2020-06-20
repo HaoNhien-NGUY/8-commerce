@@ -34,7 +34,7 @@ function UpdateShipping() {
     };
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/shippingmethod/" + idShipping, config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/shippingmethod/" + idShipping, config).then(res => {
             setName(res.data.name);
             if (Object.keys(res.data.shippingPricings).length > 0) {
                 const details = res.data.shippingPricings.map(pricing =>  
@@ -69,7 +69,7 @@ function UpdateShipping() {
     }, []);
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/region", config).then(e => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/region", config).then(e => {
             setAllRegion(e.data.data);
         });
     }, []);
@@ -96,7 +96,7 @@ function UpdateShipping() {
                 "duration" : updateDuration != "" ? updateDuration : objPut.duration,
                 "basePrice" : updateBasePrice != "" ? updateBasePrice : objPut.basePrice,
             }
-            axios.put("http://localhost:8000/api/shippingpricing/" + idSHippingPricing, body, config).then(res => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/shippingpricing/" + idSHippingPricing, body, config).then(res => {
                 toast.success('Shipping Region deleted', {position: 'top-center'});
                 console.log(res);
             })
@@ -107,7 +107,7 @@ function UpdateShipping() {
     }, [isReadyUpdate]);
     
     function clickDelet(id) {
-        axios.delete("http://localhost:8000/api/shippingpricing/" + id, config).then(res => {
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/shippingpricing/" + id, config).then(res => {
             toast.success('Shipping Region deleted', {position: 'top-center'});
             window.location.reload();
         })
@@ -130,7 +130,7 @@ function UpdateShipping() {
             if (newName.match(/[\\"/!$%^&*()_+|~=`{}[:;<>?.@#\]]/)) {
                 toast.error('Invalids charactere !', {position: 'top-center'});
             } else {
-                axios.get("http://localhost:8000/api/shippingmethod/",config).then(res => {
+                axios.get(process.env.REACT_APP_API_LINK + "/api/shippingmethod/",config).then(res => {
                     let error = false;
                     res.data.map( result => {
                         if (result.name === newName) {
@@ -141,7 +141,7 @@ function UpdateShipping() {
                         let body = {
                             "name": newName
                         }
-                        axios.put("http://localhost:8000/api/shippingmethod/" + idShipping, body, config).then(res => {
+                        axios.put(process.env.REACT_APP_API_LINK + "/api/shippingmethod/" + idShipping, body, config).then(res => {
                             toast.success('Update successfuly', {position: 'top-center'});
                             setShow(false);
                             setName(newName);
@@ -192,7 +192,7 @@ function UpdateShipping() {
                 "shippingMethod" : Number(idShipping), 
                 "region" : Number(selectRegion)
             }
-            axios.post("http://127.0.0.1:8000/api/shippingpricing", body, config).then(res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/shippingpricing", body, config).then(res => {
                 toast.success('Shipping Region added', {position: 'top-center'});
                 window.location.reload();
             }).catch(err => {

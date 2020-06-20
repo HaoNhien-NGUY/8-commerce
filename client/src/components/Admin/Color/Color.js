@@ -35,7 +35,7 @@ const Color = () => {
   });
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
+    axios.get(process.env.REACT_APP_API_LINK + "/api/color", config).then(e => {
         setAllColors(e.data);
     });
   }, [show, show2]);

@@ -57,7 +57,7 @@ export default class SuggestionSearch extends Component {
     const header = { "Content-Type": "application/json" };
 
     axios
-      .post("http://localhost:8000/api/product/search", request, {
+      .post(process.env.REACT_APP_API_LINK + "/api/product/search", request, {
         headers: header,
       })
       .then(async (res) => {

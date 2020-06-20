@@ -12,7 +12,7 @@ function Home() {
     let nbrArctPop = 6;
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/product?clicks=true&limit=' + nbrArctPop).then(resp => {
+        axios.get(process.env.REACT_APP_API_LINK + '/api/product?clicks=true&limit=' + nbrArctPop).then(resp => {
             //Display Lowest Price Image
             let prices = {}
             let promos = {}
@@ -94,8 +94,8 @@ function Home() {
                                     {e.images && e.status === true &&
                                         <> <a href={"/product/" + e.id}>
                                             <div className="ProductHomeImgContainer">
-                                                {<img className="ProductHomeImg" src={e.images ? 'http://127.0.0.1:8000' + e.images[1] : imageDefault}></img>}
-                                                {<img className="ProductHomeImg ProductHomeImg2" src={e.images && e.images.length > 1 ? 'http://127.0.0.1:8000' + e.images[0] : imageDefault}></img>}
+                                                {<img className="ProductHomeImg" src={e.images ? process.env.REACT_APP_API_LINK + '' + e.images[1] : imageDefault}></img>}
+                                                {<img className="ProductHomeImg ProductHomeImg2" src={e.images && e.images.length > 1 ? process.env.REACT_APP_API_LINK + '' + e.images[0] : imageDefault}></img>}
                                             </div>
                                         </a>
                                             <a href={"/product/" + e.id}><button className='btn-cart'>View Product</button></a>
@@ -104,11 +104,11 @@ function Home() {
                                     {e.images && e.status === false &&
                                         <> <a href={"/product/" + e.id}>
                                             <div className="ProductHomeImgContainer unavailable">
-                                                <img className="ProductHomeImg" src={'http://127.0.0.1:8000' + e.images[0]}></img>
+                                                <img className="ProductHomeImg" src={process.env.REACT_APP_API_LINK + '' + e.images[0]}></img>
                                                 {e.images && e.images.length > 1 &&
-                                                    <img className="ProductHomeImg ProductHomeImg2" src={'http://127.0.0.1:8000' + e.images[1]}></img>
+                                                    <img className="ProductHomeImg ProductHomeImg2" src={process.env.REACT_APP_API_LINK + '' + e.images[1]}></img>
                                                 }
-                                                {/* <img className="ProductHomeImg" src={e.images !=== undefined ? 'http://127.0.0.1:8000'+e.images[0] : imageProduit1}></img> */}
+                                                {/* <img className="ProductHomeImg" src={e.images !=== undefined ? process.env.REACT_APP_API_LINK + ''+e.images[0] : imageProduit1}></img> */}
                                                 {/* <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img> */}
                                             </div>
                                         </a>

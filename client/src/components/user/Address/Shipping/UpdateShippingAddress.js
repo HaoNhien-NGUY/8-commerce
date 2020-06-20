@@ -25,7 +25,7 @@ const UpdateBilllingAddress = ({idUser, config, idAddress, closeModal}) => {
         getAllRegions();   
     }, [getRegion])
     const getAndSet = () => {
-        axios.get("http://localhost:8000/api/addressshipping/"+idAddress, config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/addressshipping/"+idAddress, config).then(res => {
             console.log(res)
             setAddress(res.data.address);
             setCity(res.data.city);
@@ -40,7 +40,7 @@ const UpdateBilllingAddress = ({idUser, config, idAddress, closeModal}) => {
         })
     }
     const getAllRegions = () => {
-        axios.get("http://localhost:8000/api/region", config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/region", config).then(res => {
             console.log(res.data.data)
             console.log(getRegion);
             let optionRegion = [];
@@ -84,7 +84,7 @@ const UpdateBilllingAddress = ({idUser, config, idAddress, closeModal}) => {
 
         }
         console.log(body);
-        axios.put("http://localhost:8000/api/addressshipping/"+idAddress, body, config).then(res => {
+        axios.put(process.env.REACT_APP_API_LINK + "/api/addressshipping/"+idAddress, body, config).then(res => {
             toast.success('Shipping Address correclty updated !', {position: 'top-center'})
             closeModal();
           }).catch(err => {

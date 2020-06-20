@@ -55,7 +55,7 @@ const SubProductInterface = () => {
       }, [pageCount]);
       
     const receivedData = () => {
-        axios.get("http://localhost:8000/api/product/" + id, config)
+        axios.get(process.env.REACT_APP_API_LINK + "/api/product/" + id, config)
             .then(async res => {
 
                 console.log(res.data);
@@ -83,7 +83,7 @@ const SubProductInterface = () => {
             });
     }
     const deleteSubProduct = (idSub) => {
-        axios.delete("http://localhost:8000/api/subproduct/" + idSub, config)
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/subproduct/" + idSub, config)
             .then(res => {
                 receivedData();
                 toast.success(res.data.message, { position: "top-center" });
@@ -108,7 +108,7 @@ const SubProductInterface = () => {
     // });
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/color", config).then(allColors => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/color", config).then(allColors => {
             let optionColors = [];
             allColors.data.map(colorMap => {
                 optionColors.push(<option key={colorMap.id} value={colorMap.id}>{colorMap.name}</option>)
@@ -146,7 +146,7 @@ const SubProductInterface = () => {
         bodyFormData.append('image', picture[0]);
         bodyFormData.append('color', colorId);
 
-        axios.post('http://localhost:8000/api/image/' + idProduct, bodyFormData, config)
+        axios.post(process.env.REACT_APP_API_LINK + '/api/image/' + idProduct, bodyFormData, config)
             .then(response => {
                 setPicture([]);
                 setShow(false)

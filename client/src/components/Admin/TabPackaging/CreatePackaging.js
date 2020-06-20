@@ -92,7 +92,7 @@ function CreatePackaging({ config, closeModal, receivedData }) {
                 "minSpending": spending,
                 "price": price
             }
-            axios.post("http://127.0.0.1:8000/api/packaging", body, config).then(res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/packaging", body, config).then(res => {
                 toast.success(res.data.message, { position: "top-center" });
                 closeModal();
                 receivedData();

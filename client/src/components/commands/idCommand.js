@@ -29,7 +29,7 @@ function CommandTracking() {
     let idOrder = useQuery().get("order");
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/user/order/" + idOrder, config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/user/order/" + idOrder, config).then(res => {
             setShippingAddress(res.data.shippingAddress);
             setBillingAddress(res.data.billingAddress);
             setTotal(res.data.cost);
@@ -42,7 +42,7 @@ function CommandTracking() {
             const newProduct = res.data.subproducts.map((product, index) =>
                 <tr className="tablebordertest" key={index}>
                     <td className="paddright">
-                        <img className="imgOrder" src={`http://127.0.0.1:8000/api/image/${product.subproduct.product.id}/default/1.jpg`} />
+                        <img className="imgOrder" src={process.env.REACT_APP_API_LINK + `/api/image/${product.subproduct.product.id}/default/1.jpg`} />
                     </td>
                     <td>
                         <span className="ml-3"><b>Title:</b> {product.subproduct.product.title}</span><br />

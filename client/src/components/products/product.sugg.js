@@ -25,7 +25,7 @@ export default function PersonalizedSugg() {
   useEffect (() => {
     axios
     .post(
-      "http://localhost:8000/api/product/filter?offset=0&limit=3",
+      process.env.REACT_APP_API_LINK + "/api/product/filter?offset=0&limit=3",
       jsonRequest,
       { headers: { "Content-Type": "application/json" } }
     )
