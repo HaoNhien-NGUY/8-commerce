@@ -137,8 +137,8 @@ class PromoCodeController extends AbstractController
 
             if (!isset($data->promocode)) return $this->json(['message' => 'The promo code is missing.'], 400);
 
-            $promoCode = $this->getDoctrine()->getRepository(PromoCode::class)->findBy(['code' => $data->promocode])[0];
-            if (!$promoCode) return $this->json(['message' => 'Promo Code doesn\'t exist.'], 404);
+            $promoCode = $this->getDoctrine()->getRepository(PromoCode::class)->findOneBy(['code' => $data->promocode]);
+            if (!$promoCode) return $this->json(['message' => "Promo Code does not exist."], 404);
             if ($promoCode->getDateEnd() < new DateTime() && !$promoCode->getUsedLimit()) return $this->json(['message' => 'Promo Code has expired.'], 404);
             if ($promoCode->getUsedLimit()) {
                 if ($promoCode->getUsedLimit() <= $promoCode->getUsedTimes()) return $this->json(['message' => 'Promo Code has been used to its limit.'], 404);
