@@ -92,6 +92,31 @@ class Panier extends Component {
   }
 
 
+  // checkpromo(e) {
+  //   // console.log(, typeof document.getElementById('promocode').value)
+  //   e.preventDefault();
+  //   let code = document.getElementById('promocode').value;
+
+  //   let jsonRequest = {
+  //     'promocode': code,
+  //   }
+  //   axios
+  //     .post(
+  //       "http://localhost:8000/api/promocode",
+  //       jsonRequest,
+  //       { headers: { "Content-Type": "application/json" } }
+  //     )
+  //     .then((res) => {
+  //       console.log(res.data)
+  //       this.setState({ promocode_details: res.data });
+  //       console.log(this.state)
+  //     })
+  //     .catch((error) => {
+
+  //     });
+  // }
+
+
   onsuppress(e) {
     let id = e.id.replace("button_", "")
     let newprice = 0
@@ -121,6 +146,8 @@ class Panier extends Component {
 
   render() {
     const Message = [];
+
+
     if (this.state.nombreTotal == 0)
       Message.push(
         <div key="empty-cart" className="statutpanier col m-0 p-4">
@@ -189,7 +216,7 @@ class Panier extends Component {
         </div>
           : <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
             <div className="row h-100 m-0 p-0">
-              <div className="col-md-6 m-0 p-3"><Checkout callbackFromParent={this.myCallback} price={this.state.prixTotal} />
+              <div className="col-md-6 m-0 p-3"><Checkout callbackFromParent={this.myCallback} price={this.state.prixTotal} promo={this.state.promo} />
               </div>
 
               <div className="col-md-6 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
@@ -221,7 +248,7 @@ class Panier extends Component {
                               <td className="detailsproduct">
                                 <div>price: {e.price}€<br />size: {e.size}</div>
                                 <div>color: {e.color.name}<br />
-                              quantity:
+                                  quantity:
                                 <input
                                     type="number"
                                     id={e.id}
@@ -238,6 +265,17 @@ class Panier extends Component {
                         );
                       })}
                   </table>
+
+                  {/* <div className="promocode col-12 m-0 p-3">
+                    <form onSubmit={this.checkpromo} className="form-group row p-0  m-0">
+                      <label className="pt-1 col-5 " htmlFor="promocode">Have a promocode ?</label><div className="col-6">
+                        <div className=" form-check-inline"><input type="promocode" className="form-control" id="promocode" name="promocode" placeholder="promocode" /><button className="btn btn-primary" >Check</button></div>
+                        <div id="promocheck"></div>
+                      </div>
+                    </form>
+                  </div> */}
+
+
                   <div className="total">
                     <span>{this.state.nombreTotal} {this.state.nombreTotal > 1 ? 'produits' : 'produit'}</span>
                     <span>Total : {this.state.prixTotal} €</span>
