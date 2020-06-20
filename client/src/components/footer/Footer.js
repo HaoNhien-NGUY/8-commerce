@@ -10,57 +10,57 @@ export default class Footer extends Component {
           <div className="row">
             <div className="col-1 footer-link">
               <p>Shop</p>
-              <a href='#'>
+              <a href='/'>
                 New Arrivals
               </a>
-              <a href='#'>
+              <a href='/'>
                 Best Sellers
               </a>
-              <a href='#'>
+              <a href='/'>
                 Gift Guide
               </a>
-              <a href='#'>
+              <a href='/'>
                 Sales
               </a>
-              <a href='#'>
+              <a href='/'>
                 Visit Us
               </a>
             </div>
 
             <div className="col-1 footer-link">
               <p>Explore</p>
-              <a href='#'>
+              <a href='/'>
                 About Us
               </a>
-              <a href='#'>
+              <a href='/'>
                 Collaborations
               </a>
-              <a href='#'>
+              <a href='/'>
                 Product Care
               </a>
-              <a href='#'>
+              <a href='/'>
                 Stories
               </a>
-              <a href='#'>
+              <a href='/'>
                 Lookbooks
               </a>
             </div>
 
             <div className="col-1 footer-link">
               <p>More</p>
-              <a href='#'>
+              <a href='/'>
                 My Account
               </a>
-              <a href='#'>
+              <a href='/'>
                 Custom Orders
               </a>
-              <a href='#'>
+              <a href='/'>
                 Size Guide
               </a>
-              <a href='#'>
+              <a href='/'>
                 Careers
               </a>
-              <a href='#'>
+              <a href='/'>
                 Contact
               </a>
             </div>
@@ -74,19 +74,19 @@ export default class Footer extends Component {
         </div>
 
         <div className="footer-link-sm my-4">
-          <a href='#'>
+          <a href='/'>
             ©8-commerce 2020
           </a>
-          <a href='#'>
+          <a href='/'>
             Terms of Service
           </a>
-          <a href='#'>
+          <a href='/'>
             Privacy Policy
           </a>
-          <a href='#'>
+          <a href='/'>
             Shipping and Returns
           </a>
-          <a href='#'>
+          <a href='/'>
             FAQ
           </a>
         </div>

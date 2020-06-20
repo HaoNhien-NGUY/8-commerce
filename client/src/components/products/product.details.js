@@ -267,7 +267,7 @@ function ProductDescription() {
     let pathCat = "/search?category=" + Categoryname;
     let pathSub = "/search?subcategory=" + subCategory;
 
-    console.log(HighestPromo);
+    // console.log(HighestPromo);
     return (
       <div className="divDetails">
         <span>

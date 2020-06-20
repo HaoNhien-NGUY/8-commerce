@@ -9,8 +9,6 @@ function Home() {
 
     const [products, setProducts] = useState([]);
     let imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
-    let imageProduit1 = '';
-    let imageProduit2 = ''
     let nbrArctPop = 6;
 
     useEffect(() => {
@@ -42,8 +40,8 @@ function Home() {
                 const entries = Object.entries(prices)
                 for (const [id, prices_list] of entries) {
                     for (let j = 0; j < products_temp.length; j++) {
-                        if (products_temp[j].id == id) {
-                            if (prices_list[0] == unavailable_msg) {
+                        if (products_temp[j].id === id) {
+                            if (prices_list[0] === unavailable_msg) {
                                 products_temp[j]['lowest_price'] = unavailable_msg
                             } else {
                                 let price = Math.min.apply(Math, prices_list)
@@ -93,7 +91,7 @@ function Home() {
                                 <div className='p-4 m-5 bg-gray'>
                                     <span className="HomeArticleTItle">{e.title.length > 50 ? e.title.substr(0, 50) + '...' : e.title}</span>
                                     <p>{e.lowest_price}</p>
-                                    {e.images && e.status == true &&
+                                    {e.images && e.status === true &&
                                         <> <a href={"/product/" + e.id}>
                                             <div className="ProductHomeImgContainer">
                                                 {<img className="ProductHomeImg" src={e.images ? 'http://127.0.0.1:8000' + e.images[1] : imageDefault}></img>}
@@ -103,14 +101,14 @@ function Home() {
                                             <a href={"/product/" + e.id}><button className='btn-cart'>View Product</button></a>
                                         </>
                                     }
-                                    {e.images && e.status == false &&
+                                    {e.images && e.status === false &&
                                         <> <a href={"/product/" + e.id}>
                                             <div className="ProductHomeImgContainer unavailable">
                                                 <img className="ProductHomeImg" src={'http://127.0.0.1:8000' + e.images[0]}></img>
                                                 {e.images && e.images.length > 1 &&
                                                     <img className="ProductHomeImg ProductHomeImg2" src={'http://127.0.0.1:8000' + e.images[1]}></img>
                                                 }
-                                                {/* <img className="ProductHomeImg" src={e.images !== undefined ? 'http://127.0.0.1:8000'+e.images[0] : imageProduit1}></img> */}
+                                                {/* <img className="ProductHomeImg" src={e.images !=== undefined ? 'http://127.0.0.1:8000'+e.images[0] : imageProduit1}></img> */}
                                                 {/* <img className="ProductHomeImg ProductHomeImg2" src={imageProduit2}></img> */}
                                             </div>
                                         </a>
