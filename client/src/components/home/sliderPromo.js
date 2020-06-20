@@ -8,21 +8,10 @@ import withAutoplay from 'react-awesome-slider/dist/autoplay';
 import 'react-awesome-slider/dist/styles.css';
 
 export default function SliderPromo() {
-  const [index, setIndex] = useState(0);
   const [data, setData] = useState([]);
   const [isDataReady, setDataReady] = useState(false);
-    
-  const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
-  };
 
   useEffect(() => {
-    let jsonRequest = {
-      "promoted": true
-    }
-
-    const header = { "Content-Type": "application/json" };
-
     axios
       .get(
         "http://localhost:8000/api/product?promoted=true"
@@ -39,7 +28,7 @@ export default function SliderPromo() {
   let imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
 
   const SliderData = data.map(product => {
-    return (<div className="slider-bg text-center m-auto row m-0 p-0">
+    return (<div className="slider-bg text-center m-auto row m-0 p-0" key={product.id}>
       <div className="col-2"></div>
       <div className="col-4">
         <img src={product.images && product.images[0] ? process.env.REACT_APP_API_LINK + product.images[0]  : imageDefault} className="img-div p-3"/>

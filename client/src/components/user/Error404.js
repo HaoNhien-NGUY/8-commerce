@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 function Error() {
-    return (
-        <>
-            <h1>Oups une erreur</h1>
-        </>
-    )
+  return (
+    <>
+      <h1>Oops there is an error...</h1>
+    </>
+  );
 }
 
 export default Error;

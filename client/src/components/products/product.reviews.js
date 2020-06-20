@@ -23,14 +23,19 @@ function ReviewPart({id, auth}) {
   const [idUser, setIdUser] = useState(null);
 
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
+  // Modal Confirmation delete
   const [showConfirm, setShowConfirm] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [reviewToDelete, setReviewToDelete] = useState(null);
+
+  // Modal Reply
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [reviewToReply, setReviewToReply] = useState(null);
+
   
   const id_product = id
   // const id_user = user.id
-  const star = <i className="material-icons md-24 text-danger">star_rate</i>
 
   useEffect (() => {
     axios
@@ -40,7 +45,7 @@ function ReviewPart({id, auth}) {
       .then((res) => {
         setReviews(res.data);
         setReviewsReady(true);
-        console.log(res.data);
+        console.log(res.data)
 
         initializeReviews();
         // if (auth.user !== null) {
@@ -57,9 +62,13 @@ function ReviewPart({id, auth}) {
       if (auth.user.role == "admin") {
         setIsAdmin(true);
       }
+      else {
+        setIsConnected(true);
+      }
     }
     else {
       setIsAdmin(false);
+      setIsConnected(false);
     }
   }, [auth])
   
@@ -96,7 +105,6 @@ async function initializeReviews() {
       let sum = ratings_val.reduce((previous, current) => current += previous);
       let avg = sum / ratings_val.length;
       setAvgRating(avg);
-      console.log(avg)
       
       // Set le nbr moyen d'⭐
       let str = '⭐';
@@ -129,7 +137,7 @@ async function initializeForm() {
     console.log(auth.user)
     // await setIdUser(auth.user.id)
     // console.log(auth.user.id)
-    await setFormControl({...formControl,  "product": id_product, "user": auth.user.id });
+    await setFormControl({...formControl,  "product": id_product, "user": auth.user.id, "rating": "1" });
     console.log(formControl)
     return true;
   }
@@ -159,6 +167,7 @@ function handleSubmit(e) {
           .then( e => {
             toast.success('Review correctly added!', { position: "top-center"});
             setShowForm(false);
+            ReinitializeForm()
             setReviewsReady(false)})
           .catch( err => {
             toast.error('Error !', {position: 'top-center'});
@@ -174,18 +183,37 @@ function handleSubmit(e) {
     let actionSelected = e.target.id.substr(4, 3)
 
     if (actionSelected == "ver") {
-      console.log("Request a verify action to", idSelected)
+      console.log("ADMIN: Request a verify action to", idSelected)
       // CODE...
     } 
     if (actionSelected == "rep") {
-      console.log("Request a reply action to", idSelected)
+      console.log("ADMIN: Request a reply action to", idSelected)
       // CODE...
     } 
     else if (actionSelected == "del") {
-      console.log("Request a delete action to", idSelected)
+      console.log("ADMIN: Request a delete action to", idSelected)
       setReviewToDelete(idSelected);
       setShowConfirm(true);
     }
+  }
+
+  async function UserAction(e) {
+    // format -> rev-[action]-[id]    
+    // ⚠ action en 3 lettres e.g: del
+    let idSelected = e.target.id.substr(8)
+    let actionSelected = e.target.id.substr(4, 3)
+
+    if (actionSelected == "rep") {
+      if (isConnected) {
+        // setReviewToReply(idSelected)
+        await initializeReplyForm(idSelected);
+        setShowReplyForm(true)
+      }
+      else {
+        return toast.error('You have to be connected', {position: 'top-center'});
+      }
+      // CODE...
+    } 
   }
 
   function CloseConfirm() {
@@ -206,25 +234,85 @@ function handleSubmit(e) {
         })
   }
 
+  async function RatingToNull() {
+    await delete formControl.rating;
+  }
+
+  function ReinitializeForm() {
+    setFormControl({});
+  }
+
+  async function initializeReplyForm(id_review) {
+    if (auth.user) {
+      console.log(auth.user)
+      // await setIdUser(auth.user.id)
+      console.log(reviewToReply)
+      RatingToNull();
+      await setFormControl({...formControl, "product": id_product, "user": auth.user.id, "review": id_review });
+      console.log(formControl)
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  function handleReply(e) {
+    e.preventDefault();
+    console.log(formControl);
+
+    const body = JSON.stringify({ ...formControl });
+    const config = {
+      headers: {
+        "Content-type": "application/json"
+      }
+    }
+
+    axios
+      .post('http://localhost:8000/api/review', body, config)
+        .then( e => {
+          toast.success('Review correctly added!', { position: "top-center"});
+          setShowReplyForm(false)
+          ReinitializeForm()
+          setReviewsReady(false)})
+        .catch( err => {
+          toast.error('Error !', {position: 'top-center'});
+    });
+  }
+
 
   return (
     <div className="container-fluid comment-div">
 
       {/* Modal Confirmation */}
-    <Modal show={showConfirm} onHide={CloseConfirm}>
-      <Modal.Header closeButton>
-        <Modal.Title>Confirmation required</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>Are you sure to delete this review ?</Modal.Body>
-      <Modal.Footer>
-        <Button variant="primary" onClick={DeleteReview}>
-          Yes
-        </Button>
-        <Button variant="secondary" onClick={CloseConfirm}>
-          Cancel
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      <Modal show={showConfirm} onHide={CloseConfirm}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmation required</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure to delete this review ?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={DeleteReview}>
+            Yes
+          </Button>
+          <Button variant="secondary" onClick={CloseConfirm}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal Reply */}
+      <Modal show={showReplyForm} onHide={() => {setShowReplyForm(false)}}>
+        <Modal.Header closeButton>Reply to the review !</Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleReply}>
+            <Form.Control type="name" placeholder="Enter your name" className="col-5 d-inline" onChange={handleChange} name="username"/>
+            <Form.Control as="textarea" rows="1" placeholder="Give your review a title" onChange={handleChange} name="title"/>
+            <Form.Control as="textarea" rows="4" placeholder="Write your review" onChange={handleChange} name="description"/>
+            <Button type="submit" color="dark" className="mt-4" block>Create</Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
 
       <div className="row">
 
@@ -288,30 +376,93 @@ function handleSubmit(e) {
           {/* Reviews */}
           {reviewsReady && reviews.length > 0 ? 
           reviews.map((review, index) => {
+
             return (
-            <div className="row row-rev" key={review.id} id={"rev-"+review.id}>
-              <div className="col-2 d-inline">
-                <p className="rew_name">{review.username}</p>
-                {ratings[index]}
-                <br />
-                <span className="verif"><i className="material-icons md-18">verified_user</i> Verified buyer</span>
-              </div>
-              <div className="col-8 d-inline">
-                <p className="rew_title">{review.title}</p>
-                <p className="rew_desc">{review.description}</p>
-                {/* <div>TEST</div> */}
-              </div>
-              <div className="col-2 d-inline">
-                {isAdmin && 
-                  <div className="float-right">
-                    <a href="#" title="Reply to Buyer" className="mr-2"  onClick={AdminAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+review.id}>reply</i></a> 
-                    <a href="#" title="Verify Buyer" className="mr-2" onClick={AdminAction}><i className="material-icons md-24 text-info" id={"rev-ver-"+review.id}>verified_user</i></a>
-                    {/* <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+review.id}>delete</i></a>  */}
-                    <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+review.id}>delete</i></a> 
+              <>
+                <div className="row row-rev" key={review.id} id={"rev-"+review.id}>
+                  <div className="col-2 d-inline">
+                    <p className="rew_name">{review.username}</p>
+                    {ratings[index]}
+                    <br />
+                    {review.verified && <span className="verif"><i className="material-icons md-18">verified_user</i> Verified buyer</span>}
                   </div>
-                }
-              </div>
-            </div>
+                  <div className="col-8 d-inline">
+                    <p className="rew_title">{review.title}</p>
+                    <p className="rew_desc">{review.description}</p>
+                    {/* <div>TEST</div> */}
+                  </div>
+                  <div className="col-2 d-inline">
+                    {isAdmin ?
+                      <div className="float-right">
+                        <a href="#" title="Reply to Buyer" className="mr-2"  onClick={AdminAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+review.id}>reply</i></a> 
+                        {/* <a href="#" title="Verify Buyer" className="mr-2" onClick={AdminAction}><i className="material-icons md-24 text-info" id={"rev-ver-"+review.id}>verified_user</i></a> */}
+                        {/* <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+review.id}>delete</i></a>  */}
+                        <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+review.id}>delete</i></a> 
+                      </div>
+                      :
+                      <a href="#" title="Reply to Buyer" className="mr-2"  onClick={UserAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+review.id}>reply</i></a> 
+                    }
+                  </div>
+                </div>
+                {review.reviews.length > 0 ? <p className="rep-caption md-force-align font-italic"><i className="material-icons md-18 mr-1">chat_bubble_outline</i> {review.reviews.length > 1 ? "Replies to" : "Reply to" } {review.username}</p> : null}
+                {review.reviews.map(reply => {
+                  return (
+                    <>
+                      <div className="row row-rep">
+                        <div className="col-2 d-inline border-rep">
+                          <p className="rep_name">{reply.username}</p>
+                          {reply.verified && <span className="verif"><i className="material-icons md-18">verified_user</i> Verified buyer</span>}
+                        </div>
+                        <div className="col-8 d-inline">
+                          <p className="rep_title">{reply.title}</p>
+                          <p className="rep_desc">{reply.description}</p>
+                        </div>
+                        <div className="col-2 d-inline">
+
+                          {isAdmin ? 
+                            <div className="float-right">
+                              <a href="#" title="Reply to Buyer" className="mr-2"  onClick={AdminAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+reply.id}>reply</i></a> 
+                              {/* <a href="#" title="Verify Buyer" className="mr-2" onClick={AdminAction}><i className="material-icons md-24 text-info" id={"rev-ver-"+reply.id}>verified_user</i></a> */}
+                              {/* <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+reply.id}>delete</i></a>  */}
+                              <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+reply.id}>delete</i></a> 
+                            </div>
+                            :
+                            <a href="#" title="Reply to Buyer" className="mr-2"  onClick={UserAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+reply.id}>reply</i></a> 
+                          }
+                        </div>
+                      </div>
+                      {reply.reviews.map(reply => {
+                        return (
+                          <div className="row row-rep">
+                            <div className="col-2 d-inline border-rep">
+                              <p className="rep_name">{reply.username}</p>
+                              {reply.verified && <span className="verif"><i className="material-icons md-18">verified_user</i> Verified buyer</span>}
+                            </div>
+                            <div className="col-8 d-inline">
+                              <p className="rep_title">{reply.title}</p>
+                              <p className="rep_desc">{reply.description}</p>
+                            </div>
+                            <div className="col-2 d-inline">
+                              {isAdmin ? 
+                                <div className="float-right">
+                                  <a href="#" title="Reply to Buyer" className="mr-2"  onClick={AdminAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+reply.id}>reply</i></a> 
+                                  {/* <a href="#" title="Verify Buyer" className="mr-2" onClick={AdminAction}><i className="material-icons md-24 text-info" id={"rev-ver-"+reply.id}>verified_user</i></a> */}
+                                  {/* <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+reply.id}>delete</i></a>  */}
+                                  <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+reply.id}>delete</i></a> 
+                                </div>
+                                :
+                                <a href="#" title="Reply to Buyer" className="mr-2"  onClick={UserAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+reply.id}>reply</i></a> 
+                              }
+                            </div>
+                            <hr></hr>
+                          </div>
+                        )
+                      })}
+                    </>
+                  )
+                })}
+                <hr></hr>
+              </>
             )
             })
             : <div className="text-secondary text-center md-force-align"><i className="material-icons md-18">campaign</i>&nbsp;Be the first to put a review !</div>
