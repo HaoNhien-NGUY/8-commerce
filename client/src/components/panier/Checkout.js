@@ -113,8 +113,8 @@ class Checkout extends React.Component {
                     console.log(this.state)
                 })
                 .catch((error) => {
-                    this.setState({ promocode_details: false });
-
+                    this.setState({ promocode_details: "error" });
+                    console.log(this.state)
                 });
         }
 
@@ -560,7 +560,7 @@ function Step2(props) {
 
             let Promo_status = []
             if (props.data.promocode_details) {
-                if (!props.data.promocode_details.percentage) {
+                if (props.data.promocode_details == 'error') {
                     Promo_status.push(<small id="promo_status" key="promo_status" className="form-text text-danger">Promocode is unvalid</small>)
 
                 } else {
@@ -685,7 +685,7 @@ function Step3(props) {
         let totalprice = shipping_cost + props.data.NoShipPrice
         let Promo = []
         if (props.data.promocode_details) {
-            Promo.push(<div ley="promo" className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {totalprice * (props.data.promocode_details.percentage / 100)} €</span></div>)
+            Promo.push(<div ley="promo" className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {Math.round(totalprice * (props.data.promocode_details.percentage / 100))} €</span></div>)
             totalprice = totalprice - totalprice * (props.data.promocode_details.percentage / 100)
         }
 
@@ -707,9 +707,9 @@ function Step3(props) {
                 <>
                     <div className="alert alert-info"><h4>Your final order details:</h4>
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Order :</span><span>{props.data.NoShipPrice} €</span></div>
-                        <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Shipping :</span><span>{shipping_cost} €</span></div>
+                        <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Shipping :</span><span>{Math.round(shipping_cost)} €</span></div>
                         {Promo}
-                        <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{totalprice} €</span></div>
+                        <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{Math.round(totalprice)} €</span></div>
                     </div>
                     {Packagings != false ? <div><legend>Limited Time Offers</legend>
                         <p>Get a free packaging for a limited time only !</p>{Packagings}</div> : null}
