@@ -528,6 +528,7 @@ const AdminInterface = () => {
             responseType: 'blob'
         }
         document.getElementsByClassName("database")[0].innerHTML = "Generating the database...";
+        document.getElementsByClassName("getpdf")[0].style.display = "none";
         axios.get(process.env.REACT_APP_API_LINK + "/api/excel", headers).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
@@ -537,6 +538,7 @@ const AdminInterface = () => {
             link.click();
             document.body.removeChild(link);
             document.getElementsByClassName("database")[0].innerHTML = "Get the database";
+            document.getElementsByClassName("getpdf")[0].style.display = "inline";
         })
     }
 
@@ -547,8 +549,10 @@ const AdminInterface = () => {
                 <h1 className="mb-5">
                     <i className="material-icons md-36 marg">speed</i> ADMIN - Dashboard
                 </h1>
-                <p className="float-right mt-3 database">
+                <p className="float-right mt-3">
+                    <span className="database">
                     Get the database
+                    </span>
                     <span className="getpdf" onClick={getPDF}><i className="material-icons md-45 marg ml-2 down">save_alt</i></span>
                 </p>
             </div>
