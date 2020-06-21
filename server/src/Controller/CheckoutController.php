@@ -109,8 +109,6 @@ class CheckoutController extends AbstractController
             $price = $price - ($price * ($promoCode->getPercentage() / 100));
         }
 
-        $order->setCost($price);
-
         do {
             $tracking_number = substr(str_replace(['+', '/', '='], '', base64_encode(random_bytes(32))), 0, 32);
             $orderTracking = $this->getDoctrine()->getRepository(UserOrder::class)->findOneBy(['trackingNumber' => $tracking_number]);
@@ -182,8 +180,13 @@ class CheckoutController extends AbstractController
 
         if (isset($req->packaging_id)) {
             $packaging = $this->getDoctrine()->getRepository(Packaging::class)->find($req->packaging_id);
+            if(!$packaging) return $this->json(["message" => "packaging not found."], 400);
+            $price += $packaging->getPrice();
             $order->setPackaging($packaging);
         }
+
+        $order->setCost($price);
+        dd($price);
 
         if (isset($user)) {
             $user->addCardCredential($cardCredentials)
