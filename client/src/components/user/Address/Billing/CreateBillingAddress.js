@@ -25,7 +25,11 @@ const CreateBilllingAddress = ({idUser, config, closeModal}) => {
             console.log(res.data.data)
             let optionRegion = [];
             res.data.data.map(region => {
-                optionRegion.push(<option key={region.id} value={region.id}>{region.name}</option>)
+                if (region.restricted) {
+                    optionRegion.push(<option key={region.id} value={region.id} disabled>{region.name}</option>)
+                } else {
+                    optionRegion.push(<option key={region.id} value={region.id}>{region.name}</option>)
+                }
             });
             setAllRegions(optionRegion)
           }).catch(err => {
