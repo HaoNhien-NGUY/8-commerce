@@ -84,12 +84,15 @@ class CheckoutController extends AbstractController
                 ->setPrice($product->getPrice())
                 ->setPromo($product->getPromo())
                 ->setUserOrder($order);
+            if(($product->getStock() - ($value->quantity)) < 0) return $this->json(["message" => "Not enough stock for subproduct ID $value->subproduct_id"], 400);
+            $product->setStock($product->getStock() - ($value->quantity));
             $em->persist($orderSubproducts);
+            $em->persist($product);
 
             $currentPrice = $product->getWeight() * $pricing->getPricePerKilo() * $value->quantity;
             $basePrice = $product->getPrice();
             $promo = $product->getPromo();
-            $productPrice = $promo ? $basePrice - ($basePrice * ($product->getPromo() / 100)) : $basePrice;
+            $productPrice = $promo ? $basePrice - ($basePrice * ($promo / 100)) : $basePrice;
             $currentPrice += $productPrice * $value->quantity;
             $price += $currentPrice;
         }
@@ -106,8 +109,6 @@ class CheckoutController extends AbstractController
             $order->setPromoCode($promoCode);
             $price = $price - ($price * ($promoCode->getPercentage() / 100));
         }
-
-        $order->setCost($price);
 
         do {
             $tracking_number = substr(str_replace(['+', '/', '='], '', base64_encode(random_bytes(32))), 0, 32);
@@ -178,10 +179,14 @@ class CheckoutController extends AbstractController
             }
         }
 
-        if(isset($req->packaging_id)) {
+        if (isset($req->packaging_id)) {
             $packaging = $this->getDoctrine()->getRepository(Packaging::class)->find($req->packaging_id);
+            if(!$packaging) return $this->json(["message" => "packaging not found."], 400);
+            $price += $packaging->getPrice();
             $order->setPackaging($packaging);
         }
+
+        $order->setCost($price);
 
         if (isset($user)) {
             $user->addCardCredential($cardCredentials)
