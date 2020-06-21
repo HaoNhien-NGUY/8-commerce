@@ -212,7 +212,7 @@ class CheckoutController extends AbstractController
             ->from('8.commerce.clothing@gmail.com')
             ->to($email)
             ->subject('Track your order')
-            ->html("Thank you for your order! Here is your tracking link: <br><br><a href='/command?order={$tracking_number}'>Click here to track your order</a>");
+            ->html("Thank you for your order! Here is your tracking link: <br><br><a href='{$this->getParameter('client.link')}/command?order={$tracking_number}'>Click here to track your order</a>");
 
         $mailer->send($SendEmailTo);
 
