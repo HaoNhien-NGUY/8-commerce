@@ -84,7 +84,7 @@ class UserOrder
 
     /**
      * @ORM\ManyToOne(targetEntity=Packaging::class)
-     * @Groups("user_order_details")
+     * @Groups({"user_order_details", "user_orders"})
      */
     private $packaging;
 
