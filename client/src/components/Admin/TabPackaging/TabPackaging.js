@@ -25,7 +25,7 @@ function Packaging() {
     }, []);
 
     function receivedData() {
-        axios.get(`http://127.0.0.1:8000/api/packaging`, config).then(async res => {
+        axios.get(process.env.REACT_APP_API_LINK + `/api/packaging`, config).then(async res => {
             // await setPageCount(Math.ceil(res.data.nbResults / limit));
             const newPostData = res.data.length > 0 ? res.data.map((pack) =>
                 <tr key={pack.id}>

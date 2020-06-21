@@ -53,7 +53,7 @@ function CreateCategory() {
         if (isReady) {
             setIsReady(false);
             const body = JSON.stringify({ ...formControl });
-            axios.post("http://127.0.0.1:8000/api/category/create/" + formControl.category, body, config).then( res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/category/create/" + formControl.category, body, config).then( res => {
                 toast.success('Category correctly added!', {position: "top-center"});
             }).catch( err => {
                 toast.error('Category already exist!', {position: 'top-center'});

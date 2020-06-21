@@ -21,11 +21,15 @@ const CreateBilllingAddress = ({idUser, config, closeModal}) => {
     }, [])
 
     const getAllRegions = () => {
-        axios.get("http://localhost:8000/api/region", config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/region", config).then(res => {
             console.log(res.data.data)
             let optionRegion = [];
             res.data.data.map(region => {
-                optionRegion.push(<option key={region.id} value={region.id}>{region.name}</option>)
+                if (region.restricted) {
+                    optionRegion.push(<option key={region.id} value={region.id} disabled>{region.name}</option>)
+                } else {
+                    optionRegion.push(<option key={region.id} value={region.id}>{region.name}</option>)
+                }
             });
             setAllRegions(optionRegion)
           }).catch(err => {
@@ -62,7 +66,7 @@ const CreateBilllingAddress = ({idUser, config, closeModal}) => {
 
         }
         console.log(body);
-        axios.post("http://localhost:8000/api/user/"+idUser+"/address/billing", body, config).then(res => {
+        axios.post(process.env.REACT_APP_API_LINK + "/api/user/"+idUser+"/address/billing", body, config).then(res => {
             toast.success(res.data.message , {position: 'top-center'})
             closeModal();
           }).catch(err => {

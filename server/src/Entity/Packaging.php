@@ -15,35 +15,37 @@ class Packaging
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("user_order_details")
+     * @Groups({"user_order_details", "user_orders"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("user_order_details")
+     * @Groups({"user_order_details", "user_orders"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups("user_order_details")
+     * @Groups({"user_order_details", "user_orders"})
      */
     private $startsAt;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups("user_order_details")
+     * @Groups({"user_order_details", "user_orders"})
      */
     private $endsAt;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"user_orders"})
      */
     private $minSpending;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups({"user_orders"})
      */
     private $price;
 

@@ -14,7 +14,7 @@ export default function SliderPromo() {
   useEffect(() => {
     axios
       .get(
-        "http://localhost:8000/api/product?promoted=true"
+        process.env.REACT_APP_API_LINK + "/api/product?promoted=true"
       )
       .then(res => {
         console.log(res.data.data);

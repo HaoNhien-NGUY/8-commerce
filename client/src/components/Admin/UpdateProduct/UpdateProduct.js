@@ -47,12 +47,12 @@ const UpdateProduct = () => {
         setIsReady(true);
     }
     useEffect(() => {
-        axios.get("http://localhost:8000/api/product/" + idProduct, config)
+        axios.get(process.env.REACT_APP_API_LINK + "/api/product/" + idProduct, config)
             .then(async res => {
 
                 console.log(res.data);
 
-                await axios.get("http://127.0.0.1:8000/api/subcategory", config).then(e => {
+                await axios.get(process.env.REACT_APP_API_LINK + "/api/subcategory", config).then(e => {
                     setAllCategory(e.data);
                     const optionCategory = [];
                     e.data.map(category => {
@@ -62,7 +62,7 @@ const UpdateProduct = () => {
                     });
                     setSubCategories(optionCategory)
                 });
-                await axios.get("http://localhost:8000/api/supplier/").then((e) => {
+                await axios.get(process.env.REACT_APP_API_LINK + "/api/supplier/").then((e) => {
                     const optionSuppliers = [];
                     e.data.data.map(sup => {
                         sup.name === res.data.supplier.name
@@ -104,7 +104,7 @@ const UpdateProduct = () => {
             }
             console.log(body);
 
-            axios.put("http://localhost:8000/api/product/" + idProduct, body, config).then(e => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/product/" + idProduct, body, config).then(e => {
                 toast.success('Product correctly updated!', { position: "top-center" })
             }).catch(err => {
                 console.log(err)

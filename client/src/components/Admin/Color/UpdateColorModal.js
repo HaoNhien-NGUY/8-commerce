@@ -18,7 +18,7 @@ const UpdateColorModal = () => {
     }
 }
 useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
+    axios.get(process.env.REACT_APP_API_LINK + "/api/color", config).then(e => {
         setAllColors(e.data);
     });
   }, []);
@@ -47,9 +47,9 @@ allColors.map(color => {
         const body = {
             "name": newColor
         }
-        axios.put("http://localhost:8000/api/color/" + oldColor, body, config).then(res => {
+        axios.put(process.env.REACT_APP_API_LINK + "/api/color/" + oldColor, body, config).then(res => {
           toast.success(res.data.message, { position: "top-center" });
-          axios.get("http://127.0.0.1:8000/api/color", config).then(e => {
+          axios.get(process.env.REACT_APP_API_LINK + "/api/color", config).then(e => {
               setAllColors(e.data);
           });
         }).catch(err => {

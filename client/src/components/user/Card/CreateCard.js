@@ -186,7 +186,7 @@ function CreateCard({idUser, config, closeModal}) {
                 "firstname": firstname,
                 "lastname": lastname
             }
-            axios.post("http://localhost:8000/api/cardcredentials", body, config).then(res => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/cardcredentials", body, config).then(res => {
                 closeModal();
                 toast.success(res.data.message, {position: "top-center"});
             }).catch(err => {

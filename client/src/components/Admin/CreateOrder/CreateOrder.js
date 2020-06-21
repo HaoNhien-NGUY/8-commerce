@@ -25,14 +25,14 @@ function CreateOrder() {
         }
     }
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/supplier", config).then(e => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/supplier", config).then(e => {
             setAllSupplier(e.data.data);
         });
     }, []);
 
     useEffect(() => {
         if (goSelectProduct) {
-            axios.get("http://127.0.0.1:8000/api/supplier/" + idSupplier + "/products", config).then(e => {
+            axios.get(process.env.REACT_APP_API_LINK + "/api/supplier/" + idSupplier + "/products", config).then(e => {
                 if(Array.isArray(e.data.product)){
                     setAllSubproduct(e.data.product);
                 } else {

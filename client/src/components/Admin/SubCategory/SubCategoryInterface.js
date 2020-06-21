@@ -56,7 +56,7 @@ const SubCategoryInterface = () => {
       }, [pageCount]);
 
     const receivedSubCategories = () => {
-        axios.get("http://localhost:8000/api/category/" + id, config)
+        axios.get(process.env.REACT_APP_API_LINK + "/api/category/" + id, config)
         .then(async res => {
             setNameCategory(res.data.name)
             if(res.data.subCategories)
@@ -79,7 +79,7 @@ const SubCategoryInterface = () => {
         });
     }
     const deleteSubCategory = (idSub) => {
-        axios.delete("http://localhost:8000/api/subcategory/" + idSub, config)
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/subcategory/" + idSub, config)
             .then(res => {
                 receivedSubCategories();
                 toast.success(res.data.message, { position: "top-center" });
@@ -123,11 +123,11 @@ const SubCategoryInterface = () => {
             const body = {
                 "name": name,
             }
-            axios.put("http://localhost:8000/api/subcategory/" + subCatId, body, config ).then( e => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/subcategory/" + subCatId, body, config ).then( e => {
                 toast.success('Category correctly updated!', { position: "top-center"});
                 setShow(false);
                 setName([]);
-                axios.get("http://localhost:8000/api/category/" + id, config)
+                axios.get(process.env.REACT_APP_API_LINK + "/api/category/" + id, config)
                     .then(res => {
                         setSubCategories(res.data.subCategories);
                     })
@@ -161,11 +161,11 @@ const SubCategoryInterface = () => {
             const body = {
                 "name": newName,
             }
-            axios.post("http://localhost:8000/api/subcategory/create/" + nameCategory + "/" + newName, body, config ).then( e => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/subcategory/create/" + nameCategory + "/" + newName, body, config ).then( e => {
                 toast.success('Category correctly updated!', { position: "top-center"});
                 setShowNew(false);
                 setNewName([]);
-                axios.get("http://localhost:8000/api/category/" + id, config)
+                axios.get(process.env.REACT_APP_API_LINK + "/api/category/" + id, config)
                     .then(res => {
                         setSubCategories(res.data.subCategories);
                     })
@@ -185,7 +185,7 @@ const SubCategoryInterface = () => {
     const migrationSubCategory = async (idSubCategory) => {
       const optionSubCategoryMigration = [];
         console.log(idSubCategory);
-      await axios.get("http://127.0.0.1:8000/api/subcategory/", config).then(e => {
+      await axios.get(process.env.REACT_APP_API_LINK + "/api/subcategory/", config).then(e => {
         let migration = subCategoryMigrateSelected
         console.log(e)
           e.data.map((subcategory) => subcategory.id !== idSubCategory ? optionSubCategoryMigration.push(<option key={subcategory.id} value={subcategory.id}>{subcategory.name}</option>) && migration === 0 ? migration = subcategory.id : null : null )
@@ -202,7 +202,7 @@ const SubCategoryInterface = () => {
         "oldsubcategory": idToMigrate
       };
       console.log(body);
-      axios.put("http://127.0.0.1:8000/api/subcategory/migrate", body, config).then(res => {
+      axios.put(process.env.REACT_APP_API_LINK + "/api/subcategory/migrate", body, config).then(res => {
         toast.success(res.message, { position: 'top-center' });
         deleteSubCategory(idToMigrate);
       }).catch(err => {

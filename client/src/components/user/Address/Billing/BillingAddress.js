@@ -18,7 +18,7 @@ function BillingAddress({idUser, config}) {
     }, [showAdd, showUpdate])
 
     const billingAddressData = () => {
-        axios.get("http://localhost:8000/api/user/"+idUser+"/address", config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/user/"+idUser+"/address", config).then(res => {
             console.log(res.data)
             console.log(res.data.billingAddress)
             let dataToGive = res.data.billingAddress.length > 0 ? res.data.billingAddress.map((data, index) => 
@@ -43,7 +43,7 @@ function BillingAddress({idUser, config}) {
 
     const deleteAddress = (id) => {
         console.log(id);
-        axios.delete("http://localhost:8000/api/addressbilling/"+id, config).then(res => {
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/addressbilling/"+id, config).then(res => {
             billingAddressData();
             toast.success(res.data.message, {position: 'top-center'})
           }).catch(err => {

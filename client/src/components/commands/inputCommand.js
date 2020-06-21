@@ -65,7 +65,7 @@ function EnterCommand() {
     useEffect(() => {
         if (isReady) {
             setIsReady(false);
-            axios.get("http://localhost:8000/api/user/order/" + idCommand, config).then(res => {
+            axios.get(process.env.REACT_APP_API_LINK + "/api/user/order/" + idCommand, config).then(res => {
                 if (res.data == null) {
                     toast.error("Command not found: " + idCommand, { position: 'top-center' });
                 } else {
@@ -79,7 +79,7 @@ function EnterCommand() {
 
     useEffect(() => {
         if (query.get("order")) {
-            axios.get("http://localhost:8000/api/user/order/" + query.get("order"), config).then(res => {
+            axios.get(process.env.REACT_APP_API_LINK + "/api/user/order/" + query.get("order"), config).then(res => {
                 if (res.data == null) {
                     setOrderDefined(false);
                     toast.error("Command not found: " + idCommand, { position: 'top-center' });

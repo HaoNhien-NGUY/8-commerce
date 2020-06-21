@@ -69,7 +69,7 @@ function Cart(props) {
                         <tbody>
                             <tr>
                                 <td rowSpan="3" className="tableborder paddright">
-                                    <img className="imgOrder" src={`http://127.0.0.1:8000/api/image/${e.idProduct}/default/1.jpg`}/>
+                                    <img className="imgOrder" src={process.env.REACT_APP_API_LINK + `/api/image/${e.idProduct}/default/1.jpg`}/>
                                 </td>
                                 <td>
                                     <span><b>Title:</b> { e.subProductTitle}</span>
@@ -106,14 +106,14 @@ function Cart(props) {
                 setIsInvalid(invalids);
             } else {
                 setIsInvalid(invalids);
-                axios.post("http://127.0.0.1:8000/api/supplier/order", obj, config).then( res => {
+                axios.post(process.env.REACT_APP_API_LINK + "/api/supplier/order", obj, config).then( res => {
                     let count = 0;
                     supplierOrder.map(order => {
                         const body = {
                             "subproduct_id" : order.subproduct_id,
                             "quantity" : order.quantity
                         };
-                        axios.post(`http://127.0.0.1:8000/api/supplier/order/${res.data.SupplierOrder.id}/add`, body, config).then(e => {
+                        axios.post(process.env.REACT_APP_API_LINK + `/api/supplier/order/${res.data.SupplierOrder.id}/add`, body, config).then(e => {
                             count++;
                             if (count == supplierOrder.length) {
                                 window.location.reload();

@@ -26,7 +26,7 @@ function Suppliers() {
         }
     };
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/supplier", config).then(e => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/supplier", config).then(e => {
             setAllSupplier(e.data.data);
         });
     }, []);
@@ -36,7 +36,7 @@ function Suppliers() {
       }, [postDataOrder])
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/supplier/order?offset=${offset}&limit=${limit}`, config).then(async e => {
+        axios.get(process.env.REACT_APP_API_LINK + `/api/supplier/order?offset=${offset}&limit=${limit}`, config).then(async e => {
             await setPageCount(Math.ceil(e.data.nbResults / limit));
             const newPostDataOrder = e.data.data.map((order) =>
                 <tr key={order.id}>
@@ -81,7 +81,7 @@ function Suppliers() {
             const body = {
                 "name" : supplierName
             };
-            axios.post("http://127.0.0.1:8000/api/supplier", body, config).then( e => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/supplier", body, config).then( e => {
                 toast.success("Supplier correctly added !", { position: "top-center" });
                 setShow(false);
             }).catch( err => {
@@ -91,7 +91,7 @@ function Suppliers() {
     }
 
     function showDetailsOrder(id) {
-        axios.get("http://127.0.0.1:8000/api/supplier/order/" + id, config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/supplier/order/" + id, config).then(res => {
             setDivOrder(res.data.supplierOrderSubproducts);
             setShowDetails(true);
         }).catch(error => {
@@ -105,9 +105,9 @@ function Suppliers() {
         const body = {
             "status" : true
         };
-        axios.put("http://127.0.0.1:8000/api/supplier/order/" + id, body, config).then(res => {
+        axios.put(process.env.REACT_APP_API_LINK + "/api/supplier/order/" + id, body, config).then(res => {
             toast.success("Order received !", { position: "top-center" });
-            axios.get("http://127.0.0.1:8000/api/supplier/order", config).then(e => {
+            axios.get(process.env.REACT_APP_API_LINK + "/api/supplier/order", config).then(e => {
                 const newPostDataOrder = e.data.data.map((order) =>
                     <tr key={order.id}>
                         <td><p className="myMargin align-items-center">{order.id}</p></td>
@@ -164,7 +164,7 @@ function Suppliers() {
                                         
                                         <tr className="tableborder">
                                             <td className="detailsproduct">
-                                              <img src={`http://127.0.0.1:8000/api/image/${subProduct.subproduct.product.id}/default/1.jpg`}/>
+                                              <img src={process.env.REACT_APP_API_LINK + `/api/image/${subProduct.subproduct.product.id}/default/1.jpg`}/>
                                                 <span><b>ID:</b> {subProduct.subproduct.id}</span>
                                                 <span><b>Color:</b> {subProduct.subproduct.color.name}</span>
                                                 <span><b>Size:</b> {subProduct.subproduct.size}</span>

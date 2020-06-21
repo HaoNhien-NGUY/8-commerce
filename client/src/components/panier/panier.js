@@ -22,14 +22,14 @@ class Panier extends Component {
     if (panier) {
       panier.map((e) => {
         axios
-          .get("http://127.0.0.1:8000/api/subproduct/" + e.productid, {})
+          .get(process.env.REACT_APP_API_LINK + "/api/subproduct/" + e.productid, {})
           .then((data) => {
             let somme = data.data.price * e.quantite;
             this.setState({ prixTotal: this.state.prixTotal + somme });
             this.setState({ nombreTotal: this.state.nombreTotal + e.quantite });
             axios
               .get(
-                "http://127.0.0.1:8000/api/product/" + data.data.product.id,
+                process.env.REACT_APP_API_LINK + "/api/product/" + data.data.product.id,
                 {}
               )
               .then((product) => {
@@ -77,6 +77,7 @@ class Panier extends Component {
         products.push(item)
       });
       this.setState({ productsCart: products, nombreTotal: newtotal, prixTotal: newprice })
+      window.location.reload(true)
     }
   }
 
@@ -90,32 +91,6 @@ class Panier extends Component {
       inputlist.forEach(function (element) { element.removeAttribute("disabled"); })
     }
   }
-
-
-  // checkpromo(e) {
-  //   // console.log(, typeof document.getElementById('promocode').value)
-  //   e.preventDefault();
-  //   let code = document.getElementById('promocode').value;
-
-  //   let jsonRequest = {
-  //     'promocode': code,
-  //   }
-  //   axios
-  //     .post(
-  //       "http://localhost:8000/api/promocode",
-  //       jsonRequest,
-  //       { headers: { "Content-Type": "application/json" } }
-  //     )
-  //     .then((res) => {
-  //       console.log(res.data)
-  //       this.setState({ promocode_details: res.data });
-  //       console.log(this.state)
-  //     })
-  //     .catch((error) => {
-
-  //     });
-  // }
-
 
   onsuppress(e) {
     let id = e.id.replace("button_", "")
@@ -146,8 +121,6 @@ class Panier extends Component {
 
   render() {
     const Message = [];
-
-
     if (this.state.nombreTotal == 0)
       Message.push(
         <div key="empty-cart" className="statutpanier col m-0 p-4">
@@ -159,7 +132,6 @@ class Panier extends Component {
       <>
         {this.state.nombreTotal == 0 ? <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
           <div className="row h-100 m-0 p-0">
-
             <div className="col-12 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
               <ToastContainer />
               <div id="LargeCart" className="LargeCart">
@@ -175,7 +147,7 @@ class Panier extends Component {
                             <td rowSpan="2" className="tableborder ImageCart">
                               <img
                                 className=""
-                                src={"http://127.0.0.1:8000" + e.image}
+                                src={process.env.REACT_APP_API_LINK + "" + e.image}
                               />
                             </td>
                             <td className="productcarttitle">
@@ -234,7 +206,7 @@ class Panier extends Component {
                               <td rowSpan="2" className="tableborder ImageCart">
                                 <img
                                   className=""
-                                  src={"http://127.0.0.1:8000" + e.image}
+                                  src={process.env.REACT_APP_API_LINK + "" + e.image}
                                 />
                               </td>
                               <td className="productcarttitle">

@@ -32,7 +32,7 @@ function ProductDescription() {
   //tant que taille et couleur ne sont pas choisies, ne pas afficher de prix...
   let id = useRouteMatch("/product/:id").params.id;
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/product/" + id).then((resp) => {
+    axios.get(process.env.REACT_APP_API_LINK + "/api/product/" + id).then((resp) => {
       setProduct(resp.data);
       //Getting the lowest price
       let prices = {};
@@ -175,7 +175,7 @@ function ProductDescription() {
             for (let j = 0; j < product.images[i].links.length; j++) {
               console.log("inside-2", i, j, product.images[i].links[j]);
               obj["img-" + j] =
-                "http://127.0.0.1:8000" + product.images[i].links[j];
+                process.env.REACT_APP_API_LINK + "" + product.images[i].links[j];
             }
           }
           let verif = 0;
@@ -187,7 +187,7 @@ function ProductDescription() {
       } else if (product.images[0]) {
         for (let i = 0; i < product.images[0].links.length; i++) {
           obj["img-" + i] =
-            "http://127.0.0.1:8000" + product.images[0].links[i];
+            process.env.REACT_APP_API_LINK + "" + product.images[0].links[i];
         }
       }
     }

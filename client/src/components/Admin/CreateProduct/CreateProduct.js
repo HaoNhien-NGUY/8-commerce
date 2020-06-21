@@ -42,7 +42,7 @@ function CreateProduct() {
     }, [token]);
 
     useEffect(() => {
-      axios.get("http://127.0.0.1:8000/api/product", config).then( e => {
+      axios.get(process.env.REACT_APP_API_LINK + "/api/product", config).then( e => {
             let nbr = e.data.data[e.data.nbResults-1].id
             setCountProduct(nbr);
             }).catch( err => {
@@ -53,7 +53,7 @@ function CreateProduct() {
     useEffect(() => {
         if (show === false) {
             axios
-            .get("http://localhost:8000/api/subcategory/")
+            .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
             .then((res) => {
                 console.log(res.data);
                 setSubCategories(res.data);
@@ -67,7 +67,7 @@ function CreateProduct() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:8000/api/subcategory/")
+            .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
             .then((res) => {
                 console.log(res.data);
                 setSubCategories(res.data);
@@ -80,7 +80,7 @@ function CreateProduct() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:8000/api/supplier/")
+            .get(process.env.REACT_APP_API_LINK + "/api/supplier/")
             .then((res) => {
                 console.log(res.data.data);
                 setSupplier(res.data.data);
@@ -167,7 +167,7 @@ function CreateProduct() {
             setIsReady(false);
             const body = JSON.stringify({ ...formControl });
             console.log(body);
-            axios.post("http://127.0.0.1:8000/api/product", body, config).then( e => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/product", body, config).then( e => {
                 toast.success('Product correctly added!', { position: "top-center"});
                 setRedirection(true);
             }).catch( err => {

@@ -18,7 +18,7 @@ function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/packaging/${idPack}`, config).then(async res => {
+        axios.get(process.env.REACT_APP_API_LINK + `/api/packaging/${idPack}`, config).then(async res => {
             setPackagingName(res.data.name);
             setPrice(res.data.price);
             setSpending(res.data.minSpending);
@@ -105,7 +105,7 @@ function UpdatePackaging({ config, closeModal, idPack, receivedData }) {
                 "price": price
             }
             console.log(body);
-            axios.put("http://127.0.0.1:8000/api/packaging/" + idPack, body, config).then(res => {
+            axios.put(process.env.REACT_APP_API_LINK + "/api/packaging/" + idPack, body, config).then(res => {
                 toast.success(res.data.message, { position: "top-center" });
                 closeModal();
                 receivedData();
