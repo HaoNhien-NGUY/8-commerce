@@ -12,12 +12,15 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 function ReviewPart({id, auth}) {
+  const link = app.env.REACT_APP_API_LINK;
+
   const [showForm, setShowForm] = useState(false)
   const [reviews, setReviews] = useState([])
   const [reviewsReady, setReviewsReady] = useState(false)
   const [ratings, setRatings] = useState([])
   const [avgRating, setAvgRating] = useState("-")
   const [avgStars, setAvgStars] = useState('')
+  const id_product = id
 
   const [formControl, setFormControl] = useState({"rating": "1"});
   const [idUser, setIdUser] = useState(null);
@@ -28,34 +31,25 @@ function ReviewPart({id, auth}) {
   // Modal Confirmation delete
   const [showConfirm, setShowConfirm] = useState(false);
   const [reviewToDelete, setReviewToDelete] = useState(null);
-
   // Modal Reply
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const [reviewToReply, setReviewToReply] = useState(null);
 
-  
-  const id_product = id
-  // const id_user = user.id
 
   useEffect (() => {
     axios
-    .get(
-        "http://localhost:8000/api/review/product/"+id_product
-        )
-      .then((res) => {
-        setReviews(res.data);
-        setReviewsReady(true);
-        console.log(res.data)
-
-        initializeReviews();
-        // if (auth.user !== null) {
-        //   setIdUser(auth.user.id)
-        // }
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+      .get(link+"/api/review/product/"+id_product)
+        .then( async (res) => {
+          await setReviews(res.data);
+          setReviewsReady(true);
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
   }, [reviewsReady])
+
+  useEffect(() => {
+    initializeReviews();
+  }, [reviews])
 
   useEffect(() => {
     if (auth.user) {
@@ -73,17 +67,22 @@ function ReviewPart({id, auth}) {
   }, [auth])
   
   function handleChange(event) {
-    console.log(formControl)
-
+    // console.log(formControl)
     let res = event.target.value.trim();
     let val = res.replace(/[\s]{2,}/g, " ");
-
     setFormControl({ ...formControl, [event.target.name]: val.toString() });
   }
 
 async function initializeReviews() {
   let ratings_arr = [];
   let ratings_val = [];
+
+  console.log(reviews.length);
+
+  if (reviews.length < 1) {
+    setAvgRating(undefined)
+    setAvgStars(null)
+  }
 
   await reviews.map(review => {
     let str = '⭐';
@@ -106,6 +105,7 @@ async function initializeReviews() {
       let avg = sum / ratings_val.length;
       setAvgRating(avg);
       
+      console.log(avgRating)
       // Set le nbr moyen d'⭐
       let str = '⭐';
       // console.log(avgRating);
@@ -128,57 +128,57 @@ async function initializeReviews() {
       setAvgStars(str);
     }
   }
-
-
 }
 
 async function initializeForm() {
   if (auth.user) {
+    setShowForm(!showForm)
     console.log(auth.user)
     // await setIdUser(auth.user.id)
-    // console.log(auth.user.id)
     await setFormControl({...formControl,  "product": id_product, "user": auth.user.id, "rating": "1" });
     console.log(formControl)
     return true;
   }
   else {
-    return toast.error('You have to be connected', {position: 'top-center'});
+    if (!showForm){
+      return toast.error('You have to be connected', {position: 'top-center'});
+    }
   }
 }
 
 function handleSubmit(e) {
     e.preventDefault();
-    // await initializeForm();
+    console.log(formControl);
 
-    // let check = initializeForm();
-
-    // if (check===true) {
-      console.log(formControl);
-  
-      const body = JSON.stringify({ ...formControl });
-      const config = {
-        headers: {
-          "Content-type": "application/json"
-        }
+    const body = JSON.stringify({ ...formControl });
+    const config = {
+      headers: {
+        "Content-type": "application/json"
       }
+    }
 
-      axios
-        .post('http://localhost:8000/api/review', body, config)
-          .then( e => {
-            toast.success('Review correctly added!', { position: "top-center"});
-            setShowForm(false);
-            ReinitializeForm()
-            setReviewsReady(false)})
-          .catch( err => {
-            toast.error('Error !', {position: 'top-center'});
-      });
-    // }
+    axios
+      .post(link+'/api/review', body, config)
+        .then( async () => {
+          toast.success('Review correctly added!', { position: "top-center"});
+          setShowForm(false);
+          ReinitializeForm();
+          console.log(reviews.length)
+          if (reviews.length > 0) {
+            await setReviewsReady(false)
+          }
+          else {
+            await setReviewsReady(true)
+          }
+          })
+        .catch( err => {
+          toast.error('Something is missing !', {position: 'top-center'});
+    });
   }
 
   function AdminAction(e) {
     // format -> rev-[action]-[id]    
     // ⚠ action en 3 lettres e.g: del
-
     let idSelected = e.target.id.substr(8)
     let actionSelected = e.target.id.substr(4, 3)
 
@@ -222,15 +222,17 @@ function handleSubmit(e) {
 
   function DeleteReview() {
     axios
-      .delete('http://localhost:8000/api/review/'+reviewToDelete)
-        .then( e => {
+      .delete(link+'/api/review/'+reviewToDelete)
+        .then( async e => {
           toast.success('Review correctly deleted!', { position: "top-center"});
+          await setReviews([])
+          setReviewsReady(false)
+          // initializeReviews()
           setReviewToDelete(null)
           setShowConfirm(false)
-          setReviewsReady(false)
         })
         .catch( err => {
-          toast.error('Error !', {position: 'top-center'});
+          toast.error('Error, the review can\'t be deleted !', {position: 'top-center'});
         })
   }
 
@@ -246,7 +248,7 @@ function handleSubmit(e) {
     if (auth.user) {
       console.log(auth.user)
       // await setIdUser(auth.user.id)
-      console.log(reviewToReply)
+      // console.log(reviewToReply)
       RatingToNull();
       await setFormControl({...formControl, "product": id_product, "user": auth.user.id, "review": id_review });
       console.log(formControl)
@@ -269,7 +271,7 @@ function handleSubmit(e) {
     }
 
     axios
-      .post('http://localhost:8000/api/review', body, config)
+      .post(link+'/api/review', body, config)
         .then( e => {
           toast.success('Review correctly added!', { position: "top-center"});
           setShowReplyForm(false)
@@ -305,9 +307,9 @@ function handleSubmit(e) {
         <Modal.Header closeButton>Reply to the review !</Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleReply}>
-            <Form.Control type="name" placeholder="Enter your name" className="col-5 d-inline" onChange={handleChange} name="username"/>
-            <Form.Control as="textarea" rows="1" placeholder="Give your review a title" onChange={handleChange} name="title"/>
-            <Form.Control as="textarea" rows="4" placeholder="Write your review" onChange={handleChange} name="description"/>
+            <Form.Control type="name" placeholder="Enter your name" className="col-5 d-inline" onChange={handleChange} name="username"  maxLength="255"/>
+            <Form.Control as="textarea" rows="1" placeholder="Give your review a title" onChange={handleChange} name="title"  maxLength="255"/>
+            <Form.Control as="textarea" rows="4" placeholder="Write your review" onChange={handleChange} name="description"  maxLength="255"/>
             <Button type="submit" color="dark" className="mt-4" block>Create</Button>
           </Form>
         </Modal.Body>
@@ -322,8 +324,8 @@ function handleSubmit(e) {
             <p className="rate-header">Customer Reviews</p>
             <p className="rate-global">{isNaN(avgRating) ? "--" : Number.parseFloat(avgRating).toFixed(1) }</p>
             <p>{avgStars}</p>
-            <p className="rate-caption">{reviews.length > 0 ? `Based on ${reviews.length} reviews` : "No reviews"}</p>
-            <button className="btn btn-sm btn-dark" onClick={() => {setShowForm(!showForm); initializeForm()}}>Write a review</button>
+            <p className="rate-caption">{reviews.length > 0 ? `Based on ${reviews.length} review(s)` : "No reviews"}</p>
+            <button className="btn btn-sm btn-dark" onClick={() => {initializeForm()}}>Write a review</button>
           </div>
         </div>
         
@@ -343,7 +345,7 @@ function handleSubmit(e) {
           <div className="col-7">
             <Form>
                 <Form.Group controlId="exampleForm.ControlInput1" className="justify-content-between row pad-15">
-                  <Form.Control type="name" placeholder="Enter your name" className="col-5 d-inline" onChange={handleChange} name="username"/>
+                  <Form.Control type="name" placeholder="Enter your name" className="col-5 d-inline" onChange={handleChange} name="username"  maxLength="255"/>
                 </Form.Group>
 
               <Form.Group controlId="exampleForm.ControlSelect1" className="row pad-15">
@@ -359,11 +361,11 @@ function handleSubmit(e) {
 
 
               <Form.Group controlId="exampleForm.ControlTextarea1">
-                <Form.Control as="textarea" rows="1" placeholder="Give your review a title" onChange={handleChange} name="title"/>
+                <Form.Control as="textarea" rows="1" placeholder="Give your review a title" onChange={handleChange} name="title" maxLength="255"/>
               </Form.Group>
 
               <Form.Group controlId="exampleForm.ControlTextarea1">
-                <Form.Control as="textarea" rows="4" placeholder="Write your review" onChange={handleChange} name="description"/>
+                <Form.Control as="textarea" rows="4" placeholder="Write your review" onChange={handleChange} name="description" maxLength="255"/>
               </Form.Group>
               <Button variant="primary" type="button" onClick={handleSubmit}>
                 Submit
@@ -408,7 +410,7 @@ function handleSubmit(e) {
                 {review.reviews.map(reply => {
                   return (
                     <>
-                      <div className="row row-rep">
+                      <div className="row row-rep" key={reply.id}>
                         <div className="col-2 d-inline border-rep">
                           <p className="rep_name">{reply.username}</p>
                           {reply.verified && <span className="verif"><i className="material-icons md-18">verified_user</i> Verified buyer</span>}
@@ -431,31 +433,33 @@ function handleSubmit(e) {
                           }
                         </div>
                       </div>
-                      {reply.reviews.map(reply => {
+                      {reply.reviews.map(reply_reply => {
                         return (
-                          <div className="row row-rep">
-                            <div className="col-2 d-inline border-rep">
-                              <p className="rep_name">{reply.username}</p>
-                              {reply.verified && <span className="verif"><i className="material-icons md-18">verified_user</i> Verified buyer</span>}
+                          <>
+                            <div className="row row-rep" key={reply_reply.id}>
+                              <div className="col-2 d-inline border-rep">
+                                <p className="rep_name">{reply_reply.username}</p>
+                                {reply_reply.verified && <span className="verif"><i className="material-icons md-18">verified_user</i> Verified buyer</span>}
+                              </div>
+                              <div className="col-8 d-inline">
+                                <p className="rep_title">{reply_reply.title}</p>
+                                <p className="rep_desc">{reply_reply.description}</p>
+                              </div>
+                              <div className="col-2 d-inline">
+                                {isAdmin ? 
+                                  <div className="float-right">
+                                    <a href="#" title="Reply to Buyer" className="mr-2"  onClick={AdminAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+reply_reply.id}>reply</i></a> 
+                                    {/* <a href="#" title="Verify Buyer" className="mr-2" onClick={AdminAction}><i className="material-icons md-24 text-info" id={"rev-ver-"+reply_reply.id}>verified_user</i></a> */}
+                                    {/* <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+reply_reply.id}>delete</i></a>  */}
+                                    <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+reply_reply.id}>delete</i></a> 
+                                  </div>
+                                  :
+                                  <a href="#" title="Reply to Buyer" className="mr-2"  onClick={UserAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+reply_reply.id}>reply</i></a> 
+                                }
+                              </div>
+                              <hr></hr>
                             </div>
-                            <div className="col-8 d-inline">
-                              <p className="rep_title">{reply.title}</p>
-                              <p className="rep_desc">{reply.description}</p>
-                            </div>
-                            <div className="col-2 d-inline">
-                              {isAdmin ? 
-                                <div className="float-right">
-                                  <a href="#" title="Reply to Buyer" className="mr-2"  onClick={AdminAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+reply.id}>reply</i></a> 
-                                  {/* <a href="#" title="Verify Buyer" className="mr-2" onClick={AdminAction}><i className="material-icons md-24 text-info" id={"rev-ver-"+reply.id}>verified_user</i></a> */}
-                                  {/* <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+reply.id}>delete</i></a>  */}
-                                  <a href="#" title="Delete" onClick={AdminAction}><i className="material-icons md-24 text-danger" id={"rev-del-"+reply.id}>delete</i></a> 
-                                </div>
-                                :
-                                <a href="#" title="Reply to Buyer" className="mr-2"  onClick={UserAction}><i className="material-icons md-24 text-secondary" id={"rev-rep-"+reply.id}>reply</i></a> 
-                              }
-                            </div>
-                            <hr></hr>
-                          </div>
+                          </>
                         )
                       })}
                     </>

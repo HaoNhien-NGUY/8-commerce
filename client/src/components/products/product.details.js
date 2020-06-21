@@ -526,7 +526,7 @@ function ProductDescription() {
           <div className="col-sm-12">
             <PersonalizedSugg />
           </div>
-          <div className="col-sm-12">
+          <div className="col-sm-12 mt-5">
             <Footer />
           </div>
         </div>
