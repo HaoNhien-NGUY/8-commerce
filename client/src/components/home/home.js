@@ -40,8 +40,8 @@ function Home() {
                 const entries = Object.entries(prices)
                 for (const [id, prices_list] of entries) {
                     for (let j = 0; j < products_temp.length; j++) {
-                        if (products_temp[j].id === id) {
-                            if (prices_list[0] === unavailable_msg) {
+                        if (products_temp[j].id == id) {
+                            if (prices_list[0] == unavailable_msg) {
                                 products_temp[j]['lowest_price'] = unavailable_msg
                             } else {
                                 let price = Math.min.apply(Math, prices_list)
