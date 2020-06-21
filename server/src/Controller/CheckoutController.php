@@ -84,6 +84,7 @@ class CheckoutController extends AbstractController
                 ->setPrice($product->getPrice())
                 ->setPromo($product->getPromo())
                 ->setUserOrder($order);
+            if(($product->getStock() - ($value->quantity)) < 0) return $this->json(["message" => "Not enough stock for subproduct ID $value->subproduct_id"], 400);
             $product->setStock($product->getStock() - ($value->quantity));
             $em->persist($orderSubproducts);
             $em->persist($product);
@@ -186,7 +187,6 @@ class CheckoutController extends AbstractController
         }
 
         $order->setCost($price);
-        dd($price);
 
         if (isset($user)) {
             $user->addCardCredential($cardCredentials)
