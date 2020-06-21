@@ -39,7 +39,6 @@ class Checkout extends React.Component {
                     });
             }
         }
-
         axios.get(process.env.REACT_APP_API_LINK + "/api/region")
             .then((res) => {
                 return this.setState({ regions: res.data.data })
@@ -126,18 +125,18 @@ class Checkout extends React.Component {
         if (!s.cardchoice) {
             return toast.error('Please fill all the required informations', { position: 'top-center' });
         } else {
-            if (s.cardchoice === "NewCard") {
+            if (s.cardchoice == "NewCard") {
                 if (!s.cardfirstname || !s.cardlastname || !s.cardnumber || !s.expirymonth || !s.expiryyear)
                     return toast.error('Please fill all the required informations', { position: 'top-center' });
             } else {
-                if (s.cards[s.cardchoice].ccv !== parseInt(s.confirmccv)) {
+                if (s.cards[s.cardchoice].ccv != parseInt(s.confirmccv)) {
                     return toast.error('Error: CCV is not correct', { position: 'top-center' });
                 }
             }
         }
 
         let shippingAddress;
-        if (this.state.addresschoice !== "NewShippingAddress") {
+        if (this.state.addresschoice != "NewShippingAddress") {
             shippingAddress = this.state.shippingAddress[this.state.addresschoice].id
         }
         else {
@@ -156,11 +155,11 @@ class Checkout extends React.Component {
         let arrayOfObj = JSON.parse(sessionStorage.getItem("panier", []));
         arrayOfObj = arrayOfObj.map(({ productid, quantite }) => ({ subproduct_id: productid, quantity: quantite }));
         let billingAddress;
-        if (this.state.billing_addresschoice === 'true') {
+        if (this.state.billing_addresschoice == 'true') {
             billingAddress = shippingAddress
         } else {
-            if (this.state.billing_addresschoice !== "NewBillingAddress") {
-                billingAddress = this.state.billingAddress[this.state.billing_addresschoice].id
+            if (this.state.billing_addresschoice != "NewBillingAddress") {
+                billingAddress = parseInt(this.state.billingAddress[this.state.billing_addresschoice].id)
             }
             else {
                 billingAddress = {
@@ -177,12 +176,12 @@ class Checkout extends React.Component {
         }
 
         let CardDetails;
-        if (this.state.cardchoice !== "NewCard") {
+        if (this.state.cardchoice != "NewCard") {
             CardDetails = this.state.cards[this.state.cardchoice].id;
         }
         else {
             CardDetails = {
-                'user_id': this.props.auth.user !== null ? this.props.auth.user.id : null,
+                'user_id': this.props.auth.user != null ? this.props.auth.user.id : null,
                 'card_numbers': this.state.cardnumber,
                 'expiration_date': this.state.expirymonth + '/' + this.state.expiryyear,
                 'firstname': this.state.cardfirstname,
@@ -203,7 +202,7 @@ class Checkout extends React.Component {
             'subproducts': arrayOfObj
         }
 
-        console.log(this.state)
+        console.log(jsonRequest)
 
         const header = { "Content-Type": "application/json" };
         axios
@@ -220,12 +219,12 @@ class Checkout extends React.Component {
     }
 
     _next = () => {
-        if (this.state.currentStep === 1) {
+        if (this.state.currentStep == 1) {
             let s = this.state;
             if (!s.addresschoice) {
                 return toast.error('Please fill all the required informations', { position: 'top-center' });
             } else {
-                if (s.addresschoice === "NewShippingAddress") {
+                if (s.addresschoice == "NewShippingAddress") {
                     if (!s.email || !s.firstname || !s.lastname || !s.address || !s.city || !s.zip || !s.region || !s.country) {
                         return toast.error('Please fill all the required informations', { position: 'top-center' });
                     }
@@ -252,8 +251,8 @@ class Checkout extends React.Component {
                         let longestKey = null;
                         let shortestKey = null;
                         for (let [key, value] of Object.entries(this.state.shipping_methods)) {
-                            if (value.duration === Math.max.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { longestKey = parseInt(key) }
-                            if (value.duration === Math.min.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { shortestKey = parseInt(key) }
+                            if (value.duration == Math.max.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { longestKey = parseInt(key) }
+                            if (value.duration == Math.min.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { shortestKey = parseInt(key) }
                         }
                         this.setState({ "longestKey": longestKey })
                         this.setState({ "shortestKey": shortestKey })
@@ -263,7 +262,7 @@ class Checkout extends React.Component {
             }
         }
 
-        if (this.state.currentStep === 2) {
+        if (this.state.currentStep == 2) {
             let s = this.state;
             if (!s.shippingchoice)
                 return toast.error('Please choose a delivery option', { position: 'top-center' });
@@ -271,8 +270,8 @@ class Checkout extends React.Component {
             if (!s.billing_addresschoice)
                 return toast.error('Please fill all the required informations', { position: 'top-center' });
 
-            if (s.billing_addresschoice !== 'true') {
-                if (s.billing_addresschoice === "NewBillingAddress") {
+            if (s.billing_addresschoice != 'true') {
+                if (s.billing_addresschoice == "NewBillingAddress") {
                     if (!s.billing_firstname || !s.billing_lastname || !s.billing_address || !s.billing_city || !s.billing_zip || !s.billing_region || !s.billing_country || !s.shippingchoice)
                         return toast.error('Please fill all the required informations', { position: 'top-center' });
                 }
@@ -308,7 +307,7 @@ class Checkout extends React.Component {
     }
 
     _prev = () => {
-        if (this.state.currentStep === 2) {
+        if (this.state.currentStep == 2) {
             let hide = false
             this.props.callbackFromParent(hide);
         }
@@ -321,7 +320,7 @@ class Checkout extends React.Component {
 
     previousButton() {
         let currentStep = this.state.currentStep;
-        if (currentStep !== 1 && currentStep !== 4) {
+        if (currentStep != 1 && currentStep != 4) {
             return (
                 <button
                     className="btn btn-secondary"
@@ -344,7 +343,7 @@ class Checkout extends React.Component {
                 </button>
             )
         }
-        if (currentStep === 3) {
+        if (currentStep == 3) {
             return (
                 <> <button className="btn btn-success float-right" type="button" onClick={this.handleSubmit}>Pay Now</button>
                 </>
@@ -369,7 +368,6 @@ class Checkout extends React.Component {
         else {
             regions = "Impossible to ship currently"
         }
-
 
         return (
             <>
@@ -422,27 +420,37 @@ class Checkout extends React.Component {
 }
 
 function Step1(props) {
+
     let ShippoingAdressOptions = []
     if (props.data.shippingAddress != null) {
         for (let [key, value] of Object.entries(props.data.shippingAddress)) {
-            ShippoingAdressOptions.push(
-                <div key={"address_" + key} className="col-md-12">
-                    <label className="control control-radio w-100 form-check-label" htmlFor={"addresschoice" + key}>
-                        <input className="form-check-input checkbox-style" type="radio" name="addresschoice" id={"addresschoice" + key} value={key} onChange={props.handleChange} />
-                        <div className="control_indicator"></div>
-                        <div className="alert alert-secondary p-0">
-                            <div className="d-flex flex-column">
-                                <div className="pl-3 pt-1">{value.firstname} {value.lastname}</div>
-                                <div className="pl-3 p-0">{value.address}</div>
-                                <div className="pl-3 pb-1">{value.city} {value.zipcode} {value.country} </div>
-                            </div>
-                        </div>
-                    </label>
-                </div >
-            )
+            if (props.data.regions) {
+                props.data.regions.map((e) => {
+                    if (!e.restricted) {
+                        if (e.id == value.region.id) {
+                            ShippoingAdressOptions.push(
+                                <div key={"address_" + key} className="col-md-12">
+                                    <label className="control control-radio w-100 form-check-label" htmlFor={"addresschoice" + key}>
+                                        <input className="form-check-input checkbox-style" type="radio" name="addresschoice" id={"addresschoice" + key} value={key} onChange={props.handleChange} />
+                                        <div className="control_indicator"></div>
+                                        <div className="alert alert-secondary p-0">
+                                            <div className="d-flex flex-column">
+                                                <div className="pl-3 pt-1">{value.firstname} {value.lastname}</div>
+                                                <div className="pl-3 p-0">{value.address}</div>
+                                                <div className="pl-3 pb-1">{value.city} {value.zipcode} {value.country} - {value.region.name}</div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div >
+                            )
+
+                        }
+                    }
+                })
+            }
         }
     }
-    if (props.currentStep !== 1) {
+    if (props.currentStep != 1) {
         return null
     }
     return (
@@ -509,42 +517,57 @@ function Step1(props) {
 }
 
 function Step2(props) {
-    if (props.currentStep !== 2) {
+    if (props.currentStep != 2) {
         return null
     }
     else {
         let BillingAdressOptions = []
         if (props.data.billingAddress != null) {
             for (let [key, value] of Object.entries(props.data.billingAddress)) {
-                BillingAdressOptions.push(
-                    <div key={"address_" + key} className="col-md-12">
-                        <label className="control control-radio w-100 form-check-label" htmlFor={"billing_addresschoice" + key}>
-                            <input className="form-check-input checkbox-style" type="radio" name="billing_addresschoice" id={"billing_addresschoice" + key} value={key} onChange={props.handleChange} />
-                            <div className="control_indicator"></div>
-                            <div className="alert alert-secondary p-0">
-                                <div className="d-flex flex-column">
-                                    <div className="pl-3 pt-1">{value.firstname} {value.lastname}</div>
-                                    <div className="pl-3 p-0">{value.address}</div>
-                                    <div className="pl-3 pb-1">{value.city} {value.zipcode} {value.country} </div>
-                                </div>
-                            </div>
-                        </label>
-                    </div >
-                )
+                if (props.data.regions) {
+                    props.data.regions.map((e) => {
+                        if (!e.restricted) {
+                            if (e.id == value.region.id) {
+                                BillingAdressOptions.push(
+                                    <div key={"address_" + key} className="col-md-12">
+                                        <label className="control control-radio w-100 form-check-label" htmlFor={"billing_addresschoice" + key}>
+                                            <input className="form-check-input checkbox-style" type="radio" name="billing_addresschoice" id={"billing_addresschoice" + key} value={key} onChange={props.handleChange} />
+                                            <div className="control_indicator"></div>
+                                            <div className="alert alert-secondary p-0">
+                                                <div className="d-flex flex-column">
+                                                    <div className="pl-3 pt-1">{value.firstname} {value.lastname}</div>
+                                                    <div className="pl-3 p-0">{value.address}</div>
+                                                    <div className="pl-3 pb-1">{value.city} {value.zipcode} {value.country} -  {value.region.name} </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div >
+                                )
+                            }
+                        }
+                    })
+                }
             }
         }
         const items = []
         if (props.data.shipping_methods) {
             for (let [key, value] of Object.entries(props.data.shipping_methods)) {
+
+                console.log("lowest proce >", props.data.lowestPriceKey, "fastest >", props.data.shortestKey)
+
+                if (props.data.lowestPriceKey == key) {
+                    console.log('name >', value.name)
+
+                }
                 items.push(
                     <div key={"choice_" + key} className={key != props.data.lowestPriceKey ? "col-md-12 m-0 p-0 order-1" : "m-0 p-0 col-md-12"}>
                         <label className="control control-radio w-100 form-check-label" htmlFor={"shippingchoice" + key}>
                             <input className="form-check-input checkbox-style" type="radio" name="shippingchoice" id={"shippingchoice" + key} value={key} onChange={props.handleChange} />
                             <div className="control_indicator"></div>
-                            <div className={key === props.data.lowestPriceKey ? "alert alert-primary" : key === props.data.longestKey ? "alert-success alert" : key === props.data.shortestKey ? "alert alert-warning" : "alert alert-secondary"} >
+                            <div className={key == props.data.lowestPriceKey ? "alert alert-primary" : key == props.data.longestKey ? "alert-success alert" : key == props.data.shortestKey ? "alert alert-warning" : "alert alert-secondary"} >
                                 <div className="col-md-12 d-flex">
                                     <div className="col-md-6 m-0 p-0">
-                                        <h5>{key === props.data.lowestPriceKey ? "Our best" : key === props.data.longestKey ? "Our greenest" : key === props.data.shortestKey ? "Our fastest" : "Another"} option :</h5>
+                                        <h5>{key == props.data.lowestPriceKey ? "Our best" : key == props.data.longestKey ? "Our greenest" : key == props.data.shortestKey ? "Our fastest" : "Another"} option :</h5>
                                         <div className="bd-highlight text-nowrap">Carrier: {value.name}</div>
                                     </div>
                                     <div className="col-md-6">
@@ -579,20 +602,7 @@ function Step2(props) {
                         {items}
                     </div>
                     <legend>Billing address</legend>
-                    <div className="form-row col-md-12">
-                        <div className="form-row col-md-12">
-                            <h5>Is your billing address the same as your shipping adress?</h5>
-                        </div>
-                        <div className="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="customRadioInline1" name="billing_addresschoice" value='true' className="custom-control-input" onChange={props.handleChange} />
-                            <label className="custom-control-label" htmlFor="customRadioInline1">Yes</label>
-                        </div>
-                        <div className="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="customRadioInline2" name="billing_addresschoice" value="false" className="custom-control-input" onChange={props.handleChange} />
-                            <label className="custom-control-label" htmlFor="customRadioInline2">No</label>
-                        </div>
-                    </div>
-                    <div className={props.showstatus == false ? "form-row  mt-3 col-md-12 hiding" : "form-row    mt-3  col-md-12 show"}>
+                    <div className={props.showstatus == false ? "form-row  mt-3 col-md-12 " : "form-row    mt-3  col-md-12 "}>
                         {BillingAdressOptions}
 
                         <div className="alert w-100 alert-secondary">
@@ -615,7 +625,7 @@ function Step2(props) {
 
                                     <div className="form-group  col-md-12">
                                         <label htmlFor="inputAddress">Address</label>
-                                        <input type="text" className="form-control" id="inputAddress" placeholder="Address" defaultValue={props.data.billing_address ? props.data.billing_address : null} name='billing_adress' placeholder="Address" onChange={props.handleChange} />
+                                        <input type="text" className="form-control" id="inputAddress" placeholder="Address" defaultValue={props.data.billing_address ? props.data.billing_address : null} name='billing_address' placeholder="Address" onChange={props.handleChange} />
                                     </div>
                                     <div className="form-row  col-md-12">
                                         <div className="form-group col-md-6">
@@ -657,7 +667,7 @@ function Step2(props) {
 }
 
 function Step3(props) {
-    if (props.currentStep !== 3) {
+    if (props.currentStep != 3) {
         return null
     }
     else {
@@ -801,7 +811,7 @@ function Step3(props) {
 }
 
 function Step4(props) {
-    if (props.currentStep !== 4) {
+    if (props.currentStep != 4) {
         return null
     }
     return (

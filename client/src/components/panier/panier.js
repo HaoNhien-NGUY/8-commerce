@@ -77,6 +77,7 @@ class Panier extends Component {
         products.push(item)
       });
       this.setState({ productsCart: products, nombreTotal: newtotal, prixTotal: newprice })
+      window.location.reload(true)
     }
   }
 
@@ -90,32 +91,6 @@ class Panier extends Component {
       inputlist.forEach(function (element) { element.removeAttribute("disabled"); })
     }
   }
-
-
-  // checkpromo(e) {
-  //   // console.log(, typeof document.getElementById('promocode').value)
-  //   e.preventDefault();
-  //   let code = document.getElementById('promocode').value;
-
-  //   let jsonRequest = {
-  //     'promocode': code,
-  //   }
-  //   axios
-  //     .post(
-  //       process.env.REACT_APP_API_LINK + "/api/promocode",
-  //       jsonRequest,
-  //       { headers: { "Content-Type": "application/json" } }
-  //     )
-  //     .then((res) => {
-  //       console.log(res.data)
-  //       this.setState({ promocode_details: res.data });
-  //       console.log(this.state)
-  //     })
-  //     .catch((error) => {
-
-  //     });
-  // }
-
 
   onsuppress(e) {
     let id = e.id.replace("button_", "")
@@ -146,8 +121,6 @@ class Panier extends Component {
 
   render() {
     const Message = [];
-
-
     if (this.state.nombreTotal == 0)
       Message.push(
         <div key="empty-cart" className="statutpanier col m-0 p-4">
@@ -159,7 +132,6 @@ class Panier extends Component {
       <>
         {this.state.nombreTotal == 0 ? <div key={this.state.key} className="h-100 container-fluid  m-0 p-0">
           <div className="row h-100 m-0 p-0">
-
             <div className="col-12 order-first order-lg-last order-md-first order-sm-first productImgBg m-0 p-3">
               <ToastContainer />
               <div id="LargeCart" className="LargeCart">
