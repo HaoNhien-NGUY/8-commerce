@@ -77,7 +77,7 @@ class Panier extends Component {
         products.push(item)
       });
       this.setState({ productsCart: products, nombreTotal: newtotal, prixTotal: newprice })
-      window.location.reload(true)
+    //   window.location.reload(true)
     }
   }
 
