@@ -84,12 +84,14 @@ class CheckoutController extends AbstractController
                 ->setPrice($product->getPrice())
                 ->setPromo($product->getPromo())
                 ->setUserOrder($order);
+            $product->setStock($product->getStock() - ($value->quantity));
             $em->persist($orderSubproducts);
+            $em->persist($product);
 
             $currentPrice = $product->getWeight() * $pricing->getPricePerKilo() * $value->quantity;
             $basePrice = $product->getPrice();
             $promo = $product->getPromo();
-            $productPrice = $promo ? $basePrice - ($basePrice * ($product->getPromo() / 100)) : $basePrice;
+            $productPrice = $promo ? $basePrice - ($basePrice * ($promo / 100)) : $basePrice;
             $currentPrice += $productPrice * $value->quantity;
             $price += $currentPrice;
         }
@@ -178,7 +180,7 @@ class CheckoutController extends AbstractController
             }
         }
 
-        if(isset($req->packaging_id)) {
+        if (isset($req->packaging_id)) {
             $packaging = $this->getDoctrine()->getRepository(Packaging::class)->find($req->packaging_id);
             $order->setPackaging($packaging);
         }
