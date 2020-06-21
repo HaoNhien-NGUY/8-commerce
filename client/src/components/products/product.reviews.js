@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useLayoutEffect} from 'react';
 import axios from 'axios';
-import $ from 'jquery';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -12,8 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 function ReviewPart({id, auth}) {
-  const link = app.env.REACT_APP_API_LINK;
-
+  const link = process.env.REACT_APP_API_LINK;
   const [showForm, setShowForm] = useState(false)
   const [reviews, setReviews] = useState([])
   const [reviewsReady, setReviewsReady] = useState(false)
@@ -36,6 +34,7 @@ function ReviewPart({id, auth}) {
 
 
   useEffect (() => {
+    console.log("🔰", reviews)
     axios
       .get(link+"/api/review/product/"+id_product)
         .then( async (res) => {
@@ -48,6 +47,7 @@ function ReviewPart({id, auth}) {
   }, [reviewsReady])
 
   useEffect(() => {
+    console.log("🔷", reviews)
     initializeReviews();
   }, [reviews])
 
