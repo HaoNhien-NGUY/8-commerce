@@ -34,6 +34,7 @@ const UpdateBilllingAddress = ({idUser, config, idAddress, closeModal}) => {
             setGetRegion(res.data.region.id);
             setFirstname(res.data.firstname);
             setLastname(res.data.lastname);
+            setRegion(res.data.region.id);
         }).catch(err => {
         console.log(err);
         })
