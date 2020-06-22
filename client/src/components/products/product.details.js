@@ -6,6 +6,18 @@ import ReactImageMagnify from "react-image-magnify";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./products.css";
+import {
+  FacebookShareCount, OKShareCount, PinterestShareCount, RedditShareCount, TumblrShareCount, VKShareCount
+} from "react-share";
+import {
+  EmailIcon, FacebookIcon, FacebookMessengerIcon, InstapaperIcon, LineIcon, LinkedinIcon, LivejournalIcon, MailruIcon,
+  OKIcon, PinterestIcon, PocketIcon, RedditIcon, TelegramIcon, TumblrIcon, TwitterIcon, ViberIcon, VKIcon, WeiboIcon, WhatsappIcon, WorkplaceIcon
+} from "react-share";
+import {
+  EmailShareButton, FacebookShareButton, InstapaperShareButton, LineShareButton, LinkedinShareButton, LivejournalShareButton,
+  MailruShareButton, OKShareButton, PinterestShareButton, PocketShareButton, RedditShareButton, TelegramShareButton, TumblrShareButton, TwitterShareButton,
+  ViberShareButton, VKShareButton, WhatsappShareButton, WorkplaceShareButton
+} from "react-share";
 
 import ReviewPart from './product.reviews';
 import PersonalizedSugg from './product.sugg';
@@ -69,7 +81,7 @@ function ProductDescription() {
       setLowestPrice(product_temp["lowest_price"]);
     });
 
-    return () => {};
+    return () => { };
   }, []);
 
   const [completeDes, setCompleteDes] = useState(".. More ⇒");
@@ -292,8 +304,8 @@ function ProductDescription() {
                 </span>
               </>
             ) : (
-              chosenSubProduct.price + "€"
-            )
+                chosenSubProduct.price + "€"
+              )
           ) : HighestPromo > 0 ? (
             <>
               Starts at{" "}
@@ -306,8 +318,8 @@ function ProductDescription() {
               </span>
             </>
           ) : (
-            "Starts at " + details.price + "€"
-          )}{" "}
+                "Starts at " + details.price + "€"
+              )}{" "}
         </h3>
         <p className="description">
           {details.description_1}
@@ -364,18 +376,18 @@ function ProductDescription() {
               <b>{chosenSubProduct.stock}</b> items available
             </span>
           ) : (
-            <span>
-              <b>{countstockAll}</b> total items available
-            </span>
-          )}
+              <span>
+                <b>{countstockAll}</b> total items available
+              </span>
+            )}
         </p>
         {product.status == true ? (
           <button onClick={addCart} className="btn-cart">
             Add to cart
           </button>
         ) : (
-          <button className="btn-cart">Out of stock</button>
-        )}
+            <button className="btn-cart">Out of stock</button>
+          )}
       </div>
     );
   };
@@ -505,13 +517,13 @@ function ProductDescription() {
                 <div className="ImageContainer">{imageProduct}</div>
               </>
             ) : (
-              <>
-                <div className="ulImgProduct unavailable">
-                  {miniImageProduct}
-                </div>
-                <div className="ImageContainer unavailable">{imageProduct}</div>
-              </>
-            )}
+                <>
+                  <div className="ulImgProduct unavailable">
+                    {miniImageProduct}
+                  </div>
+                  <div className="ImageContainer unavailable">{imageProduct}</div>
+                </>
+              )}
           </div>
           <div className="col-md-5 m-0 p-0">
             {product.subproducts && product.subproducts.length > 0
@@ -521,7 +533,52 @@ function ProductDescription() {
         </div>
         <div className="row m-0 p-0">
           <div className="col-sm-12">
-            <ReviewPart id={id}/>
+            <FacebookShareButton url={window.location.href}>
+              <FacebookIcon></FacebookIcon>
+            </FacebookShareButton>
+            <EmailShareButton url={window.location.href}>
+              <EmailIcon></EmailIcon>
+            </EmailShareButton>
+            <RedditShareButton url={window.location.href}>
+              <RedditIcon></RedditIcon>
+            </RedditShareButton>
+            <TumblrShareButton url={window.location.href}>
+              <TumblrIcon></TumblrIcon>
+            </TumblrShareButton>
+            <TwitterShareButton url={window.location.href}>
+              <TwitterIcon></TwitterIcon>
+            </TwitterShareButton>
+            <WhatsappShareButton url={window.location.href}>
+              <WhatsappIcon></WhatsappIcon>
+            </WhatsappShareButton>
+            {/* <LineShareButton url={window.location.href}>
+              <LineIcon></LineIcon>
+            </LineShareButton>
+            <InstapaperShareButton url={window.location.href}>
+              <InstapaperIcon></InstapaperIcon>
+            </InstapaperShareButton>
+            <LivejournalShareButton url={window.location.href}>
+              <LivejournalIcon></LivejournalIcon>
+            </LivejournalShareButton>
+            <MailruShareButton url={window.location.href}>
+              <MailruIcon></MailruIcon>
+            </MailruShareButton>
+            <OKShareButton url={window.location.href}>
+              <OKIcon></OKIcon>
+            </OKShareButton>
+            <PocketShareButton url={window.location.href}>
+              <PocketIcon></PocketIcon>
+            </PocketShareButton>
+            <TelegramShareButton url={window.location.href}>
+              <TelegramIcon></TelegramIcon>
+            </TelegramShareButton>
+            <VKShareButton url={window.location.href}>
+              <VKIcon></VKIcon>
+            </VKShareButton>
+            <WorkplaceShareButton url={window.location.href}>
+              <WorkplaceIcon></WorkplaceIcon>
+            </WorkplaceShareButton> */}
+            <ReviewPart id={id} />
           </div>
           <div className="col-sm-12">
             <PersonalizedSugg />
