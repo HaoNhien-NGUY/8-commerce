@@ -60,7 +60,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->setParameter('userid', $userId)
             ->setParameter('productid', $productId)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
 
     // /**
