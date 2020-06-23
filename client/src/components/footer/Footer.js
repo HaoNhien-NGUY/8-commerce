@@ -7,7 +7,7 @@ export default class Footer extends Component {
     return (
       <>
         <div className="container-fluid">
-          <div className="row">
+          <div className="row justify-content-between">
             <div className="col-1 footer-link">
               <p>Shop</p>
               <a href='/'>
@@ -65,15 +65,13 @@ export default class Footer extends Component {
               </a>
             </div>
 
-            <div className="ml-auto col-2">
-              <p className="newsletter-font">Exclusive benefits</p>
-              <input className="newsletter-input" type="email" placeholder="Enter email here →"></input>
-              <p className="newsletter-font my-3">Apply for our free membership to receive exclusive deals, news and events.</p>
-            </div>
+            <div className="ml-auto col-5 text-center">
+            <a class="twitter-timeline" data-width="500" data-height="400" data-theme="light" href="https://twitter.com/Timberland?ref_src=twsrc%5Etfw">Tweets by Timberland</a>
+             </div>
           </div>
         </div>
 
-        <div className="footer-link-sm my-4">
+        <div className="footer-link-sm my-2">
           <a href='/'>
             ©8-commerce 2020
           </a>
@@ -90,7 +88,7 @@ export default class Footer extends Component {
             FAQ
           </a>
         </div>
-      </>
+        </>
     )
   }
 }
