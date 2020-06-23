@@ -19,6 +19,8 @@ import Region from './TabRegion/TabRegion';
 import Promo from './TabPromo/TabPromo';
 import Color from './Color/Color';
 import Packaging from './TabPackaging/TabPackaging';
+import Reviews from './TabReviews/TabReviews';
+
 
 const AdminInterface = () => {
     const [products, setProducts] = useState([]);
@@ -566,6 +568,7 @@ const AdminInterface = () => {
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">public</i>Region</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">money_off</i>Code Promo</h3></Tab>
                     <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">redeem</i>Packaging</h3></Tab>
+                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">mode_comment</i>Reviews</h3></Tab>
                 </TabList>
                 <TabPanel>
                     {AllProducts()}
@@ -590,6 +593,9 @@ const AdminInterface = () => {
                 </TabPanel>
                 <TabPanel>
                     <Packaging />
+                </TabPanel>
+                <TabPanel>
+                    <Reviews />
                 </TabPanel>
             </Tabs>
         </div>
