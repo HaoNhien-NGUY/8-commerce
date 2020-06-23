@@ -26,13 +26,13 @@ const Reviews = () => {
     }, [offset]);
 
     useEffect(() => {
-        if (postDataPromos === null) {setOffset(offset - limit);}
+        if (postDataPromos === null) { setOffset(offset - limit); }
         // receivedData()
     }, [postDataPromos]);
 
     useEffect(() => {
-      receivedData()
-  }, [reviewsReady]);
+        receivedData()
+    }, [reviewsReady]);
 
     useEffect(() => {
         if (pageCount < offset) setOffset(0);
@@ -44,11 +44,11 @@ const Reviews = () => {
             await setPageCount(Math.ceil(res.data.nbResults / limit));
             const newPostDataPromos = res.data.length > 0 ? res.data.map((promo) =>
                 <tr key={promo.id}>
-                <td><p className="m-2">{promo.rating ? promo.rating : "-" } ⭐</p></td>
-                <td><p className="m-2 align-items-center">{promo.username}</p></td>
-                <td><p className="m-2">{promo.title}</p></td>
-                <td><p className="m-2">{promo.description}</p></td>
-                <td> <button className="btn btn-outline-danger m-1 md-force-align" onClick={() => { setDeleteCodeModal(true); setReviewToDelete(promo.id) }}><i className="material-icons md-24">delete</i></button></td>
+                    <td><p className="m-2">{promo.rating ? promo.rating : "-"} ⭐</p></td>
+                    <td><p className="m-2 align-items-center">{promo.username}</p></td>
+                    <td><p className="m-2">{promo.title}</p></td>
+                    <td><p className="m-2">{promo.description}</p></td>
+                    <td> <button className="btn btn-outline-danger m-1 md-force-align" onClick={() => { setDeleteCodeModal(true); setReviewToDelete(promo.id) }}><i className="material-icons md-24">delete</i></button></td>
                 </tr>
             ) : null
             setPostDataPromos(newPostDataPromos);
@@ -66,17 +66,17 @@ const Reviews = () => {
     };
 
     const deleteReview = (e) => {
-      axios
-      .delete(process.env.REACT_APP_API_LINK+'/api/review/'+reviewToDelete)
-        .then( async e => {
-          toast.success('Review correctly deleted!', { position: "top-center"});
-          setReviewToDelete(null)
-          setDeleteCodeModal(false)
-          setReviewsReady(false)
-        })
-        .catch( err => {
-          toast.error('Error, the review can\'t be deleted !', {position: 'top-center'});
-        })
+        axios
+            .delete(process.env.REACT_APP_API_LINK + '/api/review/' + reviewToDelete)
+            .then(async e => {
+                toast.success('Review correctly deleted!', { position: "top-center" });
+                setReviewToDelete(null)
+                setDeleteCodeModal(false)
+                setReviewsReady(false)
+            })
+            .catch(err => {
+                toast.error('Error, the review can\'t be deleted !', { position: 'top-center' });
+            })
     }
 
     return (
@@ -90,15 +90,15 @@ const Reviews = () => {
                     </Modal.Body>
                 </Modal>
             </div>
-            <div className="row border p-2">
+            <div className="row border  bg-light  p-2">
                 <table>
                     <thead>
-                      <tr>
-                        <th><p className="m-2"> Rating </p></th>
-                        <th><p className="m-2 align-items-center"> Username </p></th>
-                        <th><p className="m-2"> Title </p></th>
-                        <th><p className="m-2"> Description </p></th>
-                      </tr>
+                        <tr>
+                            <th><p className="m-2"> Rating </p></th>
+                            <th><p className="m-2 align-items-center"> Username </p></th>
+                            <th><p className="m-2"> Title </p></th>
+                            <th><p className="m-2"> Description </p></th>
+                        </tr>
                     </thead>
                     <tbody>{postDataPromos}</tbody>
                 </table>

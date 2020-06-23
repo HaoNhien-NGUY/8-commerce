@@ -50,7 +50,7 @@ const Region = () => {
                     <td><p className="m-2">{region.restricted ? 'Yes' : 'No'}</p></td>
                     <td><button className="btn btn-outline-info m-1" onClick={() => { setRegionId(region.id); setRegionName(region.name); setRestriction(region.restricted); setShowUpdate(true) }}>Modify</button></td>
                     {/* <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteRegion(region.id)}> Delete </button></td> */}
-                </tr>,              
+                </tr>,
             ) : null
             setPostDataRegions(newPostDataRegions);
         }).catch(error => {
@@ -61,7 +61,7 @@ const Region = () => {
 
     const onSubmitRegion = (e) => {
         e.preventDefault();
-        console.log('restriction ', restriction )
+        console.log('restriction ', restriction)
         if (regionName.length === 0) {
             return toast.error("You need to enter a region", { position: "top-center" });
         }
@@ -163,7 +163,7 @@ const Region = () => {
                     </Modal.Body>
                 </Modal>
             </div>
-            <div className="row border p-2">
+            <div className="row border  bg-light  p-2">
                 <table>
                     <thead>
                         <tr>

@@ -49,11 +49,11 @@ const SubProductInterface = () => {
     useEffect(() => {
         receivedData();
     }, [offset])
-    
+
     useEffect(() => {
         setOffset(0);
-      }, [pageCount]);
-      
+    }, [pageCount]);
+
     const receivedData = () => {
         axios.get(process.env.REACT_APP_API_LINK + "/api/product/" + id, config)
             .then(async res => {
@@ -171,7 +171,7 @@ const SubProductInterface = () => {
                     + New Subproduct for <b>{titleProduct}</b>
                 </button>
             </div>
-            <div className="row border p-2">
+            <div className="row  bg-light border p-2">
                 <table>
                     <thead>
                         {pageCount > 0 &&
@@ -199,7 +199,7 @@ const SubProductInterface = () => {
                                     <button onClick={e => e.preventDefault() + handleShow(id, subproduct.id)} className="btn btn-outline-success m-2">Add Image</button>
                                 </td>
                                 <td> <button onClick={() => window.location.href = '/admin/subproduct/' + id + '/' + subproduct.id + '/update'} className="btn btn-outline-info m-2">Modify</button></td>
-                                <td> <button onClick={() => {setSubProductId(subproduct.id); setDeleteSubProductModal(true)}} className="btn btn-outline-danger m-2">Delete</button></td>
+                                <td> <button onClick={() => { setSubProductId(subproduct.id); setDeleteSubProductModal(true) }} className="btn btn-outline-danger m-2">Delete</button></td>
                             </tr>
                         ) : null}
                         <Modal show={show} onHide={handleClose}>
@@ -232,12 +232,12 @@ const SubProductInterface = () => {
                     </tbody>
                 </table>
                 <Modal show={deleteSubProductModal} onHide={() => setDeleteSubProductModal(false)}>
-                        <Modal.Header closeButton>Are you sure to delete this subproduct? This action can't go back</Modal.Header>
-                        <Modal.Body>
-                        <Button color="warning" className="mt-4" onClick={() =>  setDeleteSubProductModal(false)} block>No, go back</Button>
-                          <Button color="danger" className="mt-4" onClick={() => {deleteSubProduct(subProductId); setDeleteSubProductModal(false)}} block>Yes, i'm sure about delete this SubProduct</Button>
-                        </Modal.Body>
-                    </Modal>
+                    <Modal.Header closeButton>Are you sure to delete this subproduct? This action can't go back</Modal.Header>
+                    <Modal.Body>
+                        <Button color="warning" className="mt-4" onClick={() => setDeleteSubProductModal(false)} block>No, go back</Button>
+                        <Button color="danger" className="mt-4" onClick={() => { deleteSubProduct(subProductId); setDeleteSubProductModal(false) }} block>Yes, i'm sure about delete this SubProduct</Button>
+                    </Modal.Body>
+                </Modal>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>

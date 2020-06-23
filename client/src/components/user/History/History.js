@@ -20,7 +20,7 @@ function ShowOrder(props) {
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_LINK + "/api/user/" + props.idUser + "/orders").then(res => {
             setTableOrder(res.data.userOrders)
-            const newDataHistory = res.data.userOrders.map(e => 
+            const newDataHistory = res.data.userOrders.map(e =>
                 <tr key={e.id}>
                     <td scope="row" className=""><p className=" ml=3 mt-3 mb-3 align-items-center">{e.trackingNumber}</p></td>
                     <td><p className=" mr-3 mt-3 mb-3 ml-1 align-items-center">{e.status != "" ? "Delivered" : " In transition"}</p></td>
@@ -30,7 +30,7 @@ function ShowOrder(props) {
                     <td>
                         <p className=" mt-3 mb-3 mr-3 align-items-center">
                             <button className="btn btn-outline-secondary m-0" onClick={() => window.location.href = '/command?order=' + e.trackingNumber}>
-                                Show 
+                                Show
                             </button>
                         </p>
                     </td>
@@ -112,14 +112,14 @@ function ShowOrder(props) {
                     {tableOrder.map((res, index) =>
                         <Table key={index}>
                             <TableBody data={[{ order: res }]}>
-                                <DataTableCell style={styles.padding} getContent={(r) => r.order.trackingNumber.substr(0,16) + "\n" + r.order.trackingNumber.substr(16,32)} />
+                                <DataTableCell style={styles.padding} getContent={(r) => r.order.trackingNumber.substr(0, 16) + "\n" + r.order.trackingNumber.substr(16, 32)} />
                                 <DataTableCell getContent={(r) => r.order.status != "" ? "Delivered" : " In transition"} />
                                 <DataTableCell getContent={(r) => r.order.packaging !== null ? r.order.packaging.name : "whithout"} />
                                 <DataTableCell getContent={(r) => getDate(r.order.createdAt)} />
                                 <DataTableCell getContent={(r) => r.order.cost} />
                             </TableBody>
                         </Table>
-                    )}                 
+                    )}
                 </View>
             </Page>
         </Document>
@@ -136,34 +136,34 @@ function ShowOrder(props) {
 
     return (
         <>
-            { 
+            {
                 showPDF ? <App /> :
-                <>
-                    <div className="d-flex justify-content-between">
-                        <h1>Order History</h1>
-                        <p className="float-right mt-3">
-                            Get the PDF history
+                    <>
+                        <div className="d-flex justify-content-between">
+                            <h1>Order History</h1>
+                            <p className="float-right mt-3">
+                                Get the PDF history
                             <span className="getpdf" onClick={getPDF}><i className="material-icons md-45 marg ml-2 down">save_alt</i></span>
-                        </p>
-                    </div>
-                    <div className="mt-3 row border p-2">
-                        <table className="">
-                            <tbody>
-                                <tr className="">
-                                    <th className="pr-3">TrackingNumber</th>
-                                    <th className="pr-3">Status</th>
-                                    <th className="pr-3">Packaging</th>
-                                    <th className="pr-3">Date</th>
-                                    <th className="pr-3">Price</th>
-                                    <th className="pr-3">Details</th>
-                                    {/* <th className="pr-3">Invoice</th> */}
-                                </tr>
-                                {history.length > 0 ? history : null}
-                            </tbody>
-                        </table>
-                        {history.length > 0 ? null : <h1 className="noOrder">No order set</h1>}
-                    </div>
-                </>
+                            </p>
+                        </div>
+                        <div className="mt-3 row border  bg-light  p-2">
+                            <table className="">
+                                <tbody>
+                                    <tr className="">
+                                        <th className="pr-3">TrackingNumber</th>
+                                        <th className="pr-3">Status</th>
+                                        <th className="pr-3">Packaging</th>
+                                        <th className="pr-3">Date</th>
+                                        <th className="pr-3">Price</th>
+                                        <th className="pr-3">Details</th>
+                                        {/* <th className="pr-3">Invoice</th> */}
+                                    </tr>
+                                    {history.length > 0 ? history : null}
+                                </tbody>
+                            </table>
+                            {history.length > 0 ? null : <h1 className="noOrder">No order set</h1>}
+                        </div>
+                    </>
             }
         </>
     )
