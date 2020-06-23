@@ -36,6 +36,30 @@ class UserOrderRepository extends ServiceEntityRepository
     }
     */
 
+    //SELECT COUNT(user_id) FROM user_order WHERE user_id IS NOT NULL 
+
+
+    public function countRegisteredBuyersResults()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(DISTINCT u.user)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countUnregisteredBuyersResults()
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = "SELECT COUNT(id) as unregistered_buyers FROM user_order WHERE user_id IS NULL";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+
+    // SELECT COUNT(id) FROM user_order WHERE user_id IS NULL
+
     /*
     public function findOneBySomeField($value): ?UserOrder
     {
