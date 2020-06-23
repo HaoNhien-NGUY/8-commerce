@@ -3,6 +3,7 @@ import $ from 'jquery';
 import axios from 'axios';
 import { Parallax } from "react-parallax";
 import SliderPromo from './sliderPromo'
+import Footer from '../footer/Footer';
 
 const image1 = "https://i.imgur.com/wtIes8O.jpg";
 function Home() {
@@ -72,7 +73,7 @@ function Home() {
     }
 
     return (
-        <div className="container-fluid h-100 p-0 m-0">
+        <div className="container-fluid h-100 p-0 m-0" >
             <Parallax bgImage={image1} strength={500}>
                 <div className="HomeJumbotron">
                     <div>We can do anything,
@@ -83,7 +84,7 @@ function Home() {
             <div className="row justify-content-center m-0 p-0">
                 <SliderPromo />
             </div>
-            <div className="row justify-content-around m-0 p-0">
+            <div className="row justify-content-around m-0 p-0" style={{ borderBottom: "1px solid lightgrey" }}>
                 {products.map((e) => {
                     return (
                         <div className="col-md-4 m-0 p-0" key={e.id}>
@@ -126,6 +127,9 @@ function Home() {
                         </div>
                     )
                 })}
+            </div>
+                <div className="col-sm-12 mt-5">
+                  <Footer />
             </div>
         </div>
     )
