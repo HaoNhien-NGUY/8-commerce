@@ -24,9 +24,9 @@ class ReviewController extends AbstractController
     /**
      * @Route("/api/review", name="review_index", methods="GET")
      */
-    public function index(ReviewRepository $reviewRepository)
+    public function index(Request $request, ReviewRepository $reviewRepository)
     {
-        $reviews = $reviewRepository->findAll();
+        $reviews = $reviewRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
         if(!$reviews){
             return $this->json(['message' => 'No review found'], 404);
         }
