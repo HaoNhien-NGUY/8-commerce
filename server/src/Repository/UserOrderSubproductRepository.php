@@ -19,6 +19,58 @@ class UserOrderSubproductRepository extends ServiceEntityRepository
         parent::__construct($registry, UserOrderSubproduct::class);
     }
 
+    public function getSubProduct()
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = "SELECT DISTINCT subproduct_id FROM user_order_subproduct";
+        // OR description REGEXP ?  IF WE WANT TO ADD BY DESCRIPTION AS WELL
+        $stmt = $conn->prepare($sql);
+        // $stmt->bindParam(2, $searchString, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function findSubCategorySoldProduct()
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.subproduct', 's')
+            ->leftJoin('s.product', 'p')
+            ->leftJoin('p.subCategory', 'sc')
+            ->select('sc.name')
+            ->getQuery()
+            ->getResult();
+    }
+    
+    public function findCategorySoldProduct()
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.subproduct', 's')
+            ->leftJoin('s.product', 'p')
+            ->leftJoin('p.subCategory', 'sc')
+            ->leftJoin('sc.Category','c')
+            ->select('c.name')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    // public function findSearchProduct($data)
+    // {
+    //     $conn = $this->getEntityManager()
+    //         ->getConnection();
+    //     $sql = "SELECT * FROM category 
+    //     LEFT JOIN subproduct ON product.id = subproduct.product_id 
+    //     WHERE title REGEXP ? GROUP BY product.id ORDER BY product.clicks DESC LIMIT 5";
+    //     // OR description REGEXP ?  IF WE WANT TO ADD BY DESCRIPTION AS WELL
+    //     $stmt = $conn->prepare($sql);
+    //     $stmt->bindParam(1, $data['search'], PDO::PARAM_STR);
+    //     // $stmt->bindParam(2, $searchString, PDO::PARAM_STR);
+    //     $stmt->execute();
+    //     return $stmt->fetchAll();
+    // }
+
+
     // /**
     //  * @return UserOrderSubproduct[] Returns an array of UserOrderSubproduct objects
     //  */
