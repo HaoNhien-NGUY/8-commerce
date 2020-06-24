@@ -128,15 +128,15 @@ class Dashboard extends React.Component {
                         <i className="material-icons md-dark">shopping_cart</i>  <h5>Average cart price</h5>
                         <hr />{averageCartPrice} €
                     </div> </div>
-                    <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success p-3">
+                    <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-primary p-3">
                         <i className="material-icons md-dark">comment</i>  <h5>Number of comments </h5>
                         <hr />{totalReviews}
                     </div> </div>
-                    <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success p-3">
+                    <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-warning p-3">
                         <i className="material-icons md-dark">star</i>  <h5>Average rating</h5>
                         <hr />{averageNote}
                     </div> </div>
-                    <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success p-3">
+                    <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-danger p-3">
                         <i className="material-icons md-dark">account_circle</i>  <h5>Users stats</h5>
                         <hr />Registered Clients: {registered}
                         <br />Unregistered Clients: {unregistered}
