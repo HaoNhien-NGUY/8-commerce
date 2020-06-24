@@ -6,6 +6,8 @@ import React, { useState, useEffect } from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { Page, Text, View, Document, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
 import { Table, TableHeader, DataTableCell, TableBody, TableCell } from '@david.kucsai/react-pdf-table';
+import Footer from '../footer/Footer';
+
 
 function CommandTracking() {
     const [divOrderProduct, setDivOrderProduct] = useState([]);
@@ -289,6 +291,9 @@ function CommandTracking() {
                                     <tbody>{divOrderProduct}</tbody>
                                 </table>
                             </div>
+                        </div>
+                        <div className="col-sm-12 mt-5">
+                            <Footer />
                         </div>
                     </>
             }
