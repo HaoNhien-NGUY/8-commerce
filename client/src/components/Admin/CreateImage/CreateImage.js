@@ -14,14 +14,15 @@ const CreateImage = () => {
     const config = {
         headers: {
             "Content-Type": "multipart/form-data",
+            "Authorization": 'Bearer '+token
         }
     }
 
-    useEffect(() => {
-        if (token) {
-            config.headers['x-auth-token'] = token
-        }
-    }, [token]);
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['x-auth-token'] = token
+    //     }
+    // }, [token]);
 
     const onFileChange = (e) => {
         let files = e.target.files || e.dataTransfer.files;

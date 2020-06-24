@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
+import store from '../../../store';
 
 function UpdateShipping() {
     let idShipping = useRouteMatch("/admin/update/shipping/:id").params.id;
@@ -27,11 +28,13 @@ function UpdateShipping() {
     const [show, setShow] = useState(false);
     const optionRegions = [];
 
+    const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
-    };
+    }
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_LINK + "/api/shippingmethod/" + idShipping, config).then(res => {

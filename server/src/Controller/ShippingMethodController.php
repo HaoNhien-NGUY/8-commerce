@@ -51,6 +51,8 @@ class ShippingMethodController extends AbstractController
      */
     public function shippingMethodCreate(Request $request ,ShippingMethodRepository $shippingMethodRepository,EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $req = json_decode($request->getContent());
         
         $find = $shippingMethodRepository->findOneBy(['name' => $req->name]);
@@ -72,6 +74,8 @@ class ShippingMethodController extends AbstractController
      */
     public function shippingMethodRemove(Request $request ,ShippingMethodRepository $shippingMethodRepository,EntityManagerInterface $em)
     { 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $shippingMethod = $shippingMethodRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($shippingMethod) {
@@ -92,6 +96,8 @@ class ShippingMethodController extends AbstractController
      */
     public function shippingMethodUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ShippingMethodRepository $shippingMethodRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);

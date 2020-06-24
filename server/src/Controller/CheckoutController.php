@@ -34,9 +34,10 @@ class CheckoutController extends AbstractController
      */
     public function checkoutIndex(Request $request, SubproductRepository $subproductRepository, EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator, MailerInterface $mailer)
     {
+        $user = $this->getUser();
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
-
+        
         $errorMsg = [];
         if (!isset($req->shipping_address)) $errorMsg['violations'][] = 'shipping_address missing';
         if (!isset($req->billing_address)) $errorMsg['violations'][] = 'billing_address missing';
@@ -63,9 +64,7 @@ class CheckoutController extends AbstractController
 
         if ($errorMsg) return $this->json($errorMsg, 400, []);
 
-        if (isset($req->user_id)) {
-            $user = $this->getDoctrine()->getRepository(User::class)->find($req->user_id);
-            if (!$user) return $this->json(["message" => "user not found."], 400);
+        if ($user) {
             $email = $user->getEmail();
         } else if (!isset($req->email)) {
             return $this->json(["message" => "email is missing."], 400);
@@ -134,6 +133,10 @@ class CheckoutController extends AbstractController
 
                 $error = $validator->validate($shippingAddress);
                 if (count($error) > 0) return $this->json($error, 400);
+
+                if($user) {
+                    $user->addAddressShipping($shippingAddress);
+                }
             } catch (NotEncodableValueException $e) {
                 return $this->json(['message' => $e->getMessage()], 400);
             }
@@ -157,6 +160,9 @@ class CheckoutController extends AbstractController
 
                 $error = $validator->validate($billingAddress);
                 if (count($error) > 0) return $this->json($error, 400);
+                if($user) {
+                    $user->addAddressBilling($billingAddress);
+                }
             } catch (NotEncodableValueException $e) {
                 return $this->json(['message' => $e->getMessage()], 400);
             }
@@ -174,6 +180,9 @@ class CheckoutController extends AbstractController
 
                 $error = $validator->validate($cardCredentials);
                 if (count($error) > 0) return $this->json($error, 400);
+                if($user) {
+                    $user->addCardCredential($cardCredentials);
+                }
             } catch (NotEncodableValueException $e) {
                 return $this->json(['message' => $e->getMessage()], 400);
             }
@@ -188,11 +197,8 @@ class CheckoutController extends AbstractController
 
         $order->setCost($price);
 
-        if (isset($user)) {
-            $user->addCardCredential($cardCredentials)
-                ->addAddressShipping($shippingAddress)
-                ->addAddressBilling($billingAddress)
-                ->addUserOrder($order);
+        if ($user) {
+            $user->addUserOrder($order);
             $em->persist($cardCredentials);
             $em->persist($user);
         }
@@ -208,19 +214,15 @@ class CheckoutController extends AbstractController
         $em->persist($order);
         $em->flush();
 
-        $SendEmailTo = (new Email())
-            ->from('8.commerce.clothing@gmail.com')
-            ->to($email)
-            ->subject('Track your order')
-            ->html("Thank you for your order! Here is your tracking link: <br><br><a href='{$this->getParameter('client.link')}/command?order={$tracking_number}'>Click here to track your order</a>");
+        // $SendEmailTo = (new Email())
+        //     ->from('8.commerce.clothing@gmail.com')
+        //     ->to($email)
+        //     ->subject('Track your order')
+        //     ->html("Thank you for your order! Here is your tracking link: <br><br><a href='{$this->getParameter('client.link')}/command?order={$tracking_number}'>Click here to track your order</a>");
 
-        $mailer->send($SendEmailTo);
+        // $mailer->send($SendEmailTo);
 
         return $this->json(['message' => 'order created', 'trackingnumber' => $tracking_number], 200, []);
-
-        //at the start / with a "middleware" we check the token, if the user is logged we'll fetch the user from the database
-        //find(token->user)
-        //else 
     }
 
     /**

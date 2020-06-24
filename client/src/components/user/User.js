@@ -11,14 +11,26 @@ import { useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+import store from './../../store';
 
 function UserHome(props) {
     const [component, setComponent] = useState([]);
+    
+    const token = store.getState().auth.token
+
     const config = {
-        headers: {
-            "Content-type": "application/json"
-        }
+      headers: {
+        "Content-type": "application/json",
+        "Authorization": 'Bearer '+token
+      }
     }
+
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
+
     function useQuery() {
         return new URLSearchParams(useLocation().search);
     }

@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CreateShippingAddress from './CreateShippingAddress';
 import UpdateShippingAddress from './UpdateShippingAddress';
 function ShippingAddress({idUser, config}) {
-    console.log(idUser);
+    console.log('id user' + idUser);
     console.log(config);
     const [allShippingAddress, setAllShippingAddress] = useState();
     const [addressId, setAddressId] = useState(0);

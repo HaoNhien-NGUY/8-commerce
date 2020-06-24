@@ -7,7 +7,7 @@ import CreateSubCategory from './CreateSubCategory';
 const AccessCreateSubCategory = ({ auth }) => {
 
   if (!auth.authenticated && !auth.isLoading) {
-    if (auth.user !== null && auth.user.role === 'admin') {
+    if (auth.user !== null && auth.user.role.includes('ROLE_ADMIN')) {
       return (
         <CreateSubCategory />
       )

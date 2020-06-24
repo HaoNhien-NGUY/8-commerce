@@ -7,7 +7,7 @@ import UpdateCategory from './UpdateCategory';
 const AccessUpdateCategory = ({auth}) => {
   
   if (!auth.authenticated && !auth.isLoading) {
-    if (auth.user !== null && auth.user.role === 'admin') {
+    if (auth.user !== null && auth.user.role.includes('ROLE_ADMIN')) {
       return (
         <UpdateCategory />
       )

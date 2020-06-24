@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-date-picker';
 import { post } from 'jquery';
+import store from '../../../store';
 
 const Promo = () => {
     const [postDataPromos, setPostDataPromos] = useState([]);
@@ -22,9 +23,11 @@ const Promo = () => {
     const [pageCount, setPageCount] = useState();
     const [value, onChange] = useState(new Date());
     const [deleteCodeModal, setDeleteCodeModal] = useState(false);
+    const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
     }
 

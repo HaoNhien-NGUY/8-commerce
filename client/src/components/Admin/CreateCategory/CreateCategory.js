@@ -10,17 +10,18 @@ function CreateCategory() {
     const [isReady, setIsReady] = useState(false);
     const [isInvalid, setIsInvalid] = useState(false);
 
-    const token = store.getState().auth.token
+    const token = store.getState().auth.token;
     const config = {
         headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
+                "Authorization": 'Bearer '+token
         }
     }
-    useEffect(() => {
-        if (token) {
-            config.headers['x-auth-token'] = token
-        }
-    }, [token]);
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
 
     function handleChange(event) {
             let res = event.target.value.trim();

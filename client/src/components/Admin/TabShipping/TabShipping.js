@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import ReactPaginate from 'react-paginate';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import store from '../../../store';
 
 function Shipping() {
     const [postDataShipp, setPostDataShipp] = useState([]);
@@ -14,11 +15,18 @@ function Shipping() {
     const [divShipp, setDivShipp] = useState([]);
     const [showDetails, setShowDetails] = useState(false);
 
+    const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
-    };
+    }
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
     
     const handlePageClick = (e) => {
         const selectedPage = e.selected;

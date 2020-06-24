@@ -30,13 +30,13 @@ const UpdateProduct = () => {
     const [supplierOptions, setSupplierOptions] = useState([]);
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
     }
-
     useEffect(() => {
         if (token) {
-            config.headers['x-auth-token'] = token
+            config.headers['Authorization'] = 'Bearer '+token;
         }
     }, [token]);
 

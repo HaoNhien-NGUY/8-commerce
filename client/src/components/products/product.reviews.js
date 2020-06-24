@@ -7,6 +7,7 @@ import {TransitionGroup, CSSTransition, SwitchTransition} from 'react-transition
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
+import store from '../../store';
 
 
 
@@ -53,7 +54,7 @@ function ReviewPart({id, auth}) {
 
   useEffect(() => {
     if (auth.user) {
-      if (auth.user.role == "admin") {
+      if (auth.user.role.includes('ROLE_ADMIN')) {
         setIsAdmin(true);
       }
       else {
@@ -151,9 +152,12 @@ function handleSubmit(e) {
     console.log(formControl);
 
     const body = JSON.stringify({ ...formControl });
+    const token = store.getState().auth.token
+
     const config = {
       headers: {
-        "Content-type": "application/json"
+        "Content-type": "application/json",
+        "Authorization": 'Bearer '+token
       }
     }
 
@@ -264,11 +268,15 @@ function handleSubmit(e) {
     console.log(formControl);
 
     const body = JSON.stringify({ ...formControl });
+    const token = store.getState().auth.token
+
     const config = {
       headers: {
-        "Content-type": "application/json"
+        "Content-type": "application/json",
+        "Authorization": 'Bearer '+token
       }
     }
+
 
     axios
       .post(link+'/api/review', body, config)
