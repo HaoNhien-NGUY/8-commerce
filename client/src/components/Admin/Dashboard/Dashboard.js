@@ -155,7 +155,7 @@ class Dashboard extends React.Component {
                 </div>
                 <div className="row h-100 m-0 p-0 ">
                     {
-                        counts ? <div className='col-8 map bg-light bordercustom border-success p-3'>
+                        counts ? <div className='col-8 map bg-light bordercustom border-secondary p-3'>
                             <h4>Order by regions</h4> <hr />
                             <div>    <span style={{ top: '18vh', left: '13vh' }}>{counts['North America']}</span>
                                 <span style={{ top: '35vh', left: '23vh' }}>{counts['South America']}</span>
