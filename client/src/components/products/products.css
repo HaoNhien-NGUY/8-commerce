@@ -106,3 +106,8 @@
 .sugg-div-product {
   border-bottom: 1px solid rgba(224, 224, 224);
 }
+
+
+.share-div rect {
+  fill: white;
+}
