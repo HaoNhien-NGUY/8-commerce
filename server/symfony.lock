@@ -141,6 +141,9 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.4"
     },
+    "lcobucci/jwt": {
+        "version": "3.3.2"
+    },
     "league/uri": {
         "version": "6.2.1"
     },
@@ -149,6 +152,18 @@
     },
     "league/uri-parser": {
         "version": "1.4.1"
+    },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
+        },
+        "files": [
+            "config/packages/lexik_jwt_authentication.yaml"
+        ]
     },
     "maennchen/zipstream-php": {
         "version": "2.1.0"
@@ -164,6 +179,9 @@
     },
     "myclabs/php-enum": {
         "version": "1.7.6"
+    },
+    "namshi/jose": {
+        "version": "7.2.3"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",

@@ -17,14 +17,15 @@ const CreateImageSubproduct = () => {
     const config = {
         headers: {
             "Content-Type": "multipart/form-data",
+            "Authorization": 'Bearer '+token
         }
     }
 
-    useEffect(() => {
-        if (token) {
-            config.headers['x-auth-token'] = token
-        }
-    }, [token]);
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_LINK + "/api/color", config).then( allColors => {
             let optionColors = [];
