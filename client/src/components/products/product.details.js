@@ -382,9 +382,28 @@ function ProductDescription() {
             )}
         </p>
         {product.status == true ? (
-          <button onClick={addCart} className="btn-cart">
-            Add to cart
-          </button>
+          <>
+            <button onClick={addCart} className="btn-cart">
+              Add to cart
+            </button>
+            <div className="row my-3 mr-1 float-right share-div">
+              <FacebookShareButton url={window.location.href}>
+                <FacebookIcon size={28} iconFillColor="black" className="ml-1"></FacebookIcon>
+              </FacebookShareButton>
+              <EmailShareButton url={window.location.href}>
+                <EmailIcon size={28} iconFillColor="black" className="ml-1"></EmailIcon>
+              </EmailShareButton>
+              <RedditShareButton url={window.location.href}>
+                <RedditIcon size={28} iconFillColor="black" className="ml-1"></RedditIcon>
+              </RedditShareButton>
+              <TwitterShareButton url={window.location.href}>
+                <TwitterIcon size={28} iconFillColor="black" className="ml-1"></TwitterIcon>
+              </TwitterShareButton>
+              <WhatsappShareButton url={window.location.href}>
+                <WhatsappIcon size={28} iconFillColor="black" className="ml-1"></WhatsappIcon>
+              </WhatsappShareButton>
+              </div>
+            </>
         ) : (
             <button className="btn-cart">Out of stock</button>
           )}
@@ -530,54 +549,7 @@ function ProductDescription() {
               ? subproductsAvailable()
               : subproductsUnavailable()}
           </div>
-        </div>
-        <div className="row m-0 p-0">
-          <div className="col-sm-12">
-            <FacebookShareButton url={window.location.href}>
-              <FacebookIcon></FacebookIcon>
-            </FacebookShareButton>
-            <EmailShareButton url={window.location.href}>
-              <EmailIcon></EmailIcon>
-            </EmailShareButton>
-            <RedditShareButton url={window.location.href}>
-              <RedditIcon></RedditIcon>
-            </RedditShareButton>
-            <TumblrShareButton url={window.location.href}>
-              <TumblrIcon></TumblrIcon>
-            </TumblrShareButton>
-            <TwitterShareButton url={window.location.href}>
-              <TwitterIcon></TwitterIcon>
-            </TwitterShareButton>
-            <WhatsappShareButton url={window.location.href}>
-              <WhatsappIcon></WhatsappIcon>
-            </WhatsappShareButton>
-            {/* <LineShareButton url={window.location.href}>
-              <LineIcon></LineIcon>
-            </LineShareButton>
-            <InstapaperShareButton url={window.location.href}>
-              <InstapaperIcon></InstapaperIcon>
-            </InstapaperShareButton>
-            <LivejournalShareButton url={window.location.href}>
-              <LivejournalIcon></LivejournalIcon>
-            </LivejournalShareButton>
-            <MailruShareButton url={window.location.href}>
-              <MailruIcon></MailruIcon>
-            </MailruShareButton>
-            <OKShareButton url={window.location.href}>
-              <OKIcon></OKIcon>
-            </OKShareButton>
-            <PocketShareButton url={window.location.href}>
-              <PocketIcon></PocketIcon>
-            </PocketShareButton>
-            <TelegramShareButton url={window.location.href}>
-              <TelegramIcon></TelegramIcon>
-            </TelegramShareButton>
-            <VKShareButton url={window.location.href}>
-              <VKIcon></VKIcon>
-            </VKShareButton>
-            <WorkplaceShareButton url={window.location.href}>
-              <WorkplaceIcon></WorkplaceIcon>
-            </WorkplaceShareButton> */}
+          <div>
             <ReviewPart id={id} />
           </div>
           <div className="col-sm-12">
