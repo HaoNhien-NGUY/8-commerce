@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+import { Button } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
 import ReactPaginate from 'react-paginate';
 import { ToastContainer, toast } from 'react-toastify';
@@ -23,6 +23,7 @@ const Reviews = () => {
 
     useEffect(() => {
         receivedData();
+        console.log("RECEIVED DATA", offset)
     }, [offset]);
 
     useEffect(() => {
@@ -36,20 +37,25 @@ const Reviews = () => {
 
     useEffect(() => {
         if (pageCount < offset) setOffset(0);
-    }, [pageCount, offset]);
+    }, [pageCount]);
 
     const receivedData = () => {
-        axios.get(process.env.REACT_APP_API_LINK + `/api/review?offset=${offset}&limit=${limit}`, config).then(async res => {
-            // console.log(res.data)
+        axios.get(process.env.REACT_APP_API_LINK + `/api/review/unverified?offset=${offset}&limit=${limit}`, config).then(async res => {
+            console.log(res.data.data)
             await setPageCount(Math.ceil(res.data.nbResults / limit));
-            const newPostDataPromos = res.data.length > 0 ? res.data.map((promo) =>
-                <tr key={promo.id}>
-                    <td><p className="m-2">{promo.rating ? promo.rating : "-"} ⭐</p></td>
-                    <td><p className="m-2 align-items-center">{promo.username}</p></td>
-                    <td><p className="m-2">{promo.title}</p></td>
-                    <td><p className="m-2">{promo.description}</p></td>
-                    <td> <button className="btn btn-outline-danger m-1 md-force-align" onClick={() => { setDeleteCodeModal(true); setReviewToDelete(promo.id) }}><i className="material-icons md-24">delete</i></button></td>
-                </tr>
+
+            const newPostDataPromos = res.data.data.length > 0 ? res.data.data.map((promo) =>
+                <>
+                    { !promo.verified &&
+                        <tr key={promo.id}>
+                            <td><p className="m-2">{promo.rating ? promo.rating : "-"} ⭐</p></td>
+                            <td><p className="m-2 align-items-center">{promo.username}</p></td>
+                            <td><p className="m-2">{promo.title}</p></td>
+                            <td><p className="m-2">{promo.description}</p></td>
+                            <td> <button className="btn btn-outline-danger m-1 md-force-align" onClick={() => { setDeleteCodeModal(true); setReviewToDelete(promo.id) }}><i className="material-icons md-24">delete</i></button></td>
+                        </tr>
+                    }
+                </>
             ) : null
             setPostDataPromos(newPostDataPromos);
             setReviewsReady(true);
@@ -59,10 +65,11 @@ const Reviews = () => {
         })
     }
 
-    const handlePageClick = (e) => {
+    const handlePageClick = async (e) => {
         const selectedPage = e.selected;
         const newOffset = selectedPage * limit;
-        setOffset(newOffset)
+        // console.log(newOffset)
+        await setOffset(selectedPage * limit)
     };
 
     const deleteReview = (e) => {
