@@ -83,14 +83,14 @@ class LoginModal extends Component {
     onSubmitChange = e => {
         e.preventDefault()
         this.setState({email: this.state.newemail})
-        const { email } = this.state
+        const { newemail } = this.state
         const config = {
             headers: {
                 "Content-type": "application/json"
             }
         }
         const body = {
-            "email": email.toLowerCase()
+            "email": newemail.toLowerCase()
         }
         console.log(body)
         axios.post(process.env.REACT_APP_API_LINK + "/password/reset", body, config).then(res => {
