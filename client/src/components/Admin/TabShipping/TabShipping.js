@@ -19,16 +19,16 @@ function Shipping() {
             "Content-type": "application/json"
         }
     };
-    
+
     const handlePageClick = (e) => {
         const selectedPage = e.selected;
         const newOffset = selectedPage * limit;
         setOffset(newOffset)
     };
-    
+
     useEffect(() => {
         if (postDataShipp === null) setOffset(offset - limit);
-      }, [postDataShipp])
+    }, [postDataShipp])
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_LINK + `/api/shippingmethod?offset=${offset}&limit=${limit}`, config).then(async e => {
@@ -53,14 +53,14 @@ function Shipping() {
             console.log(error);
         });
     }
-    
+
     return (
         <>
             <div className="row justify-content-end mb-2">
                 <button onClick={() => window.location.href = 'admin/create/shipping'} className="btn btn-success m-1">+ New Shipping company</button>
                 {/* <button className="btn btn-success m-1">+ New Supplier</button> */}
             </div>
-            <div className="row border p-2">
+            <div className="row bg-light border p-2">
                 <table>
                     <thead>
                         <tr>
@@ -76,45 +76,45 @@ function Shipping() {
                 <Modal.Header closeButton>Order !</Modal.Header>
                 <Modal.Body>
                     {divShipp.length > 0 ?
-                    divShipp.map( ship => 
-                        <div className="divOrderCart" key={ship.id}>
-                            <table className="productinCart">
-                                <tbody>
-                                    <tr>
-                                        <td className="detailsShip">
-                                            <span><b>ID:</b> {ship.id}</span>
-                                            <span><b>Region:</b> {ship.region.name}</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="tableborder">
-                                        <td className="detailsShip">
-                                            <span><b>Price per Kilo:</b> {ship.pricePerKilo}</span>
-                                            <span><b>Duration:</b> {ship.duration}</span>
-                                            <span><b>Base Price:</b> {ship.basePrice}</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : <h4>No region declared</h4>}
+                        divShipp.map(ship =>
+                            <div className="divOrderCart" key={ship.id}>
+                                <table className="productinCart">
+                                    <tbody>
+                                        <tr>
+                                            <td className="detailsShip">
+                                                <span><b>ID:</b> {ship.id}</span>
+                                                <span><b>Region:</b> {ship.region.name}</span>
+                                            </td>
+                                        </tr>
+                                        <tr className="tableborder">
+                                            <td className="detailsShip">
+                                                <span><b>Price per Kilo:</b> {ship.pricePerKilo}</span>
+                                                <span><b>Duration:</b> {ship.duration}</span>
+                                                <span><b>Base Price:</b> {ship.basePrice}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : <h4>No region declared</h4>}
                     <Button color="dark" className="mt-4" block onClick={() => setShowDetails(false)}>Close</Button>
                 </Modal.Body>
             </Modal>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
-                {pageCount > 0 &&
-                    <ReactPaginate
-                    previousLabel={"prev"}
-                    nextLabel={"next"}
-                    breakLabel={"..."}
-                    breakClassName={"break-me"}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={1}
-                    pageRangeDisplayed={2}
-                    onPageChange={handlePageClick}
-                    containerClassName={"pagination"}
-                    subContainerClassName={"pages pagination"}
-                    activeClassName={"active"} />}
+                    {pageCount > 0 &&
+                        <ReactPaginate
+                            previousLabel={"prev"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={2}
+                            onPageChange={handlePageClick}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"} />}
                 </div>
             </div>
         </>
