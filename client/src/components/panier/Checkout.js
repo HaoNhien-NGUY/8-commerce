@@ -10,6 +10,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+import store from '../../store';
+import { config } from 'react-transition-group';
+import { useEffect } from 'react';
+
 /* eslint-disable */
 
 class Checkout extends React.Component {
@@ -20,7 +24,7 @@ class Checkout extends React.Component {
             currentStep: 1,
             region: 1,
             country: "France",
-            showstatus: false,
+            showstatus: false
         }
     }
     static propTypes = {
@@ -28,6 +32,8 @@ class Checkout extends React.Component {
     };
 
     componentDidMount() {
+        console.log(this.props.auth);
+
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
                 axios
@@ -199,7 +205,11 @@ class Checkout extends React.Component {
 
         console.log(jsonRequest)
 
-        const header = { "Content-Type": "application/json" };
+        let header = { "Content-Type": "application/json" };
+        if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
+        console.log(header);
+        console.log(jsonRequest);
+
         axios
             .post(
                 process.env.REACT_APP_API_LINK + "/api/checkout",
@@ -210,6 +220,7 @@ class Checkout extends React.Component {
                 this.setState({ currentStep: 4, trackingnumber: res.data.trackingnumber })
             })
             .catch((error) => {
+                console.log(error.response.data.message);
             });
     }
 
@@ -234,7 +245,9 @@ class Checkout extends React.Component {
                     "region_id": this.state.region,
                     "subproducts": arrayAPIName
                 };
-                const header = { "Content-Type": "application/json" };
+
+                let header = { "Content-Type": "application/json" };
+                if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
                 axios
                     .post(
                         process.env.REACT_APP_API_LINK + "/api/checkout/shipping",

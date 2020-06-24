@@ -30,8 +30,10 @@ class PromoCodeController extends AbstractController
      */
     public function promocode_create(Request $request, PromoCodeRepository $promoCodeRepository, EntityManagerInterface $em)
     {
-        $req = json_decode($request->getContent());
 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $req = json_decode($request->getContent());
         $find = $promoCodeRepository->findOneBy(['code' => $req->code]);
 
         if ($find) {
@@ -58,6 +60,8 @@ class PromoCodeController extends AbstractController
      */
     public function promocode_remove(Request $request, PromoCodeRepository $promoCodeRepository, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $PromoCode = $promoCodeRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($PromoCode) {
@@ -85,10 +89,12 @@ class PromoCodeController extends AbstractController
 
             if ($promocode) {
 
-                $nameExists = $promoCodeRepository->findOneBy(['code' => $req->code]);
-                if($nameExists->getId() != $promocode->getId()) return $this->json(['message' => 'Promo Code name already taken'], 404);
-
                 if (isset($req->code)) {
+                    $nameExists = $promoCodeRepository->findOneBy(['code' => $req->code]);
+                    if ($nameExists) {
+                        if ($nameExists->getId() != $promocode->getId()) return $this->json(['message' => 'Promo Code name already taken'], 404);
+                    }
+
                     $promocode->setCode($req->code);
                 }
 

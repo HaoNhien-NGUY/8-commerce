@@ -3,6 +3,7 @@ import "./CreateOrder.css";
 import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import store from '../../../store';
 
 function Cart(props) {
     const [isInvalid, setIsInvalid] = useState(false);
@@ -12,12 +13,20 @@ function Cart(props) {
     const nbrPrice = [];
     let sumProduct = 0;
     let sumPrice = 0;
+    const supplierOrder = [];
+    const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
-    };
-    const supplierOrder = [];
+    }
+
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
 
     useEffect(() => {
         if(props.handleCart && props.handleCart.length !== countProps) {

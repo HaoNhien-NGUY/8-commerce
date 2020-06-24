@@ -51,6 +51,8 @@ class ShippingPricingController extends AbstractController
      */
     public function shippingMethodCreate(Request $request ,ShippingPricingRepository $shippingPricingRepository,ShippingMethodRepository $shippingMethodRepository,RegionRepository $regionRepository,EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
    
@@ -109,6 +111,8 @@ class ShippingPricingController extends AbstractController
      */
     public function shippingPricingRemove(Request $request, ShippingPricingRepository $shippingPricingRepository, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $shippingPricing = $shippingPricingRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($shippingPricing) {
@@ -129,6 +133,8 @@ class ShippingPricingController extends AbstractController
      */
     public function shippingPricingUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ShippingPricingRepository $shippingPricingRepository,ShippingMethodRepository $shippingMethodRepository,RegionRepository $regionRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);

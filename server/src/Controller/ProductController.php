@@ -26,6 +26,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductController extends AbstractController
 {
@@ -34,7 +36,6 @@ class ProductController extends AbstractController
      */
     public function index(Request $request, ProductRepository $productRepository, NormalizerInterface $normalizer)
     {
-        $wsh = [];
         $products = $productRepository->findBy(
             $request->query->get('promoted') ? ['promoted' => 1] : [],
             $request->query->get('clicks') ? ['clicks' => 'DESC'] : [],
@@ -77,6 +78,8 @@ class ProductController extends AbstractController
      */
     public function productCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator, SupplierRepository $supplierRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
@@ -161,6 +164,8 @@ class ProductController extends AbstractController
      */
     public function productUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, ProductRepository $productRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
@@ -214,6 +219,8 @@ class ProductController extends AbstractController
      */
     public function productRemove(Request $request, ProductRepository $productRepository, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $product = $productRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($product) {
@@ -319,6 +326,7 @@ class ProductController extends AbstractController
      */
     public function addImage(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $productId = $request->attributes->get('id');
         $uploadedFile = $request->files->get('image');
