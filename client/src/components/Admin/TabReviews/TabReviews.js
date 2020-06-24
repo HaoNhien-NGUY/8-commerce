@@ -90,7 +90,7 @@ const Reviews = () => {
         <>
             <div className="row justify-content-end mb-2">
                 <Modal show={deleteCodeModal} onHide={() => setDeleteCodeModal(false)}>
-                    <Modal.Header closeButton>Careful ! Are you sure to want delete the code promo "{code.toUpperCase()}"</Modal.Header>
+                    <Modal.Header closeButton>Careful ! Are you sure to want delete this review ?</Modal.Header>
                     <Modal.Body>
                         <Button color="warning" className="mt-4" onClick={() => setDeleteCodeModal(false)} block>No, go back</Button>
                         <Button color="danger" className="mt-4" onClick={() => { deleteReview() }} block>Yes, delete</Button>
