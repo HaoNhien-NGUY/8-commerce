@@ -47,4 +47,21 @@ class ReviewRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function countTotalResults()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countTotalUnverifiedResults()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->andWhere('u.verified = 0')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

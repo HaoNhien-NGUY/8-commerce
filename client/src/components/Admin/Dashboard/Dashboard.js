@@ -49,7 +49,8 @@ class Dashboard extends React.Component {
                 "Content-type": "application/json"
             }
         }).then(async res => {
-            this.setState({ allreviews: res.data })
+            console.log(res)
+            this.setState({ allreviews: res.data.data })
         }).catch(error => {
             console.log(error);
             toast.error('Error !', { position: 'top-center' });
