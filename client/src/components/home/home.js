@@ -129,7 +129,7 @@ function Home() {
                 })}
             </div>
                 <div className="col-sm-12 mt-5">
-                  <Footer />
+                    <Footer />
             </div>
         </div>
     )

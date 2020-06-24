@@ -7,9 +7,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./products.css";
 import {
-  FacebookShareCount, OKShareCount, PinterestShareCount, RedditShareCount, TumblrShareCount, VKShareCount
-} from "react-share";
-import {
   EmailIcon, FacebookIcon, FacebookMessengerIcon, InstapaperIcon, LineIcon, LinkedinIcon, LivejournalIcon, MailruIcon,
   OKIcon, PinterestIcon, PocketIcon, RedditIcon, TelegramIcon, TumblrIcon, TwitterIcon, ViberIcon, VKIcon, WeiboIcon, WhatsappIcon, WorkplaceIcon
 } from "react-share";
