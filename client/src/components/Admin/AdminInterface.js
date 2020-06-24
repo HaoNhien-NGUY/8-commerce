@@ -547,7 +547,7 @@ const AdminInterface = () => {
     }
 
     return (
-        <div className="container-fluid adminTable p-0 m-0 ">
+        <div className="container-fluid adminTable p-0 m-0">
             <ToastContainer />
             <Tabs className="row p-0 m-0 " forceRenderTabPanel={true}>
                 <TabList className="tabsHolder   col-2 m-0 p-0" style={{ paddingLeft: 0 }}>

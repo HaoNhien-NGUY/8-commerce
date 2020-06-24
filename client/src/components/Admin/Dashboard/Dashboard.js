@@ -19,8 +19,11 @@ class Dashboard extends React.Component {
             numberofproducts: [],
             orderdetails: [],
             regions: []
-
-
+        }
+        const config = {
+            headers: {
+                "Content-type": "application/json"
+            }
         }
     }
 
@@ -31,7 +34,8 @@ class Dashboard extends React.Component {
                 return res.data.map((e) => {
                     axios.get(process.env.REACT_APP_API_LINK + "/api/user/order/" + e.trackingNumber)
                         .then((response) => {
-                            this.setState({ orderdetails: [...this.state.orderdetails, response.data], regions: [...this.state.regions, response.data.shippingAddress.region.name], allcosts: [...this.state.allcosts, response.data.cost], numberofproducts: [...this.state.numberofproducts, response.data.subproducts.length] })
+                            this.setState({ orderdetails: [...this.state.orderdetails, response.data], regions: [...this.state.regions, response.data.shippingAddress.region.name], allcosts: [...this.state.allcosts, response.data.cost], numberofproducts: [...this.state.numberofproducts, response.data.subproducts.length] });
+
                         })
                         .catch((error) => {
                         });
@@ -39,27 +43,57 @@ class Dashboard extends React.Component {
             })
             .catch((error) => {
             });
+
+        axios.get(process.env.REACT_APP_API_LINK + `/api/review`, {
+            headers: {
+                "Content-type": "application/json"
+            }
+        }).then(async res => {
+            this.setState({ allreviews: res.data })
+        }).catch(error => {
+            console.log(error);
+            toast.error('Error !', { position: 'top-center' });
+        })
+        axios.get(process.env.REACT_APP_API_LINK + `/api/userorder/count`, {
+            headers: {
+                "Content-type": "application/json"
+            }
+        }).then(async res => {
+            this.setState({ detailsuser: res.data })
+        }).catch(error => {
+            console.log(error);
+            toast.error('Error !', { position: 'top-center' });
+        })
     }
 
     render() {
-        let totalproducts = 0;
+        let totalProducts = 0;
         let averageNumProducts = 0;
         let totalEarning = 0;
         let averageCartPrice = 0;
-
-        console.log(this.state)
+        let totalReviews = 0;
+        let averageNote = 0
 
         if (this.state.numberofproducts.length == this.state.numberoforder) {
             for (let [key, value] of Object.entries(this.state.numberofproducts)) {
-                totalproducts += value;
+                totalProducts += value;
             }
             for (let [key, value] of Object.entries(this.state.allcosts)) {
                 totalEarning += value;
             }
+
+            this.state.allreviews.map((e) => {
+                averageNote += e.rating;
+            })
+
             var counts = {};
+            totalReviews = this.state.allreviews.length;
             this.state.regions.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
-            averageNumProducts = (totalproducts / this.state.numberoforder).toFixed(2);
+            averageNumProducts = (totalProducts / this.state.numberoforder).toFixed(2);
             averageCartPrice = (totalEarning / this.state.numberoforder).toFixed(2);
+            averageNote = (averageNote / totalReviews).toFixed(2);
+
+
         }
 
         return (
@@ -67,42 +101,45 @@ class Dashboard extends React.Component {
                 <div className="row m-0 p-0 h-100">
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.css" type="text/css" media="screen" />
                     <div className="col-3 p-3"><div className="col-10 bg-light  bordercustom  border-success p-3">
-                        <i class="material-icons md-dark">attach_money</i> <h5>Total Earning</h5> <hr />{totalEarning} €
+                        <i className="material-icons md-dark">attach_money</i> <h5>Total Earning</h5> <hr />{totalEarning} €
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-primary p-3">
-                        <i class="material-icons md-dark">bar_chart</i> <h5>Number of orders</h5>
+                        <i className="material-icons md-dark">bar_chart</i> <h5>Number of orders</h5>
                         <hr />{this.state.numberoforder} total
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-warning  p-3">
-                        <i class="material-icons md-dark">shopping_bag</i> <h5>Products sold</h5>
-                        <hr />{totalproducts} total
+                        <i className="material-icons md-dark">shopping_bag</i> <h5>Products sold</h5>
+                        <hr />{totalProducts} total
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-danger  p-3">
-                        <i class="material-icons md-dark">timeline</i>  <h5>Average num.of products</h5>
+                        <i className="material-icons md-dark">timeline</i>  <h5>Average num.of products</h5>
                         <hr />{averageNumProducts} avg
                     </div></div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success  p-3">
-                        <i class="material-icons md-dark">shopping_cart</i>  <h5>Average cart price</h5>
+                        <i className="material-icons md-dark">shopping_cart</i>  <h5>Average cart price</h5>
                         <hr />{averageCartPrice} €
                     </div> </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success p-3">
-                        <i class="material-icons md-dark">bar_chart</i>  <h5>Average cart price</h5>
-                        <hr />
+                        <i className="material-icons md-dark">comment</i>  <h5>Number of comments </h5>
+                        <hr />{totalReviews}
                     </div> </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success p-3">
-                        <i class="material-icons md-dark">bar_chart</i>  <h5>Average cart price</h5>
-                        <hr />
+                        <i className="material-icons md-dark">star</i>  <h5>Average rating</h5>
+                        <hr />{averageNote}
                     </div> </div>
                     {/* 
-                    order sur la carte par region ????
-                    order par region
                     nombre de commentaires
+                    
                     taille la plus populaire
+                    
                     produit le plus vendu
+                    
                     produit 
+
+
                     */}
                 </div>
                 <div className="row h-100 m-0 p-0 ">
