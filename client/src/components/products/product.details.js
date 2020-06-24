@@ -549,7 +549,7 @@ function ProductDescription() {
               ? subproductsAvailable()
               : subproductsUnavailable()}
           </div>
-          <div>
+          <div style={{ width: 100 + 'vw' }}>
             <ReviewPart id={id} />
           </div>
           <div className="col-sm-12">
