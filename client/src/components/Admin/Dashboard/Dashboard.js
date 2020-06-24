@@ -72,7 +72,10 @@ class Dashboard extends React.Component {
         let totalEarning = 0;
         let averageCartPrice = 0;
         let totalReviews = 0;
-        let averageNote = 0
+        let averageNote = 0;
+        let registered = '';
+        let unregistered = '';
+        let totalClient = 0;
 
         if (this.state.numberofproducts.length == this.state.numberoforder) {
             for (let [key, value] of Object.entries(this.state.numberofproducts)) {
@@ -93,6 +96,9 @@ class Dashboard extends React.Component {
             averageCartPrice = (totalEarning / this.state.numberoforder).toFixed(2);
             averageNote = (averageNote / totalReviews).toFixed(2);
 
+            registered = this.state.detailsuser.unique_registered_buyers;
+            unregistered = this.state.detailsuser.unregistered_buyers;
+            totalClient = registered + unregistered;
 
         }
 
@@ -129,6 +135,11 @@ class Dashboard extends React.Component {
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success p-3">
                         <i className="material-icons md-dark">star</i>  <h5>Average rating</h5>
                         <hr />{averageNote}
+                    </div> </div>
+                    <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success p-3">
+                        <i className="material-icons md-dark">account_circle</i>  <h5>Users stats</h5>
+                        <hr />Registered Clients: {registered}
+                        <br />Unregistered Clients: {unregistered}
                     </div> </div>
                     {/* 
                     nombre de commentaires
