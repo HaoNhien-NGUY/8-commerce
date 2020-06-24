@@ -14,7 +14,7 @@ const AccessAdmin = ({ auth }) => {
       )
     }
     else {
-      return (<div id='error403'> <h2> Error page 403 access forbiden </h2></div>)
+      return (<div id='error403'> <h2> Error page 403 access forbidden </h2></div>)
     }
   }
   else {
