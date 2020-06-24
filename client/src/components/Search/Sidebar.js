@@ -13,6 +13,8 @@ import Results from "./Results";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {TransitionGroup, CSSTransition, SwitchTransition} from 'react-transition-group';
+import Footer from '../footer/Footer';
+
 
 export default class SearchSidebar extends Component {
   constructor() {
@@ -794,6 +796,9 @@ export default class SearchSidebar extends Component {
             >
               <Results results={results} display={displayMethod}/>
             </CSSTransition>
+        </div>
+        <div className="col-sm-12 mt-5">
+          <Footer />
         </div>
       </>
     );

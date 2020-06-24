@@ -65,6 +65,7 @@ function UserHome(props) {
                     {component}
                 </div>
             </div>
+            
         </>
     )
 }

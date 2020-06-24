@@ -47,28 +47,16 @@ export default class Footer extends Component {
             </div>
 
             <div className="col-1 footer-link">
-              <p>Explore</p>
-              <a href="/">About Us</a>
-              <a href="/">Collaborations</a>
-              <a href="/">Product Care</a>
-              <a href="/">Stories</a>
-              <a href="/">Lookbooks</a>
-            </div>
-
-            <div className="col-1 footer-link">
-              <p>More</p>
+              <p>Account</p>
               <a href="/user?content=shipping">My Account</a>
               <a href="/user?content=history">Custom Orders</a>
-              <a href="/">Size Guide</a>
-              <a href="/">Careers</a>
-              <a href="/">Contact</a>
             </div>
 
             <div className="ml-auto col-5 text-center">
               <a
                 className="twitter-timeline"
-                data-width="500"
-                data-height="400"
+                data-width="400"
+                data-height="200"
                 data-theme="light"
                 href="https://twitter.com/Timberland?ref_src=twsrc%5Etfw"
               >
@@ -80,10 +68,6 @@ export default class Footer extends Component {
 
         <div className="footer-link-sm my-2">
           <a href="/">©8-commerce 2020</a>
-          <a href="/">Terms of Service</a>
-          <a href="/">Privacy Policy</a>
-          <a href="/">Shipping and Returns</a>
-          <a href="/">FAQ</a>
         </div>
       </>
     );

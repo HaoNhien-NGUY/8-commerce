@@ -128,8 +128,8 @@ function Home() {
                     )
                 })}
             </div>
-                <div className="col-sm-12 mt-5">
-                    <Footer />
+            <div className="col-sm-12 mt-5">
+                <Footer />
             </div>
         </div>
     )
