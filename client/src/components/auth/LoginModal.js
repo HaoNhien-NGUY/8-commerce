@@ -6,6 +6,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { login } from '../../actions/authActions'
 import { clearErrors } from '../../actions/errorActions'
+import GoogleLogin from 'react-google-login';
+import axios from 'axios'
+import { GoogleLogout } from 'react-google-login';
+
 
 class LoginModal extends Component {
     state = {
@@ -68,6 +72,18 @@ class LoginModal extends Component {
         this.props.login(user)
     }
 
+    // ici le login avec redux
+    responseGoogle = response => {
+        axios.post(process.env.REACT_APP_API_LINK + '/connect/google/check', response).then(resp => {
+            console.log(resp.data);
+            // dispatch({
+            //     type: LOGIN_SUCCESS,
+            //     payload: resp.data
+            // })
+        }).catch((error) => {
+        })
+    }
+
     render() {
         return (
             <div>
@@ -99,6 +115,20 @@ class LoginModal extends Component {
                                 <Button color="dark" className="mt-4" block>
                                     Login
                                 </Button>
+                                <GoogleLogin
+                                    clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
+                                    buttonText="Login"
+                                    onSuccess={this.responseGoogle}
+                                    onFailure={this.responseGoogle}
+                                    cookiePolicy={'single_host_origin'}
+                                />
+                                {/* show in navbar if logged in with google */}
+                                <GoogleLogout
+                                    clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
+                                    buttonText="Logout"
+                                //   onLogoutSuccess={logout}
+                                >
+                                </GoogleLogout>
                             </FormGroup>
                         </Form>
                     </ModalBody>

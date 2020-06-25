@@ -106,3 +106,30 @@ export const login = ({ email, password }) => dispatch => {
             })
         })
 }
+
+// //logout no need for dispatch
+// export const google_login = () => dispatch => {
+//     // headers 
+//     const config = {
+//         headers: {
+//             "Content-type": "application/json"
+//         }
+//     }
+
+//     //request info
+//     const body = JSON.stringify({ email, password })
+
+//     axios.post(process.env.REACT_APP_API_LINK + '/api/login_check', body, config)
+//         .then(res => {
+//             dispatch({
+//                 type: LOGIN_SUCCESS,
+//                 payload: res.data
+//             })
+//         })
+//         .catch(err => {
+//             dispatch(returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL'))
+//             dispatch({
+//                 type: LOGIN_FAIL
+//             })
+//         })
+// }
