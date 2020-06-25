@@ -131,39 +131,39 @@ class Dashboard extends React.Component {
                 <div className="row m-0 p-0 h-100">
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.css" type="text/css" media="screen" />
                     <div className="col-3 p-3"><div className="col-10 bg-light  bordercustom  border-success p-3">
-                        <i className="material-icons md-dark">attach_money</i> <h5>Total Earning</h5> <hr />{totalEarning} €
+                        <i className="text-success material-icons md-dark">attach_money</i> <h5>Total Earning</h5> <hr />{totalEarning} €
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-primary p-3">
-                        <i className="material-icons md-dark">bar_chart</i> <h5>Number of orders</h5>
+                        <i className="text-primary material-icons md-dark">bar_chart</i> <h5>Number of orders</h5>
                         <hr />{this.state.numberoforder} total
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-warning  p-3">
-                        <i className="material-icons md-dark">shopping_bag</i> <h5>Products sold</h5>
+                        <i className="text-warning material-icons md-dark">shopping_bag</i> <h5>Products sold</h5>
                         <hr />{totalProducts} total
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-danger  p-3">
-                        <i className="material-icons md-dark">timeline</i>  <h5>Average num.of products</h5>
+                        <i className="text-danger material-icons md-dark">timeline</i>  <h5>Average num.of products</h5>
                         <hr />{averageNumProducts} avg
                     </div></div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success  p-3">
-                        <i className="material-icons md-dark">shopping_cart</i>  <h5>Average cart price</h5>
+                        <i className="text-success material-icons md-dark">shopping_cart</i>  <h5>Average cart price</h5>
                         <hr />{averageCartPrice} €
                     </div> </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-primary p-3">
-                        <i className="material-icons md-dark">comment</i>  <h5>Number of comments </h5>
+                        <i className="text-primary material-icons md-dark">comment</i>  <h5>Number of comments </h5>
                         <hr />{totalReviews}
                     </div> </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-warning p-3">
-                        <i className="material-icons md-dark">star</i>  <h5>Average rating</h5>
+                        <i className="text-warning material-icons md-dark">star</i>  <h5>Average rating</h5>
                         <hr />{averageNote}
                     </div> </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-danger p-3">
-                        <i className="material-icons md-dark">account_circle</i>  <h5>Users stats</h5>
-                        <hr />Registered Clients: {registered}
-                        <br />Unregistered Clients: {unregistered}
+                        <i className="text-danger material-icons md-dark">account_circle</i>  <h5>Users stats</h5>
+                        <hr /><b>Registered Clients: </b>{registered}
+                        <br /><b>Unregistered Clients: </b>{unregistered}
                     </div> </div>
 
                 </div>
@@ -316,9 +316,8 @@ class Dashboard extends React.Component {
                             </div>
                         </div>
                             : null}
-
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-danger p-3">
-                        <i className="material-icons md-dark">account_circle</i>  <h5>Sales by types</h5>
+                        <i className="text-danger material-icons md-dark">label</i>  <h5>Sales by types</h5>
                         <hr />
                         <h6><b>By categories</b></h6>
                         {category}
