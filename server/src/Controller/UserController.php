@@ -102,31 +102,20 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/checktoken", name="checktoken")
+     * @Route("/api/checktoken", name="checktoken")
      */
     public function checkToken(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
         $user = $this->getUser();
-        return $this->json(['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()], 200);
-        // if ($request->headers->get('x-auth-token')) {
 
-        //     $data = $request->headers->get('x-auth-token');
-        //     // $request->request->replace(is_array($data) ? $data : array());
+        $responseArray = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()];
 
-        //     if (Token::validate($data, $_ENV["APP_SECRET"])) {
-
-        //         $dataInToken = Token::getPayload($data, $_ENV["APP_SECRET"]);
-        //         if (!$userRepository->findBy(['id' => $dataInToken['user_id']['user']])) {
-        //             return new JsonResponse(['msg' => 'Bad token'], 400);
-        //         } else {
-        //             $user = $userRepository->findBy(['id' => $dataInToken['user_id']['user']])[0];
-        //             return new JsonResponse(['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]], 200);
-        //         }
-        //     }
-        //     return new JsonResponse(['msg' => "the Bad token"], 400);
-        // }
+        $method_login = $request->query->get('method_login');
+        if($method_login)
+            $responseArray['method_login'] = $method_login;
+            
+        return $this->json($responseArray, 200);
     }
 
     /**

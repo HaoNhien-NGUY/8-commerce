@@ -26,18 +26,18 @@ export class Logout extends Component {
         return (
             <Fragment key="logoutmodal">
 
-                {/* {this.props.auth.method_login == 'google' ?
+                {(this.props.auth.user.method_login && this.props.auth.user.method_login == 'google')?
                     <GoogleLogout
                         clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
                         buttonText="Logout"
                         onLogoutSuccess={this.props.logout}
                     >
                     </GoogleLogout>
-                    : */}
+                    :
                 <NavLink onClick={this.props.logout} href="#" className="text-dark">
                     Logout
                 </NavLink>
-                {/* } */}
+                }
             </Fragment>
         )
     }

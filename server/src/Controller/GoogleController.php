@@ -17,6 +17,6 @@ class GoogleController extends AbstractController
     {
         $user = $this->getUser();
 
-        return new JsonResponse(['method_login' => 'google', 'token' => $JWTManager->create($user), 'user' => ['role' => $user->getRoles(), 'email' => $user->getEmail(), 'id' => $user->getId()]]);
+        return new JsonResponse(['token' => $JWTManager->create($user), 'user' => ['method_login' => 'google', 'role' => $user->getRoles(), 'email' => $user->getEmail(), 'id' => $user->getId()]]);
     }
 }
