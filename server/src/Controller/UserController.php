@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use ReallySimpleJWT\Token;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -68,36 +70,36 @@ class UserController extends AbstractController
         }
     }
 
-    // /**
-    //  * @Route("/login", name="login")
-    //  */
-    // public function login(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
-    // {
-    //     // return new JsonResponse(['msg' => 'Incorrect email or password'], 400);
-    //     // gets the json data
-    //     if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
-    //         $data = json_decode($request->getContent(), true);
-    //         $request->request->replace(is_array($data) ? $data : array());
-    //     }
-    //     // checks if email and password are correctly input
-    //     if (!isset($data['email']) || !isset($data['password'])) {
-    //         // sends error if email or password are missing
-    //         return new JsonResponse(['msg' => 'Email or password are missing'], 400);
-    //     } else {
-    //         if (!$userRepository->findBy(['email' => $data['email']])) {
-    //             return new JsonResponse(['msg' => 'Incorrect email or password'], 400);
-    //         } else {
-    //             $user = $userRepository->findBy(['email' => $data['email']])[0];
-    //             if (password_verify($data['password'], $user->getPassword())) {
-    //                 $token = $this->createToken($user);
-    //                 $userInRes = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]];
-    //                 return new JsonResponse(['user' => $userInRes, 'token' => $token], 200);
-    //             } else {
-    //                 return new JsonResponse(['msg' => "Incorrect email or password"], 400);
-    //             }
-    //         }
-    //     }
-    // }
+    /**
+     * @Route("/password/reset", name="password_reset", methods="POST")
+     */
+    public function resetPassword(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer)
+    {
+        $jsonContent = $request->getContent();
+        $req = json_decode($jsonContent);
+
+        if (!$userRepository->findOneBy(['email' => $req->email])) {
+            return new JsonResponse(['msg' => 'Email does not exist'], 404);
+        } else {
+            $user = $userRepository->findOneBy(['email' => $req->email]);
+            $bytes = openssl_random_pseudo_bytes(6);
+            $pwd = bin2hex($bytes);
+
+            $user->setPassword(password_hash($pwd, PASSWORD_ARGON2I));
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+        }
+
+        $SendEmailTo = (new Email())
+            ->from('8.commerce.clothing@gmail.com')
+            ->to($user->getEmail())
+            ->subject('Password recovery')
+            ->html("This is your new password, do not forget it: " . $pwd);
+
+        $mailer->send($SendEmailTo);
+        return new JsonResponse(['message' => 'A new password was sent to your email'], 200);
+    }
 
     /**
      * @Route("/checktoken", name="checktoken")
@@ -105,7 +107,7 @@ class UserController extends AbstractController
     public function checkToken(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        
+
         $user = $this->getUser();
         return $this->json(['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()], 200);
         // if ($request->headers->get('x-auth-token')) {

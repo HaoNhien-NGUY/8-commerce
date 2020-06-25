@@ -136,7 +136,7 @@ class IndexNavbar extends Component {
           <Nav>
             {!isLoading ? (isAuthenticated ? authLinks : guestLinks) : null}
           </Nav>
-          {user !== null && user.role === "admin" ? (
+          {user !== null &&user.role.includes('ROLE_ADMIN') ? (
             <Nav.Link href="/admin" id="adminLogo">
               <img src={adminLogo} />
             </Nav.Link>

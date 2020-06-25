@@ -24,13 +24,27 @@ class ReviewController extends AbstractController
     /**
      * @Route("/api/review", name="review_index", methods="GET")
      */
-    public function index(ReviewRepository $reviewRepository)
-    {
-        $reviews = $reviewRepository->findAll();
+    public function index(Request $request, ReviewRepository $reviewRepository)
+    {   
+        $count = $reviewRepository->countTotalResults();
+        $reviews = $reviewRepository->findBy([], null, $request->query->get('limit'), $request->query->get('offset'));
         if(!$reviews){
             return $this->json(['message' => 'No review found'], 404);
         }
-        return $this->json($reviews, 200, [],['groups' => 'review']);
+        return $this->json(['nbResults' => $count, 'data' => $reviews], 200, [],['groups' => 'review']);
+    }
+
+    /**
+     * @Route("/api/review/unverified", name="unverified_review_index", methods="GET")
+     */
+    public function unverifiedReview(Request $request, ReviewRepository $reviewRepository)
+    {
+        $count = $reviewRepository->countTotalUnverifiedResults();
+        $reviews = $reviewRepository->findBy(['verified' => 0], null, $request->query->get('limit'), $request->query->get('offset'));
+        if(!$reviews){
+            return $this->json(['message' => 'No review found'], 404);
+        }
+        return $this->json(['nbResults' => $count, 'data' => $reviews], 200, [],['groups' => 'review']);
     }
 
     /**
@@ -131,6 +145,7 @@ class ReviewController extends AbstractController
             return $this->json(['message' => 'not found'], 404, []);
         }
     }
+    
 
     /**
      * @Route("/api/review/{id}", name="review_update", methods="PUT",requirements={"id":"\d+"})

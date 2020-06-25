@@ -21,7 +21,7 @@ function ReviewPart({id, auth}) {
   const [avgStars, setAvgStars] = useState('')
   const id_product = id
 
-  const [formControl, setFormControl] = useState({"rating": "1"});
+  const [formControl, setFormControl] = useState({"rating": "5"});
   const [idUser, setIdUser] = useState(null);
 
   const [isAdmin, setIsAdmin] = useState(false);
@@ -136,7 +136,7 @@ async function initializeForm() {
     setShowForm(!showForm)
     console.log(auth.user)
     // await setIdUser(auth.user.id)
-    await setFormControl({...formControl,  "product": id_product, "user": auth.user.id, "rating": "1" });
+    await setFormControl({...formControl,  "product": id_product, "user": auth.user.id, "rating": "5" });
     console.log(formControl)
     return true;
   }
@@ -362,7 +362,7 @@ function handleSubmit(e) {
                   <option value="2">⭐⭐</option>
                   <option value="3">⭐⭐⭐</option>
                   <option value="4">⭐⭐⭐⭐</option>
-                  <option value="5">⭐⭐⭐⭐⭐</option>
+                  <option value="5" selected>⭐⭐⭐⭐⭐</option>
                 </Form.Control>
               </Form.Group>
 

@@ -6,6 +6,15 @@ import ReactImageMagnify from "react-image-magnify";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./products.css";
+import {
+  EmailIcon, FacebookIcon, FacebookMessengerIcon, InstapaperIcon, LineIcon, LinkedinIcon, LivejournalIcon, MailruIcon,
+  OKIcon, PinterestIcon, PocketIcon, RedditIcon, TelegramIcon, TumblrIcon, TwitterIcon, ViberIcon, VKIcon, WeiboIcon, WhatsappIcon, WorkplaceIcon
+} from "react-share";
+import {
+  EmailShareButton, FacebookShareButton, InstapaperShareButton, LineShareButton, LinkedinShareButton, LivejournalShareButton,
+  MailruShareButton, OKShareButton, PinterestShareButton, PocketShareButton, RedditShareButton, TelegramShareButton, TumblrShareButton, TwitterShareButton,
+  ViberShareButton, VKShareButton, WhatsappShareButton, WorkplaceShareButton
+} from "react-share";
 
 import ReviewPart from './product.reviews';
 import PersonalizedSugg from './product.sugg';
@@ -69,7 +78,7 @@ function ProductDescription() {
       setLowestPrice(product_temp["lowest_price"]);
     });
 
-    return () => {};
+    return () => { };
   }, []);
 
   const [completeDes, setCompleteDes] = useState(".. More ⇒");
@@ -292,8 +301,8 @@ function ProductDescription() {
                 </span>
               </>
             ) : (
-              chosenSubProduct.price + "€"
-            )
+                chosenSubProduct.price + "€"
+              )
           ) : HighestPromo > 0 ? (
             <>
               Starts at{" "}
@@ -306,8 +315,8 @@ function ProductDescription() {
               </span>
             </>
           ) : (
-            "Starts at " + details.price + "€"
-          )}{" "}
+                "Starts at " + details.price + "€"
+              )}{" "}
         </h3>
         <p className="description">
           {details.description_1}
@@ -364,18 +373,37 @@ function ProductDescription() {
               <b>{chosenSubProduct.stock}</b> items available
             </span>
           ) : (
-            <span>
-              <b>{countstockAll}</b> total items available
-            </span>
-          )}
+              <span>
+                <b>{countstockAll}</b> total items available
+              </span>
+            )}
         </p>
         {product.status == true ? (
-          <button onClick={addCart} className="btn-cart">
-            Add to cart
-          </button>
+          <>
+            <button onClick={addCart} className="btn-cart">
+              Add to cart
+            </button>
+            <div className="row my-3 mr-1 float-right share-div">
+              <FacebookShareButton url={window.location.href}>
+                <FacebookIcon size={28} iconFillColor="black" className="ml-1"></FacebookIcon>
+              </FacebookShareButton>
+              <EmailShareButton url={window.location.href}>
+                <EmailIcon size={28} iconFillColor="black" className="ml-1"></EmailIcon>
+              </EmailShareButton>
+              <RedditShareButton url={window.location.href}>
+                <RedditIcon size={28} iconFillColor="black" className="ml-1"></RedditIcon>
+              </RedditShareButton>
+              <TwitterShareButton url={window.location.href}>
+                <TwitterIcon size={28} iconFillColor="black" className="ml-1"></TwitterIcon>
+              </TwitterShareButton>
+              <WhatsappShareButton url={window.location.href}>
+                <WhatsappIcon size={28} iconFillColor="black" className="ml-1"></WhatsappIcon>
+              </WhatsappShareButton>
+            </div>
+          </>
         ) : (
-          <button className="btn-cart">Out of stock</button>
-        )}
+            <button className="btn-cart">Out of stock</button>
+          )}
       </div>
     );
   };
@@ -497,7 +525,7 @@ function ProductDescription() {
       <ToastContainer />
       <div className="container-fluid m-0 p-0">
         <div className="row m-0 p-0">
-          <div className="col-md-7 productImgBg m-0 p-0">
+          <div className="col-md-7 m-0 p-0">
             {product.status == true ? (
               <>
                 {" "}
@@ -505,31 +533,30 @@ function ProductDescription() {
                 <div className="ImageContainer">{imageProduct}</div>
               </>
             ) : (
-              <>
-                <div className="ulImgProduct unavailable">
-                  {miniImageProduct}
-                </div>
-                <div className="ImageContainer unavailable">{imageProduct}</div>
-              </>
-            )}
+                <>
+                  <div className="ulImgProduct unavailable">
+                    {miniImageProduct}
+                  </div>
+                  <div className="ImageContainer unavailable">{imageProduct}</div>
+                </>
+              )}
           </div>
-          <div className="col-md-5 m-0 p-0">
+          <div className="col-md-5 productImgBg  border-right m-0 p-0">
             {product.subproducts && product.subproducts.length > 0
               ? subproductsAvailable()
               : subproductsUnavailable()}
           </div>
         </div>
-        <div className="row m-0 p-0">
-          <div className="col-sm-12">
-            <ReviewPart id={id}/>
-          </div>
-          <div className="col-sm-12">
-            <PersonalizedSugg />
-          </div>
-          <div className="col-sm-12 mt-5">
-            {/* <Footer /> */}
-          </div>
+        <div className="row m-4 p-0 border-top">
+          <ReviewPart id={id} />
         </div>
+        <div className="col-sm-12">
+          <PersonalizedSugg />
+        </div>
+        <div className="col-sm-12 mt-5">
+          <Footer />
+        </div>
+
       </div>
     </div>
   );

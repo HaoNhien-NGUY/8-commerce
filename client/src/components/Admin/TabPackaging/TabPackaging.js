@@ -43,7 +43,7 @@ function Packaging() {
                     <td><p className="m-2">{pack.endsAt.substr(8, 10).slice(0, 2) + '/' + pack.endsAt.substr(5, 10).slice(0, 2) + '/' + pack.endsAt.substr(0, 10).slice(0, 4)}</p></td>
                     <td><p className="m-2">{pack.minSpending}</p></td>
                     <td><p className="m-2">{pack.price}</p></td>
-                    <td> <button className="btn btn-outline-info m-1" onClick={() => { setPackId(pack.id); setShowUpdate(true)}}>Modify</button></td>
+                    <td> <button className="btn btn-outline-info m-1" onClick={() => { setPackId(pack.id); setShowUpdate(true) }}>Modify</button></td>
                 </tr>
             ) : null
             setPostDataPack(newPostData);
@@ -68,10 +68,10 @@ function Packaging() {
                     <CreatePackaging config={config} closeModal={closeModal} receivedData={receivedData} />
                 </Modal>
                 <Modal show={showUpdate} onHide={() => setShowUpdate(false)}>
-                    <UpdatePackaging config={config} closeModal={closeModalUpdate} idPack={idPack} receivedData={receivedData}/>
+                    <UpdatePackaging config={config} closeModal={closeModalUpdate} idPack={idPack} receivedData={receivedData} />
                 </Modal>
             </div>
-            <div className="row border p-2">
+            <div className="row  bg-light border p-2">
                 <table>
                     <thead>
                         <tr>

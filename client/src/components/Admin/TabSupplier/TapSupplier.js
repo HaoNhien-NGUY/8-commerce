@@ -42,7 +42,7 @@ function Suppliers() {
 
     useEffect(() => {
         if (postDataOrder === null) setOffset(offset - limit);
-      }, [postDataOrder])
+    }, [postDataOrder])
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_LINK + `/api/supplier/order?offset=${offset}&limit=${limit}`, config).then(async e => {
@@ -68,7 +68,7 @@ function Suppliers() {
         const newOffset = selectedPage * limit;
         setOffset(newOffset)
     };
-    
+
     allSupplier.map(supp => {
         optionSelect.push(<option key={supp.id} value={supp.id}>{supp.name}</option>)
     });
@@ -88,13 +88,13 @@ function Suppliers() {
             return toast.error("Invalid charactere", { position: "top-center" });
         } else {
             const body = {
-                "name" : supplierName
+                "name": supplierName
             };
-            axios.post(process.env.REACT_APP_API_LINK + "/api/supplier", body, config).then( e => {
+            axios.post(process.env.REACT_APP_API_LINK + "/api/supplier", body, config).then(e => {
                 toast.success("Supplier correctly added !", { position: "top-center" });
                 setShow(false);
-            }).catch( err => {
-                toast.error('Error !', {position: 'top-center'});
+            }).catch(err => {
+                toast.error('Error !', { position: 'top-center' });
             });
         }
     }
@@ -112,7 +112,7 @@ function Suppliers() {
         // setShowConfirm(true)
 
         const body = {
-            "status" : true
+            "status": true
         };
         axios.put(process.env.REACT_APP_API_LINK + "/api/supplier/order/" + id, body, config).then(res => {
             toast.success("Order received !", { position: "top-center" });
@@ -135,7 +135,7 @@ function Suppliers() {
             console.log(error);
         });
     }
-    
+
     return (
         <>
             <div className="row justify-content-end mb-2">
@@ -151,7 +151,7 @@ function Suppliers() {
                                     type="text"
                                     name="supplier"
                                     id="supplier"
-                                    onChange={onChange}/>
+                                    onChange={onChange} />
                                 <Button color="dark" className="mt-4" block>Submit</Button>
                             </FormGroup>
                         </Form>
@@ -161,30 +161,30 @@ function Suppliers() {
                     <Modal.Header closeButton>Order !</Modal.Header>
                     <Modal.Body>
                         {divOrder.length > 0 &&
-                        divOrder.map( subProduct => 
-                            <div className="divOrderCart" key={subProduct.subproduct.id}>
-                                <table className="productinCart">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <span><b>Title:</b> { subProduct.subproduct.product.title}</span>
-                                            </td>
-                                        </tr>
-                                        
-                                        <tr className="tableborder">
-                                            <td className="detailsproduct">
-                                              <img src={process.env.REACT_APP_API_LINK + `/api/image/${subProduct.subproduct.product.id}/default/1.jpg`}/>
-                                                <span><b>ID:</b> {subProduct.subproduct.id}</span>
-                                                <span><b>Color:</b> {subProduct.subproduct.color.name}</span>
-                                                <span><b>Size:</b> {subProduct.subproduct.size}</span>
-                                                <span><b>Quantity:</b> {subProduct.quantity}</span>
-                                                <span><b>Price:</b> {subProduct.subproduct.price} €</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                            divOrder.map(subProduct =>
+                                <div className="divOrderCart" key={subProduct.subproduct.id}>
+                                    <table className="productinCart">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span><b>Title:</b> {subProduct.subproduct.product.title}</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr className="tableborder">
+                                                <td className="detailsproduct">
+                                                    <img src={process.env.REACT_APP_API_LINK + `/api/image/${subProduct.subproduct.product.id}/default/1.jpg`} />
+                                                    <span><b>ID:</b> {subProduct.subproduct.id}</span>
+                                                    <span><b>Color:</b> {subProduct.subproduct.color.name}</span>
+                                                    <span><b>Size:</b> {subProduct.subproduct.size}</span>
+                                                    <span><b>Quantity:</b> {subProduct.quantity}</span>
+                                                    <span><b>Price:</b> {subProduct.subproduct.price} €</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                         <Button color="dark" className="mt-4" block onClick={() => setShowDetails(false)}>Close</Button>
                     </Modal.Body>
                 </Modal>
@@ -197,7 +197,7 @@ function Suppliers() {
                     </Modal.Body>
                 </Modal> */}
             </div>
-            <div className="row border p-2">
+            <div className="row border  bg-light  p-2">
                 <table>
                     <thead>
                         <tr>
@@ -212,19 +212,19 @@ function Suppliers() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
-                {pageCount > 0 &&
-                    <ReactPaginate
-                        previousLabel={"prev"}
-                        nextLabel={"next"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        pageCount={pageCount}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={2}
-                        onPageChange={handlePageClick}
-                        containerClassName={"pagination"}
-                        subContainerClassName={"pages pagination"}
-                        activeClassName={"active"} />}
+                    {pageCount > 0 &&
+                        <ReactPaginate
+                            previousLabel={"prev"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={2}
+                            onPageChange={handlePageClick}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"} />}
                 </div>
             </div>
         </>

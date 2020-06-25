@@ -122,6 +122,16 @@ class UserOrderController extends AbstractController
     }
 
     /**
+     * @Route("/api/userorder/count", name="count_registered", methods="GET")
+     */
+    public function countIfRegisteredOrder(Request $request, UserOrderRepository $userOrderRepository)
+    {
+        $count1 = $userOrderRepository->countRegisteredBuyersResults();
+        $count2 = $userOrderRepository->countUnregisteredBuyersResults();
+        return $this->json(['unique_registered_buyers' => $count1, 'unregistered_buyers' => $count2['unregistered_buyers']], 200);
+    }
+
+    /**
      * @Route("/api/userorder/{id}", name="userorder_update", methods="PUT",requirements={"id":"\d+"})
      */
     public function userOrderUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, UserOrderRepository $userOrderRepository,AddressBillingRepository $addressBillingRepository,AddressShippingRepository $addressShippingRepository,UserRepository $userRepository)

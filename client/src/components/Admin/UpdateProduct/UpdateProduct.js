@@ -62,7 +62,7 @@ const UpdateProduct = () => {
                     });
                     setSubCategories(optionCategory)
                 });
-                await axios.get(process.env.REACT_APP_API_LINK + "/api/supplier/").then((e) => {
+                await axios.get(process.env.REACT_APP_API_LINK + "/api/supplier/", config).then((e) => {
                     const optionSuppliers = [];
                     e.data.data.map(sup => {
                         sup.name === res.data.supplier.name
@@ -119,7 +119,7 @@ const UpdateProduct = () => {
             <h1 className="text-center">Update your Product<br /><b>{title}</b></h1>
             <div className="row justify-content-end mb-2">
                 <button onClick={() => window.location.href = '/admin/subproduct/' + idProduct} className="btn btn-outline-dark m-2"> View subproducts </button>
-                <button onClick={() => window.location.href = '/admin'} className='btn btn-warning m-2'> Back to Dashboard </button>
+                <button onClick={() => window.location.href = '/admin?tab=1'} className='btn btn-warning m-2'> Back to Dashboard </button>
             </div>
             <form id="formItem">
                 <div className="form-group">

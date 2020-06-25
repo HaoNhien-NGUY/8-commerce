@@ -53,30 +53,29 @@ const SubCategoryInterface = () => {
 
     useEffect(() => {
         setOffset(0);
-      }, [pageCount]);
+    }, [pageCount]);
 
     const receivedSubCategories = () => {
         axios.get(process.env.REACT_APP_API_LINK + "/api/category/" + id, config)
-        .then(async res => {
-            setNameCategory(res.data.name)
-            if(res.data.subCategories)
-            {
-                await setPageCount(Math.ceil(res.data.subCategories.length / limit))
-                let arrSubCategories = [];
-                let nbr;
-                for (let i = 0; i !== limit; i++) {
-                    if (res.data.subCategories[offset + i]) arrSubCategories.push(res.data.subCategories[offset + i]);
-                    console.log(arrSubCategories);
+            .then(async res => {
+                setNameCategory(res.data.name)
+                if (res.data.subCategories) {
+                    await setPageCount(Math.ceil(res.data.subCategories.length / limit))
+                    let arrSubCategories = [];
+                    let nbr;
+                    for (let i = 0; i !== limit; i++) {
+                        if (res.data.subCategories[offset + i]) arrSubCategories.push(res.data.subCategories[offset + i]);
+                        console.log(arrSubCategories);
+                    }
+                    setSubCategories(arrSubCategories);
+                    // setSubCategories(res.data.subCategories);
+                } else {
+                    setPageCount(0)
                 }
-                setSubCategories(arrSubCategories);
-               // setSubCategories(res.data.subCategories);
-            } else {
-                setPageCount(0)
-            }
-        })
-        .catch(error => {
-            toast.error('Error !', { position: 'top-center' });
-        });
+            })
+            .catch(error => {
+                toast.error('Error !', { position: 'top-center' });
+            });
     }
     const deleteSubCategory = (idSub) => {
         axios.delete(process.env.REACT_APP_API_LINK + "/api/subcategory/" + idSub, config)
@@ -123,8 +122,8 @@ const SubCategoryInterface = () => {
             const body = {
                 "name": name,
             }
-            axios.put(process.env.REACT_APP_API_LINK + "/api/subcategory/" + subCatId, body, config ).then( e => {
-                toast.success('Category correctly updated!', { position: "top-center"});
+            axios.put(process.env.REACT_APP_API_LINK + "/api/subcategory/" + subCatId, body, config).then(e => {
+                toast.success('Category correctly updated!', { position: "top-center" });
                 setShow(false);
                 setName([]);
                 axios.get(process.env.REACT_APP_API_LINK + "/api/category/" + id, config)
@@ -134,8 +133,8 @@ const SubCategoryInterface = () => {
                     .catch(error => {
                         toast.error('Error !', { position: 'top-center' });
                     });
-            }).catch( err => {
-                toast.error('Error !', {position: 'top-center'});
+            }).catch(err => {
+                toast.error('Error !', { position: 'top-center' });
             });
         }
     }
@@ -161,8 +160,8 @@ const SubCategoryInterface = () => {
             const body = {
                 "name": newName,
             }
-            axios.post(process.env.REACT_APP_API_LINK + "/api/subcategory/create/" + nameCategory + "/" + newName, body, config ).then( e => {
-                toast.success('Category correctly updated!', { position: "top-center"});
+            axios.post(process.env.REACT_APP_API_LINK + "/api/subcategory/create/" + nameCategory + "/" + newName, body, config).then(e => {
+                toast.success('Category correctly updated!', { position: "top-center" });
                 setShowNew(false);
                 setNewName([]);
                 axios.get(process.env.REACT_APP_API_LINK + "/api/category/" + id, config)
@@ -172,8 +171,8 @@ const SubCategoryInterface = () => {
                     .catch(error => {
                         toast.error('Error !', { position: 'top-center' });
                     });
-            }).catch( err => {
-                toast.error('Error !', {position: 'top-center'});
+            }).catch(err => {
+                toast.error('Error !', { position: 'top-center' });
             });
         }
     }
@@ -183,32 +182,32 @@ const SubCategoryInterface = () => {
         setSubCategoryMigrateSelected(event.target.value);
     }
     const migrationSubCategory = async (idSubCategory) => {
-      const optionSubCategoryMigration = [];
+        const optionSubCategoryMigration = [];
         console.log(idSubCategory);
-      await axios.get(process.env.REACT_APP_API_LINK + "/api/subcategory/", config).then(e => {
-        let migration = subCategoryMigrateSelected
-        console.log(e)
-          e.data.map((subcategory) => subcategory.id !== idSubCategory ? optionSubCategoryMigration.push(<option key={subcategory.id} value={subcategory.id}>{subcategory.name}</option>) && migration === 0 ? migration = subcategory.id : null : null )
-          setSubCategoryMigrateSelected(migration)
-      }).catch(err => {
-        toast.error('Error to get category!', { position: 'top-center' });
-      });
-  
-      setAllMigrationSubCategory(optionSubCategoryMigration);
+        await axios.get(process.env.REACT_APP_API_LINK + "/api/subcategory/", config).then(e => {
+            let migration = subCategoryMigrateSelected
+            console.log(e)
+            e.data.map((subcategory) => subcategory.id !== idSubCategory ? optionSubCategoryMigration.push(<option key={subcategory.id} value={subcategory.id}>{subcategory.name}</option>) && migration === 0 ? migration = subcategory.id : null : null)
+            setSubCategoryMigrateSelected(migration)
+        }).catch(err => {
+            toast.error('Error to get category!', { position: 'top-center' });
+        });
+
+        setAllMigrationSubCategory(optionSubCategoryMigration);
     }
     const migrateSubCategory = (idTakeMigration, idToMigrate) => {
-      let body = {
-        "newsubcategory": parseInt(idTakeMigration),
-        "oldsubcategory": idToMigrate
-      };
-      console.log(body);
-      axios.put(process.env.REACT_APP_API_LINK + "/api/subcategory/migrate", body, config).then(res => {
-        toast.success(res.message, { position: 'top-center' });
-        deleteSubCategory(idToMigrate);
-      }).catch(err => {
-        console.log(err.message)
-        toast.error(err.message, { position: 'top-center' });
-      });
+        let body = {
+            "newsubcategory": parseInt(idTakeMigration),
+            "oldsubcategory": idToMigrate
+        };
+        console.log(body);
+        axios.put(process.env.REACT_APP_API_LINK + "/api/subcategory/migrate", body, config).then(res => {
+            toast.success(res.message, { position: 'top-center' });
+            deleteSubCategory(idToMigrate);
+        }).catch(err => {
+            console.log(err.message)
+            toast.error(err.message, { position: 'top-center' });
+        });
     }
     return (
         <div className="container">
@@ -218,7 +217,7 @@ const SubCategoryInterface = () => {
             </h1>
             <div className="row justify-content-end mb-2">
                 <h3 className="mr-auto ml-2">All SubCategories of <b>{nameCategory}</b></h3>
-                <button onClick={() => window.location.href = '/admin'} className='float-right btn m-2 btn-warning'> Back to Dashboard </button>
+                <button onClick={() => window.location.href = '/admin?tab=2'} className='float-right btn m-2 btn-warning'> Back to Dashboard </button>
             </div>
             <div className="row justify-content-end mb-2">
                 {/* <button onClick={() => window.open('/admin/create/subcategory')} className="btn btn-success m-2">
@@ -246,7 +245,7 @@ const SubCategoryInterface = () => {
                     </Modal.Body>
                 </Modal>
             </div>
-            <div className="row border p-2">
+            <div className="row bg-light  border p-2">
                 <table>
                     <thead>
                         <tr>
@@ -261,7 +260,7 @@ const SubCategoryInterface = () => {
                                 <td><p className="m-2">{category.name} </p></td>
                                 {/* <td> <button onClick={() => window.location.href = '/admin/subcategory/' + id + '/' + category.id + '/update'} className="btn btn-outline-info m-2">Modify</button></td> */}
                                 <td> <button onClick={e => e.preventDefault() + handleShow(id, category.id, category.name)} className="btn btn-outline-info m-2">Modify</button></td>
-                                <td> <button onClick={() => {migrationSubCategory(category.id); setDeleteSubCategoryModal(true); setSubCategoryId(category.id)}} className="btn btn-outline-danger m-2">Delete</button></td>
+                                <td> <button onClick={() => { migrationSubCategory(category.id); setDeleteSubCategoryModal(true); setSubCategoryId(category.id) }} className="btn btn-outline-danger m-2">Delete</button></td>
                                 {/* <td> <button onClick={() => deleteSubCategory(category.id)} className="btn btn-outline-danger m-2">Delete</button></td> */}
                             </tr>
                         ) : null}
@@ -286,16 +285,16 @@ const SubCategoryInterface = () => {
                     </Modal.Body>
                 </Modal>
                 <Modal show={deleteSubCategoryModal} size="lg" onHide={() => setDeleteSubCategoryModal(false)}>
-                      <Modal.Header closeButton>Careful ! Deleting a SubCategory will delete all Products !</Modal.Header>
-                      <Modal.Body>
+                    <Modal.Header closeButton>Careful ! Deleting a SubCategory will delete all Products !</Modal.Header>
+                    <Modal.Body>
                         <h4>I want to keep my Products and migrate them to</h4>
                         <select className="form-control form-control-lg" onChange={handleSelectMigration}>
-                          {allMigrationSubCategory}
+                            {allMigrationSubCategory}
                         </select>
                         <Button color="info" className="mt-4" onClick={() => migrateSubCategory(subCategoryMigrateSelected, subCategoryId)} block>Yes, migrate my Product on this SubCategory !</Button>
-                        <Button color="danger" className="mt-4" onClick={() => {deleteSubCategory(subCategoryId); setDeleteSubCategoryModal(false)}} block>No, delete everything</Button>
-                      </Modal.Body>
-                    </Modal>
+                        <Button color="danger" className="mt-4" onClick={() => { deleteSubCategory(subCategoryId); setDeleteSubCategoryModal(false) }} block>No, delete everything</Button>
+                    </Modal.Body>
+                </Modal>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>

@@ -249,7 +249,7 @@ const Promo = () => {
                     </Modal.Body>
                 </Modal>
             </div>
-            <div className="row border p-2">
+            <div className="row border  bg-light  p-2">
                 <table>
                     <thead>
                         <tr>

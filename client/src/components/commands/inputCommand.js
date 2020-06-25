@@ -8,6 +8,8 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { Spinner } from 'react-bootstrap'
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+import Footer from '../footer/Footer';
+
 
 function EnterCommand() {
     const [idCommand, setIdCommand] = useState([]);
@@ -125,6 +127,9 @@ function EnterCommand() {
                             </FormGroup>
                         </Form>
                     </div>
+                </div>
+                <div className="col-sm-12 mt-5">
+                    <Footer />
                 </div>
             </>
         )

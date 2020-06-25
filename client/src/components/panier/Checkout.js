@@ -101,8 +101,6 @@ class Checkout extends React.Component {
     checkpromo = event => {
         event.preventDefault();
         const { name, value } = event.target;
-        console.log(document.getElementById('promocode').value)
-
         if (this.state.promocode) {
             let jsonRequest = {
                 'promocode': this.state.promocode,
@@ -115,14 +113,11 @@ class Checkout extends React.Component {
                 )
                 .then((res) => {
                     this.setState({ promocode_details: res.data });
-                    console.log(this.state)
                 })
                 .catch((error) => {
                     this.setState({ promocode_details: "error" });
-                    console.log(this.state)
                 });
         }
-
     }
 
     handleSubmit = event => {
@@ -258,15 +253,16 @@ class Checkout extends React.Component {
                         { headers: header }
                     )
                     .then((res) => {
-                        this.setState({ shipping_methods: res.data.shippingMethods, lowestPriceKey: res.data.lowestPriceKey });
+                        this.setState({ shipping_methods: res.data.shippingMethods, lowestPriceKey: res.data.lowestPriceKey, lowestId: res.data.shippingMethods[res.data.lowestPriceKey].pricing_id });
                         let longestKey = null;
                         let shortestKey = null;
+                        let longestId = null;
+                        let shortestId = null;
                         for (let [key, value] of Object.entries(this.state.shipping_methods)) {
-                            if (value.duration == Math.max.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { longestKey = parseInt(key) }
-                            if (value.duration == Math.min.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { shortestKey = parseInt(key) }
+                            if (value.duration == Math.max.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { longestKey = parseInt(key), longestId = value.pricing_id }
+                            if (value.duration == Math.min.apply(Math, this.state.shipping_methods.map(function (o) { return o.duration; }))) { shortestKey = parseInt(key), shortestId = value.pricing_id }
                         }
-                        this.setState({ "longestKey": longestKey })
-                        this.setState({ "shortestKey": shortestKey })
+                        this.setState({ "longestKey": longestKey, "shortestKey": shortestKey, "longestId": longestId, "shortestId": shortestId })
                     })
                     .catch((error) => {
                     });
@@ -291,7 +287,6 @@ class Checkout extends React.Component {
             axios
                 .get(process.env.REACT_APP_API_LINK + "/api/packaging/available?spending=" + this.state.NoShipPrice)
                 .then((res) => {
-                    console.log(res.data)
                     return this.setState({ packagingAvailable: res.data })
                 })
                 .catch((error) => {
@@ -431,7 +426,6 @@ class Checkout extends React.Component {
 }
 
 function Step1(props) {
-
     let ShippoingAdressOptions = []
     if (props.data.shippingAddress != null) {
         for (let [key, value] of Object.entries(props.data.shippingAddress)) {
@@ -562,23 +556,30 @@ function Step2(props) {
         }
         const items = []
         if (props.data.shipping_methods) {
+
+            props.data.shipping_methods.sort(function (a, b) { return a.price - b.price; });
+            props.data.shipping_methods.reverse();
+
+            const array1 = [1, 2, 3];
+            array1.unshift(4, 5)
+            console.log(array1);
+
             for (let [key, value] of Object.entries(props.data.shipping_methods)) {
+                // console.log(props.data.shortestId, value.pricing_id)
+                // { key != props.data.lowestPriceKey ? "col-md-12 m-0 p-0 order-1" : "m-0 p-0 col-md-12" }
+                // { key == props.data.lowestPriceKey ? "alert alert-primary" : key == props.data.longestKey ? "alert-success alert" : key == props.data.shortestKey ? "alert alert-warning" : "alert alert-secondary" }
 
-                console.log("lowest proce >", props.data.lowestPriceKey, "fastest >", props.data.shortestKey)
+                // if (value.pricing_id == )
 
-                if (props.data.lowestPriceKey == key) {
-                    console.log('name >', value.name)
-
-                }
                 items.push(
-                    <div key={"choice_" + key} className={key != props.data.lowestPriceKey ? "col-md-12 m-0 p-0 order-1" : "m-0 p-0 col-md-12"}>
+                    <div key={"choice_" + key} className={value.pricing_id == props.data.shortestId ? "col-md-12 m-0 p-0" : value.pricing_id == props.data.longestId ? "col-md-12 m-0 p-0" : value.pricing_id == props.data.lowestId ? "col-md-12 m-0 p-0 order-first" : "m-0 p-0 col-md-12"}>
                         <label className="control control-radio w-100 form-check-label" htmlFor={"shippingchoice" + key}>
                             <input className="form-check-input checkbox-style" type="radio" name="shippingchoice" id={"shippingchoice" + key} value={key} onChange={props.handleChange} />
                             <div className="control_indicator"></div>
-                            <div className={key == props.data.lowestPriceKey ? "alert alert-primary" : key == props.data.longestKey ? "alert-success alert" : key == props.data.shortestKey ? "alert alert-warning" : "alert alert-secondary"} >
+                            <div className={value.pricing_id == props.data.lowestId ? "alert alert-primary" : value.pricing_id == props.data.longestId ? "alert-success alert" : value.pricing_id == props.data.shortestId ? "alert alert-warning" : "alert alert-secondary"}>
                                 <div className="col-md-12 d-flex">
                                     <div className="col-md-6 m-0 p-0">
-                                        <h5>{key == props.data.lowestPriceKey ? "Our best" : key == props.data.longestKey ? "Our greenest" : key == props.data.shortestKey ? "Our fastest" : "Another"} option :</h5>
+                                        <h5>{value.pricing_id == props.data.lowestId ? "Our best" : value.pricing_id == props.data.longestId ? "Our greenest" : value.pricing_id == props.data.shortestId ? "Our fastest" : "Another"} option :</h5>
                                         <div className="bd-highlight text-nowrap">Carrier: {value.name}</div>
                                     </div>
                                     <div className="col-md-6">
@@ -590,6 +591,8 @@ function Step2(props) {
                         </label>
                     </div >
                 )
+
+
             }
 
             let Promo_status = []
@@ -613,7 +616,7 @@ function Step2(props) {
                         {items}
                     </div>
                     <legend>Billing address</legend>
-                    <div className={props.showstatus == false ? "form-row  mt-3 col-md-12 " : "form-row    mt-3  col-md-12 "}>
+                    <div className={props.showstatus == false ? "form-row  mt-3 col-md-12 " : "form-row mt-3  col-md-12 "}>
                         {BillingAdressOptions}
 
                         <div className="alert w-100 alert-secondary">
@@ -706,8 +709,12 @@ function Step3(props) {
         let totalprice = shipping_cost + props.data.NoShipPrice
         let Promo = []
         if (props.data.promocode_details) {
-            Promo.push(<div ley="promo" className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {Math.round(totalprice * (props.data.promocode_details.percentage / 100))} €</span></div>)
-            totalprice = totalprice - totalprice * (props.data.promocode_details.percentage / 100)
+            console.log(props.data.promocode_details)
+
+            if (props.data.promocode_details != 'error') {
+                Promo.push(<div ley="promo" className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {Math.round(totalprice * (props.data.promocode_details.percentage / 100))} €</span></div>)
+                totalprice = totalprice - totalprice * (props.data.promocode_details.percentage / 100)
+            }
         }
 
         let Packagings = []

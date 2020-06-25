@@ -13,11 +13,15 @@ import 'react-tabs/style/react-tabs.css';
 import store from '../../store';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
+import Reviews from './TabReviews/TabReviews';
 import SupplierCommand from './TabSupplier/TapSupplier';
 import Shipping from './TabShipping/TabShipping';
 import Region from './TabRegion/TabRegion';
 import Promo from './TabPromo/TabPromo';
 import Color from './Color/Color';
+import Dashboard from './Dashboard/Dashboard';
+import queryString from 'query-string';
+
 import Packaging from './TabPackaging/TabPackaging';
 
 const AdminInterface = () => {
@@ -52,6 +56,7 @@ const AdminInterface = () => {
     const [categoryMigrateSelected, setCategoryMigrateSelected] = useState(0);
     const [deleteProductModal, setDeleteProductModal] = useState(false);
     const [productId, setProductId] = useState(0);
+    const [tabIndex, setTabIndex] = useState(0);
     const optionCategory = [];
     const token = store.getState().auth.token
     const config = {
@@ -68,11 +73,19 @@ const AdminInterface = () => {
     // }, [token]);
 
     useEffect(() => {
+      const nbTab = queryString.parse(document.location.search).tab
+      console.log(nbTab)
+      if(nbTab !== undefined)
+      {
+        setTabIndex(parseInt(nbTab))
+      }
+    }, [])
+    useEffect(() => {
         receivedData()
     }, [offset, products])
 
     useEffect(() => {
-        console.log(postDataCategories)
+        // console.log(postDataCategories)
         if (postDataCategories && postDataCategories.length === 0) setOffsetCategories(offsetCategories - limitCategories);
     }, [postDataCategories]);
 
@@ -82,7 +95,7 @@ const AdminInterface = () => {
 
     useEffect(() => {
         receivedDataCategories()
-    }, [offsetCategories, categories]) 
+    }, [offsetCategories, categories])
 
     const handleClose = () => setDeleteCategoryModal(false);
 
@@ -106,9 +119,9 @@ const AdminInterface = () => {
             )
             setPostData(newPostData)
         })
-        .catch(error => {
-            toast.error('Error !', { position: 'top-center' });
-        })
+            .catch(error => {
+                toast.error('Error !', { position: 'top-center' });
+            })
     }
 
     const handlePageClick = (e) => {
@@ -122,9 +135,9 @@ const AdminInterface = () => {
             receivedData()
             toast.success(res.data.message, { position: "top-center" });
         })
-        .catch(error => {
-            toast.error('Error !', { position: 'top-center' });
-        });
+            .catch(error => {
+                toast.error('Error !', { position: 'top-center' });
+            });
     }
 
     const receivedDataCategories = () => {
@@ -141,9 +154,9 @@ const AdminInterface = () => {
             )
             setPostDataCategories(newPostDataCategories)
         })
-        .catch(error => {
-            toast.error('Error !', { position: 'top-center' });
-        })
+            .catch(error => {
+                toast.error('Error !', { position: 'top-center' });
+            })
     }
 
     const handlePageClickCategories = (e) => {
@@ -157,9 +170,9 @@ const AdminInterface = () => {
             receivedDataCategories();
             toast.success(res.data.message, { position: "top-center" });
         })
-        .catch(error => {
-            toast.error('Error !', { position: 'top-center' });
-        });
+            .catch(error => {
+                toast.error('Error !', { position: 'top-center' });
+            });
     }
 
     const redirectCreate = (data) => {
@@ -239,7 +252,7 @@ const AdminInterface = () => {
                 <div className="row justify-content-end mb-2">
                     <button onClick={() => redirectCreate('product')} className="btn btn-success">+ New Product</button>
                 </div>
-                <div className="row border p-2">
+                <div className="row border bg-light p-2">
                     <table>
                         <thead>
                             <tr>
@@ -449,7 +462,7 @@ const AdminInterface = () => {
                                         type="text"
                                         name="category"
                                         id="category"
-                                        onChange={onChangeCate}/>
+                                        onChange={onChangeCate} />
                                     <Button color="dark" className="mt-4" block>Submit</Button>
                                 </FormGroup>
                             </Form>
@@ -480,7 +493,7 @@ const AdminInterface = () => {
                         </Modal.Body>
                     </Modal>
                 </div>
-                <div className="row border p-2">
+                <div className="row border  bg-light  p-2">
                     <table>
                         <thead>
                             <tr>
@@ -524,6 +537,7 @@ const AdminInterface = () => {
         )
     }
 
+    console.log(tabIndex);
     function getPDF() {
         const headers = {
             responseType: 'blob'
@@ -544,54 +558,64 @@ const AdminInterface = () => {
     }
 
     return (
-        <div className="container adminTable">
+        <div className="container-fluid adminTable p-0 m-0">
             <ToastContainer />
-            <div className="d-flex justify-content-between">
-                <h1 className="mb-5">
-                    <i className="material-icons md-36 marg">speed</i> ADMIN - Dashboard
-                </h1>
-                <p className="float-right mt-3">
-                    <span className="database">
-                    Get the database
+            <Tabs className="row p-0 m-0" forceRenderTabPanel={true} selectedIndex={tabIndex} onSelect={tabIndex => setTabIndex(tabIndex)}>
+                <TabList className="tabsHolder   col-2 m-0 p-0" style={{ paddingLeft: 0 }}>
+                    <Tab><h6 className="tabtitles mr-3 ml-3 mt-3 adminfix"> <i className="material-icons md-36 marg">home</i> ADMIN Dashboard</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">source</i>Products</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">collections</i>Categories</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">color_lens</i>Colors</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">flight</i>Shipping</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">public</i>Region</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">money_off</i>Code Promo</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">redeem</i>Packaging</h6></Tab>
+                    <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">mode_comment</i>Reviews</h6></Tab>
+                    <p className="float-right getdatabase mt-3 p-3">
+                        <span className="database">
+                            Get the database
                     </span>
-                    <span className="getpdf" onClick={getPDF}><i className="material-icons md-45 marg ml-2 down">save_alt</i></span>
-                </p>
-            </div>
-            <Tabs forceRenderTabPanel={true}>
-                <TabList className="tabsHolder" style={{ paddingLeft: 0 }}>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">source</i>Products</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">collections</i>Categories</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">color_lens</i>Colors</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">local_shipping</i>Suppliers</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">flight</i>Shipping</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">public</i>Region</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">money_off</i>Code Promo</h3></Tab>
-                    <Tab><h3 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">redeem</i>Packaging</h3></Tab>
+                        <span className="getpdf" onClick={getPDF}><i className="material-icons md-45 marg ml-2 down">save_alt</i></span>
+                    </p>
                 </TabList>
-                <TabPanel>
-                    {AllProducts()}
-                </TabPanel>
-                <TabPanel>
-                    {AllCategories()}
-                </TabPanel>
-                <TabPanel>
-                    <Color />
-                </TabPanel>
-                <TabPanel>
-                    <SupplierCommand />
-                </TabPanel>
-                <TabPanel>
-                    <Shipping />
-                </TabPanel>
-                <TabPanel>
-                    <Region />
-                </TabPanel>
-                <TabPanel>
-                    <Promo />
-                </TabPanel>
-                <TabPanel>
-                    <Packaging />
-                </TabPanel>
+                <div className="col-1"></div>
+                <div className="col-8 m-5 p-0">
+                    <TabPanel>
+                        <Dashboard />
+                    </TabPanel>
+                    <TabPanel>
+                        {AllProducts()}
+                    </TabPanel>
+                    <TabPanel>
+                        {AllCategories()}
+                    </TabPanel>
+                    <TabPanel>
+                        <Color />
+                    </TabPanel>
+                    <TabPanel>
+                        <SupplierCommand />
+                    </TabPanel>
+                    <TabPanel>
+                        <Shipping />
+                    </TabPanel>
+                    <TabPanel>
+                        <Region />
+                    </TabPanel>
+                    <TabPanel>
+                        <Promo />
+                    </TabPanel>
+                    <TabPanel>
+                        <Packaging />
+                    </TabPanel>
+                    <TabPanel>
+                        <Reviews />
+                    </TabPanel>
+
+
+                </div>
+                <div className="col-1"></div>
+
             </Tabs>
         </div>
     )

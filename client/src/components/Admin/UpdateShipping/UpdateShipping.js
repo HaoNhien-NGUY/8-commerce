@@ -135,7 +135,7 @@ function UpdateShipping() {
             } else {
                 axios.get(process.env.REACT_APP_API_LINK + "/api/shippingmethod/",config).then(res => {
                     let error = false;
-                    res.data.map( result => {
+                    res.data.data.map( result => {
                         if (result.name === newName) {
                             error = true;
                         }
@@ -210,8 +210,8 @@ function UpdateShipping() {
             <div className="container">
                 <h1>Update {name}</h1>
                 <div className="row justify-content-end mb-2">
-                    <button onClick={() => setShow(true)} className='float-right btn btn-info m-2'> Modifay Name </button>
-                    <button onClick={() => window.location.href = '/admin'} className='float-right btn btn-warning m-2'> Back to Dashboard </button>
+                    <button onClick={() => setShow(true)} className='float-right btn btn-info m-2'> Modify Name </button>
+                    <button onClick={() => window.location.href = '/admin?tab=5'} className='float-right btn btn-warning m-2'> Back to Dashboard </button>
                 </div>
                 <div className="resultShipUpdate">
                     {divShip}
