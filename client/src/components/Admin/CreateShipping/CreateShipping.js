@@ -113,7 +113,7 @@ function CreateShipping() {
             <div className="container">
                 <h1>New Shipping</h1>
                 <div className="row justify-content-end mb-2">
-                    <button onClick={() => window.location.href = '/admin'} className='float-right btn btn-warning m-2'> Back to Dashboard </button>
+                    <button onClick={() => window.location.href = '/admin?tab=5'} className='float-right btn btn-warning m-2'> Back to Dashboard </button>
                 </div>
                 <Form onSubmit={onSubmit}>
                     <FormGroup>

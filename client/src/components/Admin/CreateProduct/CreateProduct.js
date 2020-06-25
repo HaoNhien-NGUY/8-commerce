@@ -181,7 +181,7 @@ function CreateProduct() {
         <div className='container'>
             <ToastContainer />
             <h1 className="text-center">Create your Product !</h1>
-            <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to Dashboard </button>
+            <button onClick={() => window.location.href='/admin?tab=1'} className='float-right btn btn-warning mb-3'> Back to Dashboard </button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="title">Title</label>

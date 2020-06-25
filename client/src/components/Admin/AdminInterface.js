@@ -20,6 +20,7 @@ import Region from './TabRegion/TabRegion';
 import Promo from './TabPromo/TabPromo';
 import Color from './Color/Color';
 import Dashboard from './Dashboard/Dashboard';
+import queryString from 'query-string';
 
 import Packaging from './TabPackaging/TabPackaging';
 
@@ -55,6 +56,7 @@ const AdminInterface = () => {
     const [categoryMigrateSelected, setCategoryMigrateSelected] = useState(0);
     const [deleteProductModal, setDeleteProductModal] = useState(false);
     const [productId, setProductId] = useState(0);
+    const [tabIndex, setTabIndex] = useState(0);
     const optionCategory = [];
     const token = store.getState().auth.token
     const config = {
@@ -70,6 +72,14 @@ const AdminInterface = () => {
     //     }
     // }, [token]);
 
+    useEffect(() => {
+      const nbTab = queryString.parse(document.location.search).tab
+      console.log(nbTab)
+      if(nbTab !== undefined)
+      {
+        setTabIndex(parseInt(nbTab))
+      }
+    }, [])
     useEffect(() => {
         receivedData()
     }, [offset, products])
@@ -527,7 +537,7 @@ const AdminInterface = () => {
         )
     }
 
-
+    console.log(tabIndex);
     function getPDF() {
         const headers = {
             responseType: 'blob'
@@ -550,7 +560,7 @@ const AdminInterface = () => {
     return (
         <div className="container-fluid adminTable p-0 m-0">
             <ToastContainer />
-            <Tabs className="row p-0 m-0  " forceRenderTabPanel={true}>
+            <Tabs className="row p-0 m-0" forceRenderTabPanel={true} selectedIndex={tabIndex} onSelect={tabIndex => setTabIndex(tabIndex)}>
                 <TabList className="tabsHolder   col-2 m-0 p-0" style={{ paddingLeft: 0 }}>
                     <Tab><h6 className="tabtitles mr-3 ml-3 mt-3 adminfix"> <i className="material-icons md-36 marg">home</i> ADMIN Dashboard</h6></Tab>
                     <Tab><h6 className="tabtitles mr-3 ml-3"><i className="material-icons md-36 marg">source</i>Products</h6></Tab>
