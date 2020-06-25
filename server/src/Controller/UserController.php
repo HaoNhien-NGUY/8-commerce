@@ -112,9 +112,9 @@ class UserController extends AbstractController
         $responseArray = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()];
 
         $method_login = $request->query->get('method_login');
-        if($method_login)
+        if ($method_login)
             $responseArray['method_login'] = $method_login;
-            
+
         return $this->json($responseArray, 200);
     }
 
@@ -191,11 +191,15 @@ class UserController extends AbstractController
      */
     public function userBillingAddress(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
         $user_id = $request->attributes->get('id');
 
-        $user = $this->getDoctrine()->getRepository(User::class)->find($user_id);
+        if (!$this->isGranted("ROLE_ADMIN") && $user->getId() != $user_id) return $this->json(['message' => 'user unauthorized'], 403);
+
         if (!isset($user)) return $this->json(['message' => 'user not found'], 400, []);
 
         if (!isset($req->region_id)) return $this->json(['message' => 'region_id missing'], 400, []);

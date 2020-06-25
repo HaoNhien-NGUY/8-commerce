@@ -43,7 +43,7 @@ function BillingAddress({ idUser, config }) {
 
     const deleteAddress = (id) => {
         console.log(id);
-        axios.delete(process.env.REACT_APP_API_LINK + "/api/addressbilling/" + id, config).then(res => {
+        axios.delete(process.env.REACT_APP_API_LINK + "/api/addressbilling/" + id, {'user_id' : idUser},config).then(res => {
             billingAddressData();
             toast.success(res.data.message, { position: 'top-center' })
         }).catch(err => {
