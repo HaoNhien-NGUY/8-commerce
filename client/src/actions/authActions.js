@@ -30,6 +30,24 @@ export const loadUser = () => (dispatch, getState) => {
         })
 }
 
+
+export const responseGoogle = (response) => (dispatch, getState) => {
+    // loading user
+    dispatch({ type: USER_LOADING })
+    axios.post(process.env.REACT_APP_API_LINK + '/connect/google/check', response).then(resp => {
+        console.log('ok inside post Hao ! Yeaaaah !')
+        console.log(resp.data);
+            console.log("good")
+            dispatch({
+                type: LOGIN_SUCCESS,
+                // res.data is an object with user object and the token
+                payload: resp.data
+            })
+    }).catch((error) => {
+        console.log(error)
+    })
+}
+
 // Register User
 export const register = ({ username, email, password }) => dispatch => {
     // headers 
@@ -65,10 +83,10 @@ export const tokenConfig = getState => {
             "Content-type": "application/json"
         }
     }
-    
+
     // if token is good, add it to headers
     if (token) {
-        config.headers['Authorization'] = 'Bearer '+token;
+        config.headers['Authorization'] = 'Bearer ' + token;
     }
     return config
 }
