@@ -206,11 +206,24 @@ function Home() {
                     </video>
                 </Background>
             </Parallax >
+            <div className="row m-0 p-0  justify-content-center">
+
+
+                <div className="col-md-8 m-0 p-4">  <div className="row m-0 p-0  justify-content-center">
+                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_one"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
+                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_two"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
+                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_three"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
+                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_four"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
+                </div></div>
+
+            </div>
 
 
 
 
-            <div className="row m-0 p-0 p-5 bg-light justify-content-center">  <Footer /></div>
+
+
+            <div className="row m-0 p-0 pt-5 bg-light justify-content-center">  <Footer /></div>
         </div >
     )
 }
