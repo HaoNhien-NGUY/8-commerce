@@ -85,7 +85,7 @@ class LoginModal extends Component {
 
     onSubmitChange = e => {
         e.preventDefault()
-        this.setState({email: this.state.newemail})
+        this.setState({ email: this.state.newemail })
         const { newemail } = this.state
         const config = {
             headers: {
@@ -97,9 +97,9 @@ class LoginModal extends Component {
         }
         console.log(body)
         axios.post(process.env.REACT_APP_API_LINK + "/password/reset", body, config).then(res => {
-           toast.success(res.data.message, { position: "top-center" });
-           this.toggleChange();
-           this.toggle();
+            toast.success(res.data.message, { position: "top-center" });
+            this.toggleChange();
+            this.toggle();
         }).catch(err => {
             toast.error(err.response.data.msg, { position: 'top-center' });
         });
@@ -152,23 +152,25 @@ class LoginModal extends Component {
                                 <Button color="dark" className="mt-4" block>
                                     Login
                                 </Button>
-                                <div style={{ padding: 0.5 + 'vw' }}>
-                                <GoogleLogin
-                                    clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
-                                    buttonText="Login"
-                                    onSuccess={this.responseGoogle}
-                                    onFailure={this.responseGoogle}
-                                    cookiePolicy={'single_host_origin'}
-                                    />
-                                {/* show in navbar if logged in with google */}
-                                <GoogleLogout
-                                    clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
-                                    buttonText="Logout"
+                                <div style={{ padding: 1 + 'vw', paddingBottom: 0 + 'vw', paddingLeft: 0 + 'vw' }}>
+                                    <span style={{ marginRight: 0.5 + 'vw' }}>
+                                        <GoogleLogin
+                                            clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
+                                            buttonText="Login"
+                                            onSuccess={this.responseGoogle}
+                                            onFailure={this.responseGoogle}
+                                            cookiePolicy={'single_host_origin'}
+                                        />
+                                    </span>
+                                    {/* show in navbar if logged in with google */}
+                                    <GoogleLogout
+                                        clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
+                                        buttonText="Logout"
                                     //   onLogoutSuccess={logout}
                                     >
-                                </GoogleLogout>
+                                    </GoogleLogout>
                                 </div>
-                                <p className='mt-4 text-info' style={{cursor: 'pointer'}} onClick={() => {this.toggle(); this.toggleChange(); this.setState({newemail: this.state.email})}}>Forgot password?</p>
+                                <p className='mt-4 text-info' style={{ cursor: 'pointer' }} onClick={() => { this.toggle(); this.toggleChange(); this.setState({ newemail: this.state.email }) }}>Forgot password?</p>
                             </FormGroup>
                         </Form>
                     </ModalBody>
@@ -191,7 +193,7 @@ class LoginModal extends Component {
                                 <Button color="dark" className="mt-4" block>
                                     Get new password
                                 </Button>
-                                <p className='mt-4 text-info' style={{cursor: 'pointer'}} onClick={() => {this.toggle(); this.toggleChange(); }}>Back to login</p>
+                                <p className='mt-4 text-info' style={{ cursor: 'pointer' }} onClick={() => { this.toggle(); this.toggleChange(); }}>Back to login</p>
                             </FormGroup>
                         </Form>
                     </ModalBody>
