@@ -27,7 +27,7 @@ class Dashboard extends React.Component {
     componentDidMount() {
         let header = { "Content-Type": "application/json" };
         if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
-        
+
         axios.get(process.env.REACT_APP_API_LINK + "/api/userorder", { headers: header })
             .then((res) => {
                 this.setState({ numberoforder: res.data.length })
@@ -59,6 +59,24 @@ class Dashboard extends React.Component {
                 console.log(error);
                 toast.error('Error !', { position: 'top-center' });
             })
+
+        axios.get(process.env.REACT_APP_API_LINK + `/api/soldsubcategory`, { headers: header })
+            .then(async res => {
+                console.log(res.data)
+                this.setState({ soldsubcategory: res.data })
+            }).catch(error => {
+                console.log(error);
+                toast.error('Error !', { position: 'top-center' });
+            })
+
+        axios.get(process.env.REACT_APP_API_LINK + `/api/soldcategory`, { headers: header })
+            .then(async res => {
+                console.log(res.data)
+                this.setState({ soldcategory: res.data })
+            }).catch(error => {
+                console.log(error);
+                toast.error('Error !', { position: 'top-center' });
+            })
     }
 
     render() {
@@ -72,6 +90,9 @@ class Dashboard extends React.Component {
         let unregistered = '';
         let totalClient = 0;
 
+        let category = [];
+        let subcategory = [];
+
         if (this.state.numberofproducts.length == this.state.numberoforder) {
             for (let [key, value] of Object.entries(this.state.numberofproducts)) {
                 totalProducts += value;
@@ -83,6 +104,14 @@ class Dashboard extends React.Component {
             this.state.allreviews.map((e) => {
                 averageNote += e.rating;
             })
+
+            for (let [key, value] of Object.entries(this.state.soldcategory.shift())) {
+                category.push(<li>{key}: <span>{value}</span></li>)
+            }
+            for (let [key, value] of Object.entries(this.state.soldsubcategory.shift())) {
+                subcategory.push(<li>{key}: <span>{value}</span></li>)
+            }
+
 
             var counts = {};
             totalReviews = this.state.allreviews.length;
@@ -136,19 +165,9 @@ class Dashboard extends React.Component {
                         <hr />Registered Clients: {registered}
                         <br />Unregistered Clients: {unregistered}
                     </div> </div>
-                    {/* 
-                    nombre de commentaires
-                    
-                    taille la plus populaire
-                    
-                    produit le plus vendu
-                    
-                    produit 
 
-
-                    */}
                 </div>
-                <div className="row h-100 m-0 p-0 ">
+                <div className="row h-100 m-0 p-0 justify-content-between">
                     {
                         counts ? <div className='col-8 map bg-light bordercustom border-secondary p-3'>
                             <h4>Order by regions</h4> <hr />
@@ -297,6 +316,16 @@ class Dashboard extends React.Component {
                             </div>
                         </div>
                             : null}
+
+                    <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-danger p-3">
+                        <i className="material-icons md-dark">account_circle</i>  <h5>Sales by types</h5>
+                        <hr />
+                        <h6><b>By categories</b></h6>
+                        {category}
+                        <br />
+                        <h6><b>By subcategories</b></h6>
+                        {subcategory}
+                    </div> </div>
                 </div>
             </>
         )

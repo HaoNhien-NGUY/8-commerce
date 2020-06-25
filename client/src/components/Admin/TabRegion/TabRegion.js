@@ -21,7 +21,7 @@ const Region = () => {
     const config = {
         headers: {
             "Content-type": "application/json",
-            "Authorization": 'Bearer '+token
+            "Authorization": 'Bearer ' + token
         }
     }
     // useEffect(() => {
@@ -48,13 +48,11 @@ const Region = () => {
 
     const receivedData = () => {
         axios.get(process.env.REACT_APP_API_LINK + `/api/region?offset=${offset}&limit=${limit}`, config).then(async res => {
-            console.log(res.data)
             await setPageCount(Math.ceil(res.data.nbResults / limit));
             const newPostDataRegions = res.data.data.length > 0 ? res.data.data.map((region) =>
                 <tr key={region.id}>
                     <td><p className="m-2 align-items-center">{region.id}</p></td>
                     <td><p className="m-2">{region.name}</p></td>
-                    {console.log(region)}
                     <td><p className="m-2">{region.restricted ? 'Yes' : 'No'}</p></td>
                     <td><button className="btn btn-outline-info m-1" onClick={() => { setRegionId(region.id); setRegionName(region.name); setRestriction(region.restricted); setShowUpdate(true) }}>Modify</button></td>
                     {/* <td> <button className="btn btn-outline-danger m-1" onClick={() => deleteRegion(region.id)}> Delete </button></td> */}

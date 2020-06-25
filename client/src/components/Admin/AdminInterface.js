@@ -62,7 +62,7 @@ const AdminInterface = () => {
     const config = {
         headers: {
             "Content-type": "application/json",
-            "Authorization": 'Bearer '+token
+            "Authorization": 'Bearer ' + token
         }
     }
 
@@ -73,12 +73,11 @@ const AdminInterface = () => {
     // }, [token]);
 
     useEffect(() => {
-      const nbTab = queryString.parse(document.location.search).tab
-      console.log(nbTab)
-      if(nbTab !== undefined)
-      {
-        setTabIndex(parseInt(nbTab))
-      }
+        const nbTab = queryString.parse(document.location.search).tab
+        console.log(nbTab)
+        if (nbTab !== undefined) {
+            setTabIndex(parseInt(nbTab))
+        }
     }, [])
     useEffect(() => {
         receivedData()
@@ -537,7 +536,6 @@ const AdminInterface = () => {
         )
     }
 
-    console.log(tabIndex);
     function getPDF() {
         const headers = {
             responseType: 'blob'
