@@ -130,7 +130,6 @@ function Home() {
                         <a href="/search?subcategory=Sweatshirt"><div className="sweatshirt"><p>Sweatshirt</p></div></a>
                         <a href="/search?subcategory=Bag"><div className="bag"><p>Handbags</p></div></a>
                     </div>
-                    {/* <div className="row justify-content-center"><a href="/search">See More</a></div> */}
                 </div>
             </div>
             <div className="row justify-content-center m-0 p-0 pt-3">
@@ -207,23 +206,28 @@ function Home() {
                 </Background>
             </Parallax >
             <div className="row m-0 p-0  justify-content-center">
-
-
                 <div className="col-md-8 m-0 p-4">  <div className="row m-0 p-0  justify-content-center">
                     <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_one"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
                     <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_two"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
                     <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_three"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
                     <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_four"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
                 </div></div>
-
             </div>
+            {/* <div className="row m-0 mb-5 p-0 charity_home justify-content-center">
+                <div className="col-md-8 mb-5 m-0 p-0">
+                    <div className="row m-5 p-0 justify-content-center">
+                        <div className="col-md-5 m-0 p-0">
+                            <div className="bigimg"> <div className="bigframe"></div></div>
+                        </div>
 
-
-
-
-
-
-            <div className="row m-0 p-0 pt-5 bg-light justify-content-center">  <Footer /></div>
+                        <div className="col-md-5 m-0 p-0"><div><title_home>Lorem Ipsum
+                          <br />  dolor sit</title_home><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam malesuada tincidunt massa at pretium. Proin tempor mattis ex sed laoreet.</p></div>
+                            <div className="bigimg2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div> */}
+            <div className="row m-0 mt-2 p-0 pt-5 bg-light justify-content-center">  <Footer /></div>
         </div >
     )
 }

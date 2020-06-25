@@ -153,7 +153,12 @@
 }
 
 
+
 /*==========================================*/
+
+.minheight {
+min-height: 100%!important;
+}
 
 .tabsHolder {
     display: flex;
