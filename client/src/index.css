@@ -355,9 +355,8 @@ border: 2px solid white;
 
 .bloc_a span {
 z-index: 300;
-position: relative;
-right: 0;
-background-color: red;
+position: absolute;
+padding: 2px 2px 2px 36px;
 text-align: center;
 
 }

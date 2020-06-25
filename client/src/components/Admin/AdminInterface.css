@@ -164,6 +164,11 @@
     border: none!important;
 }
 
+.react-tabs__tab
+{
+bottom: 0!important;
+}
+
 .minheight {
     min-height: 100%!important;
 }

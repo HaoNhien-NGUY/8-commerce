@@ -93,17 +93,18 @@ function Home() {
 
             <div className="row  justify-content-center  m-0 mt-5 p-0">
                 <div className="bloc_1_home">
+                    {/* <a href=""> */}
                     <div className='bloc_a'>
                         <div>
                             <div className="frame"></div>
                             <span>Discover the techlab</span>
-
                             <video autoPlay="autoplay" loop="loop" muted className="" >
                                 <source src={techlab1} type="video/mp4" />
                                  Your browser does not support the video tag.
                         </video>
                         </div>
                     </div>
+                    {/* </a> */}
                     <a href="/search?subcategory=Jacket" className="linkwhite bloc_b"><img src={backpack} /> <div><span>Crofton 30L</span> <p>Discover the techlab</p></div></a>
                     <div className="bloc_c">
 
