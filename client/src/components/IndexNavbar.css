@@ -23,7 +23,7 @@
   transition: width 0.3s ease 0s, left 0.3s ease 0s;
   width: 0;
 }
-#navbar a:hover:after { 
+#navbar a:not(#brandName):hover:after { 
   width: 100%; 
   left: 0;
  }

@@ -57,6 +57,13 @@ a.linkwhite:hover {
   color: #ececec;
 }
 
+.bordercustom {
+  list-style: none;
+}
+
+.bordercustom li {
+ padding-left: 15px;
+}
 
 /* ------------------ Detail Produtc ------------------- */
 
