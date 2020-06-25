@@ -153,15 +153,26 @@
 }
 
 
+
 /*==========================================*/
+
+.minheight {
+min-height: 100%!important;
+}
 
 .tabsHolder {
     display: flex;
     flex-direction: column;
     color: #eeeeee;
     /* min-height: 100%!important; */
+    height: auto;
     background-color: #3e3e3e;
     border: none!important;
+}
+
+.react-tabs__tab
+{
+bottom: 0!important;
 }
 
 .minheight {

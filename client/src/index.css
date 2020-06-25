@@ -329,8 +329,8 @@ display: flex;
 }
 
 .bloc_a {
-height: 26vw;
-width: 26vw;
+height: 28vw;
+width: 28vw;
 overflow: hidden;
 }
 
@@ -339,7 +339,7 @@ overflow: hidden;
 }
 
 .bloc_a video {
-height: 26vw; z-index: 0;
+height: 28vw; z-index: 0;
 left: -50%;
 position: relative;
 }
@@ -348,16 +348,15 @@ position: relative;
 z-index: 300;
 margin: 2vw;
 position: absolute;
-height: 22vw;
-width: 22vw;
+height: 24vw;
+width: 24vw;
 border: 2px solid white;
 }
 
 .bloc_a span {
 z-index: 300;
-position: relative;
-right: 0;
-background-color: red;
+position: absolute;
+padding: 2px 2px 2px 36px;
 text-align: center;
 
 }
@@ -382,7 +381,7 @@ text-align: center;
 }
 
 .bloc_c .box_1 { 
-  height: 12.5vw;width: 12.5vw;
+  height: 13.5vw;width: 13.5vw;
   background-image: url(img/jacket.jpg);
   background-size: cover;
   display: flex;
@@ -396,8 +395,8 @@ text-align: center;
 }
 
 .bloc_c .box_2 {
-  height: 12.5vw;
-  width: 12.5vw;
+  height: 13.5vw;
+  width: 13.5vw;
   margin-top: 20px;
   display: flex;
   align-items: flex-end;
@@ -522,6 +521,72 @@ transform: none;
 .custom-bg video {
 transform: none!important;
 }
+
+.iconature {
+height: 7vw;
+width: 90%;
+margin: 5% auto 2% auto;
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center center;
+}
+
+.minichar {
+  font-family: 'Montserrat',Arial, Helvetica, sans-serif;
+}
+
+.minichar h5 {
+font-weight: bold!important;
+}
+
+.minichar hr {
+  border-bottom: 1px solid #000;margin: 0 4vw;
+}
+
+.icon_one {
+  background-image: url('img/recycle.png');
+}
+.icon_two {
+  background-image: url('img/care.png');
+}
+.icon_three {
+  background-image: url('img/package.png');
+}
+.icon_four {
+  background-image: url('img/leaf.png');
+}
+
+.bigimg {
+  width: 20vw;
+  height: 28vw;
+  background-image: url('img/cleanup.jpg');
+  background-size: cover;}
+
+  .bigframe {
+   width: 20vw;
+  height: 28vw;
+ border: 5px solid white; position: absolute; left: 20px; top: 20px;
+}
+
+
+.charity_home title_home {
+  font-size: 3em;
+}
+.charity_home p {
+  width: 70%;
+  font-size: 1.3em;
+  font-weight: bold;
+  font-family: 'Montserrat',Arial, Helvetica, sans-serif;
+
+}
+
+.bigimg2 {
+  width: 30vw;
+  height: 15vw;
+  position: absolute;
+  right: 5vw;
+  background-image: url('img/cleanup.jpg');
+  background-size: cover;}
 
 /*-------- Large Panier ------ */
 

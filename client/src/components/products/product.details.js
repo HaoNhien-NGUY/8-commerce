@@ -399,8 +399,8 @@ function ProductDescription() {
               <WhatsappShareButton url={window.location.href}>
                 <WhatsappIcon size={28} iconFillColor="black" className="ml-1"></WhatsappIcon>
               </WhatsappShareButton>
-              </div>
-            </>
+            </div>
+          </>
         ) : (
             <button className="btn-cart">Out of stock</button>
           )}
@@ -525,7 +525,7 @@ function ProductDescription() {
       <ToastContainer />
       <div className="container-fluid m-0 p-0">
         <div className="row m-0 p-0">
-          <div className="col-md-7 productImgBg m-0 p-0">
+          <div className="col-md-7 m-0 p-0">
             {product.status == true ? (
               <>
                 {" "}
@@ -541,21 +541,22 @@ function ProductDescription() {
                 </>
               )}
           </div>
-          <div className="col-md-5 m-0 p-0">
+          <div className="col-md-5 productImgBg  border-right m-0 p-0">
             {product.subproducts && product.subproducts.length > 0
               ? subproductsAvailable()
               : subproductsUnavailable()}
           </div>
-          <div style={{ width: 100 + 'vw' }}>
-            <ReviewPart id={id} />
-          </div>
-          <div className="col-sm-12">
-            <PersonalizedSugg />
-          </div>
-          <div className="col-sm-12 mt-5">
-            <Footer />
-          </div>
         </div>
+        <div className="row m-4 p-0 border-top">
+          <ReviewPart id={id} />
+        </div>
+        <div className="col-sm-12">
+          <PersonalizedSugg />
+        </div>
+        <div className="col-sm-12 mt-5">
+          <Footer />
+        </div>
+
       </div>
     </div>
   );
