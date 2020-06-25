@@ -1,14 +1,11 @@
 import { ADD_COMMENT, DELETE_COMMENT, UPDATE_COMMENT, GET_COMMENTS, GET_COMMENT, COMMENTS_LOADING } from './types'
-import axios from 'axios'
+import axios from 'axios';
+import { tokenConfig } from './authActions';
 
 export const addComment = ({ date, content, creator, post }) => dispatch => {
     dispatch(setCommentsLoading())
     // headers 
-    const config = {
-        headers: {
-            "Content-type": "application/json"
-        }
-    }
+    const config = tokenConfig();
 
     //request info
     const body = JSON.stringify({ post, date, content, creator })

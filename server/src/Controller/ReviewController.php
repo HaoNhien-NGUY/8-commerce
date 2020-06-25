@@ -65,6 +65,8 @@ class ReviewController extends AbstractController
      */
     public function reviewCreate(ValidatorInterface $validator,SerializerInterface $serializer,Request $request ,ReviewRepository $reviewRepository,ProductRepository $productRepository,UserRepository $userRepository,EntityManagerInterface $em)
     { 
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
 
@@ -85,11 +87,7 @@ class ReviewController extends AbstractController
             $review->setReview($findreview);
         }
 
-        if (!isset($req->user)) return $this->json(['message' => 'User missing'], 400, []);
-            $user = $userRepository->findOneBy(['id' => $req->user]);
-        if(!$user){
-            return $this->json(['message' => 'User not found'],404);
-        }
+        $user = $this->getUser();
 
         if (!isset($req->product)) return $this->json(['message' => 'Product missing'], 400, []);
         $product = $productRepository->findOneBy(['id' => $req->product]);
@@ -117,6 +115,8 @@ class ReviewController extends AbstractController
      */
     public function reviewRemove(Request $request, ReviewRepository $reviewRepository, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $review= $reviewRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($review) {

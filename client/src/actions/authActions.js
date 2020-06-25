@@ -65,10 +65,10 @@ export const tokenConfig = getState => {
             "Content-type": "application/json"
         }
     }
-
+    
     // if token is good, add it to headers
     if (token) {
-        config.headers['x-auth-token'] = token
+        config.headers['Authorization'] = 'Bearer '+token;
     }
     return config
 }
@@ -92,7 +92,7 @@ export const login = ({ email, password }) => dispatch => {
     //request info
     const body = JSON.stringify({ email, password })
 
-    axios.post(process.env.REACT_APP_API_LINK + '/login', body, config)
+    axios.post(process.env.REACT_APP_API_LINK + '/api/login_check', body, config)
         .then(res => {
             dispatch({
                 type: LOGIN_SUCCESS,

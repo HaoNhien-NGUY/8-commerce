@@ -48,6 +48,8 @@ class RegionController extends AbstractController
      */
     public function restricted_region_create(Request $request, RestrictedRegionRepository $restrictedRegionRepository, RegionRepository $regionRepository, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $req = json_decode($request->getContent());
 
         $find = $restrictedRegionRepository->findOneBy(['region' => $req->id]);
@@ -71,6 +73,8 @@ class RegionController extends AbstractController
      */
     public function restricted_region_remove(Request $request, RestrictedRegionRepository $restrictedRegionRepository, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $region = $restrictedRegionRepository->findOneBy(['region' => $request->attributes->get('id')]);
 
         if ($region) {
@@ -90,6 +94,8 @@ class RegionController extends AbstractController
      */
     public function region_create(Request $request, RegionRepository $regionRepository, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $req = json_decode($request->getContent());
 
         $find = $regionRepository->findOneBy(['name' => $req->name]);
@@ -113,6 +119,8 @@ class RegionController extends AbstractController
      */
     public function region_remove(Request $request, RegionRepository $regionRepository, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $region = $regionRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($region) {
@@ -146,6 +154,8 @@ class RegionController extends AbstractController
      */
     public function regionUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, RegionRepository $regionRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);

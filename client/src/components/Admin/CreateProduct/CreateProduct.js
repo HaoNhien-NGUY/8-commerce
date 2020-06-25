@@ -32,14 +32,15 @@ function CreateProduct() {
     const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
     }
-    useEffect(() => {
-        if (token) {
-            config.headers['x-auth-token'] = token
-        }
-    }, [token]);
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
 
     useEffect(() => {
       axios.get(process.env.REACT_APP_API_LINK + "/api/product", config).then( e => {
@@ -180,7 +181,7 @@ function CreateProduct() {
         <div className='container'>
             <ToastContainer />
             <h1 className="text-center">Create your Product !</h1>
-            <button onClick={() => window.location.href='/admin'} className='float-right btn btn-warning mb-3'> Back to Dashboard </button>
+            <button onClick={() => window.location.href='/admin?tab=1'} className='float-right btn btn-warning mb-3'> Back to Dashboard </button>
             <form id="formItem">
                 <div className="form-group">
                     <label htmlFor="title">Title</label>

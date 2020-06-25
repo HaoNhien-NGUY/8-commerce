@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
+import store from '../../../store';
 
 function CreatePackaging({ config, closeModal, receivedData }) {
     const [packaginName, setPackagingName] = useState("");
@@ -16,6 +17,19 @@ function CreatePackaging({ config, closeModal, receivedData }) {
     const [dateEnd, setDateEnd] = useState(new Date());
     const [isInvalid, setIsInvalid] = useState(false);
     const [isReady, setIsReady] = useState(false);
+
+    // const token = store.getState().auth.token
+    // const config = {
+    //     headers: {
+    //         "Content-type": "application/json",
+    //         "Authorization": 'Bearer '+token
+    //     }
+    // }
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
 
     function onChangeName(event) {
         let res = event.target.value.trim();

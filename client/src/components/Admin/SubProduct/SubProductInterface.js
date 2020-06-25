@@ -37,14 +37,15 @@ const SubProductInterface = () => {
     const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
     }
-    useEffect(() => {
-        if (token) {
-            config.headers['x-auth-token'] = token
-        }
-    }, [token]);
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
 
     useEffect(() => {
         receivedData();
@@ -164,7 +165,7 @@ const SubProductInterface = () => {
             </h1>
             <div className="row justify-content-end mb-2">
                 <h3 className="mr-auto ml-2">All Subproducts of <b>{titleProduct}</b></h3>
-                <button onClick={() => window.location.href = '/admin'} className='float-right btn m-2 btn-warning'> Back to Dashboard </button>
+                <button onClick={() => window.location.href = '/admin?tab=1'} className='float-right btn m-2 btn-warning'> Back to Dashboard </button>
             </div>
             <div className="row justify-content-end mb-2">
                 <button onClick={redirectCreate} className="btn btn-success m-2">

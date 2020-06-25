@@ -21,7 +21,7 @@ function CommandTracking() {
 
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
         }
     }
 
@@ -32,6 +32,7 @@ function CommandTracking() {
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_LINK + "/api/user/order/" + idOrder, config).then(res => {
+            console.log(res.data)
             setShippingAddress(res.data.shippingAddress);
             setBillingAddress(res.data.billingAddress);
             setTotal(res.data.cost);

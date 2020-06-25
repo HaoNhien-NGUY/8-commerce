@@ -3,17 +3,25 @@ import "./CreateShipping.css";
 import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import store from '../../../store';
 
 function CartShipping(props) {
     const [isInvalid, setIsInvalid] = useState(false);
     const [divShipping, setDivShipping] = useState([]);
     const [countProps, setCountProps] = useState(0);
 
+    const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
-    };
+    }
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
 
     useEffect(() => {
         if (props.handleCart && props.handleCart.length !== countProps) {

@@ -52,7 +52,7 @@ const Reviews = () => {
                             <td><p className="m-2 align-items-center">{promo.username}</p></td>
                             <td><p className="m-2">{promo.title}</p></td>
                             <td><p className="m-2">{promo.description}</p></td>
-                            <td> <button className="btn btn-outline-danger m-1 md-force-align" onClick={() => { setDeleteCodeModal(true); setReviewToDelete(promo.id) }}><i className="material-icons md-24">delete</i></button></td>
+                            <td><button className="btn btn-outline-danger m-1 md-force-align" onClick={() => { setDeleteCodeModal(true); setReviewToDelete(promo.id) }}><i className="material-icons md-24">delete</i></button></td>
                         </tr>
                     }
                 </>

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import Modal from 'react-bootstrap/Modal';
+import store from '../../../store';
 
 function UpdateShipping() {
     let idShipping = useRouteMatch("/admin/update/shipping/:id").params.id;
@@ -27,11 +28,13 @@ function UpdateShipping() {
     const [show, setShow] = useState(false);
     const optionRegions = [];
 
+    const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
-    };
+    }
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_API_LINK + "/api/shippingmethod/" + idShipping, config).then(res => {
@@ -208,7 +211,7 @@ function UpdateShipping() {
                 <h1>Update {name}</h1>
                 <div className="row justify-content-end mb-2">
                     <button onClick={() => setShow(true)} className='float-right btn btn-info m-2'> Modify Name </button>
-                    <button onClick={() => window.location.href = '/admin'} className='float-right btn btn-warning m-2'> Back to Dashboard </button>
+                    <button onClick={() => window.location.href = '/admin?tab=5'} className='float-right btn btn-warning m-2'> Back to Dashboard </button>
                 </div>
                 <div className="resultShipUpdate">
                     {divShip}

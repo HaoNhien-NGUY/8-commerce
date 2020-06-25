@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CreatePackaging from './CreatePackaging';
 import UpdatePackaging from './UpdatePackaging';
+import store from '../../../store';
 
 function Packaging() {
     const [show, setShow] = useState(false);
@@ -14,11 +15,18 @@ function Packaging() {
     const [postDataPack, setPostDataPack] = useState(false);
     const [idPack, setPackId] = useState(false);
 
+    const token = store.getState().auth.token
     const config = {
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json",
+            "Authorization": 'Bearer '+token
         }
     }
+    // useEffect(() => {
+    //     if (token) {
+    //         config.headers['Authorization'] = 'Bearer '+token;
+    //     }
+    // }, [token]);
 
     useEffect(() => {
         receivedData();

@@ -20,14 +20,21 @@ function CreateCategorySubModal() {
   const config = {
     headers: {
       "Content-type": "application/json",
+      "Authorization": 'Bearer '+token
     },
   };
 
-  useEffect(() => {
-    if (token) {
-      config.headers["x-auth-token"] = token;
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     config.headers['Authorization'] = 'Bearer ' + token;
+  //   }
+  // }, [token]);
+
+  // useEffect(() => {
+  //   if (token) {
+  //     config.headers["x-auth-token"] = token;
+  //   }
+  // }, [token]);
 
   useEffect(() => {
     axios.get(process.env.REACT_APP_API_LINK + "/api/category", config).then((e) => {
@@ -91,9 +98,9 @@ function CreateCategorySubModal() {
       axios
         .post(
           process.env.REACT_APP_API_LINK + "/api/subcategory/create/" +
-            categorySelected +
-            "/" +
-            formControl.subCategory,
+          categorySelected +
+          "/" +
+          formControl.subCategory,
           body,
           config
         )
