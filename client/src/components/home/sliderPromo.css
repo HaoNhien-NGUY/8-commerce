@@ -2,7 +2,7 @@
 .awssld {
   --organic-arrow-thickness: 4px;
   --organic-arrow-height: 40px;
-  --slider-height-percentage: 20%;
+  --slider-height-percentage: 40%;
   --loader-bar-color: #851515;
   --loader-bar-height: 6px;
   --control-button-width: 10%;
@@ -49,8 +49,9 @@
 
 .slider-bg {
   width: 100%;
-  height: auto;
+  height: 100%;
 }
+
 
 .blur-bg {
   filter: blur(13px);
@@ -60,10 +61,15 @@
   filter: alpha(opacity=20);
 }
 
-.img-div {
+/* .img-div {
   height: 250px;
   width: auto;
   box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.05);
   border: 1px solid rgb(224, 224, 224);
   border-radius: 3px;
+} */
+
+.img-div {
+  height: 100%;
+ 
 }
