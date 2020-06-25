@@ -9,6 +9,9 @@ import { clearErrors } from '../../actions/errorActions'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import { GoogleLogout } from 'react-google-login';
+import GoogleLogin from 'react-google-login';
+
 
 class LoginModal extends Component {
     state = {
@@ -101,6 +104,21 @@ class LoginModal extends Component {
             toast.error(err.response.data.msg, { position: 'top-center' });
         });
     }
+
+    responseGoogle = response => {
+        console.log('ok before post')
+        axios.post(process.env.REACT_APP_API_LINK + '/connect/google/check', response).then(resp => {
+            console.log('ok inside post Hao ! Yeaaaah !')
+            console.log(resp.data);
+            // dispatch({
+            //     type: LOGIN_SUCCESS,
+            //     payload: resp.data
+            // })
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
     render() {
         return (
             <div>
@@ -134,6 +152,22 @@ class LoginModal extends Component {
                                 <Button color="dark" className="mt-4" block>
                                     Login
                                 </Button>
+                                <div style={{ padding: 0.5 + 'vw' }}>
+                                <GoogleLogin
+                                    clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
+                                    buttonText="Login"
+                                    onSuccess={this.responseGoogle}
+                                    onFailure={this.responseGoogle}
+                                    cookiePolicy={'single_host_origin'}
+                                    />
+                                {/* show in navbar if logged in with google */}
+                                <GoogleLogout
+                                    clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
+                                    buttonText="Logout"
+                                    //   onLogoutSuccess={logout}
+                                    >
+                                </GoogleLogout>
+                                </div>
                                 <p className='mt-4 text-info' style={{cursor: 'pointer'}} onClick={() => {this.toggle(); this.toggleChange(); this.setState({newemail: this.state.email})}}>Forgot password?</p>
                             </FormGroup>
                         </Form>

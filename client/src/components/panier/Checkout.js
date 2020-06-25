@@ -207,8 +207,6 @@ class Checkout extends React.Component {
 
         let header = { "Content-Type": "application/json" };
         if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
-        console.log(header);
-        console.log(jsonRequest);
 
         axios
             .post(
