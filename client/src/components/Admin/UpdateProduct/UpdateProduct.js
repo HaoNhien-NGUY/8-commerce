@@ -62,7 +62,7 @@ const UpdateProduct = () => {
                     });
                     setSubCategories(optionCategory)
                 });
-                await axios.get(process.env.REACT_APP_API_LINK + "/api/supplier/").then((e) => {
+                await axios.get(process.env.REACT_APP_API_LINK + "/api/supplier/", config).then((e) => {
                     const optionSuppliers = [];
                     e.data.data.map(sup => {
                         sup.name === res.data.supplier.name

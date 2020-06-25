@@ -9,9 +9,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form, FormGroup, Label, Input, Alert, Card } from 'reactstrap';
+import store from '../../../store';
 /* eslint-disable */
 
 class Dashboard extends React.Component {
+
     constructor(props) {
         super(props)
         this.state = {
@@ -20,19 +22,17 @@ class Dashboard extends React.Component {
             orderdetails: [],
             regions: []
         }
-        const config = {
-            headers: {
-                "Content-type": "application/json"
-            }
-        }
     }
 
     componentDidMount() {
-        axios.get(process.env.REACT_APP_API_LINK + "/api/userorder")
+        let header = { "Content-Type": "application/json" };
+        if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
+        
+        axios.get(process.env.REACT_APP_API_LINK + "/api/userorder", { headers: header })
             .then((res) => {
                 this.setState({ numberoforder: res.data.length })
                 return res.data.map((e) => {
-                    axios.get(process.env.REACT_APP_API_LINK + "/api/user/order/" + e.trackingNumber)
+                    axios.get(process.env.REACT_APP_API_LINK + "/api/user/order/" + e.trackingNumber, { headers: header })
                         .then((response) => {
                             this.setState({ orderdetails: [...this.state.orderdetails, response.data], regions: [...this.state.regions, response.data.shippingAddress.region.name], allcosts: [...this.state.allcosts, response.data.cost], numberofproducts: [...this.state.numberofproducts, response.data.subproducts.length] });
 
@@ -44,27 +44,21 @@ class Dashboard extends React.Component {
             .catch((error) => {
             });
 
-        axios.get(process.env.REACT_APP_API_LINK + `/api/review`, {
-            headers: {
-                "Content-type": "application/json"
-            }
-        }).then(async res => {
-            console.log(res)
-            this.setState({ allreviews: res.data.data })
-        }).catch(error => {
-            console.log(error);
-            toast.error('Error !', { position: 'top-center' });
-        })
-        axios.get(process.env.REACT_APP_API_LINK + `/api/userorder/count`, {
-            headers: {
-                "Content-type": "application/json"
-            }
-        }).then(async res => {
-            this.setState({ detailsuser: res.data })
-        }).catch(error => {
-            console.log(error);
-            toast.error('Error !', { position: 'top-center' });
-        })
+        axios.get(process.env.REACT_APP_API_LINK + `/api/review`, { headers: header })
+            .then(async res => {
+                console.log(res)
+                this.setState({ allreviews: res.data.data })
+            }).catch(error => {
+                console.log(error);
+                toast.error('Error !', { position: 'top-center' });
+            })
+        axios.get(process.env.REACT_APP_API_LINK + `/api/userorder/count`, { headers: header })
+            .then(async res => {
+                this.setState({ detailsuser: res.data })
+            }).catch(error => {
+                console.log(error);
+                toast.error('Error !', { position: 'top-center' });
+            })
     }
 
     render() {
