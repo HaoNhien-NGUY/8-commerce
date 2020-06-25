@@ -105,11 +105,11 @@ function Home() {
                         </div>
                     </div>
                     {/* </a> */}
-                    <a href="/search?subcategory=Jacket" className="linkwhite bloc_b"><img src={backpack} /> <div><span>Crofton 30L</span> <p>Discover the techlab</p></div></a>
+                    <a href="/product/8" className="linkwhite bloc_b"><img src={backpack} /> <div><span>Crofton 30L</span> <p>Discover the techlab</p></div></a>
                     <div className="bloc_c">
 
                         <div className="box_1">
-                            <a href="/product/8" className="linkwhite "> <span>New<br /> Jackets</span></a>
+                            <a href="/search?subcategory=Jacket" className="linkwhite "> <span>New<br /> Jackets</span></a>
                         </div>
                         <div className="box_2">
                             <div><span>Plant the change</span>
