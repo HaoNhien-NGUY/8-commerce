@@ -550,6 +550,10 @@ font-weight: bold!important;
   border-bottom: 1px solid #000;margin: 0 4vw;
 }
 
+.minichar p {
+padding: 0 40px;
+}
+
 .icon_one {
   background-image: url('img/recycle.png');
 }

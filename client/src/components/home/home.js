@@ -113,7 +113,7 @@ function Home() {
                         </div>
                         <div className="box_2">
                             <div><span>Plant the change</span>
-                                <p>for every 120$ purchase<br />1 tree will be planted</p>
+                                <p>for every 120€ purchase<br />1 tree will be planted</p>
                             </div>
                         </div>
                     </div>
@@ -207,10 +207,10 @@ function Home() {
             </Parallax >
             <div className="row m-0 p-0  justify-content-center">
                 <div className="col-md-8 m-0 p-4">  <div className="row m-0 p-0  justify-content-center">
-                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_one"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
-                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_two"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
-                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_three"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
-                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_four"></div><h5>lorem Ipsum</h5><hr /><br /><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tincidunt.</p> </div>
+                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_one"></div><h5>Recycling</h5><hr /><br /><p>Our materials are made from 90% of recylced natural fabric and recylced plastic from the ocean, sparing resosurces each collection. </p> </div>
+                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_two"></div><h5>Helping other</h5><hr /><br /><p>We are teaming up with charities all around the world to help protect the environement. Each moth a part of our sales will help one charity in need.</p> </div>
+                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_three"></div><h5>Shipping</h5><hr /><br /><p>We are trying to improve our shipping methods each year to prevent co2 emissions and waste pollution</p> </div>
+                    <div className="col-md-3 m-0 text-center minichar  p-0"><div className="iconature icon_four"></div><h5>Planting</h5><hr /><br /><p>For every 120€ purchased, one tree will be planted in the amazonian forest by a charity pleadging to save it from destruction.</p> </div>
                 </div></div>
             </div>
             {/* <div className="row m-0 mb-5 p-0 charity_home justify-content-center">
