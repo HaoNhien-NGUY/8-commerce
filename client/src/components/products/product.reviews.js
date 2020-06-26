@@ -192,7 +192,8 @@ function handleSubmit(e) {
     } 
     if (actionSelected == "rep") {
       console.log("ADMIN: Request a reply action to", idSelected)
-      // CODE...
+      initializeReplyForm(idSelected);
+      setShowReplyForm(true)
     } 
     else if (actionSelected == "del") {
       console.log("ADMIN: Request a delete action to", idSelected)
@@ -225,8 +226,17 @@ function handleSubmit(e) {
   }
 
   function DeleteReview() {
+    const token = store.getState().auth.token
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        "Authorization": 'Bearer '+token
+      }
+    }
+
     axios
-      .delete(link+'/api/review/'+reviewToDelete)
+      .delete(link+'/api/review/'+reviewToDelete, config)
         .then( async e => {
           toast.success('Review correctly deleted!', { position: "top-center"});
           await setReviews([])
@@ -276,7 +286,6 @@ function handleSubmit(e) {
         "Authorization": 'Bearer '+token
       }
     }
-
 
     axios
       .post(link+'/api/review', body, config)
