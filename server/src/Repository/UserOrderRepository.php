@@ -82,6 +82,17 @@ class UserOrderRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function countOrdersPerRegion()
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.addressBilling', 'ab')
+            ->leftJoin('ab.region', 'r')
+            ->select('count(r.name) as nb_orders, r.name')
+            ->groupBy('r.name')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function countNbProductsPerOrders()
     {
         return $this->createQueryBuilder('u')
