@@ -28,55 +28,55 @@ class UserOrderController extends AbstractController
     public function index(UserOrderRepository $userOrderRepository)
     {
         $userOrders = $userOrderRepository->findAll();
-        return $this->json($userOrders, 200, [],['groups' => 'user_address']);
+        return $this->json($userOrders, 200, [], ['groups' => 'user_address']);
     }
 
     /**
      * @Route("/api/userorder", name="userorder_create", methods="POST")
      */
-    public function userOrder_create(ValidatorInterface $validator,Request $request ,SerializerInterface $serializer ,AddressBillingRepository $addressBillingRepository,UserRepository $userRepository,AddressShippingRepository $addressShippingRepository,EntityManagerInterface $em)
-    { 
+    public function userOrder_create(ValidatorInterface $validator, Request $request, SerializerInterface $serializer, AddressBillingRepository $addressBillingRepository, UserRepository $userRepository, AddressShippingRepository $addressShippingRepository, EntityManagerInterface $em)
+    {
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
-        
+
         $userOrder = $serializer->deserialize($jsonContent, UserOrder::class, 'json', [
-            AbstractNormalizer::IGNORED_ATTRIBUTES => ['addressShipping', 'addressBilling','createdAt','packaging','user'],
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['addressShipping', 'addressBilling', 'createdAt', 'packaging', 'user'],
             ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
         ]);
 
-        
-        if(!isset($req->addressBilling)){
-            return $this->json(['message' => 'Address billing is undefined'],400);
+
+        if (!isset($req->addressBilling)) {
+            return $this->json(['message' => 'Address billing is undefined'], 400);
         }
-        if(!isset($req->addressShipping)){
-            return $this->json(['message' => 'Address shipping is undefined'],400);
+        if (!isset($req->addressShipping)) {
+            return $this->json(['message' => 'Address shipping is undefined'], 400);
         }
         // if(!isset($req->packaging)){
         //     return $this->json(['message' => 'Packaging is undefined'],400);
         // }
 
-        
+
         $addressBilling = $addressBillingRepository->findOneBy(['id' => $req->addressBilling]);
-        if(!$addressBilling){
-            return $this->json(['message' => 'Address billing not found'],404);
-        }
-        
-        $addressShipping = $addressShippingRepository->findOneBy(['id' => $req->addressShipping]);
-        if(!$addressShipping){
-            return $this->json(['message' => 'Address shipping not found'],404);
+        if (!$addressBilling) {
+            return $this->json(['message' => 'Address billing not found'], 404);
         }
 
-        if(isset($req->user)){
+        $addressShipping = $addressShippingRepository->findOneBy(['id' => $req->addressShipping]);
+        if (!$addressShipping) {
+            return $this->json(['message' => 'Address shipping not found'], 404);
+        }
+
+        if (isset($req->user)) {
             $user = $userRepository->findOneBy(['id' => $req->user]);
-            if(!$user){
-                return $this->json(['message' => 'User not found'],404);
+            if (!$user) {
+                return $this->json(['message' => 'User not found'], 404);
             }
             $userOrder->setUser($user);
         }
-        
+
         $error = $validator->validate($userOrder);
         if (count($error) > 0) return $this->json($error, 400);
-        
+
         // $userOrder->setPackaging($req->packaging);
         $userOrder->setAddressBilling($addressBilling);
         $userOrder->setAddressShipping($addressShipping);
@@ -84,15 +84,14 @@ class UserOrderController extends AbstractController
 
         $em->persist($userOrder);
         $em->flush();
-        return $this->json(['message'=>'User order successfully created','userOrder' => $userOrder], 200,[],['groups'=> 'user_address']);
-        
+        return $this->json(['message' => 'User order successfully created', 'userOrder' => $userOrder], 200, [], ['groups' => 'user_address']);
     }
 
     /**
      * @Route("/api/userorder/{id}", name="userorder_remove", methods="DELETE", requirements={"id":"\d+"})
      */
-    public function userOrderRemove(Request $request ,UserOrderRepository $userOrderRepository,EntityManagerInterface $em)
-    { 
+    public function userOrderRemove(Request $request, UserOrderRepository $userOrderRepository, EntityManagerInterface $em)
+    {
         $userOrder = $userOrderRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($userOrder) {
@@ -131,60 +130,63 @@ class UserOrderController extends AbstractController
         $totalOrdersCount = $userOrderRepository->countAllOrders();
         $totalOrdersPrice = round($userOrderRepository->countTotalPrice(), 2);
         $totalProductsSold = $userOrderRepository->countTotalProductsSold();
-        dd($userOrderRepository->countAvgProductsPerOrders());
+
+        $avgProductsPerOrder = round(($totalProductsSold / $totalOrdersCount), 2);
+
         return $this->json([
-            'unique_registered_buyers' => $count1, 
-            'unregistered_buyers' => $count2['unregistered_buyers'], 
+            'unique_registered_buyers' => $count1,
+            'unregistered_buyers' => $count2['unregistered_buyers'],
             'total_orders_count' => $totalOrdersCount,
             'total_orders_price' => $totalOrdersPrice,
-            'total_products_sold' => $totalProductsSold
+            'total_products_sold' => $totalProductsSold,
+            'average_products_per_order' => $avgProductsPerOrder
         ], 200);
     }
 
     /**
      * @Route("/api/userorder/{id}", name="userorder_update", methods="PUT",requirements={"id":"\d+"})
      */
-    public function userOrderUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, UserOrderRepository $userOrderRepository,AddressBillingRepository $addressBillingRepository,AddressShippingRepository $addressShippingRepository,UserRepository $userRepository)
+    public function userOrderUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, UserOrderRepository $userOrderRepository, AddressBillingRepository $addressBillingRepository, AddressShippingRepository $addressShippingRepository, UserRepository $userRepository)
     {
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
             $userOrder = $userOrderRepository->findOneBy(['id' => $request->attributes->get('id')]);
-            
+
             if ($userOrder) {
                 try {
                     $userOrder = $serializer->deserialize($jsonContent, userOrder::class, 'json', [
-                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['addressBilling', 'addressShipping','packaging'],
+                        AbstractNormalizer::IGNORED_ATTRIBUTES => ['addressBilling', 'addressShipping', 'packaging'],
                         AbstractNormalizer::OBJECT_TO_POPULATE => $userOrder
                     ]);
                 } catch (NotNormalizableValueException $e) {
                     return $this->json(['message' => $e->getMessage()], 400, []);
                 }
-                
-                if (isset($req->packaging)){
+
+                if (isset($req->packaging)) {
                     $userOrder->setPackaging($req->packaging);
                 }
 
                 if (isset($req->addressShipping)) {
                     $addressShipping = $addressShippingRepository->findOneBy(['id' => $req->addressShipping]);
-                    if(!$addressShipping){
-                        return $this->json(['message' => 'Address shipping not found'],404);
+                    if (!$addressShipping) {
+                        return $this->json(['message' => 'Address shipping not found'], 404);
                     }
                     $userOrder->setAddressShipping($addressShipping);
                 }
 
                 if (isset($req->addressBilling)) {
                     $addressBilling = $addressBillingRepository->findOneBy(['id' => $req->addressBilling]);
-                    if(!$addressBilling){
-                        return $this->json(['message' => 'Address billing not found'],404);
+                    if (!$addressBilling) {
+                        return $this->json(['message' => 'Address billing not found'], 404);
                     }
                     $userOrder->setAddressBilling($addressBilling);
                 }
 
-                if(isset($req->user)){
+                if (isset($req->user)) {
                     $user = $userRepository->findOneBy(['id' => $req->user]);
-                    if(!$user){
-                        return $this->json(['message' => 'User not found'],404);
+                    if (!$user) {
+                        return $this->json(['message' => 'User not found'], 404);
                     }
                     $userOrder->setUser($user);
                 }

@@ -82,15 +82,14 @@ class UserOrderRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function countAvgProductsPerOrders()
+    public function countNbProductsPerOrders()
     {
         return $this->createQueryBuilder('u')
             ->leftJoin('u.userOrderSubproducts', 'uos')
-            ->select('count(uos.id), u.id')
+            ->select('count(uos.id) as nb_products')
             ->groupBy('uos.userOrder')
             ->getQuery()
             ->getResult();
-            // ->getSingleScalarResult();
     }
 
     // SELECT COUNT(id) FROM user_order WHERE user_id IS NULL
