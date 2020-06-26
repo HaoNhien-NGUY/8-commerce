@@ -119,16 +119,22 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/{id}/address", name="user_address", methods="GET")
+     * @Route("/api/user/{id}/address", name="user_address", methods="GET", requirements={"id":"\d+"})
      */
     public function userAddress(Request $request, UserRepository $userRepository)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+        $user_id = $request->attributes->get('id');
+
+        if (!$this->isGranted("ROLE_ADMIN") && $user->getId() != $user_id) return $this->json(['message' => 'user unauthorized'], 403);
+
         $user = $userRepository->find($request->attributes->get('id'));
         return $this->json($user, 200, [], ['groups' => 'user_address']);
     }
 
     /**
-     * @Route("/api/user/{id}/orders/count", name="user_number_orders", methods="GET")
+     * @Route("/api/user/{id}/orders/count", name="user_number_orders", methods="GET", requirements={"id":"\d+"})
      */
     public function userNumberOrders(Request $request, UserRepository $userRepository)
     {
@@ -139,7 +145,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/{id}/orders", name="user_orders", methods="GET")
+     * @Route("/api/user/{id}/orders", name="user_orders", methods="GET", requirements={"id":"\d+"})
      */
     public function userOrders(Request $request, UserRepository $userRepository, NormalizerInterface $normalizer)
     {
@@ -152,16 +158,18 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/{id}/address/shipping", name="user_shipping_address", methods="POST")
+     * @Route("/api/user/{id}/address/shipping", name="user_shipping_address", methods="POST", requirements={"id":"\d+"})
      */
     public function userShippingAddress(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
         $user_id = $request->attributes->get('id');
 
-        $user = $this->getDoctrine()->getRepository(User::class)->find($user_id);
-        if (!isset($user)) return $this->json(['message' => 'user not found'], 400, []);
+        if (!$this->isGranted("ROLE_ADMIN") && $user->getId() != $user_id) return $this->json(['message' => 'user unauthorized'], 403);
 
         if (!isset($req->region_id)) return $this->json(['message' => 'region_id missing'], 400, []);
         $region = $this->getDoctrine()->getRepository(Region::class)->find($req->region_id);
@@ -187,7 +195,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/{id}/address/billing", name="user_billing_address", methods="POST")
+     * @Route("/api/user/{id}/address/billing", name="user_billing_address", methods="POST", requirements={"id":"\d+"})
      */
     public function userBillingAddress(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
