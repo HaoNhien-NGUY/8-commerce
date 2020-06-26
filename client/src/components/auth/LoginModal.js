@@ -4,11 +4,12 @@ import {
 } from 'reactstrap'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { login } from '../../actions/authActions'
+import { login, responseGoogle } from '../../actions/authActions'
 import { clearErrors } from '../../actions/errorActions'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import GoogleLogin from 'react-google-login';
 
 class LoginModal extends Component {
     state = {
@@ -134,6 +135,16 @@ class LoginModal extends Component {
                                 <Button color="dark" className="mt-4" block>
                                     Login
                                 </Button>
+                                <div style={{ marginTop: '0.7vw' }}>
+                                        <GoogleLogin
+                                            clientId="338144876711-n2v79g8o17n9fpaa5b0bgs0b9jjb19s8.apps.googleusercontent.com"
+                                            buttonText="Login"
+                                            onSuccess={this.props.responseGoogle}
+                                            // onFailure={this.responseGoogle}
+                                            cookiePolicy={'single_host_origin'}
+                                        />
+                                </div>
+
                                 <p className='mt-4 text-info' style={{cursor: 'pointer'}} onClick={() => {this.toggle(); this.toggleChange(); this.setState({newemail: this.state.email})}}>Forgot password?</p>
                             </FormGroup>
                         </Form>
@@ -174,5 +185,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { login, clearErrors }
+    { login, clearErrors, responseGoogle }
 )(LoginModal)

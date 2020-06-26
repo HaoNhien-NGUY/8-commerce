@@ -25,6 +25,8 @@ class AddressBillingController extends AbstractController
      */
     public function index(AddressBillingRepository $addressBillingRepository)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $addressBillings = $addressBillingRepository->findAll();
         return $this->json($addressBillings, 200, [],['groups' => 'user_address']);
     }
@@ -74,9 +76,16 @@ class AddressBillingController extends AbstractController
      */
     public function addressBillingRemove(Request $request ,AddressBillingRepository $addressBillingRepository,EntityManagerInterface $em)
     { 
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+
         $addressbilling = $addressBillingRepository->findOneBy(['id' => $request->attributes->get('id')]);
 
         if ($addressbilling) {
+            $jsonContent = $request->getContent();
+            $req = json_decode($jsonContent);
+            if(!isset($req->user_id) || $user->getId() != $req->user_id) return $this->json(['message' => 'user unauthorized'],403);
+
             $em->remove($addressbilling);
             $em->flush();
 
@@ -94,8 +103,16 @@ class AddressBillingController extends AbstractController
      */
     public function addressBillingDetails(Request $request, AddressBillingRepository $addressbillingRepository)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+
         $addressbilling = $addressbillingRepository->findOneBy(['id' => $request->attributes->get('id')]);
         if ($addressbilling) {
+            $userId = $request->query->get('user_id');
+            $jsonContent = $request->getContent();
+            $req = json_decode($jsonContent);
+            if(!isset($userId) || $user->getId() != $userId) return $this->json(['message' => 'user unauthorized'],403);
+
             return $this->json($addressbilling, 200, [], ['groups' => 'user_address']);
         } else {
             return $this->json(['message' => 'not found'], 404, []);
@@ -107,9 +124,12 @@ class AddressBillingController extends AbstractController
      */
     public function addressBillingUpdate(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $serializer, UserRepository $userRepository,RegionRepository $regionRepository,AddressBillingRepository $addressbillingRepository)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         try {
             $jsonContent = $request->getContent();
             $req = json_decode($jsonContent);
+            if(!isset($req->user_id) || $user->getId() != $req->user_id) return $this->json(['message' => 'user unauthorized'],403);
             $addressbilling = $addressbillingRepository->findOneBy(['id' => $request->attributes->get('id')]);
             
             if ($addressbilling) {

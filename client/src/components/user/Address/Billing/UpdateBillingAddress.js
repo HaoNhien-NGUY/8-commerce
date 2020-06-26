@@ -25,7 +25,7 @@ const UpdateBilllingAddress = ({idUser, config, idAddress, closeModal}) => {
         getAllRegions();   
     }, [getRegion])
     const getAndSet = () => {
-        axios.get(process.env.REACT_APP_API_LINK + "/api/addressbilling/"+idAddress, config).then(res => {
+        axios.get(process.env.REACT_APP_API_LINK + "/api/addressbilling/"+idAddress+"?user_id="+idUser, config).then(res => {
             console.log(res)
             setAddress(res.data.address);
             setCity(res.data.city);

@@ -102,31 +102,20 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/checktoken", name="checktoken")
+     * @Route("/api/checktoken", name="checktoken")
      */
     public function checkToken(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
         $user = $this->getUser();
-        return $this->json(['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()], 200);
-        // if ($request->headers->get('x-auth-token')) {
 
-        //     $data = $request->headers->get('x-auth-token');
-        //     // $request->request->replace(is_array($data) ? $data : array());
+        $responseArray = ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()];
 
-        //     if (Token::validate($data, $_ENV["APP_SECRET"])) {
+        $method_login = $request->query->get('method_login');
+        if ($method_login)
+            $responseArray['method_login'] = $method_login;
 
-        //         $dataInToken = Token::getPayload($data, $_ENV["APP_SECRET"]);
-        //         if (!$userRepository->findBy(['id' => $dataInToken['user_id']['user']])) {
-        //             return new JsonResponse(['msg' => 'Bad token'], 400);
-        //         } else {
-        //             $user = $userRepository->findBy(['id' => $dataInToken['user_id']['user']])[0];
-        //             return new JsonResponse(['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRoles()[0]], 200);
-        //         }
-        //     }
-        //     return new JsonResponse(['msg' => "the Bad token"], 400);
-        // }
+        return $this->json($responseArray, 200);
     }
 
     /**
@@ -202,11 +191,15 @@ class UserController extends AbstractController
      */
     public function userBillingAddress(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+
         $jsonContent = $request->getContent();
         $req = json_decode($jsonContent);
         $user_id = $request->attributes->get('id');
 
-        $user = $this->getDoctrine()->getRepository(User::class)->find($user_id);
+        if (!$this->isGranted("ROLE_ADMIN") && $user->getId() != $user_id) return $this->json(['message' => 'user unauthorized'], 403);
+
         if (!isset($user)) return $this->json(['message' => 'user not found'], 400, []);
 
         if (!isset($req->region_id)) return $this->json(['message' => 'region_id missing'], 400, []);

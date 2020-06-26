@@ -16,8 +16,9 @@ import { returnErrors } from './errorActions'
 export const loadUser = () => (dispatch, getState) => {
     // loading user
     dispatch({ type: USER_LOADING })
-
-    axios.get(process.env.REACT_APP_API_LINK + '/checktoken', tokenConfig(getState))
+    console.log(localStorage.getItem('method_login'));
+    let params = (localStorage.getItem('method_login') && localStorage.getItem('method_login') == 'google') ? "?method_login=google" : "";
+    axios.get(process.env.REACT_APP_API_LINK + '/api/checktoken' + params, tokenConfig(getState))
         .then(res => dispatch({
             type: USER_LOADED,
             // res.data is an object with user object and the token
@@ -36,13 +37,13 @@ export const responseGoogle = (response) => (dispatch, getState) => {
     dispatch({ type: USER_LOADING })
     axios.post(process.env.REACT_APP_API_LINK + '/connect/google/check', response).then(resp => {
         console.log('ok inside post Hao ! Yeaaaah !')
-        console.log(resp.data);
-            console.log("good")
-            dispatch({
-                type: LOGIN_SUCCESS,
-                // res.data is an object with user object and the token
-                payload: resp.data
-            })
+        localStorage.setItem('method_login', 'google');
+        
+        dispatch({
+            type: LOGIN_SUCCESS,
+            // res.data is an object with user object and the token
+            payload: resp.data
+        })
     }).catch((error) => {
         console.log(error)
     })
@@ -124,30 +125,3 @@ export const login = ({ email, password }) => dispatch => {
             })
         })
 }
-
-// //logout no need for dispatch
-// export const google_login = () => dispatch => {
-//     // headers 
-//     const config = {
-//         headers: {
-//             "Content-type": "application/json"
-//         }
-//     }
-
-//     //request info
-//     const body = JSON.stringify({ email, password })
-
-//     axios.post(process.env.REACT_APP_API_LINK + '/api/login_check', body, config)
-//         .then(res => {
-//             dispatch({
-//                 type: LOGIN_SUCCESS,
-//                 payload: res.data
-//             })
-//         })
-//         .catch(err => {
-//             dispatch(returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL'))
-//             dispatch({
-//                 type: LOGIN_FAIL
-//             })
-//         })
-// }
