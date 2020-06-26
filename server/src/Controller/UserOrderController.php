@@ -132,6 +132,7 @@ class UserOrderController extends AbstractController
         $totalProductsSold = $userOrderRepository->countTotalProductsSold();
 
         $avgProductsPerOrder = round(($totalProductsSold / $totalOrdersCount), 2);
+        $avgPricePerOrder = round(($totalOrdersPrice / $totalOrdersCount), 2);
 
         return $this->json([
             'unique_registered_buyers' => $count1,
@@ -139,7 +140,8 @@ class UserOrderController extends AbstractController
             'total_orders_count' => $totalOrdersCount,
             'total_orders_price' => $totalOrdersPrice,
             'total_products_sold' => $totalProductsSold,
-            'average_products_per_order' => $avgProductsPerOrder
+            'average_products_per_order' => $avgProductsPerOrder,
+            'average_price_per_order' => $avgPricePerOrder
         ], 200);
     }
 
