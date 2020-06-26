@@ -74,6 +74,14 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @Route("/api/product/count", name="product_index", methods="GET")
+     */
+    public function productCount(Request $request, ProductRepository $productRepository)
+    {
+        $count = $productRepository->countResults();
+        return $this->json(['total_products_count'], 200);
+    }
+    /**
      * @Route("/api/product", name="product_create", methods="POST")
      */
     public function productCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator, SupplierRepository $supplierRepository)

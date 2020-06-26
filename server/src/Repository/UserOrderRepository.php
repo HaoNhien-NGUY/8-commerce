@@ -57,6 +57,41 @@ class UserOrderRepository extends ServiceEntityRepository
         return $stmt->fetch();
     }
 
+    public function countAllOrders()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countTotalPrice()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('sum(u.cost)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countTotalProductsSold()
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.userOrderSubproducts', 'uos')
+            ->select('count(uos.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countAvgProductsPerOrders()
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.userOrderSubproducts', 'uos')
+            ->select('count(uos.id), u.id')
+            ->groupBy('uos.userOrder')
+            ->getQuery()
+            ->getResult();
+            // ->getSingleScalarResult();
+    }
 
     // SELECT COUNT(id) FROM user_order WHERE user_id IS NULL
 

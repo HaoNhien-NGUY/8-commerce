@@ -128,7 +128,17 @@ class UserOrderController extends AbstractController
     {
         $count1 = $userOrderRepository->countRegisteredBuyersResults();
         $count2 = $userOrderRepository->countUnregisteredBuyersResults();
-        return $this->json(['unique_registered_buyers' => $count1, 'unregistered_buyers' => $count2['unregistered_buyers']], 200);
+        $totalOrdersCount = $userOrderRepository->countAllOrders();
+        $totalOrdersPrice = round($userOrderRepository->countTotalPrice(), 2);
+        $totalProductsSold = $userOrderRepository->countTotalProductsSold();
+        dd($userOrderRepository->countAvgProductsPerOrders());
+        return $this->json([
+            'unique_registered_buyers' => $count1, 
+            'unregistered_buyers' => $count2['unregistered_buyers'], 
+            'total_orders_count' => $totalOrdersCount,
+            'total_orders_price' => $totalOrdersPrice,
+            'total_products_sold' => $totalProductsSold
+        ], 200);
     }
 
     /**
