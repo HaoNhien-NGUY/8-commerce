@@ -74,7 +74,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/api/product/count", name="product_index", methods="GET")
+     * @Route("/api/product/count", name="product_count", methods="GET")
      */
     public function productCount(Request $request, ProductRepository $productRepository)
     {
