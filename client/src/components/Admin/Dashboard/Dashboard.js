@@ -17,140 +17,111 @@ class Dashboard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            allcosts: [],
-            numberofproducts: [],
-            orderdetails: [],
-            regions: []
+            allinfos: [],
+            soldcategory: []
         }
     }
 
     componentDidMount() {
-        let header = { "Content-Type": "application/json" };
+
+        const token = store.getState().auth.token;
+
+        let header = {
+            "Content-type": "application/json",
+            "Authorization": 'Bearer ' + token
+        }
+
         if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
 
-        axios.get(process.env.REACT_APP_API_LINK + "/api/userorder", { headers: header })
+        axios.get(process.env.REACT_APP_API_LINK + "/api/userorder/count", { headers: header })
             .then((res) => {
-                this.setState({ numberoforder: res.data.length })
-                return res.data.map((e) => {
-                    axios.get(process.env.REACT_APP_API_LINK + "/api/user/order/" + e.trackingNumber, { headers: header })
-                        .then((response) => {
-                            this.setState({ orderdetails: [...this.state.orderdetails, response.data], regions: [...this.state.regions, response.data.shippingAddress.region.name], allcosts: [...this.state.allcosts, response.data.cost], numberofproducts: [...this.state.numberofproducts, response.data.subproducts.length] });
-
-                        })
-                        .catch((error) => {
-                        });
+                this.setState({ allinfos: res.data })
+                this.setState({
+                    registered: res.data.unique_registered_buyers, unregistered: res.data.unregistered_buyers,
+                    totalEarning: res.data.total_orders_price, totalOrders: res.data.total_orders_count,
+                    totalProducts: res.data.total_products_sold, averageNumProducts: res.data.average_products_per_order,
+                    averageCartPrice: res.data.average_price_per_order, OrdersPerRegion: res.data.ordres_per_region
                 })
             })
             .catch((error) => {
             });
 
         axios.get(process.env.REACT_APP_API_LINK + `/api/review`, { headers: header })
-            .then(async res => {
-                console.log(res)
+            .then(res => {
                 this.setState({ allreviews: res.data.data })
             }).catch(error => {
-                console.log(error);
-                toast.error('Error !', { position: 'top-center' });
-            })
-        axios.get(process.env.REACT_APP_API_LINK + `/api/userorder/count`, { headers: header })
-            .then(async res => {
-                this.setState({ detailsuser: res.data })
-            }).catch(error => {
-                console.log(error);
                 toast.error('Error !', { position: 'top-center' });
             })
 
         axios.get(process.env.REACT_APP_API_LINK + `/api/soldsubcategory`, { headers: header })
-            .then(async res => {
-                console.log(res.data)
+            .then(res => {
                 this.setState({ soldsubcategory: res.data })
             }).catch(error => {
-                console.log(error);
                 toast.error('Error !', { position: 'top-center' });
             })
 
         axios.get(process.env.REACT_APP_API_LINK + `/api/soldcategory`, { headers: header })
-            .then(async res => {
-                console.log(res.data)
+            .then(res => {
                 this.setState({ soldcategory: res.data })
+
             }).catch(error => {
-                console.log(error);
                 toast.error('Error !', { position: 'top-center' });
             })
     }
 
     render() {
-        let totalProducts = 0;
-        let averageNumProducts = 0;
-        let totalEarning = 0;
-        let averageCartPrice = 0;
-        let totalReviews = 0;
+
+        let category = []
+        let subcategory = []
         let averageNote = 0;
-        let registered = '';
-        let unregistered = '';
-        let totalClient = 0;
-
-        let category = [];
-        let subcategory = [];
-
-        if (this.state.numberofproducts.length == this.state.numberoforder) {
-            for (let [key, value] of Object.entries(this.state.numberofproducts)) {
-                totalProducts += value;
+        let totalReviews = [];
+        if (this.state.soldcategory.length != 0) {
+            console.log(this.state)
+            var counts = {};
+            for (let [key, value] of Object.entries(this.state.soldcategory.shift())) {
+                category.push(<li key={"keyy" + key}>{key}: <span>{value}</span></li>)
             }
-            for (let [key, value] of Object.entries(this.state.allcosts)) {
-                totalEarning += value;
+            for (let [key, value] of Object.entries(this.state.soldsubcategory.shift())) {
+                subcategory.push(<li key={"key" + key}>{key}: <span>{value}</span></li>)
             }
+            this.state.OrdersPerRegion.map((e) => {
+                counts[e.name] = e.nb_orders
+            })
 
             this.state.allreviews.map((e) => {
                 averageNote += e.rating;
             })
-
-            for (let [key, value] of Object.entries(this.state.soldcategory.shift())) {
-                category.push(<li>{key}: <span>{value}</span></li>)
-            }
-            for (let [key, value] of Object.entries(this.state.soldsubcategory.shift())) {
-                subcategory.push(<li>{key}: <span>{value}</span></li>)
-            }
-
-
-            var counts = {};
             totalReviews = this.state.allreviews.length;
-            this.state.regions.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
-            averageNumProducts = (totalProducts / this.state.numberoforder).toFixed(2);
-            averageCartPrice = (totalEarning / this.state.numberoforder).toFixed(2);
             averageNote = (averageNote / totalReviews).toFixed(2);
-
-            registered = this.state.detailsuser.unique_registered_buyers;
-            unregistered = this.state.detailsuser.unregistered_buyers;
-            totalClient = registered + unregistered;
-
         }
+
+
 
         return (
             <>
                 <div className="row m-0 p-0 h-100">
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.css" type="text/css" media="screen" />
                     <div className="col-3 p-3"><div className="col-10 bg-light  bordercustom  border-success p-3">
-                        <i className="text-success material-icons md-dark">attach_money</i> <h5>Total Earning</h5> <hr />{totalEarning} €
+                        <i className="text-success material-icons md-dark">attach_money</i> <h5>Total Earning</h5> <hr />{this.state.totalEarning} €
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-primary p-3">
                         <i className="text-primary material-icons md-dark">bar_chart</i> <h5>Number of orders</h5>
-                        <hr />{this.state.numberoforder} total
+                        <hr />{this.state.totalOrders} total
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-warning  p-3">
                         <i className="text-warning material-icons md-dark">shopping_bag</i> <h5>Products sold</h5>
-                        <hr />{totalProducts} total
+                        <hr />{this.state.totalProducts} total
                     </div>
                     </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-danger  p-3">
                         <i className="text-danger material-icons md-dark">timeline</i>  <h5>Average num.of products</h5>
-                        <hr />{averageNumProducts} avg
+                        <hr />{this.state.averageNumProducts} avg
                     </div></div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-success  p-3">
                         <i className="text-success material-icons md-dark">shopping_cart</i>  <h5>Average cart price</h5>
-                        <hr />{averageCartPrice} €
+                        <hr />{this.state.averageCartPrice} €
                     </div> </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-primary p-3">
                         <i className="text-primary material-icons md-dark">comment</i>  <h5>Number of comments </h5>
@@ -162,8 +133,8 @@ class Dashboard extends React.Component {
                     </div> </div>
                     <div className="col-3 p-3"><div className="col-12 bg-light bordercustom border-danger p-3">
                         <i className="text-danger material-icons md-dark">account_circle</i>  <h5>Users stats</h5>
-                        <hr /><b>Registered Clients: </b>{registered}
-                        <br /><b>Unregistered Clients: </b>{unregistered}
+                        <hr /><b>Registered Clients: </b>{this.state.registered}
+                        <br /><b>Unregistered Clients: </b>{this.state.unregistered}
                     </div> </div>
 
                 </div>
