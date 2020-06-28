@@ -80,7 +80,7 @@ function CartShipping(props) {
                                 "region" : pricing.region
                             };
                         axios.post(process.env.REACT_APP_API_LINK + "/api/shippingpricing", body, config).then(res => {
-                            console.log(res)
+                            // console.log(res)
                             count++;
                             if (count == props.handleCart.length) {
                                 window.location.reload();

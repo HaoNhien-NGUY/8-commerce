@@ -14,7 +14,7 @@ export default class Footer extends Component {
     axios
       .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         // this.setState({ subcategories: res.data });
 
         let results = res.data.map((subcat, index) => {

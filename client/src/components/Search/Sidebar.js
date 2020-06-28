@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {TransitionGroup, CSSTransition, SwitchTransition} from 'react-transition-group';
 import Footer from '../footer/Footer';
+import { Controls } from "react-gsap";
 
 
 export default class SearchSidebar extends Component {
@@ -56,6 +57,8 @@ export default class SearchSidebar extends Component {
       justArrived: true,
     };
 
+    this.baseState = this.state;
+
     this.handleName = this.handleName.bind(this);
     this.sliderChangeValue = this.sliderChangeValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -76,6 +79,21 @@ export default class SearchSidebar extends Component {
     this.handleDisplayMethod = this.handleDisplayMethod.bind(this);
     this.handleMoreColors = this.handleMoreColors.bind(this);
   }
+
+  // static propTypes = {
+  //   location: React.PropTypes.object.isRequired
+  // }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      this.onRouteChanged();
+    }
+  }
+  
+  onRouteChanged() {
+    this.loadSearchData();
+  }
+
 
   handleSubmitEnter(e) {
     if (e.keyCode === 13) {
@@ -227,6 +245,7 @@ export default class SearchSidebar extends Component {
     if (e) {
       e.preventDefault();
     }
+    
     console.log(jsonRequest);
 
     this.setState({ isResultsReady: false });
@@ -241,6 +260,7 @@ export default class SearchSidebar extends Component {
       )
       .then((res) => {
         console.log(res.data)
+        
         this.setState({results: res.data, isResultsReady: true});
         // if (this.state.showFilter == true){
         //   this.showFilter()
@@ -261,8 +281,13 @@ export default class SearchSidebar extends Component {
   }
 
   componentDidMount() {
-    let paramsURL = this.props.location.search.substr(1).split("=")
+    this.loadSearchData();
+  }
 
+  loadSearchData = () => {
+    this.setState(this.baseState);
+    let paramsURL = this.props.location.search.substr(1).split("=")
+  
     if (paramsURL[0] == "sexe") {
       this.defaultValueSexe(paramsURL[1])
 
@@ -646,7 +671,7 @@ export default class SearchSidebar extends Component {
 
               <option value={null}></option>
 
-              {isSubCategoriesReady
+              {isSubCategoriesReady && this.state.subcategories
                 ? 
                 this.state.subcategories.map((subcategory) => (
                   <option key={subcategory.id} value={subcategory.name} >

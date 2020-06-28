@@ -8,7 +8,7 @@ import walkingvideo from "../../img/walking.mp4";
 import techlab1 from "../../img/techlab1.mp4";
 import backpack from "../../img/crofton.png";
 import Footer from '../footer/Footer';
-
+import { Link } from "react-router-dom";
 
 
 const image1 = "https://i.imgur.com/wtIes8O.jpg";
@@ -158,12 +158,12 @@ function Home() {
                                         <span className="HomeArticleTItle">{e.title.length > 50 ? e.title.substr(0, 50) + '...' : e.title}</span>
                                         <p>{e.lowest_price}</p>
                                         {e.images && e.status === true &&
-                                            <> <a href={"/product/" + e.id}>
+                                            <> <Link to={"/product/" + e.id}>
                                                 <div className="ProductHomeImgContainer">
                                                     {<img className="ProductHomeImg" src={e.images ? process.env.REACT_APP_API_LINK + '' + e.images[1] : imageDefault}></img>}
                                                     {<img className="ProductHomeImg ProductHomeImg2" src={e.images && e.images.length > 1 ? process.env.REACT_APP_API_LINK + '' + e.images[0] : imageDefault}></img>}
                                                 </div>
-                                            </a>
+                                            </Link>
                                                 <a href={"/product/" + e.id}><button className='btn-cart'>View Product</button></a>
                                             </>
                                         }

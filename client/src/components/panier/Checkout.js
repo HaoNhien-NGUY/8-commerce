@@ -32,7 +32,7 @@ class Checkout extends React.Component {
     };
 
     componentDidMount() {
-        console.log(this.props.auth);
+        // console.log(this.props.auth);
 
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
@@ -203,7 +203,7 @@ class Checkout extends React.Component {
             'subproducts': arrayOfObj
         }
 
-        console.log(jsonRequest)
+        // console.log(jsonRequest)
 
         let header = { "Content-Type": "application/json" };
         if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
@@ -562,7 +562,7 @@ function Step2(props) {
 
             const array1 = [1, 2, 3];
             array1.unshift(4, 5)
-            console.log(array1);
+            // console.log(array1);
 
             for (let [key, value] of Object.entries(props.data.shipping_methods)) {
                 // console.log(props.data.shortestId, value.pricing_id)

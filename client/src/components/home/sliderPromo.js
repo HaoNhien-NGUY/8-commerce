@@ -17,11 +17,11 @@ export default function SliderPromo() {
         process.env.REACT_APP_API_LINK + "/api/product?promoted=true"
       )
       .then(res => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setData(res.data.data);
         setDataReady(true);
 
-        console.log(data);
+        // console.log(data);
       })
   }, [isDataReady])
 
