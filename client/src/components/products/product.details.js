@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useReducer } from "react";
 import $ from "jquery";
 import axios from "axios";
 import { useRouteMatch } from "react-router-dom";
@@ -19,6 +19,7 @@ import {
 import ReviewPart from './product.reviews';
 import PersonalizedSugg from './product.sugg';
 import Footer from '../footer/Footer';
+import { Link } from "react-router-dom";
 
 function ProductDescription() {
   const [product, setProduct] = useState([]);
@@ -31,12 +32,23 @@ function ProductDescription() {
   const [imageProduct, setImageProduct] = useState();
   const [miniImageProduct, setMiniImageProduct] = useState();
   const imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
   const isEmpty = (obj) => {
     for (var key in obj) {
       if (obj.hasOwnProperty(key)) return false;
     }
     return true;
   };
+
+  function reload() {
+    forceUpdate();
+    window.scrollTo(0, 0);
+  }
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [])
 
   //tant que taille et couleur ne sont pas choisies, ne pas afficher de prix...
   let id = useRouteMatch("/product/:id").params.id;
@@ -79,7 +91,7 @@ function ProductDescription() {
     });
 
     return () => { };
-  }, []);
+  }, [ignored]);
 
   const [completeDes, setCompleteDes] = useState(".. More ⇒");
   const loadingScreen = [];
@@ -280,8 +292,8 @@ function ProductDescription() {
     return (
       <div className="divDetails">
         <span>
-          <a href={pathCat}>{Categoryname}</a> /{" "}
-          <a href={pathSub}>{subCategory}</a>
+          <Link to={pathCat}>{Categoryname}</Link> /{" "}
+          <Link to={pathSub}>{subCategory}</Link>
         </span>
         {Unavailable}
         <h1>{details.title}</h1>
@@ -551,7 +563,7 @@ function ProductDescription() {
           <ReviewPart id={id} />
         </div>
         <div className="col-sm-12">
-          <PersonalizedSugg />
+          <PersonalizedSugg reload={reload}/>
         </div>
         <div className="col-sm-12 mt-5">
           <Footer />

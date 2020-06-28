@@ -8,7 +8,7 @@ import walkingvideo from "../../img/walking.mp4";
 import techlab1 from "../../img/techlab1.mp4";
 import backpack from "../../img/crofton.png";
 import Footer from '../footer/Footer';
-
+import { Link } from "react-router-dom";
 
 
 const image1 = "https://i.imgur.com/wtIes8O.jpg";
@@ -105,11 +105,11 @@ function Home() {
                         </div>
                     </div>
                     {/* </a> */}
-                    <a href="/product/8" className="linkwhite bloc_b"><img src={backpack} /> <div><span>Crofton 30L</span> <p>Discover the techlab</p></div></a>
+                    <Link to="/product/8" className="linkwhite bloc_b"><img src={backpack} /> <div><span>Crofton 30L</span> <p>Discover the techlab</p></div></Link>
                     <div className="bloc_c">
 
                         <div className="box_1">
-                            <a href="/search?subcategory=Jacket" className="linkwhite "> <span>New<br /> Jackets</span></a>
+                            <Link to="/search?subcategory=Jacket" className="linkwhite "> <span>New<br /> Jackets</span></Link>
                         </div>
                         <div className="box_2">
                             <div><span>Plant the change</span>
@@ -125,10 +125,10 @@ function Home() {
                 </div>
                 <div className="col-md-8 m-0">
                     <div className="row categories_home justify-content-center">
-                        <a href="/search?subcategory=Jacket"><div className="jacket"><p>Jacket</p></div></a>
-                        <a href="/search?subcategory=Backpack"><div className="backpack"><p>Backpack</p></div></a>
-                        <a href="/search?subcategory=Sweatshirt"><div className="sweatshirt"><p>Sweatshirt</p></div></a>
-                        <a href="/search?subcategory=Bag"><div className="bag"><p>Handbags</p></div></a>
+                        <Link to="/search?subcategory=Jacket"><div className="jacket"><p>Jacket</p></div></Link>
+                        <Link to="/search?subcategory=Backpack"><div className="backpack"><p>Backpack</p></div></Link>
+                        <Link to="/search?subcategory=Sweatshirt"><div className="sweatshirt"><p>Sweatshirt</p></div></Link>
+                        <Link to="/search?subcategory=Bag"><div className="bag"><p>Handbags</p></div></Link>
                     </div>
                 </div>
             </div>
@@ -142,7 +142,7 @@ function Home() {
                         <div className="text_box">
                             <h3>M86 Fieldproof Shirt</h3>
                             <h4>UV resistant, sweatproof</h4>
-                            <a href="/http://localhost:4242/product/12">shop now</a>
+                            <Link to="/product/12">shop now</Link>
                         </div>
                     </div>
                 </div>
@@ -158,12 +158,12 @@ function Home() {
                                         <span className="HomeArticleTItle">{e.title.length > 50 ? e.title.substr(0, 50) + '...' : e.title}</span>
                                         <p>{e.lowest_price}</p>
                                         {e.images && e.status === true &&
-                                            <> <a href={"/product/" + e.id}>
+                                            <> <Link to={"/product/" + e.id}>
                                                 <div className="ProductHomeImgContainer">
                                                     {<img className="ProductHomeImg" src={e.images ? process.env.REACT_APP_API_LINK + '' + e.images[1] : imageDefault}></img>}
                                                     {<img className="ProductHomeImg ProductHomeImg2" src={e.images && e.images.length > 1 ? process.env.REACT_APP_API_LINK + '' + e.images[0] : imageDefault}></img>}
                                                 </div>
-                                            </a>
+                                            </Link>
                                                 <a href={"/product/" + e.id}><button className='btn-cart'>View Product</button></a>
                                             </>
                                         }
@@ -190,7 +190,7 @@ function Home() {
                             )
                         })}
                     </div>
-                    <div className="row m-3 seemore justify-content-center"><span><a href="/search">see more</a></span></div>
+                    <div className="row m-3 seemore justify-content-center"><span><Link to="/search">see more</Link></span></div>
                 </div>
             </div>
             <Parallax strength={500}>

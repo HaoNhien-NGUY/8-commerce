@@ -81,6 +81,10 @@
   color: black;
 }
 
+#productsCart:hover {
+  cursor: pointer;
+}
+
 #adminLogo img,
 #profileLogo img,
 #searchLogo img {

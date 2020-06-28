@@ -6,7 +6,10 @@ import Logout from "./auth/Logout";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { searchPost } from "../actions/postActions";
-import { BrowserRouter as Router } from "react-router-dom";
+import {
+  Link,
+  NavLink
+} from "react-router-dom";
 import "./IndexNavbar.css";
 import profileLogo from "../img/profile.png";
 import searchLogo from "../img/search.png";
@@ -83,16 +86,14 @@ class IndexNavbar extends Component {
 
     const authLinks = (
       <Fragment>
-        <Router>
-          <NavItem>
-            <Nav.Link href="#" id="profileLogo">
-              <img src={profileLogo} onClick={() => window.location.href = "/user?content=history"} title="Profil" />
-            </Nav.Link>
-          </NavItem>
-          <NavItem>
-            <Logout />
-          </NavItem>
-        </Router>
+        <NavItem>
+          <Nav.Link id="profileLogo">
+            <Link to="/user?content=history"> <img src={profileLogo} title="Profil" /> </Link>
+          </Nav.Link>
+        </NavItem>
+        <NavItem>
+          <Logout />
+        </NavItem>
       </Fragment>
     );
 
@@ -112,33 +113,37 @@ class IndexNavbar extends Component {
     return (
       <div id="navbarholder">
         <Navbar color="light" light="true" expand="lg" id="navbar">
-          <Navbar.Brand href="/" id="brandName">
-            8-commerce
+          <Navbar.Brand id="brandName">
+            {/* 8-commerce */}
+            <NavLink to="/">8-commerce</NavLink>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <NavItem>
-              <Nav.Link href="/search?sexe=H">Men</Nav.Link>
+              {/* <Nav.Link href="/search?sexe=H">Men</Nav.Link> */}
+              <Link to="/search?sexe=H">Men</Link>
             </NavItem>
             <NavItem>
-              <Nav.Link href="/search?sexe=F">Women</Nav.Link>
+              {/* <Nav.Link href="/search?sexe=F">Women</Nav.Link> */}
+              <Link to="/search?sexe=F">Women</Link>
             </NavItem>
             <NavItem>
-              <Nav.Link href="/search?category=Accessories">Accessories</Nav.Link>
+              {/* <Nav.Link href="/search?category=Accessories">Accessories</Nav.Link> */}
+              <Link to="/search?category=Accessories">Accessories</Link>
             </NavItem>
           </Navbar.Collapse>
         </Navbar>
         <Navbar id="underline">
           <SuggestionSearch />
-          <Nav.Link href="/search" id="searchLogo">
-            <img src={searchLogo} />
+          <Nav.Link id="searchLogo">
+            <Link to="/search"><img src={searchLogo} /></Link>
           </Nav.Link>
           <Nav>
             {!isLoading ? (isAuthenticated ? authLinks : guestLinks) : null}
           </Nav>
-          {user !== null &&user.role.includes('ROLE_ADMIN') ? (
-            <Nav.Link href="/admin" id="adminLogo">
-              <img src={adminLogo} />
+          {user !== null && user.role.includes('ROLE_ADMIN') ? (
+            <Nav.Link id="adminLogo">
+              <Link to="/admin"><img src={adminLogo} /></Link>
             </Nav.Link>
           ) : null}
           <div
@@ -160,7 +165,7 @@ class IndexNavbar extends Component {
                 <tbody>
                   {this.state.productsCart != [] &&
                     this.state.productsCart.map((e) => {
-                      console.log(e);
+                      // console.log(e);
                       return (
                         <>
                           <tr>
@@ -188,9 +193,9 @@ class IndexNavbar extends Component {
                 <span>{this.state.nombreTotal}  {this.state.nombreTotal > 1 ? 'produits' : 'produit'}</span>
                 <span>Total : {this.state.prixTotal} €</span>
               </div>
-              <a href="/panier">
-                <button className="btn-cart">Checkout</button>
-              </a>
+              <Link to="/panier">
+                <button className="btn-cart" onClick={() => this.operation()}>Checkout</button>
+              </Link>
             </div>
           ) : null}
         </Navbar>

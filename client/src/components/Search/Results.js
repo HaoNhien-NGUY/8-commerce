@@ -1,5 +1,6 @@
 import React from 'react';
 import './Results.css';
+import { Link } from "react-router-dom";
 
 const image1 = "https://i.imgur.com/wtIes8O.jpg";
 let imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
@@ -33,13 +34,13 @@ function Results(props) {
                             : e.title.substr(0, 26).trim() + "..."}</span>
                     { e.promo > 0 ? <p>{e.price} € <s className="text-danger">{e.basePrice} €</s></p>  : <p>{e.price} €</p>}
                     
-                    <a href={"/product/" + e.product_id}>
+                    <Link to={"/product/" + e.product_id}>
                       <div className="ProductHomeImgContainer">
                         <img className="ProductHomeImg" src={e.images && e.images[1] ? process.env.REACT_APP_API_LINK + e.images[1]  : imageDefault}></img>
                         <img className="ProductHomeImg ProductHomeImg2" src={e.images && e.images[1] ? process.env.REACT_APP_API_LINK + e.images[0] : imageDefault}></img>
                       </div>
-                    </a>
-                    <a href={"/product/" + e.product_id}><button className='btn-cart'>View Product</button></a>
+                    </Link>
+                    <Link to={"/product/" + e.product_id}><button className='btn-cart'>View Product</button></Link>
                   </div>
                 </div>
               </div>

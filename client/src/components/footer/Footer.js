@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default class Footer extends Component {
   constructor() {
@@ -14,16 +15,16 @@ export default class Footer extends Component {
     axios
       .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         // this.setState({ subcategories: res.data });
 
         let results = res.data.map((subcat, index) => {
           let name = subcat.name.charAt(0).toUpperCase() + subcat.name.slice(1);
           if (index < 8)
             return (
-              <a href={"/search?subcategory=" + name} key={subcat.id}>
+              <Link to={"/search?subcategory=" + name} key={subcat.id}>
                 {name}
-              </a>
+              </Link>
             );
         });
 
@@ -48,8 +49,8 @@ export default class Footer extends Component {
 
             <div className="col-1 footer-link">
               <p>Account</p>
-              <a href="/user?content=shipping">My Account</a>
-              <a href="/user?content=history">Custom Orders</a>
+              <Link to="/user?content=shipping">My Account</Link>
+              <Link to="/user?content=history">Custom Orders</Link>
             </div>
 
             <div className="ml-auto col-5 text-center">
@@ -67,7 +68,7 @@ export default class Footer extends Component {
         </div>
 
         <div className="footer-link-sm my-2">
-          <a href="/">©8-commerce 2020</a>
+          <Link to="/">©8-commerce 2020</Link>
         </div>
       </>
     );

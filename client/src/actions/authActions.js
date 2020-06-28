@@ -16,7 +16,6 @@ import { returnErrors } from './errorActions'
 export const loadUser = () => (dispatch, getState) => {
     // loading user
     dispatch({ type: USER_LOADING })
-    console.log(localStorage.getItem('method_login'));
     let params = (localStorage.getItem('method_login') && localStorage.getItem('method_login') == 'google') ? "?method_login=google" : "";
     axios.get(process.env.REACT_APP_API_LINK + '/api/checktoken' + params, tokenConfig(getState))
         .then(res => dispatch({

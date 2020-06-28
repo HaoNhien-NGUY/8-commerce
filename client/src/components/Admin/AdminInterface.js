@@ -74,7 +74,7 @@ const AdminInterface = () => {
 
     useEffect(() => {
         const nbTab = queryString.parse(document.location.search).tab
-        console.log(nbTab)
+        // console.log(nbTab)
         if (nbTab !== undefined) {
             setTabIndex(parseInt(nbTab))
         }

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import { Link, useHistory } from "react-router-dom";
 
-
-export default function PersonalizedSugg() {
+export default function PersonalizedSugg(props) {
   const [results, setResults] = useState({});
   const [resultsReady, setResultsReady] = useState(false);
-
+  const history = useHistory()
 
   let jsonRequest = {
     price: {
@@ -39,6 +39,11 @@ export default function PersonalizedSugg() {
     });
   }, [resultsReady])
 
+  useEffect(() => {
+    return history.listen(() => {
+        props.reload();
+    })
+  },[history])
 
   const imageDefault = "https://i.ibb.co/j5qSV4j/missing.jpg";
 
@@ -59,12 +64,12 @@ export default function PersonalizedSugg() {
                             : e.title.substr(0, 26).trim() + "..."}</span>
                     { e.promo > 0 ? <p><s className="text-danger">{e.price} €</s> {(e.price)-(e.price * (e.promo/100))} €</p>  : <p>{e.price} €</p>}
                     
-                    <a href={"/product/" + e.product_id}>
+                    <Link to={"/product/" + e.product_id}>
                       <div className="ProductHomeImgContainer">
                         <img className="ProductHomeImg" src={e.images && e.images[1] ? process.env.REACT_APP_API_LINK + e.images[1]  : imageDefault}></img>
                         <img className="ProductHomeImg ProductHomeImg2" src={e.images && e.images[1] ? process.env.REACT_APP_API_LINK + e.images[0] : imageDefault}></img>
                       </div>
-                    </a>
+                    </Link>
                     <a href={"/product/" + e.product_id}><button className='btn-cart'>View Product</button></a>
                   </div>
                 </div>
