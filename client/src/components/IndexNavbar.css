@@ -6,6 +6,7 @@
   color: black!important;
   text-transform: lowercase;
   text-decoration: none;
+  margin: 0 10px;
   letter-spacing: 0.15em;
   font-family: 'Montserrat',Arial, Helvetica, sans-serif;
   display: inline-block;

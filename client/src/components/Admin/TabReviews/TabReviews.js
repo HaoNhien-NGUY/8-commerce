@@ -23,7 +23,7 @@ const Reviews = () => {
 
     useEffect(() => {
         receivedData();
-        console.log("RECEIVED DATA", offset)
+        // console.log("RECEIVED DATA", offset)
     }, [offset]);
 
     useEffect(() => {
@@ -41,12 +41,12 @@ const Reviews = () => {
 
     const receivedData = () => {
         axios.get(process.env.REACT_APP_API_LINK + `/api/review/unverified?offset=${offset}&limit=${limit}`, config).then(async res => {
-            console.log(res.data.data)
+            // console.log(res.data.data)
             await setPageCount(Math.ceil(res.data.nbResults / limit));
 
             const newPostDataPromos = res.data.data.length > 0 ? res.data.data.map((promo) =>
                 <>
-                    { !promo.verified &&
+                    {!promo.verified &&
                         <tr key={promo.id}>
                             <td><p className="m-2">{promo.rating ? promo.rating : "-"} ⭐</p></td>
                             <td><p className="m-2 align-items-center">{promo.username}</p></td>
