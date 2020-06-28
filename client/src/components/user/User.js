@@ -12,10 +12,11 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import store from './../../store';
+import { Link } from "react-router-dom";
 
 function UserHome(props) {
     const [component, setComponent] = useState([]);
-    
+
     const token = store.getState().auth.token
 
     const config = {
@@ -25,17 +26,12 @@ function UserHome(props) {
       }
     }
 
-    // useEffect(() => {
-    //     if (token) {
-    //         config.headers['Authorization'] = 'Bearer '+token;
-    //     }
-    // }, [token]);
-
     function useQuery() {
         return new URLSearchParams(useLocation().search);
     }
+    
     let query = useQuery().get("content");
-
+    
     useEffect(() => {
         switch (query) {
             case "history":
@@ -67,10 +63,10 @@ function UserHome(props) {
                 <div className="col-sm-3 pt-5">
                     <ul className="list-group">
                         <li className={"list-group-item list-group-item-action list-group-item-secondary"}>{props.emailUser}</li>
-                        <li className={"list-group-item list-group-item-action" + (query == "history" ? " active" : "")}> <a className="a-none" href="/user?content=history">Order History</a></li>
-                        <li className={"list-group-item list-group-item-action" + (query == "shipping" ? " active" : "")}> <a className="a-none" href="/user?content=shipping">Shipping Address</a></li>
-                        <li className={"list-group-item list-group-item-action" + (query == "billing" ? " active" : "")}><a className="a-none" href="/user?content=billing">Billing Address</a></li>
-                        <li className={"list-group-item list-group-item-action" + (query == "card" ? " active" : "")}><a className="a-none" href="/user?content=card">Bank card</a></li>
+                        <li className={"list-group-item list-group-item-action" + (query == "history" ? " active" : "")}> <Link className="a-none" to="/user?content=history">Order History</Link></li>
+                        <li className={"list-group-item list-group-item-action" + (query == "shipping" ? " active" : "")}> <Link className="a-none" to="/user?content=shipping">Shipping Address</Link></li>
+                        <li className={"list-group-item list-group-item-action" + (query == "billing" ? " active" : "")}><Link className="a-none" to="/user?content=billing">Billing Address</Link></li>
+                        <li className={"list-group-item list-group-item-action" + (query == "card" ? " active" : "")}><Link className="a-none" to="/user?content=card">Bank card</Link></li>
                     </ul>
                 </div>
                 <div className="col-sm-9">

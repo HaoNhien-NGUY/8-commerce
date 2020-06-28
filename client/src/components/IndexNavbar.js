@@ -113,9 +113,9 @@ class IndexNavbar extends Component {
     return (
       <div id="navbarholder">
         <Navbar color="light" light="true" expand="lg" id="navbar">
-          <Navbar.Brand id="brandName">
+          <Navbar.Brand >
             {/* 8-commerce */}
-            <NavLink to="/">8-commerce</NavLink>
+            <NavLink id="brandName" to="/">8-commerce</NavLink>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
