@@ -135,8 +135,8 @@ class IndexNavbar extends Component {
         </Navbar>
         <Navbar id="underline">
           <SuggestionSearch />
-          <Nav.Link href="/search" id="searchLogo">
-            <img src={searchLogo} />
+          <Nav.Link id="searchLogo">
+            <Link to="/search"><img src={searchLogo} /></Link>
           </Nav.Link>
           <Nav>
             {!isLoading ? (isAuthenticated ? authLinks : guestLinks) : null}

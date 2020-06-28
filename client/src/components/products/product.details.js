@@ -19,6 +19,7 @@ import {
 import ReviewPart from './product.reviews';
 import PersonalizedSugg from './product.sugg';
 import Footer from '../footer/Footer';
+import { Link } from "react-router-dom";
 
 function ProductDescription() {
   const [product, setProduct] = useState([]);
@@ -291,8 +292,8 @@ function ProductDescription() {
     return (
       <div className="divDetails">
         <span>
-          <a href={pathCat}>{Categoryname}</a> /{" "}
-          <a href={pathSub}>{subCategory}</a>
+          <Link to={pathCat}>{Categoryname}</Link> /{" "}
+          <Link to={pathSub}>{subCategory}</Link>
         </span>
         {Unavailable}
         <h1>{details.title}</h1>
