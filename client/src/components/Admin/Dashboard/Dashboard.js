@@ -102,8 +102,10 @@ class Dashboard extends React.Component {
                 })
             }
             
-            totalReviews = this.state.allreviews.length;
-            averageNote = (averageNote / totalReviews).toFixed(2);
+            if ( this.state.allreviews && this.state.allreviews.length > 0 ) {
+                totalReviews = this.state.allreviews.length;
+                averageNote = (averageNote / totalReviews).toFixed(2);
+            }
         }
 
 
