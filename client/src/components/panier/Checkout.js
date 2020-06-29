@@ -20,7 +20,6 @@ class Checkout extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            NoShipPrice: props.price,
             currentStep: 1,
             region: 1,
             country: "France",
@@ -69,6 +68,7 @@ class Checkout extends React.Component {
                     });
             }
         }
+        // this.setState({ NoShipPrice : this.props.price});
     }
 
     handleChange = event => {
@@ -289,7 +289,7 @@ class Checkout extends React.Component {
             }
 
             axios
-                .get(process.env.REACT_APP_API_LINK + "/api/packaging/available?spending=" + this.state.NoShipPrice)
+                .get(process.env.REACT_APP_API_LINK + "/api/packaging/available?spending=" + this.props.price)
                 .then((res) => {
                     return this.setState({ packagingAvailable: res.data })
                 })
@@ -408,6 +408,7 @@ class Checkout extends React.Component {
                                     showstatus={this.state.showstatus}
                                     handleSubmit={this.handleSubmit}
                                     data={this.state}
+                                    totalPrice = {this.props.price}
                                     handleShow={this.handleShow}
                                     regions={regions}
                                     promo={this.checkpromo}
@@ -710,10 +711,12 @@ function Step3(props) {
             }
         }
         let shipping_cost = props.data.shipping_methods[props.data.shippingchoice].price;
-        let totalprice = shipping_cost + props.data.NoShipPrice
+        
+        let totalprice = shipping_cost + props.totalPrice
+        
         let Promo = []
         if (props.data.promocode_details) {
-            console.log(props.data.promocode_details)
+            // console.log(props.data.promocode_details)
 
             if (props.data.promocode_details != 'error') {
                 Promo.push(<div ley="promo" className="row pl-4 pr-4 d-flex justify-content-between"><span>Promo :</span><span>- {Math.round(totalprice * (props.data.promocode_details.percentage / 100))} €</span></div>)
@@ -738,7 +741,7 @@ function Step3(props) {
             <React.Fragment>
                 <>
                     <div className="alert alert-info"><h4>Your final order details:</h4>
-                        <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Order :</span><span>{props.data.NoShipPrice} €</span></div>
+                        <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Order :</span><span>{props.totalPrice} €</span></div>
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><span>Shipping :</span><span>{Math.round(shipping_cost)} €</span></div>
                         {Promo}
                         <div className="row pl-4 pr-4 d-flex justify-content-between"><h5>Total :</h5><span>{Math.round(totalprice)} €</span></div>
