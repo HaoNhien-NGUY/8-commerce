@@ -75,22 +75,33 @@ class Dashboard extends React.Component {
         let subcategory = []
         let averageNote = 0;
         let totalReviews = [];
-        if (this.state.soldcategory.length != 0) {
+        if (this.state.soldcategory && this.state.soldcategory.length != 0) {
             console.log(this.state)
             var counts = {};
-            for (let [key, value] of Object.entries(this.state.soldcategory.shift())) {
-                category.push(<li key={"keyy" + key}>{key}: <span>{value}</span></li>)
+            if (this.state.soldcategory && this.state.soldcategory.length > 0) {
+                for (let [key, value] of Object.entries(this.state.soldcategory.shift())) {
+                    category.push(<li key={"keyy" + key}>{key}: <span>{value}</span></li>)
+                }
             }
-            for (let [key, value] of Object.entries(this.state.soldsubcategory.shift())) {
-                subcategory.push(<li key={"key" + key}>{key}: <span>{value}</span></li>)
-            }
-            this.state.OrdersPerRegion.map((e) => {
-                counts[e.name] = e.nb_orders
-            })
 
-            this.state.allreviews.map((e) => {
-                averageNote += e.rating;
-            })
+            if (this.state.soldsubcategory && this.state.soldsubcategory.length > 0) {
+                for (let [key, value] of Object.entries(this.state.soldsubcategory.shift())) {
+                    subcategory.push(<li key={"key" + key}>{key}: <span>{value}</span></li>)
+                }
+            }
+            
+            if (this.state.OrdersPerRegion && this.state.OrdersPerRegion.length > 0) {
+                this.state.OrdersPerRegion.map((e) => {
+                    counts[e.name] = e.nb_orders
+                })
+            }
+
+            if (this.state.allreviews && this.state.allreviews.length > 0) {
+                this.state.allreviews.map((e) => {
+                    averageNote += e.rating;
+                })
+            }
+            
             totalReviews = this.state.allreviews.length;
             averageNote = (averageNote / totalReviews).toFixed(2);
         }
