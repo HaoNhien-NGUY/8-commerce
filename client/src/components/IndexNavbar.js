@@ -115,7 +115,7 @@ class IndexNavbar extends Component {
         <Navbar color="light" light="true" expand="lg" id="navbar">
           <Navbar.Brand >
             {/* 8-commerce */}
-            <NavLink id="brandName" to="/">Blueprint</NavLink>
+            <NavLink id="brandName" to="/">Blueprint.</NavLink>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
