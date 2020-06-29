@@ -159,7 +159,10 @@ class Panier extends Component {
                           </tr>
                           <tr className="tableborder">
                             <td className="detailsproduct">
+                              { console.log('yoyo e') }
+                              { console.log(e) }
                               <div>price: {e.price}€<br />size: {e.size}</div>
+                              
                               <div>color: {e.color.name}<br />
                               quantity:
                                 <input
@@ -218,7 +221,7 @@ class Panier extends Component {
                             </tr>
                             <tr className="tableborder">
                               <td className="detailsproduct">
-                                <div>price: {e.price}€<br />size: {e.size}</div>
+                                <div>price: { (e.promo ? e.price - (e.price * (e.promo / 100)) : e.price) }€ { e.promo && <s className="text-danger">{e.price}€</s>}<br />size: {e.size}</div>
                                 <div>color: {e.color.name}<br />
                                   quantity:
                                 <input
