@@ -450,8 +450,8 @@ color: black;
   padding: 10px;
 }
 
-.categories_home .bag {
-  background-image: url('img/bag.jpg');
+.categories_home .tshirt {
+  background-image: url('img/tshirt.png');
 }
 
 .categories_home .sweatshirt {
@@ -567,7 +567,7 @@ padding: 0 40px;
   background-image: url('img/leaf.png');
 }
 
-.bigimg {
+/* .bigimg {
   width: 20vw;
   height: 28vw;
   background-image: url('img/cleanup.jpg');
@@ -577,7 +577,7 @@ padding: 0 40px;
    width: 20vw;
   height: 28vw;
  border: 5px solid white; position: absolute; left: 20px; top: 20px;
-}
+} */
 
 
 .charity_home title_home {
@@ -591,13 +591,13 @@ padding: 0 40px;
 
 }
 
-.bigimg2 {
+/* .bigimg2 {
   width: 30vw;
   height: 15vw;
   position: absolute;
   right: 5vw;
   background-image: url('img/cleanup.jpg');
-  background-size: cover;}
+  background-size: cover;} */
 
 /*-------- Large Panier ------ */
 

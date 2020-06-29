@@ -126,7 +126,7 @@ class IndexNavbar extends Component {
             </NavItem>
             <NavItem>
               {/* <Nav.Link href="/search?sexe=F">Women</Nav.Link> */}
-              <Link to="/search?sexe=F">Women</Link>
+              {/* <Link to="/search?sexe=F">Women</Link> */}
             </NavItem>
             <NavItem>
               {/* <Nav.Link href="/search?category=Accessories">Accessories</Nav.Link> */}

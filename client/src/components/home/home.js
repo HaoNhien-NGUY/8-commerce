@@ -127,7 +127,7 @@ function Home() {
                         <Link to="/search?subcategory=Jacket"><div className="jacket"><p>Jacket</p></div></Link>
                         <Link to="/search?subcategory=Backpack"><div className="backpack"><p>Backpack</p></div></Link>
                         <Link to="/search?subcategory=Sweatshirt"><div className="sweatshirt"><p>Sweatshirt</p></div></Link>
-                        <Link to="/search?subcategory=Bag"><div className="bag"><p>Handbags</p></div></Link>
+                        <Link to="/search?subcategory=Tshirt"><div className="tshirt"><p>Tshirt</p></div></Link>
                     </div>
                 </div>
             </div>
