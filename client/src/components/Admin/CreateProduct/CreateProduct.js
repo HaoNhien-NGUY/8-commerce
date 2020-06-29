@@ -54,7 +54,7 @@ function CreateProduct() {
     useEffect(() => {
         if (show === false) {
             axios
-            .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
+            .get(process.env.REACT_APP_API_LINK + "/api/subcategory/", config)
             .then((res) => {
                 console.log(res.data);
                 setSubCategories(res.data);
@@ -68,7 +68,7 @@ function CreateProduct() {
 
     useEffect(() => {
         axios
-            .get(process.env.REACT_APP_API_LINK + "/api/subcategory/")
+            .get(process.env.REACT_APP_API_LINK + "/api/subcategory/", config)
             .then((res) => {
                 console.log(res.data);
                 setSubCategories(res.data);
@@ -81,7 +81,7 @@ function CreateProduct() {
 
     useEffect(() => {
         axios
-            .get(process.env.REACT_APP_API_LINK + "/api/supplier/")
+            .get(process.env.REACT_APP_API_LINK + "/api/supplier/", config)
             .then((res) => {
                 console.log(res.data.data);
                 setSupplier(res.data.data);
