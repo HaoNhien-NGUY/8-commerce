@@ -60,8 +60,11 @@ class Checkout extends React.Component {
     componentDidUpdate() {
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
+                let header = { "Content-Type": "application/json" };
+                if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
+
                 axios
-                    .get(process.env.REACT_APP_API_LINK + "/api/user/" + this.props.auth.user.id + "/address")
+                    .get(process.env.REACT_APP_API_LINK + "/api/user/" + this.props.auth.user.id + "/address", {headers:header})
                     .then((res) => {
                         return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
                     })
