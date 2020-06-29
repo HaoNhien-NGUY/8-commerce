@@ -3,13 +3,12 @@ import $ from 'jquery';
 import axios from 'axios';
 import { Parallax, Background } from "react-parallax";
 import SliderPromo from './sliderPromo'
-import videoSource from "../../img/total.mp4";
-import walkingvideo from "../../img/walking.mp4";
+import videoSource from "../../img/untitled.mp4";
+import walkingvideo from "../../img/walk.mp4";
 import techlab1 from "../../img/techlab1.mp4";
 import backpack from "../../img/crofton.png";
 import Footer from '../footer/Footer';
 import { Link } from "react-router-dom";
-
 
 const image1 = "https://i.imgur.com/wtIes8O.jpg";
 function Home() {
