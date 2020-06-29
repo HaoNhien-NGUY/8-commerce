@@ -42,7 +42,8 @@ class IndexNavbar extends Component {
         axios
           .get(process.env.REACT_APP_API_LINK + "/api/subproduct/" + e.productid, {})
           .then((data) => {
-            let somme = data.data.price * e.quantite;
+            
+            let somme = (data.data.promo ? data.data.price - (data.data.price * (data.data.promo / 100)) : data.data.price) * e.quantite;
             this.setState({ prixTotal: this.state.prixTotal + somme });
             this.setState({ nombreTotal: this.state.nombreTotal + e.quantite });
             axios
@@ -180,7 +181,7 @@ class IndexNavbar extends Component {
                           </tr>
                           <tr className="tableborder">
                             <td className="detailsproduct">
-                              <div>price: {e.price}€<br />size: {e.size}</div>
+                              <div>price: { (e.promo ? e.price - (e.price * (e.promo / 100)) : e.price) }€ <s className="text-danger">{e.price}€</s><br />size: {e.size}</div>
                               <div>color: {e.color.name}<br /> quantity: {e.quantity}</div>
                             </td>
                           </tr>
