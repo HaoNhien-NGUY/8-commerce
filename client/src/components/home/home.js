@@ -80,7 +80,7 @@ function Home() {
         <div className="container-fluid  bg-gray p-0 m-0">
             <Parallax strength={500}>
                 <div className="HomeJumbotron firstJumbo">
-                    <div>be the change.</div>
+                    <div>design the future.</div>
                 </div>
                 <Background className="custom-bg">
                     <video autoPlay="autoplay" loop="loop" muted className="" >
