@@ -295,8 +295,11 @@ class Checkout extends React.Component {
                 }
             }
 
+            let header = { "Content-Type": "application/json" };
+            if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
+
             axios
-                .get(process.env.REACT_APP_API_LINK + "/api/packaging/available?spending=" + this.state.NoShipPrice)
+                .get(process.env.REACT_APP_API_LINK + "/api/packaging/available?spending=" + this.state.NoShipPrice, {headers:header})
                 .then((res) => {
                     return this.setState({ packagingAvailable: res.data })
                 })
