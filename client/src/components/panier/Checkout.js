@@ -32,12 +32,11 @@ class Checkout extends React.Component {
 
     componentDidMount() {
         // console.log(this.props.auth);
+        let header = { "Content-Type": "application/json" };
+        if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
 
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
-
-                let header = { "Content-Type": "application/json" };
-                if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
 
                 axios
                     .get(process.env.REACT_APP_API_LINK + "/api/user/" + this.props.auth.user.id + "/address", {headers:header})
@@ -48,7 +47,8 @@ class Checkout extends React.Component {
                     });
             }
         }
-        axios.get(process.env.REACT_APP_API_LINK + "/api/region")
+
+        axios.get(process.env.REACT_APP_API_LINK + "/api/region", {headers:header})
             .then((res) => {
                 return this.setState({ regions: res.data.data })
             })
@@ -59,8 +59,11 @@ class Checkout extends React.Component {
     componentDidUpdate() {
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
+                let header = { "Content-Type": "application/json" };
+                if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
+
                 axios
-                    .get(process.env.REACT_APP_API_LINK + "/api/user/" + this.props.auth.user.id + "/address")
+                    .get(process.env.REACT_APP_API_LINK + "/api/user/" + this.props.auth.user.id + "/address", {headers:header})
                     .then((res) => {
                         return this.setState({ shippingAddress: res.data.shippingAddress, billingAddress: res.data.billingAddress, email: this.props.auth.user.email })
                     })
@@ -109,11 +112,15 @@ class Checkout extends React.Component {
             let jsonRequest = {
                 'promocode': this.state.promocode,
             }
+
+            let header = { "Content-Type": "application/json" };
+            if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
+
             axios
                 .post(
                     process.env.REACT_APP_API_LINK + "/api/promocode",
                     jsonRequest,
-                    { headers: { "Content-Type": "application/json" } }
+                    { headers: header }
                 )
                 .then((res) => {
                     this.setState({ promocode_details: res.data });
@@ -288,8 +295,11 @@ class Checkout extends React.Component {
                 }
             }
 
+            let header = { "Content-Type": "application/json" };
+            if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
+
             axios
-                .get(process.env.REACT_APP_API_LINK + "/api/packaging/available?spending=" + this.props.price)
+                .get(process.env.REACT_APP_API_LINK + "/api/packaging/available?spending=" + this.state.NoShipPrice, {headers:header})
                 .then((res) => {
                     return this.setState({ packagingAvailable: res.data })
                 })
@@ -298,7 +308,7 @@ class Checkout extends React.Component {
 
             if (this.props.auth.user != null) {
                 axios
-                    .get(process.env.REACT_APP_API_LINK + "/api/cardcredentials/user/" + this.props.auth.user.id)
+                    .get(process.env.REACT_APP_API_LINK + "/api/cardcredentials/user/" + this.props.auth.user.id, {headers:header})
                     .then((res) => {
                         return this.setState({ cards: res.data })
                     })
