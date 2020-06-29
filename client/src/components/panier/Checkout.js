@@ -308,7 +308,7 @@ class Checkout extends React.Component {
 
             if (this.props.auth.user != null) {
                 axios
-                    .get(process.env.REACT_APP_API_LINK + "/api/cardcredentials/user/" + this.props.auth.user.id)
+                    .get(process.env.REACT_APP_API_LINK + "/api/cardcredentials/user/" + this.props.auth.user.id, {headers:header})
                     .then((res) => {
                         return this.setState({ cards: res.data })
                     })
