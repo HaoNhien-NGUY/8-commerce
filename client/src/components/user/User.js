@@ -63,10 +63,10 @@ function UserHome(props) {
                 <div className="col-sm-3 pt-5">
                     <ul className="list-group">
                         <li className={"list-group-item list-group-item-action list-group-item-secondary"}>{props.emailUser}</li>
-                        <li className={"list-group-item list-group-item-action" + (query == "history" ? " active" : "")}> <Link className="a-none" to="/user?content=history">Order History</Link></li>
-                        <li className={"list-group-item list-group-item-action" + (query == "shipping" ? " active" : "")}> <Link className="a-none" to="/user?content=shipping">Shipping Address</Link></li>
-                        <li className={"list-group-item list-group-item-action" + (query == "billing" ? " active" : "")}><Link className="a-none" to="/user?content=billing">Billing Address</Link></li>
-                        <li className={"list-group-item list-group-item-action" + (query == "card" ? " active" : "")}><Link className="a-none" to="/user?content=card">Bank card</Link></li>
+                        <Link className="a-none" to="/user?content=history"><li className={"list-group-item list-group-item-action" + (query == "history" ? " active" : "")}> Order History</li></Link>
+                        <Link className="a-none" to="/user?content=shipping"><li className={"list-group-item list-group-item-action" + (query == "shipping" ? " active" : "")}> Shipping Address</li></Link>
+                        <Link className="a-none" to="/user?content=billing"><li className={"list-group-item list-group-item-action" + (query == "billing" ? " active" : "")}>Billing Address</li></Link>
+                        <Link className="a-none" to="/user?content=card"><li className={"list-group-item list-group-item-action" + (query == "card" ? " active" : "")}>Bank card</li></Link>
                     </ul>
                 </div>
                 <div className="col-sm-9">

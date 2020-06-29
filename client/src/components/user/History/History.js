@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Page, Text, View, Document, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
 import { Table, TableHeader, DataTableCell, TableBody, TableCell } from '@david.kucsai/react-pdf-table';
+import { Link } from "react-router-dom";
 
 function ShowOrder(props) {
     const [history, setHistory] = useState([]);
@@ -29,9 +30,11 @@ function ShowOrder(props) {
                     <td><p className=" mr-3 mt-3 mb-3 ml-1 align-items-center">{e.cost} €</p></td>
                     <td>
                         <p className=" mt-3 mb-3 mr-3 align-items-center">
-                            <button className="btn btn-outline-secondary m-0" onClick={() => window.location.href = '/command?order=' + e.trackingNumber}>
+                            <Link to={'/command?order=' + e.trackingNumber}>
+                            <button className="btn btn-outline-secondary m-0">
                                 Show
                             </button>
+                            </Link>
                         </p>
                     </td>
                     {/* <td className="text-nowrap">
