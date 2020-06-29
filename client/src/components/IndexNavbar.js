@@ -181,7 +181,7 @@ class IndexNavbar extends Component {
                           </tr>
                           <tr className="tableborder">
                             <td className="detailsproduct">
-                              <div>price: { (e.promo ? e.price - (e.price * (e.promo / 100)) : e.price) }€ <s className="text-danger">{e.price}€</s><br />size: {e.size}</div>
+                              <div>price: { (e.promo ? e.price - (e.price * (e.promo / 100)) : e.price) }€ {e.promo && <s className="text-danger">{e.price}€</s>}<br />size: {e.size}</div>
                               <div>color: {e.color.name}<br /> quantity: {e.quantity}</div>
                             </td>
                           </tr>

@@ -13,6 +13,7 @@ class Panier extends Component {
       productsCart: [],
       prixTotal: 0,
       nombreTotal: 0,
+      crossedPrice: 0
     };
   }
 
@@ -24,8 +25,10 @@ class Panier extends Component {
         axios
           .get(process.env.REACT_APP_API_LINK + "/api/subproduct/" + e.productid, {})
           .then((data) => {
-            let somme = data.data.price * e.quantite;
+            let somme = (data.data.promo ? data.data.price - (data.data.price * (data.data.promo / 100)) : data.data.price)  * e.quantite;
+            let basePrice = data.data.price * e.quantite;
             this.setState({ prixTotal: this.state.prixTotal + somme });
+            this.setState({crossedPrice: this.state.crossedPrice + basePrice})
             this.setState({ nombreTotal: this.state.nombreTotal + e.quantite });
             axios
               .get(
@@ -159,7 +162,10 @@ class Panier extends Component {
                           </tr>
                           <tr className="tableborder">
                             <td className="detailsproduct">
+                              { console.log('yoyo e') }
+                              { console.log(e) }
                               <div>price: {e.price}€<br />size: {e.size}</div>
+                              
                               <div>color: {e.color.name}<br />
                               quantity:
                                 <input
@@ -218,7 +224,7 @@ class Panier extends Component {
                             </tr>
                             <tr className="tableborder">
                               <td className="detailsproduct">
-                                <div>price: {e.price}€<br />size: {e.size}</div>
+                                <div>price: { (e.promo ? e.price - (e.price * (e.promo / 100)) : e.price) }€ { e.promo && <s className="text-danger">{e.price}€</s>}<br />size: {e.size}</div>
                                 <div>color: {e.color.name}<br />
                                   quantity:
                                 <input
@@ -250,7 +256,7 @@ class Panier extends Component {
 
                   <div className="total">
                     <span>{this.state.nombreTotal} {this.state.nombreTotal > 1 ? 'produits' : 'produit'}</span>
-                    <span>Total : {this.state.prixTotal} €</span>
+                    <span>Total : {this.state.prixTotal} € <s className="text-danger">{this.state.crossedPrice}€</s></span>
                   </div>
                 </div>
               </div>
