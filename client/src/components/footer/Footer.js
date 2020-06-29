@@ -53,6 +53,11 @@ export default class Footer extends Component {
               <Link to="/user?content=history">Custom Orders</Link>
             </div>
 
+            <div className="col-1 footer-link">
+              <p>More</p>
+              <Link to="/questions">Q&A</Link>
+            </div>
+
             <div className="ml-auto col-5 text-center">
               <a
                 className="twitter-timeline"

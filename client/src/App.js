@@ -38,8 +38,7 @@ import AccessUpdateSubCategory from './components/Admin/UpdateSubCategory/Access
 import AccessCreateOrder from './components/Admin/CreateOrder/AccessCreateOrder';
 import AccessCreateShipping from './components/Admin/CreateShipping/AccessCreateShipping';
 import AccessUpdateShipping from './components/Admin/UpdateShipping/AccessUpdateShipping';
-
-
+import Questions from './components/Q&A/q&a';
 
 class App extends React.Component {
 
@@ -62,6 +61,7 @@ class App extends React.Component {
                         <Route exact path="/search" component={SearchSidebar} />
                         <Route exact path="/user" component={AccessUser} />
                         <Route exact path="/admin" component={AccessAdmin} />
+                        <Route exact path="/questions" component={Questions} />
                         <Route exact path="/admin/order"component={AccessCreateOrder} />
                         <Route exact path="/admin/subcategory/:id"component={AccessSubCategoryInterface} />
                         <Route exact path="/admin/subproduct/:id" component={AccessSubProductInterface} />
