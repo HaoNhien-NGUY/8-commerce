@@ -112,11 +112,15 @@ class Checkout extends React.Component {
             let jsonRequest = {
                 'promocode': this.state.promocode,
             }
+
+            let header = { "Content-Type": "application/json" };
+            if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
+
             axios
                 .post(
                     process.env.REACT_APP_API_LINK + "/api/promocode",
                     jsonRequest,
-                    { headers: { "Content-Type": "application/json" } }
+                    { headers: header }
                 )
                 .then((res) => {
                     this.setState({ promocode_details: res.data });
