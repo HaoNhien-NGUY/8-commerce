@@ -33,12 +33,11 @@ class Checkout extends React.Component {
 
     componentDidMount() {
         // console.log(this.props.auth);
+        let header = { "Content-Type": "application/json" };
+        if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
 
         if (this.props.auth.user != null) {
             if (!this.state.shippingAddress && !this.state.billingAddress) {
-
-                let header = { "Content-Type": "application/json" };
-                if (this.props.auth.token) header = { ...header, 'Authorization': 'Bearer ' + this.props.auth.token }
 
                 axios
                     .get(process.env.REACT_APP_API_LINK + "/api/user/" + this.props.auth.user.id + "/address", {headers:header})
@@ -49,7 +48,8 @@ class Checkout extends React.Component {
                     });
             }
         }
-        axios.get(process.env.REACT_APP_API_LINK + "/api/region")
+
+        axios.get(process.env.REACT_APP_API_LINK + "/api/region", {headers:header})
             .then((res) => {
                 return this.setState({ regions: res.data.data })
             })
