@@ -13,6 +13,8 @@ function CommandTracking() {
     const [divOrderProduct, setDivOrderProduct] = useState([]);
     const [isDelivred, setIsDelivred] = useState(false);
     const [total, setTotal] = useState(false);
+    const [productsCost, setProductsCost] = useState(0);
+    const [fdp, setFdp] = useState(0);
     const [shippingAddress, setShippingAddress] = useState({});
     const [billingAddress, setBillingAddress] = useState({});
     const [allProduct, setAllProduct] = useState({});
@@ -36,6 +38,18 @@ function CommandTracking() {
             setShippingAddress(res.data.shippingAddress);
             setBillingAddress(res.data.billingAddress);
             setTotal(res.data.cost);
+            let productCost = res.data.subproducts.reduce((accumulator, currentValue) => {
+                let price = currentValue.promo ? currentValue.price - (currentValue.price * (currentValue.promo / 100)) : currentValue.price;
+                return accumulator + price;
+            }, 0);
+            let shippingCost = res.data.cost - productCost;
+            
+            setFdp(shippingCost.toFixed(2));
+            setProductsCost(productCost.toFixed(2));
+            
+            // setFdp(res.data.subproducts.reduce((accumulator, currentValue) => {
+
+            // }))
             setAllProduct(res.data.subproducts);
             setCreatedAt(new Date(res.data.createdAt));
 
@@ -184,6 +198,8 @@ function CommandTracking() {
                             </TableBody>
                         </Table>
                     )}
+                    <Text style={styles.right}>Products Price: {productsCost} €</Text>
+                    <Text style={styles.right}>Shipping Fees: {fdp} €</Text>
                     <Text style={styles.right}>Total Price: {total} €</Text>
                 </View>
             </Page>
@@ -286,7 +302,11 @@ function CommandTracking() {
                         </div>
                         <div className="container mb-5">
                             <h2 className="text-center mb-3">Your articles</h2>
-                            <h5 className="text-right "><span className="cost"><b>Total: </b>{total} €</span></h5>
+                            <h5 className="text-right mt-5">
+                                <span className="cost"><b>Subtotal : </b>{productsCost} €</span>
+                                <span className="cost"><b>Shipping : </b>{fdp} €</span>
+                                <span className="cost"><b>Total : </b>{total} €</span>
+                            </h5>
                             <div className="divOrderCart pl-3 pr-3" >
                                 <table className="productinCart">
                                     <tbody>{divOrderProduct}</tbody>

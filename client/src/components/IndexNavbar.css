@@ -90,7 +90,7 @@
 #profileLogo img,
 #searchLogo img {
   width: 60%;
-  margin: 0;
+  margin: auto;
   padding: 0;
 }
 
