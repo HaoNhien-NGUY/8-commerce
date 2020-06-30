@@ -86,6 +86,7 @@ const Techlab =  () => {
         bgImage={imageTech}
         bgImageAlt="shop"
         strength={-200}
+        height={10}
       >
           <div style={{ height: '600px' }} />
       </Parallax>
