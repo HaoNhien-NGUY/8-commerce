@@ -39,6 +39,7 @@ import AccessCreateOrder from './components/Admin/CreateOrder/AccessCreateOrder'
 import AccessCreateShipping from './components/Admin/CreateShipping/AccessCreateShipping';
 import AccessUpdateShipping from './components/Admin/UpdateShipping/AccessUpdateShipping';
 import Questions from './components/Q&A/q&a';
+import Techlab from './components/Techlab/Techlab';
 
 class App extends React.Component {
 
@@ -54,6 +55,7 @@ class App extends React.Component {
                 <IndexNavbar />
                     <Switch>
                         <Route exact path="/" component={Home} />
+                        <Route exact path="/techlab" component={Techlab} />
                         <Route exact path="/command" component={Commands} />
                         <Route exact path="/command/:id" component={Command} />
                         <Route exact path="/panier" component={Panier} />
