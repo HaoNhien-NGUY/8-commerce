@@ -91,7 +91,9 @@ function Home() {
             </Parallax >
 
             <div className="row  justify-content-center  m-0 mt-5 p-0">
+     
                 <div className="bloc_1_home">
+                <Link to="/techlab"> 
                     {/* <a href=""> */}
                     <div className='bloc_a'>
                         <div>
@@ -103,6 +105,7 @@ function Home() {
                         </video>
                         </div>
                     </div>
+                    </Link>
                     {/* </a> */}
                     <Link to="/product/8" className="linkwhite bloc_b"><img src={backpack} /> <div><span>Crofton 30L</span> <p>Discover the techlab</p></div></Link>
                     <div className="bloc_c">

@@ -132,6 +132,10 @@ class IndexNavbar extends Component {
               {/* <Nav.Link href="/search?category=Accessories">Accessories</Nav.Link> */}
               <Link to="/search?category=Accessories">Accessories</Link>
             </NavItem>
+            <NavItem>
+              {/* <Nav.Link href="/search?category=Accessories">Accessories</Nav.Link> */}
+              <Link to="/techlab">Techlab</Link>
+            </NavItem>
           </Navbar.Collapse>
         </Navbar>
         <Navbar id="underline">
