@@ -34,6 +34,6 @@ Nordine el-Barkaoui:
 - https://www.linkedin.com/in/nordine-el-barkaoui-90ab291a6/
 - https://github.com/Elbarkaoui-Nordine
 
-Victor Reyes (moi-même): 
+Victor Reyes: 
 - https://www.linkedin.com/in/reyes-victor/
 - https://github.com/reyesvictor
